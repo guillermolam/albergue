@@ -1,0 +1,67 @@
+﻿version: "3"
+
+vars:
+  SPIN_APP_NAME: '{{.SPIN_APP_NAME | default "albergue-carrascalejo"}}'
+  SPIN_REGISTRY: '{{.SPIN_REGISTRY | default "ghcr.io"}}'
+  SPIN_TAG: '{{.SPIN_TAG | default "latest"}}'
+  FERMYON_CLOUD_URL: '{{.FERMYON_CLOUD_URL | default "https://cloud.fermyon.com"}}'
+  SPIN_MANIFEST: '{{.SPIN_MANIFEST | default "spin.toml"}}'
+
+env:
+  SPIN_APP_NAME: "{{.SPIN_APP_NAME}}"
+  SPIN_REGISTRY: "{{.SPIN_REGISTRY}}"
+  SPIN_TAG: "{{.SPIN_TAG}}"
+  FERMYON_CLOUD_URL: "{{.FERMYON_CLOUD_URL}}"
+
+tasks:
+  spin:dev:
+    desc: Start Spin development environment
+    cmds:
+      - spin build
+      - spin up --listen 127.0.0.1:3000
+
+  spin:build:
+    desc: Build Spin WASM components
+    cmds:
+      - spin build
+
+  spin:build:prod:
+    desc: Build Spin WASM components (release)
+    env:
+      NODE_ENV: production
+    cmds:
+      - spin build
+
+  spin:validate:
+    desc: Validate Spin manifest and components
+    cmds:
+      - spin doctor
+
+  spin:up:
+    desc: Start Spin local development server
+    cmds:
+      - spin up --listen 127.0.0.1:3000
+
+  spin:test:
+    desc: Test Spin components
+    cmds:
+      - spin test
+
+  spin:deploy:
+    desc: Deploy to Fermyon Cloud
+    deps: [spin:build:prod, spin:validate]
+    cmds:
+      - spin deploy
+
+  spin:deploy:staging:
+    desc: Deploy to staging environment
+    deps: [spin:build:prod, spin:validate]
+    env:
+      SPIN_ENV: staging
+    cmds:
+      - spin deploy
+
+  spin:clean:
+    desc: Clean Spin build artifacts
+    cmds:
+      - rm -rf target/ .spin/

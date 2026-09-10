@@ -1,0 +1,83 @@
+version: "3"
+
+# Clean tasks for the Albergue Municipal Carrascalejo project
+# This file is included by the root Taskfile.yml
+# Includes @gateway/ and @frontend/ services
+
+tasks:
+  frontend:
+    desc: Clean frontend build and node_modules
+    cmds:
+      - cd frontend && bun run clean || rm -rf dist node_modules
+
+  bff:
+    desc: Clean gateway BFF build artifacts
+    cmds:
+      - cd gateway/bff && cargo clean
+
+  # Backend services
+  auth-service:
+    desc: Clean backend/auth-service build artifacts
+    cmds:
+      - cd backend/auth-service && cargo clean
+
+  booking-service:
+    desc: Clean backend/booking-service build artifacts
+    cmds:
+      - cd backend/booking-service && cargo clean
+
+  document-validation-service:
+    desc: Clean backend/document-validation-service build artifacts
+    cmds:
+      - cd backend/document-validation-service && cargo clean
+
+  info-on-arrival-service:
+    desc: Clean backend/info-on-arrival-service build artifacts
+    cmds:
+      - cd backend/info-on-arrival-service && cargo clean
+
+  location-service:
+    desc: Clean backend/location-service build artifacts
+    cmds:
+      - cd backend/location-service && cargo clean
+
+  notification-service:
+    desc: Clean backend/notification-service build artifacts
+    cmds:
+      - cd backend/notification-service && cargo clean
+
+  rate-limiter-service:
+    desc: Clean backend/rate-limiter-service build artifacts
+    cmds:
+      - cd backend/rate-limiter-service && cargo clean
+
+  redis-service:
+    desc: Clean backend/redis-service build artifacts
+    cmds:
+      - cd backend/redis-service && cargo clean
+
+  reviews-service:
+    desc: Clean backend/reviews-service build artifacts
+    cmds:
+      - cd backend/reviews-service && cargo clean
+
+  security-service:
+    desc: Clean backend/security-service build artifacts
+    cmds:
+      - cd backend/security-service && cargo clean
+
+  all:
+    desc: Clean all build artifacts and node_modules
+    deps:
+      - frontend
+      - bff
+      - auth-service
+      - booking-service
+      - document-validation-service
+      - info-on-arrival-service
+      - location-service
+      - notification-service
+      - rate-limiter-service
+      - redis-service
+      - reviews-service
+      - security-service

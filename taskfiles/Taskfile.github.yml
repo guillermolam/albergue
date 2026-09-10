@@ -1,0 +1,60 @@
+version: "3"
+
+vars:
+  GITHUB_REPO: "guillermolam/AlbergueMunicipalCarrascalejo"
+  CLOUDFLARE_WORKER_NAME: "albergue-carrascalejo"
+  FERMYON_APP_NAME: "albergue-carrascalejo"
+
+tasks:
+  status:
+    desc: Show deployment status
+    cmds:
+      - |
+        echo "📊 Deployment Status"
+        echo "===================="
+        echo ""
+        
+        echo "Cloudflare:"
+        echo "   Worker: $CLOUDFLARE_WORKER_NAME"
+        echo "   Status: Check at https://github.com/$GITHUB_REPO/actions"
+        
+        echo ""
+        echo "Fermyon Cloud:"
+        spin cloud apps info $FERMYON_APP_NAME 2>/dev/null || echo "   ❌ Not found"
+
+  deploy:github:
+    desc: Trigger Cloudflare deployment (push to main)
+    cmds:
+      - |
+        echo "🚀 Cloudflare deployment triggered by pushing to main"
+        echo "   Push to main branch to trigger deployment"
+        echo "   Workflow: .github/workflows/deploy.yml"
+
+  test:github:
+    desc: Inspect Cloudflare deployment workflow
+    cmds:
+      - |
+        echo "🧪 Cloudflare deployment is handled by GitHub Actions and Wrangler"
+        echo "   Worker: $CLOUDFLARE_WORKER_NAME"
+        echo "   Check: https://github.com/$GITHUB_REPO/actions"
+
+  test:all:
+    desc: Test all deployments
+    cmds:
+      - task test:github
+      
+      - echo ""
+      - echo "Fermyon Cloud:"
+      - echo "Fermyon Cloud:"
+      - echo "Testing..."
+      - |
+        STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://albergue-carrascalejo-v99ew1nt.fermyon.app/api/" 2>/dev/null || echo "000")
+        echo "   API: HTTP $STATUS"
+
+  test:fermyon:
+    desc: Test Fermyon deployment
+    cmds:
+      - echo "Testing Fermyon..."
+      - |
+        STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://albergue-carrascalejo-v99ew1nt.fermyon.app/api/" 2>/dev/null || echo "000")
+        echo "   API: HTTP $STATUS"

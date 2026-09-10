@@ -1,0 +1,145 @@
+version: "3"
+
+vars:
+  CLOUDFLARE_ACCOUNT_ID: "798e36259a38e6217cc9987ce0bf1316"
+  FERMYON_APP_NAME: "albergue-carrascalejo"
+  CLOUDFLARE_WORKER_NAME: "albergue-carrascalejo"
+
+tasks:
+  check:env:
+    desc: Verify required environment variables
+    cmds:
+      - |
+        echo "🔍 Checking environment variables..."
+        if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+          echo "❌ CLOUDFLARE_API_TOKEN not set"
+          echo "   Set it with: export CLOUDFLARE_API_TOKEN=your_token"
+          exit 1
+        fi
+        echo "✅ CLOUDFLARE_API_TOKEN is set"
+        echo "   Account ID: $CLOUDFLARE_ACCOUNT_ID"
+
+  cloudflare:project:create:
+    desc: Verify Cloudflare Worker access
+    cmds:
+      - |
+        echo "📦 Verifying access to Cloudflare Worker '$CLOUDFLARE_WORKER_NAME'..."
+        cd frontend && pnpm exec wrangler whoami
+
+  build:frontend:
+    desc: Build frontend for the Astro Cloudflare adapter
+    cmds:
+      - |
+        echo "🏗️ Building frontend..."
+        FERMYON_URL=$(spin cloud apps info $FERMYON_APP_NAME 2>/dev/null | grep "URL:" | awk '{print $2}' || echo "")
+        if [ -z "$FERMYON_URL" ]; then
+          echo "⚠️ Could not get Fermyon app URL, using default"
+          export PUBLIC_API_URL="https://albergue-carrascalejo-v99ew1nt.fermyon.app/api"
+        else
+          export PUBLIC_API_URL="${FERMYON_URL}/api"
+        fi
+        echo "   API URL: $PUBLIC_API_URL"
+        cd frontend && pnpm build
+
+  deploy:cloudflare:
+    desc: Deploy frontend to Cloudflare Workers
+    deps: [check:env, build:frontend]
+    cmds:
+      - |
+        echo "🚀 Deploying frontend to Cloudflare Workers..."
+        cd frontend && CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN pnpm exec wrangler deploy
+
+  deploy:vercel:
+    desc: Deploy frontend to Vercel (alternative)
+    cmds:
+      - |
+        echo "🚀 Deploying frontend to Vercel..."
+        if ! command -v vercel &> /dev/null; then
+          echo "Installing Vercel CLI..."
+          npm install -g vercel
+        fi
+        cd frontend && vercel --yes --prod
+
+  deploy:netlify:
+    desc: Deploy frontend to Netlify (alternative)
+    cmds:
+      - |
+        echo "🚀 Deploying frontend to Netlify..."
+        if ! command -v netlify &> /dev/null; then
+          echo "Installing Netlify CLI..."
+          npm install -g netlify-cli
+        fi
+        cd frontend && netlify deploy --prod --dir=dist
+
+  deploy:fermyon:
+    desc: Deploy backend services to Fermyon Cloud
+    cmds:
+      - |
+        echo "🚀 Deploying to Fermyon Cloud..."
+        SPIN_DEPLOY_PLUGIN=cloud spin deploy
+
+  deploy:all:
+    desc: Deploy everything (Fermyon backend + Cloudflare frontend)
+    cmds:
+      - task deploy:fermyon
+      - task build:frontend
+      - task deploy:cloudflare
+
+  test:fermyon:
+    desc: Test Fermyon Cloud deployment
+    cmds:
+      - |
+        echo "🧪 Testing Fermyon Cloud deployment..."
+        FERMYON_URL=$(spin cloud apps info $FERMYON_APP_NAME 2>/dev/null | grep "URL:" | awk '{print $2}' || echo "")
+        if [ -z "$FERMYON_URL" ]; then
+          echo "❌ Could not get Fermyon app URL"
+          exit 1
+        fi
+        echo "   Testing: $FERMYON_URL"
+        
+        # Test root
+        STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$FERMYON_URL" 2>/dev/null || echo "000")
+        echo "   Root: HTTP $STATUS"
+        
+        # Test API
+        STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$FERMYON_URL/api/" 2>/dev/null || echo "000")
+        echo "   API:  HTTP $STATUS"
+        
+        if [ "$STATUS" = "200" ] || [ "$STATUS" = "404" ]; then
+          echo "✅ Fermyon Cloud is responding"
+        else
+          echo "❌ Fermyon Cloud not responding (HTTP $STATUS)"
+        fi
+
+  test:cloudflare:
+    desc: Inspect the latest Cloudflare Worker deployment
+    deps: [check:env]
+    cmds:
+      - |
+        echo "🧪 Inspecting Cloudflare Worker deployments..."
+        cd frontend && CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN pnpm exec wrangler deployments list
+
+  test:all:
+    desc: Test all deployments
+    cmds:
+      - task test:fermyon
+      - task test:cloudflare
+
+  status:
+    desc: Show deployment status
+    cmds:
+      - |
+        echo "📊 Deployment Status"
+        echo "===================="
+        echo ""
+        
+        echo "Fermyon Cloud:"
+        if spin cloud apps info $FERMYON_APP_NAME 2>/dev/null | grep "URL:" > /dev/null; then
+          spin cloud apps info $FERMYON_APP_NAME 2>/dev/null
+        else
+          echo "   ❌ Not found"
+        fi
+        
+        echo ""
+        echo "Cloudflare Worker Deployments:"
+        cd frontend && CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN pnpm exec wrangler deployments list || echo "   ❌ Not found"
