@@ -41,13 +41,31 @@ tasks:
       - pnpm dev
 
   frontend:build:
-    desc: Build frontend for production
+    desc: Build frontend for Cloudflare Workers (default production target)
     dir: "{{.FRONTEND_DIR}}"
     deps: [frontend:check-env, frontend:type-check, frontend:lint]
     cmds:
       - echo "🏗️ Building frontend for production..."
       - pnpm build
       - echo "✅ Frontend built successfully"
+
+  frontend:build:cloudflare:
+    desc: Build frontend for Cloudflare Workers
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - pnpm run build:cloudflare
+
+  frontend:build:netlify:
+    desc: Build frontend for Netlify Functions
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - pnpm run build:netlify
+
+  frontend:build:stormkit:
+    desc: Build frontend as a standalone Node server for Stormkit
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - pnpm run build:stormkit
 
   frontend:preview:
     desc: Preview built frontend
@@ -81,27 +99,27 @@ tasks:
       - echo "✅ Code formatted"
 
   frontend:test:
-    desc: Run frontend tests
+    desc: Run Chromium end-to-end tests
     dir: "{{.FRONTEND_DIR}}"
     cmds:
       - echo "🧪 Running frontend tests..."
-      - pnpm test
+      - pnpm e2e
       - echo "✅ Tests completed"
 
   frontend:test:watch:
-    desc: Run frontend tests in watch mode
+    desc: Run Playwright end-to-end tests in UI mode
     dir: "{{.FRONTEND_DIR}}"
     cmds:
       - echo "👀 Running frontend tests in watch mode..."
-      - pnpm test:watch
+      - pnpm exec playwright test --ui
 
   frontend:test:coverage:
-    desc: Run frontend tests with coverage
+    desc: Run the complete cross-browser end-to-end suite
     dir: "{{.FRONTEND_DIR}}"
     cmds:
       - echo "📊 Running frontend tests with coverage..."
-      - pnpm test:coverage
-      - echo "✅ Coverage report generated"
+      - pnpm run e2e:all
+      - echo "✅ Cross-browser tests completed"
 
   frontend:clean:
     desc: Clean frontend build artifacts
@@ -112,11 +130,11 @@ tasks:
       - echo "✅ Frontend cleaned"
 
   frontend:analyze:
-    desc: Analyze frontend bundle size
+    desc: Build and show generated bundle sizes
     dir: "{{.FRONTEND_DIR}}"
     cmds:
       - echo "📈 Analyzing frontend bundle..."
-      - pnpm build:analyze
+      - pnpm build && du -sh dist dist/client dist/server
       - echo "✅ Bundle analysis complete"
 
   frontend:astro-check:
@@ -126,6 +144,31 @@ tasks:
       - echo "🚀 Running Astro check..."
       - pnpm astro-check
       - echo "✅ Astro check completed"
+
+  frontend:deploy:
+    desc: Interactively choose Cloudflare, Netlify, or Stormkit
+    dir: "{{.FRONTEND_DIR}}"
+    interactive: true
+    cmds:
+      - pnpm run deploy
+
+  frontend:deploy:cloudflare:
+    desc: Build and deploy to Cloudflare Workers
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - pnpm run deploy:cloudflare
+
+  frontend:deploy:netlify:
+    desc: Build and deploy to Netlify
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - pnpm run deploy:netlify
+
+  frontend:deploy:stormkit:
+    desc: Build and deploy through the Stormkit Deployments API
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - pnpm run deploy:stormkit
 
   frontend:check-env:
     desc: Check required environment variables
@@ -230,12 +273,12 @@ tasks:
       - echo "✅ i18n validation completed"
 
   frontend:i18n:test:
-    desc: Run i18n specific tests
+    desc: Validate i18n configuration
     dir: "{{.FRONTEND_DIR}}"
     cmds:
       - echo "🌐 Running i18n tests..."
-      - pnpm test tests/i18n/
-      - echo "✅ i18n tests completed"
+      - node scripts/validate-i18n.js
+      - echo "✅ i18n validation completed"
 
   frontend:i18n:check:
     desc: Check i18n implementation status

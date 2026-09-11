@@ -127,43 +127,41 @@ export default defineConfig({
 
 ```bash
 pnpm dev              # Start development server
-pnpm dev:host         # Start with host access
-pnpm dev:debug        # Start with debug logging
+pnpm dev --host       # Start with host access
+pnpm dev --verbose    # Start with verbose logging
 ```
 
 ### Building
 
 ```bash
 pnpm build            # Build with type checking
-pnpm build:analyze    # Build with bundle analysis
-pnpm build:stats      # Build with detailed statistics
+pnpm run build:cloudflare # Build for Cloudflare Workers
+pnpm run build:netlify    # Build for Netlify Functions
+pnpm run build:stormkit   # Build a standalone Node server for Stormkit
 ```
 
 ### Type Checking
 
 ```bash
 pnpm type-check       # Comprehensive type checking
-pnpm type-check:watch # Watch mode type checking
+pnpm run check:watch      # Watch-mode Astro diagnostics
 pnpm astro-check      # Astro-specific type checking
-pnpm tsc              # TypeScript compiler check
 ```
 
 ### Code Quality
 
 ```bash
-pnpm lint             # ESLint checking
-pnpm lint:fix         # Auto-fix ESLint issues
+pnpm lint             # TypeScript checking
 pnpm format           # Format code with Prettier
-pnpm format:check     # Check code formatting
+pnpm run format:check     # Check code formatting
 ```
 
 ### Testing
 
 ```bash
-pnpm test             # Run all tests
-pnpm test:watch       # Watch mode testing
-pnpm test:coverage    # Generate coverage report
-pnpm test:ui          # Interactive test UI
+pnpm e2e              # Run Chromium end-to-end tests
+pnpm run e2e:all          # Run the complete browser matrix
+pnpm exec playwright test --ui # Interactive Playwright UI
 ```
 
 ## 🎨 Component Architecture
@@ -300,8 +298,8 @@ rollupOptions: {
 ```bash
 pnpm build              # Build with full type checking
 pnpm type-check         # Verify all types are correct
-pnpm test               # Run all tests
-pnpm deploy             # Deploy to production
+pnpm e2e                # Run end-to-end tests
+pnpm run deploy         # Choose a deployment provider
 ```
 
 ### Environment Variables

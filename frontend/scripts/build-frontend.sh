@@ -1,6 +1,5 @@
-#!/bin/bash
 #!/usr/bin/env sh
-set -e
+set -eu
 cd "$(dirname "$0")/.."
-pnpm install
-pnpm run build
+pnpm install --frozen-lockfile
+pnpm build

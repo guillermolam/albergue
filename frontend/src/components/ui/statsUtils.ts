@@ -123,7 +123,7 @@ export const getVariantClasses = (variant: VariantType): string => {
     case 'minimal':
       return 'bg-transparent border-none shadow-none';
     case 'gradient':
-      return 'bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-md';
+      return 'bg-linear-to-br from-white to-gray-50 rounded-xl shadow-md';
     default:
       return 'bg-white rounded-lg shadow-md hover:shadow-lg';
   }

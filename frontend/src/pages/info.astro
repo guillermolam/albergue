@@ -65,23 +65,19 @@ import Layout from '../layouts/Layout.astro';
                   'Alquiler de bicicletas €10/día. Incluye casco y candado. Reserva anticipada.',
               },
             ].map((item, index) => (
-              <div x-data="{ open: false }" class="border border-stone-200 rounded-lg">
-                <button
-                  x-on:click="open = !open"
-                  class="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-stone-50 transition-colors"
+              <details class="group border border-stone-200 rounded-lg">
+                <summary
+                  class="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-stone-50 transition-colors cursor-pointer list-none"
                 >
                   <span class="font-600 text-stone-800">{item.title}</span>
-                  <span
-                    x-bind:class="{ 'rotate-180': open }"
-                    class="transform transition-transform"
-                  >
+                  <span class="transform transition-transform group-open:rotate-180" aria-hidden="true">
                     ▼
                   </span>
-                </button>
-                <div x-show="open" x-transition class="px-4 pb-3 text-stone-700">
+                </summary>
+                <div class="px-4 pb-3 text-stone-700">
                   {item.content}
                 </div>
-              </div>
+              </details>
             ))
           }
         </div>

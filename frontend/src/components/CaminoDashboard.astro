@@ -1,507 +1,424 @@
-<section class="mx-auto max-w-6xl px-4 py-10" x-data="caminoDashboard()" x-init="init()">
+---
+// CaminoDashboard component - now native Astro with client-side interactivity
+const stats = {
+  totalDistance: 847,
+  completedDistance: 127,
+  remainingDistance: 720,
+  completedDays: 7,
+  averageDailyDistance: 18.1,
+};
+const stages = [
+  {
+    id: '1',
+    name: 'Sevilla → Guillena',
+    distance: 22.2,
+    completed: true,
+    difficulty: 'easy',
+    estimatedDays: 1,
+  },
+  {
+    id: '2',
+    name: 'Guillena → Castilblanco',
+    distance: 18.5,
+    completed: true,
+    difficulty: 'easy',
+    estimatedDays: 1,
+  },
+  {
+    id: '3',
+    name: 'Castilblanco → Almadén',
+    distance: 25.8,
+    completed: true,
+    difficulty: 'medium',
+    estimatedDays: 1,
+  },
+  {
+    id: '4',
+    name: 'Almadén → Real de la Jara',
+    distance: 19.3,
+    completed: true,
+    difficulty: 'easy',
+    estimatedDays: 1,
+  },
+  {
+    id: '5',
+    name: 'Real de la Jara → Monesterio',
+    distance: 21.7,
+    completed: true,
+    difficulty: 'medium',
+    estimatedDays: 1,
+  },
+  {
+    id: '6',
+    name: 'Monesterio → Fuente de Cantos',
+    distance: 19.4,
+    completed: true,
+    difficulty: 'easy',
+    estimatedDays: 1,
+  },
+  {
+    id: '7',
+    name: 'Fuente de Cantos → Zafra',
+    distance: 20.1,
+    completed: true,
+    difficulty: 'easy',
+    estimatedDays: 1,
+  },
+  {
+    id: '8',
+    name: 'Zafra → Villafranca',
+    distance: 19.8,
+    completed: false,
+    difficulty: 'medium',
+    estimatedDays: 1,
+  },
+  {
+    id: '9',
+    name: 'Villafranca → Alcuéscar',
+    distance: 38.2,
+    completed: false,
+    difficulty: 'hard',
+    estimatedDays: 2,
+  },
+  {
+    id: '10',
+    name: 'Alcuéscar → Cáceres',
+    distance: 23.1,
+    completed: false,
+    difficulty: 'medium',
+    estimatedDays: 1,
+  },
+];
+const funFacts = [
+  {
+    icon: '🌍',
+    title: 'Has caminado el equivalente a...',
+    description:
+      '¡Cruzar la península ibérica de este a oeste! Tu distancia recorrida es similar a la anchura de España en su punto más estrecho.',
+    calculation: '127 km ≈ Ancho de España (mínimo)',
+  },
+  {
+    icon: '🔥',
+    title: 'Calorías quemadas',
+    description:
+      'Las 18,932 calorías equivalen a 37 bocadillos de tortilla española o 75 cafés con leche. ¡Eso es mucha energía!',
+    calculation: '18,932 cal ÷ 510 cal/bocadillo = 37 bocadillos',
+  },
+  {
+    icon: '👣',
+    title: 'Pasos dados',
+    description:
+      'Tus 168,420 pasos equivalen a subir y bajar la Torre Eiffel aproximadamente 28 veces. ¡Qué altura!',
+    calculation: '168,420 pasos ÷ 6,000 pasos/ascenso = 28 ascensos',
+  },
+  {
+    icon: '⏰',
+    title: 'Tiempo de calidad',
+    description:
+      'Has pasado 29.4 horas caminando, lo que equivale a ver 14 películas largas o leer 147 páginas de un buen libro.',
+    calculation: '29.4 hrs ÷ 2.1 hrs/película = 14 películas',
+  },
+];
+const progressPct = Math.round(
+  (stages.filter((stage) => stage.completed).length / stages.length) * 100
+);
+const pendingStages = stages.filter((stage) => !stage.completed);
+const difficultyPill = (difficulty: string) =>
+  ({
+    easy: 'text-green-700 bg-green-50 ring-green-200',
+    medium: 'text-yellow-800 bg-yellow-50 ring-yellow-200',
+    hard: 'text-red-700 bg-red-50 ring-red-200',
+  })[difficulty] ?? 'text-stone-700 bg-stone-50 ring-stone-200';
+---
+
+<section class="mx-auto max-w-6xl px-4 py-10" data-hydrated="true">
   <div class="mb-8 flex items-start justify-between gap-6">
     <div>
       <div class="flex items-center gap-3">
-        <div class="i-ph-footprints-duotone text-3xl"></div>
+        <span class="text-3xl">👣</span>
         <h1 class="text-2xl font-700 tracking-tight">Camino Dashboard</h1>
       </div>
-      <div class="mt-2 text-stone-600" x-text="currentLocation + ' · ' + coordinates"></div>
+      <div class="mt-2 text-stone-600">Mérida, España · 38.9141° N, 6.3370° W</div>
     </div>
-
     <div class="rounded-2xl bg-white shadow-sm ring-1 ring-stone-200 p-4">
       <div class="text-sm text-stone-500 mb-2">Doodled shell</div>
-      <svg id="shellSvg" width="180" height="140" viewBox="0 0 180 140"></svg>
+      <svg width="180" height="140" viewBox="0 0 180 140" aria-label="Concha del Camino">
+        <path
+          d="M90 18 C50 18 25 55 30 105 Q90 130 150 105 C155 55 130 18 90 18Z M90 25V115 M58 32L78 116 M122 32L102 116 M38 58L67 119 M142 58L113 119"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+        />
+      </svg>
     </div>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div class="rounded-2xl bg-white shadow-sm ring-1 ring-stone-200 p-5 flex items-center gap-4">
-      <div class="text-3xl">🥾</div>
-      <div>
-        <div class="text-2xl font-800" x-text="stats.completedDistance"></div>
-        <div class="text-sm text-stone-500">km recorridos</div>
-      </div>
+    <div class="rounded-2xl bg-white shadow-sm ring-1 ring-stone-200 p-5">
+      <div class="text-2xl font-800">{stats.completedDistance}</div>
+      <div class="text-sm text-stone-500">km recorridos</div>
     </div>
-
-    <div class="rounded-2xl bg-white shadow-sm ring-1 ring-stone-200 p-5 flex items-center gap-4">
-      <div class="text-3xl">📅</div>
-      <div>
-        <div class="text-2xl font-800" x-text="stats.completedDays"></div>
-        <div class="text-sm text-stone-500">días en camino</div>
-      </div>
+    <div class="rounded-2xl bg-white shadow-sm ring-1 ring-stone-200 p-5">
+      <div class="text-2xl font-800">{stats.completedDays}</div>
+      <div class="text-sm text-stone-500">días en camino</div>
     </div>
-
-    <div class="rounded-2xl bg-white shadow-sm ring-1 ring-stone-200 p-5 flex items-center gap-4">
-      <div class="text-3xl">🏆</div>
-      <div>
-        <div class="text-2xl font-800"><span x-text="progressPct"></span>%</div>
-        <div class="text-sm text-stone-500">completado</div>
-      </div>
+    <div class="rounded-2xl bg-white shadow-sm ring-1 ring-stone-200 p-5">
+      <div class="text-2xl font-800">{progressPct}%</div>
+      <div class="text-sm text-stone-500">completado</div>
     </div>
   </div>
 
   <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
     <div class="rounded-2xl bg-white shadow-sm ring-1 ring-stone-200 p-6">
-      <div class="flex items-center justify-between">
-        <h2 class="text-lg font-700">📊 Progreso General</h2>
-        <div class="text-sm text-stone-600"><span x-text="progressPct"></span>%</div>
+      <div class="flex justify-between">
+        <h2 class="text-lg font-700">Progreso General</h2>
+        <span id="stage-progress">68%</span>
       </div>
-
-      <div class="mt-4">
-        <div class="h-3 rounded-full bg-stone-100 overflow-hidden">
-          <div id="overallBar" class="h-full w-0 rounded-full bg-stone-900"></div>
-        </div>
-
-        <div class="mt-4 grid grid-cols-3 gap-3 text-center">
-          <div class="rounded-xl bg-stone-50 p-3 ring-1 ring-stone-200">
-            <div class="text-xl font-800" x-text="stats.completedDistance"></div>
-            <div class="text-xs text-stone-500">km completados</div>
-          </div>
-          <div class="rounded-xl bg-stone-50 p-3 ring-1 ring-stone-200">
-            <div class="text-xl font-800" x-text="stats.remainingDistance"></div>
-            <div class="text-xs text-stone-500">km restantes</div>
-          </div>
-          <div class="rounded-xl bg-stone-50 p-3 ring-1 ring-stone-200">
-            <div class="text-xl font-800" x-text="stats.totalDistance"></div>
-            <div class="text-xs text-stone-500">km total</div>
-          </div>
-        </div>
+      <div class="mt-4 h-3 bg-stone-100 overflow-hidden">
+        <div
+          class="h-full bg-stone-900 transition-[width] duration-500"
+          style="width: 68%"
+          id="stage-progress-bar"
+        ></div>
       </div>
-    </div>
-
-    <div class="rounded-2xl bg-white shadow-sm ring-1 ring-stone-200 p-6">
-      <div class="flex items-center justify-between">
-        <h2 class="text-lg font-700">🎯 Etapa Actual</h2>
-        <div class="text-sm text-stone-600">38.2 km</div>
-      </div>
-
-      <div class="mt-4">
-        <div class="flex items-center justify-between text-sm text-stone-600">
-          <span>Progreso de Etapa</span>
-          <span><span x-text="currentStageProgress"></span>%</span>
+      <div class="mt-4 grid grid-cols-3 gap-3 text-center">
+        <div class="bg-stone-50 p-3 ring-1 ring-stone-200">
+          <div class="text-xl font-800">{stats.completedDistance}</div>
+          <div class="text-xs">km completados</div>
         </div>
-
-        <div class="mt-2 h-3 rounded-full bg-stone-100 overflow-hidden">
-          <div id="stageBar" class="h-full w-0 rounded-full bg-stone-900"></div>
+        <div class="bg-stone-50 p-3 ring-1 ring-stone-200">
+          <div class="text-xl font-800">{stats.remainingDistance}</div>
+          <div class="text-xs">km restantes</div>
         </div>
-
-        <div class="mt-3 flex justify-between text-sm text-stone-600">
-          <span x-text="Math.round(38.2 * currentStageProgress / 100) + ' km completados'"></span>
-          <span x-text="Math.round(38.2 * (100 - currentStageProgress) / 100) + ' km restantes'"
-          ></span>
-        </div>
-
-        <div class="mt-4 flex gap-2">
-          <button
-            class="rounded-xl px-3 py-2 ring-1 ring-stone-300 hover:bg-stone-50"
-            @click="updateStageProgress(-5)">-5%</button
-          >
-          <button
-            class="rounded-xl px-3 py-2 ring-1 ring-stone-300 hover:bg-stone-50"
-            @click="updateStageProgress(5)">+5%</button
-          >
+        <div class="bg-stone-50 p-3 ring-1 ring-stone-200">
+          <div class="text-xl font-800">{stats.totalDistance}</div>
+          <div class="text-xs">km total</div>
         </div>
       </div>
     </div>
+
+    <section
+      aria-labelledby="current-stage-heading"
+      class="rounded-2xl bg-white shadow-sm ring-1 ring-stone-200 p-6"
+    >
+      <div class="flex justify-between">
+        <h2 id="current-stage-heading" class="text-lg font-700">
+          Etapa Actual
+        </h2>
+        <span id="stage-progress">68%</span>
+      </div>
+      <div class="mt-4 h-3 bg-stone-100 overflow-hidden">
+        <div
+          class="h-full bg-stone-900 transition-[width] duration-500"
+          style="width: 68%"
+          id="stage-progress-bar"
+        ></div>
+      </div>
+      <div class="mt-3 flex justify-between text-sm">
+        <span id="stage-completed">26 km completados</span>
+        <span id="stage-remaining">12 km restantes</span>
+      </div>
+      <div class="mt-4 flex gap-2">
+        <button
+          type="button"
+          class="rounded-xl px-3 py-2 ring-1 ring-stone-300 hover:bg-stone-50 active:scale-95 transition-transform"
+          id="stage-decrease"
+        >
+          -5%
+        </button>
+        <button
+          type="button"
+          class="rounded-xl px-3 py-2 ring-1 ring-stone-300 hover:bg-stone-50 active:scale-95 transition-transform"
+          id="stage-increase"
+        >
+          +5%
+        </button>
+      </div>
+    </section>
   </div>
 
   <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <div class="rounded-2xl bg-white shadow-sm ring-1 ring-stone-200 p-6">
-      <h2 class="text-lg font-700">📅 Planificación Diaria</h2>
-
-      <div class="mt-4 flex items-center justify-between">
-        <div class="text-sm text-stone-600">Objetivo diario</div>
-        <div class="flex items-center gap-2">
+    <section
+      aria-labelledby="daily-planning-heading"
+      class="rounded-2xl bg-white ring-1 ring-stone-200 p-6"
+    >
+      <h2 id="daily-planning-heading" class="text-lg font-700">
+        Planificación Diaria
+      </h2>
+      <div class="mt-4 flex justify-between items-center">
+        <span>Objetivo diario</span>
+        <div class="flex gap-2 items-center">
           <button
-            class="rounded-xl px-3 py-2 ring-1 ring-stone-300 hover:bg-stone-50"
-            @click="updateDailyGoal(-1)">-</button
+            type="button"
+            class="rounded-xl px-3 py-2 ring-1 ring-stone-300 hover:bg-stone-50 active:scale-95 transition-transform"
+            id="goal-decrease"
           >
-          <div
-            class="min-w-22 text-center rounded-xl bg-stone-50 px-3 py-2 ring-1 ring-stone-200 font-700 planning-value"
-          >
-            <span x-text="dailyGoal"></span> km
+            -
+          </button>
+          <div class="px-3 py-2 font-700" id="daily-goal">
+            25 km
           </div>
           <button
-            class="rounded-xl px-3 py-2 ring-1 ring-stone-300 hover:bg-stone-50"
-            @click="updateDailyGoal(1)">+</button
+            type="button"
+            class="rounded-xl px-3 py-2 ring-1 ring-stone-300 hover:bg-stone-50 active:scale-95 transition-transform"
+            id="goal-increase"
           >
+            +
+          </button>
         </div>
       </div>
-
-      <div class="mt-4 grid gap-2 text-sm text-stone-700">
-        <div class="flex items-center gap-2">
-          <span>🏃</span>
-          <span x-text="'Promedio actual: ' + stats.averageDailyDistance + ' km/día'"></span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span>⏱️</span>
-          <span
-            x-text="'Estimado restante: ' + Math.ceil(stats.remainingDistance / dailyGoal) + ' días'"
-          ></span>
-        </div>
+      <div class="mt-4">
+        Promedio actual: {stats.averageDailyDistance} km/día
+        <br />
+        Estimado restante: {Math.ceil(stats.remainingDistance / 25)} días
       </div>
-    </div>
+    </section>
 
-    <div class="rounded-2xl bg-white shadow-sm ring-1 ring-stone-200 p-6">
-      <h2 class="text-lg font-700">💡 Recomendaciones</h2>
-
-      <div class="mt-4 rounded-2xl bg-stone-50 ring-1 ring-stone-200 p-5">
-        <div class="flex items-center gap-3">
-          <div class="text-2xl" x-text="recommendation.icon"></div>
-          <div class="text-base font-800" x-text="recommendation.title"></div>
-        </div>
-        <div class="mt-2 text-stone-700" x-text="recommendation.message"></div>
-        <div class="mt-3 flex gap-3 text-xs text-stone-600">
-          <span
-            class="rounded-full bg-white px-3 py-1 ring-1 ring-stone-200"
-            x-text="'Ritmo: ' + stats.averageDailyDistance + ' km/día'"></span>
-          <span
-            class="rounded-full bg-white px-3 py-1 ring-1 ring-stone-200"
-            x-text="'Días: ' + stats.completedDays"></span>
-        </div>
+    <div class="rounded-2xl bg-white ring-1 ring-stone-200 p-6">
+      <h2 class="text-lg font-700">Recomendaciones</h2>
+      <div class="mt-4 bg-stone-50 p-5 ring-1 ring-stone-200">
+        <strong>¡Perfecto!</strong>
+        <p>Tu ritmo es ideal para disfrutar el Camino sin agotarte.</p>
       </div>
     </div>
   </div>
 
-  <div class="mt-6 rounded-2xl bg-white shadow-sm ring-1 ring-stone-200 p-6">
-    <h2 class="text-lg font-700">🎉 Datos Curiosos</h2>
-
-    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-      <template x-for="fact in funFacts" :key="fact.title">
-        <div class="rounded-2xl bg-stone-50 ring-1 ring-stone-200 p-5">
-          <div class="flex items-center gap-3">
-            <div class="text-2xl" x-text="fact.icon"></div>
-            <div class="font-800" x-text="fact.title"></div>
-          </div>
-          <div class="mt-2 text-sm text-stone-700" x-text="fact.description"></div>
-          <div class="mt-3 text-xs text-stone-600" x-text="fact.calculation"></div>
+  <div class="mt-6 bg-white ring-1 ring-stone-200 p-6">
+    <h2 class="text-lg font-700">Datos Curiosos</h2>
+    <div class="mt-4 grid md:grid-cols-2 gap-4">
+      {funFacts.map((fact) => (
+        <div class="bg-stone-50 ring-1 ring-stone-200 p-5">
+          <strong>
+            {fact.icon} {fact.title}
+          </strong>
+          <p>{fact.description}</p>
+          <small>{fact.calculation}</small>
         </div>
-      </template>
+      ))}
     </div>
   </div>
 
-  <div class="mt-6 rounded-2xl bg-white shadow-sm ring-1 ring-stone-200 p-6">
-    <h2 class="text-lg font-700">🗺️ Próximas Etapas</h2>
-
+  <div class="mt-6 bg-white ring-1 ring-stone-200 p-6">
+    <h2 class="text-lg font-700">Próximas Etapas</h2>
     <div class="mt-4 grid gap-3">
-      <template x-for="stage in pendingStages" :key="stage.id">
-        <div
-          class="flex items-center justify-between gap-4 rounded-2xl bg-stone-50 ring-1 ring-stone-200 p-4"
-        >
+      {pendingStages.map((stage) => (
+        <div class="flex justify-between bg-stone-50 ring-1 ring-stone-200 p-4">
           <div>
-            <div class="font-800" x-text="stage.name"></div>
-            <div
-              class="mt-1 inline-flex items-center rounded-full px-3 py-1 text-xs ring-1"
-              :class="difficultyPill(stage.difficulty)"
-              x-text="stage.difficulty"
-            >
+            <strong>{stage.name}</strong>
+            <div class={`mt-1 px-3 py-1 text-xs ring-1 ${difficultyPill(stage.difficulty)}`}>
+              {stage.difficulty}
             </div>
           </div>
-          <div class="text-right text-sm text-stone-700">
-            <div class="font-700" x-text="stage.distance + ' km'"></div>
-            <div
-              class="text-stone-600"
-              x-text="stage.estimatedDays + (stage.estimatedDays > 1 ? ' días' : ' día')"
-            >
-            </div>
+          <div>
+            {stage.distance} km
+            <br />
+            {stage.estimatedDays} {stage.estimatedDays > 1 ? 'días' : 'día'}
           </div>
         </div>
-      </template>
+      ))}
     </div>
   </div>
 
-  <script type="module">
-    import { animate } from 'animejs';
-    import rough from 'roughjs/bundled/rough.esm.js';
+  <style>
+    @keyframes goal-pulse {
+      50% {
+        transform: scale(1.03);
+      }
+    }
+    .goal-pulse {
+      animation: goal-pulse 350ms ease-out;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .goal-pulse {
+        animation: none;
+      }
+      * {
+        transition: none !important;
+      }
+    }
+  </style>
 
-    window.caminoDashboard = () => {
-      const state = {
-        stats: {
-          totalDistance: 847,
-          completedDistance: 127,
-          remainingDistance: 720,
-          totalDays: 34,
-          completedDays: 7,
-          averageDailyDistance: 18.1,
-          totalSteps: 168420,
-          totalCalories: 18932,
-          totalElevation: 1247,
-          achievements: 2,
-        },
-        stages: [
-          {
-            id: '1',
-            name: 'Sevilla → Guillena',
-            distance: 22.2,
-            completed: true,
-            difficulty: 'easy',
-            estimatedDays: 1,
-            actualDays: 1,
-            startDate: '2024-01-08',
-            endDate: '2024-01-08',
-          },
-          {
-            id: '2',
-            name: 'Guillena → Castilblanco',
-            distance: 18.5,
-            completed: true,
-            difficulty: 'easy',
-            estimatedDays: 1,
-            actualDays: 1,
-            startDate: '2024-01-09',
-            endDate: '2024-01-09',
-          },
-          {
-            id: '3',
-            name: 'Castilblanco → Almadén',
-            distance: 25.8,
-            completed: true,
-            difficulty: 'medium',
-            estimatedDays: 1,
-            actualDays: 1,
-            startDate: '2024-01-10',
-            endDate: '2024-01-10',
-          },
-          {
-            id: '4',
-            name: 'Almadén → Real de la Jara',
-            distance: 19.3,
-            completed: true,
-            difficulty: 'easy',
-            estimatedDays: 1,
-            actualDays: 1,
-            startDate: '2024-01-11',
-            endDate: '2024-01-11',
-          },
-          {
-            id: '5',
-            name: 'Real de la Jara → Monesterio',
-            distance: 21.7,
-            completed: true,
-            difficulty: 'medium',
-            estimatedDays: 1,
-            actualDays: 1,
-            startDate: '2024-01-12',
-            endDate: '2024-01-12',
-          },
-          {
-            id: '6',
-            name: 'Monesterio → Fuente de Cantos',
-            distance: 19.4,
-            completed: true,
-            difficulty: 'easy',
-            estimatedDays: 1,
-            actualDays: 1,
-            startDate: '2024-01-13',
-            endDate: '2024-01-13',
-          },
-          {
-            id: '7',
-            name: 'Fuente de Cantos → Zafra',
-            distance: 20.1,
-            completed: true,
-            difficulty: 'easy',
-            estimatedDays: 1,
-            actualDays: 1,
-            startDate: '2024-01-14',
-            endDate: '2024-01-14',
-          },
-          {
-            id: '8',
-            name: 'Zafra → Villafranca',
-            distance: 19.8,
-            completed: false,
-            difficulty: 'medium',
-            estimatedDays: 1,
-          },
-          {
-            id: '9',
-            name: 'Villafranca → Alcuéscar',
-            distance: 38.2,
-            completed: false,
-            difficulty: 'hard',
-            estimatedDays: 2,
-          },
-          {
-            id: '10',
-            name: 'Alcuéscar → Cáceres',
-            distance: 23.1,
-            completed: false,
-            difficulty: 'medium',
-            estimatedDays: 1,
-          },
-        ],
-        funFacts: [
-          {
-            icon: '🌍',
-            title: 'Has caminado el equivalente a...',
-            description:
-              '¡Cruzar la península ibérica de este a oeste! Tu distancia recorrida es similar a la anchura de España en su punto más estrecho.',
-            calculation: '127 km ≈ Ancho de España (mínimo)',
-          },
-          {
-            icon: '🔥',
-            title: 'Calorías quemadas',
-            description:
-              'Las 18,932 calorías equivalen a 37 bocadillos de tortilla española o 75 cafés con leche. ¡Eso es mucha energía!',
-            calculation: '18,932 cal ÷ 510 cal/bocadillo = 37 bocadillos',
-          },
-          {
-            icon: '👣',
-            title: 'Pasos dados',
-            description:
-              'Tus 168,420 pasos equivalen a subir y bajar la Torre Eiffel aproximadamente 28 veces. ¡Qué altura!',
-            calculation: '168,420 pasos ÷ 6,000 pasos/ascenso = 28 ascensos',
-          },
-          {
-            icon: '⏰',
-            title: 'Tiempo de calidad',
-            description:
-              'Has pasado 29.4 horas caminando, lo que equivale a ver 14 películas largas o leer 147 páginas de un buen libro.',
-            calculation: '29.4 hrs ÷ 2.1 hrs/película = 14 películas',
-          },
-        ],
-        currentStageProgress: 68,
-        dailyGoal: 25,
-        currentLocation: 'Mérida, España',
-        coordinates: '38.9141° N, 6.3370° W',
+  <script>
+    (function () {
+      'use strict';
 
-        get progressPct() {
-          const completed = state.stages.filter((s) => s.completed).length;
-          const total = state.stages.length;
-          return Math.round((completed / total) * 100);
-        },
+      const dashboard = document.currentScript?.parentElement;
+      if (!dashboard) return;
 
-        get pendingStages() {
-          return state.stages.filter((s) => !s.completed);
-        },
+      let stageProgress = 68;
+      let dailyGoal = 25;
+      let goalAnimating = false;
 
-        get recommendation() {
-          const avg = state.stats.averageDailyDistance;
-          if (avg > 22)
-            return {
-              type: 'warning',
-              title: '¡Cuidado!',
-              message:
-                'Tu ritmo es excelente pero exigente. Considera tomarte un día de descanso pronto.',
-              icon: '⚠️',
-            };
-          if (avg < 15)
-            return {
-              type: 'info',
-              title: 'Consejo',
-              message: 'Podrías aumentar un poco tu ritmo diario para optimizar tu viaje.',
-              icon: '💡',
-            };
-          return {
-            type: 'success',
-            title: '¡Perfecto!',
-            message: 'Tu ritmo es ideal para disfrutar el Camino sin agotarte.',
-            icon: '✅',
-          };
-        },
+      const stageProgressEl = dashboard.querySelector('#stage-progress');
+      const stageProgressBarEl = dashboard.querySelector('#stage-progress-bar');
+      const stageCompletedEl = dashboard.querySelector('#stage-completed');
+      const stageRemainingEl = dashboard.querySelector('#stage-remaining');
+      const dailyGoalEl = dashboard.querySelector('#daily-goal');
+      const stageDecreaseBtn = dashboard.querySelector('#stage-decrease');
+      const stageIncreaseBtn = dashboard.querySelector('#stage-increase');
+      const goalDecreaseBtn = dashboard.querySelector('#goal-decrease');
+      const goalIncreaseBtn = dashboard.querySelector('#goal-increase');
 
-        difficultyPill(d) {
-          if (d === 'easy') return 'text-green-700 bg-green-50 ring-green-200';
-          if (d === 'medium') return 'text-yellow-800 bg-yellow-50 ring-yellow-200';
-          if (d === 'hard') return 'text-red-700 bg-red-50 ring-red-200';
-          return 'text-stone-700 bg-stone-50 ring-stone-200';
-        },
+      function updateStageProgress() {
+        if (stageProgressEl) stageProgressEl.textContent = `${stageProgress}%`;
+        if (stageProgressBarEl) stageProgressBarEl.style.width = `${stageProgress}%`;
+        const totalDistance = 38.2;
+        if (stageCompletedEl)
+          stageCompletedEl.textContent = `${Math.round((totalDistance * stageProgress) / 100)} km completados`;
+        if (stageRemainingEl)
+          stageRemainingEl.textContent = `${Math.round((totalDistance * (100 - stageProgress)) / 100)} km restantes`;
+      }
 
-        updateDailyGoal(delta) {
-          state.dailyGoal = Math.max(15, Math.min(35, state.dailyGoal + delta));
-          animate('.planning-value', {
-            scale: [1, 1.03, 1],
-            duration: 350,
-            easing: 'easeOutQuad',
-          });
-        },
-
-        updateStageProgress(delta) {
-          state.currentStageProgress = Math.max(
-            0,
-            Math.min(100, state.currentStageProgress + delta)
+      function updateDailyGoalDisplay() {
+        if (dailyGoalEl) {
+          dailyGoalEl.textContent = `${dailyGoal} km`;
+          if (goalAnimating) {
+            dailyGoalEl.classList.add('goal-pulse');
+            setTimeout(() => dailyGoalEl.classList.remove('goal-pulse'), 350);
+          }
+        }
+        const estimatedDays = Math.ceil(720 / dailyGoal);
+        const estimatedEl = dashboard.querySelector('div:has(#daily-goal) + div');
+        if (estimatedEl) {
+          const text = estimatedEl.textContent || '';
+          estimatedEl.textContent = text.replace(
+            /Estimado restante: \d+ días/,
+            `Estimado restante: ${estimatedDays} días`
           );
-          state.animateBars();
-        },
+        }
+      }
 
-        animateBars() {
-          animate('#overallBar', {
-            width: `${state.progressPct}%`,
-            duration: 650,
-            easing: 'easeOutCubic',
-          });
-          animate('#stageBar', {
-            width: `${state.currentStageProgress}%`,
-            duration: 650,
-            easing: 'easeOutCubic',
-          });
-        },
+      stageDecreaseBtn?.addEventListener('click', () => {
+        stageProgress = Math.max(0, stageProgress - 5);
+        updateStageProgress();
+      });
 
-        drawShell() {
-          const svg = document.getElementById('shellSvg');
-          if (!svg) return;
+      stageIncreaseBtn?.addEventListener('click', () => {
+        stageProgress = Math.min(100, stageProgress + 5);
+        updateStageProgress();
+      });
 
-          while (svg.firstChild) svg.removeChild(svg.firstChild);
+      goalDecreaseBtn?.addEventListener('click', () => {
+        dailyGoal = Math.max(15, dailyGoal - 1);
+        goalAnimating = true;
+        updateDailyGoalDisplay();
+        requestAnimationFrame(() => {
+          goalAnimating = false;
+        });
+      });
 
-          const rc = rough.svg(svg);
-          const ink = {
-            stroke: '#111',
-            strokeWidth: 2.2,
-            roughness: 2.2,
-            bowing: 1.4,
-            fillStyle: 'hachure',
-            hachureGap: 3.2,
-            hachureAngle: -35,
-          };
+      goalIncreaseBtn?.addEventListener('click', () => {
+        dailyGoal = Math.min(35, dailyGoal + 1);
+        goalAnimating = true;
+        updateDailyGoalDisplay();
+        requestAnimationFrame(() => {
+          goalAnimating = false;
+        });
+      });
 
-          const base = rc.path(
-            'M18 108 C24 80, 44 52, 78 34 C99 23, 120 20, 138 26 C156 32, 168 46, 167 63 C166 79, 155 93, 141 101 C120 113, 96 118, 70 118 C46 118, 26 115, 18 108 Z',
-            { ...ink, fill: 'transparent' }
-          );
-
-          const lip = rc.path(
-            'M30 110 C33 92, 48 66, 80 48 C99 38, 120 35, 134 40 C148 45, 157 56, 156 68 C155 79, 146 90, 134 96 C116 105, 96 110, 70 111 C52 112, 38 112, 30 110 Z',
-            { stroke: '#111', strokeWidth: 1.6, roughness: 2.4 }
-          );
-
-          const ridgePaths = [
-            'M80 44 C76 64, 72 84, 70 112',
-            'M92 41 C90 63, 88 84, 86 112',
-            'M104 42 C104 63, 104 84, 102 110',
-            'M66 51 C62 72, 58 92, 58 114',
-            'M118 49 C124 68, 128 86, 132 104',
-            'M52 62 C46 79, 42 96, 42 111',
-            'M132 62 C144 76, 154 88, 158 100',
-          ].map((d) =>
-            rc.path(d, { stroke: '#111', strokeWidth: 1.2, roughness: 2.8, bowing: 1.6 })
-          );
-
-          const cross = rc.path(
-            'M102 38 L102 96 M88 54 L116 54 M92 54 C90 60, 88 62, 82 64 M112 54 C114 60, 116 62, 122 64',
-            { stroke: '#111', strokeWidth: 2.1, roughness: 1.8, bowing: 0.9 }
-          );
-
-          svg.appendChild(base);
-          svg.appendChild(lip);
-          ridgePaths.forEach((p) => svg.appendChild(p));
-          svg.appendChild(cross);
-
-          animate('#shellSvg', {
-            opacity: [0, 1],
-            translateY: [-4, 0],
-            duration: 700,
-            easing: 'easeOutCubic',
-          });
-        },
-
-        init() {
-          state.animateBars();
-          state.drawShell();
-        },
-      };
-
-      return state;
-    };
+      updateStageProgress();
+      updateDailyGoalDisplay();
+    })();
   </script>
 </section>

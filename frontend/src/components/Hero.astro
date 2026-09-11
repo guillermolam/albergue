@@ -87,10 +87,10 @@ const gradientId = `hero-gradient-${Math.random().toString(36).substring(2, 11)}
 
 // Background styles based on variant
 const backgroundStyles = {
-  gradient: `bg-gradient-to-br from-[${gradientColors[0]}] via-[${gradientColors[1]}] to-[${gradientColors[2]}]`,
+  gradient: `bg-linear-to-br from-[${gradientColors[0]}] via-[${gradientColors[1]}] to-[${gradientColors[2]}]`,
   image: `bg-cover bg-center bg-no-repeat`,
-  solid: 'bg-gradient-to-br from-green-500 to-emerald-600',
-  doodle: 'bg-gradient-to-br from-teal-400 via-cyan-500 to-blue-500',
+  solid: 'bg-linear-to-br from-green-500 to-emerald-600',
+  doodle: 'bg-linear-to-br from-teal-400 via-cyan-500 to-blue-500',
 };
 ---
 
@@ -309,7 +309,7 @@ const backgroundStyles = {
   }
 
   /* Shimmer effect for gradient text */
-  .bg-gradient-to-r {
+  .bg-linear-to-r {
     background-size: 200% 200%;
     animation: shimmer 3s ease-in-out infinite;
   }

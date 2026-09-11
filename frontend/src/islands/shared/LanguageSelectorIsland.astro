@@ -1,16 +1,11 @@
 ---
 type Locale = string;
+
 const i18nStore = {
   get: () => ({
     locale: typeof window !== 'undefined' ? document.documentElement.lang || 'es' : 'es',
   }),
 };
-
-interface LanguageSelectorIslandProps {
-  class?: string;
-  showFlags?: boolean;
-  compact?: boolean;
-}
 
 interface Language {
   code: Locale;
@@ -18,12 +13,8 @@ interface Language {
   flag: string;
 }
 
-// Fetch the 15 most-spoken Camino languages + all co-official Spanish languages
-// via the gateway island.  Alpine will dispatch the request and handle the
-// asynchronous response so we can keep the island fully SSR-compatible.
 const languages: Language[] = await (async () => {
   try {
-    // Fire-and-forget non-blocking call to our gateway
     const res = await fetch('/api/gateway/camino-languages', {
       method: 'GET',
       headers: {
@@ -34,13 +25,10 @@ const languages: Language[] = await (async () => {
     });
 
     if (!res.ok) throw new Error(`Gateway error: ${res.status}`);
-
-    // Gateway returns: [{code, name, flag}, ...]
     const data = await res.json();
     return data;
   } catch (error) {
     console.warn('Failed to fetch languages from gateway:', error);
-    // Fallback: minimal safe set if gateway or API is unreachable
     return [
       { code: 'es', name: 'Español', flag: '🇪🇸' },
       { code: 'en', name: 'English', flag: '🇬🇧' },
@@ -66,197 +54,175 @@ const languages: Language[] = await (async () => {
   }
 })();
 
-// Get current locale from store
 const currentLocale = i18nStore.get().locale;
 const currentLanguage = languages.find((lang) => lang.code === currentLocale) || languages[0];
 
-// Generate unique ID for Alpine.js component
-const componentId = `language-selector-${Math.random().toString(36).substring(2, 11)}`;
-
 const { class: className = '', showFlags = true, compact = false } = Astro.props;
+
+const initialLanguageCode = currentLanguage.code;
+const initialLanguageName = currentLanguage.name;
+const initialLanguageFlag = currentLanguage.flag;
 ---
 
 <div
-  id={componentId}
+  id="language-selector"
   class={`language-selector relative ${className}`}
-  x-data={`{
-    isOpen: false,
-    currentLanguage: ${JSON.stringify(currentLanguage)},
-    languages: ${JSON.stringify(languages)},
-    selectedLanguage: ${JSON.stringify(currentLanguage.code)},
-    
-    toggleDropdown() {
-      this.isOpen = !this.isOpen;
-      if (this.isOpen) {
-        this.$nextTick(() => {
-          this.$refs.dropdown.focus();
-        });
-      }
-    },
-    
-    async selectLanguage(code) {
-      this.selectedLanguage = code;
-      this.isOpen = false;
-      
-      try {
-        // Use async, non-blocking request to gateway API
-        const response = await fetch('/api/auth/change-language', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
-          },
-          body: JSON.stringify({ 
-            locale: code,
-            timestamp: new Date().toISOString()
-          }),
-          // Use keepalive for non-blocking requests
-          keepalive: true
-        });
-
-        const data = await response.json();
-        
-        if (response.ok && data.success) {
-          // Update HTML lang attribute
-          document.documentElement.lang = code;
-          // Update current language display
-          this.currentLanguage = this.languages.find(lang => lang.code === code);
-          
-          // Use client-side navigation instead of full reload for better UX
-          if (window.location.pathname !== window.location.pathname) {
-            window.location.reload();
-          }
-        } else {
-          throw new Error(data.error || 'Failed to change language');
-        }
-      } catch (error) {
-        console.error('Language change failed:', error);
-        // Could show a user-friendly error message here
-        // For now, revert the selection
-        this.selectedLanguage = this.currentLanguage.code;
-      }
-    },
-    
-    closeDropdown() {
-      this.isOpen = false;
-    },
-    
-    handleKeydown(event) {
-      if (event.key === 'Escape') {
-        this.closeDropdown();
-      } else if (event.key === 'Enter' || event.key === ' ') {
-        if (!this.isOpen) {
-          this.toggleDropdown();
-        }
-      }
-    }
-  }`}
-  x-init="$watch('isOpen', value => {
-    if (value) {
-      document.addEventListener('click', (e) => {
-        if (!e.target.closest('.language-selector')) {
-          this.isOpen = false;
-        }
-      });
-    }
-  })"
+  data-current-language={initialLanguageCode}
+  data-show-flags={showFlags}
+  data-compact={compact}
 >
-  {/* Trigger Button */}
   <button
     type="button"
-    x-on:click="toggleDropdown"
-    x-on:keydown="handleKeydown"
-    class="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200"
-    x-bind:class="{'text-sm': ${compact}}"
+    id="language-toggle"
+    class={`flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 ${compact ? 'text-sm' : ''}`}
     aria-label="Seleccionar idioma"
     aria-expanded="false"
-    aria-haspopup="true"
-    aria-controls={`${componentId}-dropdown`}
-    x-ref="trigger"
+    aria-haspopup="menu"
+    aria-controls="language-dropdown"
   >
-    {/* Flag Display */}
-    {showFlags && <span class="text-lg" aria-hidden="true" x-text="currentLanguage.flag" />}
-
-    {/* Language Name/Code */}
-    <span
-      class="font-medium text-gray-700"
-      x-text="${compact ? 'currentLanguage.code.toUpperCase()' : 'currentLanguage.name'}"></span>
-
-    {/* Custom SVG Arrow with RoughJS styling */}
-    <svg
-      class="w-4 h-4 text-gray-500 transition-transform duration-200"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      x-bind:class="{ 'rotate-180': isOpen }"
-    >
-      <path
-        d="M19 9l-7 7-7-7"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        fill="none"></path>
+    {showFlags && <span class="text-lg" aria-hidden="true">{initialLanguageFlag}</span>}
+    <span class="font-medium text-gray-700">{compact ? initialLanguageCode.toUpperCase() : initialLanguageName}</span>
+    <svg class="w-4 h-4 text-gray-500 transition-transform duration-200" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M19 9l-7 7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
     </svg>
   </button>
 
-  {/* Dropdown Menu */}
   <div
-    id={`${componentId}-dropdown`}
-    class="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+    id="language-dropdown"
+    class="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 origin-top transition-all duration-200 motion-reduce:transition-none opacity-0 scale-95 invisible pointer-events-none"
     role="menu"
-    aria-labelledby={`${componentId}-trigger`}
-    x-show="isOpen"
-    x-transition:enter="transition ease-out duration-200"
-    x-transition:enter-start="opacity-0 transform scale-95"
-    x-transition:enter-end="opacity-100 transform scale-100"
-    x-transition:leave="transition ease-in duration-150"
-    x-transition:leave-start="opacity-100 transform scale-100"
-    x-transition:leave-end="opacity-0 transform scale-95"
-    x-ref="dropdown"
     tabindex="-1"
   >
     <div class="py-1">
-      {
-        languages.map((language) => (
-          <button
-            type="button"
-            x-on:click={`selectLanguage('${language.code}')`}
-            class="w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-colors duration-150"
-            x-bind:class={`selectedLanguage === '${language.code}' ? 'bg-primary-50 text-primary-700' : 'text-gray-700'`}
-            aria-label={`Cambiar a ${language.name}`}
-            role="menuitem"
-            x-bind:aria-selected={`selectedLanguage === '${language.code}'`}
-          >
-            {/* Language Flag */}
-            {showFlags && (
-              <span class="text-lg" aria-hidden="true" x-text={JSON.stringify(language.flag)} />
-            )}
-
-            {/* Language Info */}
-            <div class="flex-1">
-              <div class="font-medium" x-text={JSON.stringify(language.name)} />
-              <div
-                class="text-sm text-gray-500"
-                x-text={JSON.stringify(language.code.toUpperCase())}
-              />
-            </div>
-
-            {/* Checkmark for selected language */}
-            {currentLanguage.code === language.code && (
-              <svg class="w-4 h-4 text-primary-600" viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M5 13l4 4L19 7"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  fill="none"
-                />
-              </svg>
-            )}
-          </button>
-        ))
-      }
+      {languages.map((language) => (
+        <button
+          type="button"
+          class={`w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-colors duration-150 ${initialLanguageCode === language.code ? 'bg-primary-50 text-primary-700' : 'text-gray-700'}`}
+          data-language-code={language.code}
+          aria-label={`Cambiar a ${language.name}`}
+          role="menuitem"
+          aria-selected={initialLanguageCode === language.code}
+        >
+          {showFlags && <span class="text-lg" aria-hidden="true">{language.flag}</span>}
+          <div class="flex-1">
+            <div class="font-medium">{language.name}</div>
+            <div class="text-sm text-gray-500">{language.code.toUpperCase()}</div>
+          </div>
+          {initialLanguageCode === language.code && (
+            <svg class="w-4 h-4 text-primary-600" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+            </svg>
+          )}
+        </button>
+      ))}
     </div>
   </div>
 </div>
+
+<script is:inline>
+  (function() {
+    'use strict';
+
+    const selector = document.getElementById('language-selector');
+    const toggleBtn = document.getElementById('language-toggle');
+    const dropdown = document.getElementById('language-dropdown');
+    const currentLang = selector?.dataset.currentLanguage || 'es';
+    const showFlags = selector?.dataset.showFlags !== 'false';
+    const isCompact = selector?.dataset.compact === 'true';
+
+    let isOpen = false;
+
+    function close() {
+      isOpen = false;
+      if (dropdown) {
+        dropdown.classList.remove('opacity-100', 'scale-100', 'visible');
+        dropdown.classList.add('opacity-0', 'scale-95', 'invisible', 'pointer-events-none');
+        toggleBtn?.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    function open() {
+      isOpen = true;
+      if (dropdown) {
+        dropdown.classList.remove('opacity-0', 'scale-95', 'invisible', 'pointer-events-none');
+        dropdown.classList.add('opacity-100', 'scale-100', 'visible');
+        toggleBtn?.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    function toggle() {
+      if (isOpen) {
+        close();
+      } else {
+        open();
+      }
+      if (isOpen) {
+        queueMicrotask(() => dropdown?.focus());
+      }
+    }
+
+    async function selectLanguage(code: string) {
+      close();
+      try {
+        const response = await fetch('/api/auth/change-language', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+          body: JSON.stringify({ locale: code, timestamp: new Date().toISOString() }),
+          keepalive: true,
+        });
+        const data = await response.json();
+        if (!response.ok || !data.success) throw new Error(data.error || 'Failed to change language');
+
+        document.documentElement.lang = code;
+
+        const language: any = { code, name: '', flag: '' };
+        const langData = (selector as any)?.languages || [];
+        const foundLang = langData.find((l: any) => l.code === code) || language;
+
+        if (toggleBtn) {
+          const flagSpan = toggleBtn.querySelector('span[aria-hidden="true"]');
+          const textSpan = toggleBtn.querySelector('.font-medium');
+          if (flagSpan && showFlags) {
+            flagSpan.textContent = foundLang.flag;
+          }
+          if (textSpan) {
+            textSpan.textContent = isCompact ? code.toUpperCase() : foundLang.name;
+          }
+        }
+      } catch (error) {
+        console.error('Language change failed:', error);
+      }
+    }
+
+    document.addEventListener('click', (event) => {
+      if (!selector?.contains(event.target as Node)) {
+        close();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        close();
+      }
+    });
+
+    toggleBtn?.addEventListener('click', toggle);
+
+    dropdown?.querySelectorAll('[data-language-code]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        selectLanguage(btn.getAttribute('data-language-code') || '');
+      });
+    });
+  })();
+</script>
+
+<style>
+  #language-dropdown.visible {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+  .language-selector {
+    display: inline-block;
+  }
+</style>

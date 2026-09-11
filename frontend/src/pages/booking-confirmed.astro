@@ -38,15 +38,15 @@ const statusBg = status === 'confirmed' ? 'bg-green-50' : 'bg-yellow-50';
   description="Tu reserva ha sido confirmada"
 >
   <link rel="stylesheet" href="/src/styles/booking-confirmation.css" />
-  <main class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
+  <main class="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
     <div class="w-full max-w-4xl">
       {/* Main Confirmation Card - Enhanced 3D Effect */}
       <div class="bg-white rounded-2xl shadow-deep card-3d relative overflow-hidden metallic-shine">
         {/* 3D Shadow Effect */}
-        <div class="absolute inset-0 bg-gradient-to-r from-green-400 to-blue-500 opacity-20 blur-xl transform translate-z-10"></div>
+        <div class="absolute inset-0 bg-linear-to-r from-green-400 to-blue-500 opacity-20 blur-xl transform translate-z-10"></div>
 
         {/* Header with Status */}
-        <div class="relative z-10 bg-gradient-to-r from-green-500 to-emerald-600 text-white p-6 rounded-t-2xl shadow-lg">
+        <div class="relative z-10 bg-linear-to-r from-green-500 to-emerald-600 text-white p-6 rounded-t-2xl shadow-lg">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-4">
               <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-xl transform hover:rotate-12 transition-transform duration-300">
@@ -83,7 +83,7 @@ const statusBg = status === 'confirmed' ? 'bg-green-50' : 'bg-yellow-50';
             {/* Left Column - Booking Details */}
             <div class="lg:col-span-2 space-y-4">
               {/* Confirmation Code - Prominent */}
-              <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
+              <div class="bg-linear-to-r from-slate-50 to-slate-100 rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
                 <div class="flex items-center justify-between">
                   <div>
                     <p class="text-sm text-slate-600 font-medium">Código de Confirmación</p>
@@ -129,7 +129,7 @@ const statusBg = status === 'confirmed' ? 'bg-green-50' : 'bg-yellow-50';
               </div>
 
               {/* Stay Dates - Compact */}
-              <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-blue-100">
+              <div class="bg-linear-to-br from-blue-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-blue-100">
                 <h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center">
                   <svg
                     class="w-5 h-5 text-blue-600 mr-2"
@@ -170,7 +170,7 @@ const statusBg = status === 'confirmed' ? 'bg-green-50' : 'bg-yellow-50';
             {/* Right Column - Summary & QR */}
             <div class="space-y-4">
               {/* Price Summary - 3D Card */}
-              <div class="bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-4 shadow-lg border border-emerald-100 transform hover:scale-105 transition-transform duration-300">
+              <div class="bg-linear-to-br from-emerald-50 to-green-50 rounded-xl p-4 shadow-lg border border-emerald-100 transform hover:scale-105 transition-transform duration-300">
                 <h3 class="text-lg font-semibold text-slate-800 mb-3 flex items-center">
                   <svg
                     class="w-5 h-5 text-emerald-600 mr-2"
@@ -226,7 +226,7 @@ const statusBg = status === 'confirmed' ? 'bg-green-50' : 'bg-yellow-50';
 
               {/* Action Buttons */}
               <div class="space-y-3">
-                <button class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 px-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                <button class="w-full bg-linear-to-r from-green-500 to-emerald-600 text-white py-3 px-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                   Descargar Confirmación
                 </button>
                 <button class="w-full bg-white border-2 border-slate-300 text-slate-700 py-3 px-4 rounded-xl font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300">
@@ -237,7 +237,7 @@ const statusBg = status === 'confirmed' ? 'bg-green-50' : 'bg-yellow-50';
           </div>
 
           {/* Important Information - Compact */}
-          <div class="mt-6 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-4 shadow-lg border border-amber-200">
+          <div class="mt-6 bg-linear-to-r from-amber-50 to-orange-50 rounded-xl p-4 shadow-lg border border-amber-200">
             <div class="flex items-start">
               <svg
                 class="w-6 h-6 text-amber-500 mr-3 flex-shrink-0 mt-1"

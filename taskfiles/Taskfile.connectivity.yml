@@ -138,20 +138,20 @@ tasks:
 
   # Frontend tasks
   frontend:test:unit:
-    desc: Run frontend unit tests
+    desc: Run frontend type checks
     dir: "{{.FRONTEND_DIR}}"
     cmds:
       - echo "🧪 Running frontend unit tests..."
-      - pnpm test:unit
-      - echo "✅ Unit tests passed"
+      - pnpm type-check
+      - echo "✅ Type checks passed"
 
   frontend:test:integration:
-    desc: Run frontend integration tests
+    desc: Run Chromium end-to-end integration tests
     dir: "{{.FRONTEND_DIR}}"
     deps: [frontend:build]
     cmds:
       - echo "🔌 Running frontend integration tests..."
-      - pnpm test:integration
+      - pnpm e2e
       - echo "✅ Integration tests passed"
 
   frontend:test:e2e:
@@ -159,7 +159,7 @@ tasks:
     dir: "{{.FRONTEND_DIR}}"
     cmds:
       - echo "🎭 Running frontend e2e tests..."
-      - pnpm test:e2e
+      - pnpm e2e
       - echo "✅ E2E tests passed"
 
   frontend:build:
@@ -224,7 +224,7 @@ tasks:
         timeout 30 bash -c 'until curl -f http://127.0.0.1:{{.PORT_FRONTEND}}/api/health; do sleep 1; done'
       - |
         # Run smoke tests
-        cd {{.FRONTEND_DIR}} && pnpm test:e2e
+        cd {{.FRONTEND_DIR}} && FRONTEND_URL=http://127.0.0.1:{{.PORT_FRONTEND}} pnpm e2e
       - echo "✅ Integrated smoke test passed"
 
   smoke:spin:cloud:

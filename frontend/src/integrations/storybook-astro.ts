@@ -34,18 +34,6 @@ export default function storybookAstroIntegration(): AstroIntegration {
         `
         );
 
-        // Inject Alpine.js for Storybook compatibility
-        injectScript(
-          'head',
-          `
-          <script type="module">
-            import Alpine from 'alpinejs';
-            window.Alpine = Alpine;
-            Alpine.start();
-          </script>
-        `
-        );
-
         // Inject Three.js for GIS components
         injectScript(
           'head',
@@ -81,15 +69,9 @@ export default function storybookAstroIntegration(): AstroIntegration {
           'three/examples/jsm/postprocessing/ShaderPass.js',
           'three/examples/jsm/postprocessing/AfterimagePass.js',
           'three/examples/jsm/shaders/VignetteShader.js',
-          // Alpine.js support
-          'alpinejs',
           // Nanostores support
           'nanostores',
           '@nanostores/persistent',
-          // Solid.js support
-          'solid-js',
-          'solid-js/web',
-          'solid-js/html',
           // MapLibre support
           'maplibre-gl',
           'maplibre-gl/dist/maplibre-gl.css',

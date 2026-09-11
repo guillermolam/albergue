@@ -1,0 +1,9 @@
+allowBuilds:
+  esbuild: true
+  netlify-cli: true
+  sharp: true
+  unix-dgram: true
+  workerd: true
+minimumReleaseAgeExclude:
+  - miniflare@5.20260910.0-alpha
+  - wrangler@4.131.0

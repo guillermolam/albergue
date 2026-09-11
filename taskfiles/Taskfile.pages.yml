@@ -63,13 +63,7 @@ tasks:
   deploy:netlify:
     desc: Deploy frontend to Netlify (alternative)
     cmds:
-      - |
-        echo "🚀 Deploying frontend to Netlify..."
-        if ! command -v netlify &> /dev/null; then
-          echo "Installing Netlify CLI..."
-          npm install -g netlify-cli
-        fi
-        cd frontend && netlify deploy --prod --dir=dist
+      - cd frontend && pnpm run deploy:netlify
 
   deploy:fermyon:
     desc: Deploy backend services to Fermyon Cloud

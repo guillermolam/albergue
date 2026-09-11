@@ -1,0 +1,7 @@
+{
+  "rootDirectory": "frontend",
+  "buildCommand": "pnpm install --frozen-lockfile && pnpm run build:stormkit",
+  "startCommand": "pnpm start",
+  "outputDirectory": "dist",
+  "healthCheckPath": "/"
+}

@@ -1,65 +1,64 @@
 version: "3"
 
 includes:
-  # Main development pipeline
-  main:
-    taskfile: ./taskfiles/Taskfile.main.yml
-    dir: .
-    optional: false
-
-  # Service-specific taskfiles
+  # Frontend-only taskfile (currently active)
   frontend:
     taskfile: ./taskfiles/Taskfile.frontend.yml
     dir: .
     optional: false
 
-  # Connectivity testing pipeline
-  connectivity:
-    taskfile: ./taskfiles/Taskfile.connectivity.yml
+  # Optional taskfiles for future backend/gateway implementation
+  # These are marked as optional since backend/ and gateway/ directories don't exist yet
+  main:
+    taskfile: ./taskfiles/Taskfile.main.yml
     dir: .
-    optional: false
-
-  # Turso / libSQL embedded replicas
-  turso:
-    taskfile: ./taskfiles/Taskfile.turso.yml
-    dir: .
-    optional: false
+    optional: true
   dev:
     taskfile: ./taskfiles/Taskfile.dev.yml
     dir: .
-    optional: false
-  ports:
-    taskfile: ./taskfiles/Taskfile.ports.yml
-    dir: .
-    optional: false
+    optional: true
   test:
     taskfile: ./taskfiles/Taskfile.test.yml
     dir: .
-    optional: false
+    optional: true
   build:
     taskfile: ./taskfiles/Taskfile.build.yml
     dir: .
-    optional: false
+    optional: true
   quality:
     taskfile: ./taskfiles/Taskfile.quality.yml
     dir: .
-    optional: false
+    optional: true
   clean:
     taskfile: ./taskfiles/Taskfile.clean.yml
     dir: .
-    optional: false
+    optional: true
   setup:
     taskfile: ./taskfiles/Taskfile.setup.yml
+    dir: .
+    optional: true
+  deploy:
+    taskfile: ./taskfiles/Taskfile.deploy.yml
+    dir: .
+    optional: true
+  connectivity:
+    taskfile: ./taskfiles/Taskfile.connectivity.yml
+    dir: .
+    optional: true
+  spin:
+    taskfile: ./taskfiles/Taskfile.spin.yml
+    dir: .
+    optional: true
+
+  # Utility taskfiles
+  ports:
+    taskfile: ./taskfiles/Taskfile.ports.yml
     dir: .
     optional: false
   act:
     taskfile: ./taskfiles/Taskfile.act.yml
     dir: .
-    optional: false
-  deploy:
-    taskfile: ./taskfiles/Taskfile.deploy.yml
-    dir: .
-    optional: false
+    optional: true
   cloudflare:
     taskfile: ./taskfiles/Taskfile.pages.yml
     dir: .
@@ -71,13 +70,15 @@ includes:
   arch:
     taskfile: ./taskfiles/Taskfile.arch.yml
     dir: .
-    optional: false
-
-  # Security scanning
+    optional: true
+  turso:
+    taskfile: ./taskfiles/Taskfile.turso.yml
+    dir: .
+    optional: true
   security:
     taskfile: ./taskfiles/Taskfile.security.yml
     dir: .
-    optional: false
+    optional: true
 
 env:
   RUST_BACKTRACE: "1"
@@ -91,70 +92,55 @@ tasks:
   default:
     desc: Start development mode (default task)
     cmds:
-      - task: dev:run-all
+      - task: frontend:frontend:dev
 
-  # Setup shortcuts
-  setup:
-    desc: Complete development environment setup
-    cmds:
-      - task: setup:install:all
-
-  # Development shortcuts
+  # Development shortcuts (frontend only)
   dev:
-    desc: Start development mode
+    desc: Start frontend development server
     deps: [ports:show]
     cmds:
-      - task: dev:run-all
+      - task: frontend:frontend:dev
 
-  start:
-    desc: Start development services
-    cmds:
-      - task: dev:start
-
-  stop:
-    desc: Stop development services
-    cmds:
-      - task: dev:stop
-
-  restart:
-    desc: Restart development services
-    cmds:
-      - task: dev:restart
-
-  # Build shortcuts
+  # Build shortcuts (frontend only)
   build:
-    desc: Build all services
+    desc: Build frontend for production
     cmds:
-      - task: build:all
+      - task: frontend:frontend:build
 
-  update-deps:
-    desc: Update all Cargo.toml dependencies to latest versions
+  deploy-frontend:
+    desc: Choose Cloudflare, Netlify, or Stormkit for frontend deployment
     cmds:
-      - task: build:update-deps
+      - task: frontend:frontend:deploy
 
-  # Test shortcuts
+  # Test shortcuts (frontend only)
   test:
-    desc: Run all tests
+    desc: Run frontend tests
     cmds:
-      - task: test:unit:all
+      - task: frontend:frontend:test
 
-  # Quality shortcuts
+  # Quality shortcuts (frontend only)
   fmt:
-    desc: Format all code
+    desc: Format frontend code
     cmds:
-      - task: quality:format:all
+      - task: frontend:frontend:format
 
   lint:
-    desc: Lint all code
+    desc: Lint frontend code
     cmds:
-      - task: quality:lint:all
+      - task: frontend:frontend:lint
 
-  # Clean shortcut
+  type-check:
+    desc: Run TypeScript type checking
+    cmds:
+      - task: frontend:frontend:type-check
+
+  # Clean shortcut (frontend only)
   clean:
-    desc: Clean development environment
+    desc: Clean frontend build artifacts
     cmds:
-      - task: clean:default
+      - task: frontend:frontend:clean
 
+  # Generate project tree
   generate:tree:
     desc: Generate ASCII project tree via Rust Script (respects .gitignore)
     cmds:

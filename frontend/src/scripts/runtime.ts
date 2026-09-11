@@ -1,14 +1,5 @@
-import Alpine from 'alpinejs';
 import { initRough } from './runtime_rough';
 import { initStoresBridge } from './runtime_stores_bridge';
-
-declare global {
-  interface Window {
-    Alpine: typeof Alpine;
-  }
-}
-
-window.Alpine = Alpine;
 
 function onIdle(cb: () => void) {
   const w = window as unknown as { requestIdleCallback?: (fn: () => void) => number };
@@ -17,7 +8,6 @@ function onIdle(cb: () => void) {
 }
 
 function bootstrap() {
-  Alpine.start();
   queueMicrotask(() => initStoresBridge());
   requestAnimationFrame(() => initRough());
   onIdle(() => {

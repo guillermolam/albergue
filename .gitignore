@@ -117,6 +117,8 @@ runtime-config.toml
 **/*.lcov
 **/*.snap
 **/.nyc_output/
+**/playwright-report/
+**/test-results/
 **/__pycache__/
 **/*.pyc
 **/*.pyo

@@ -1,0 +1,13 @@
+[build]
+  command = "pnpm run build:netlify"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22.13.0"
+  PNPM_VERSION = "10.29.3"
+
+[dev]
+  command = "pnpm dev"
+  targetPort = 4321
+  port = 8888
+  autoLaunch = false

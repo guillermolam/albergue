@@ -15,7 +15,7 @@ Multicloud, trunk-based development. Three runtime targets:
 ## Repository layout
 
 ```
-frontend/          Astro 6.x + UnoCSS (presetMini) + Solid.js islands + Alpine.js
+frontend/          Astro 7.3 + UnoCSS (presetMini) + Solid.js islands
 backend/           Rust workspace: Workers-target services (worker crate + wrangler)
 gateway/           Rust workspace: Spin gateway (api-gateway, api-gateway-core, edge-proxy)
 infra/             Terraform / Spacelift (Cloudflare, OCI, Neon)
@@ -53,6 +53,8 @@ Doodled / Hand-Written / Sketched / 3D meets Neo-Brutalism.
 - **Rust** stable + targets: `wasm32-unknown-unknown`, `wasm32-wasip2`
 - **Spin CLI** v3.6+ (Fermyon)
 - **wrangler** (Cloudflare Workers)
+- **Netlify CLI** (installed in the frontend workspace)
+- **Stormkit** (Git-connected deployment using the standalone Node build)
 - **Trunk** v1.25+ (lint, format, security -- pre-commit/pre-push)
 - **OPA** v1.15+ (Rego policy enforcement -- pre-commit/commit-msg)
 - **go-task** (`task -l` for available commands)

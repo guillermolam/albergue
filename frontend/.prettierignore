@@ -1,17 +1,8 @@
-# Build outputs and dependencies
+.astro/
+.netlify/
+.wrangler/
 dist/
 node_modules/
-.astro/
+playwright-report/
+test-results/
 worker-configuration.d.ts
-
-# Storybook files — contain complex template literals that Prettier can't parse
-src/stories/
-src/lib/three/__stories__/
-
-# Generated files
-src/env.d.ts
-
-# Wuchale i18n compiled locale files (auto-generated)
-src/locales/.wuchale/
-src/locales/data.js
-src/locales/main.loader.js

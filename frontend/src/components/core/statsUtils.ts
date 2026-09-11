@@ -53,7 +53,7 @@ export function getVariantClasses(variant: string): string {
     card: `${baseClasses} hover:-translate-y-1`,
     minimal: 'bg-transparent p-4',
     gradient:
-      'bg-gradient-to-br from-white to-gray-50 rounded-xl p-6 border border-gray-100 shadow-lg',
+      'bg-linear-to-br from-white to-gray-50 rounded-xl p-6 border border-gray-100 shadow-lg',
   };
 
   return variantClasses[variant as keyof typeof variantClasses] || baseClasses;

@@ -1,5 +1,9 @@
 ﻿# Complete development and deployment pipeline
 # Integrates frontend, backend, gateway, and Spin/Fermyon deployment
+#
+# NOTE: Backend and gateway directories are not yet implemented.
+# This taskfile contains stubs for future implementation.
+# Currently only frontend is operational.
 
 version: "3"
 
@@ -8,6 +12,7 @@ includes:
     taskfile: ./Taskfile.frontend.yml
     dir: ..
     optional: false
+  # Backend and gateway taskfiles don't exist yet - marked optional for future implementation
   backend:
     taskfile: ./Taskfile.backend.yml
     dir: ..
@@ -19,7 +24,7 @@ includes:
   spin:
     taskfile: ./Taskfile.spin.yml
     dir: ..
-    optional: false
+    optional: true
 
 vars:
   ENVIRONMENT: '{{.ENVIRONMENT | default "development"}}'
@@ -40,297 +45,304 @@ tasks:
   dev:
     desc: Start complete development environment
     cmds:
-      - echo "ðŸš€ Starting complete development environment..."
+      - echo "🚀 Starting complete development environment..."
       - task: dev:all
 
   dev:all:
     desc: Start all services in development mode
     deps: [dev:check-deps, dev:setup-env]
     cmds:
-      - echo "ðŸƒâ€â™‚ï¸ Starting all development services..."
-      - task: dev:gateway &
-      - task: dev:backend &
-      - task: dev:frontend &
-      - echo "âœ… All services started in development mode"
-      - echo "Frontend http://localhost 3000"
-      - echo "Gateway http://localhost 8080"
-      - echo "Backend services Various ports"
+      - echo "🚀 Starting all development services..."
+      - 'echo "NOTE: Backend and gateway services are not yet implemented"'
+      - task: dev:frontend
+      - echo "✅ Frontend started in development mode"
+      - 'echo "Frontend: http://localhost:4321"'
 
   dev:frontend:
     desc: Start frontend development server
     cmds:
       - task: frontend:frontend:dev
 
+  # STUB: Gateway tasks (not implemented yet)
   dev:gateway:
-    desc: Start gateway in development mode
+    desc: Start gateway in development mode (STUB - not implemented)
     cmds:
-      - task: gateway:gateway:dev
+      - echo "⚠️  Gateway not implemented yet"
+      - exit 1
 
+  # STUB: Backend tasks (not implemented yet)
   dev:backend:
-    desc: Start backend services in development mode
+    desc: Start backend services in development mode (STUB - not implemented)
     cmds:
-      - task: backend:backend:dev
+      - echo "⚠️  Backend not implemented yet"
+      - exit 1
 
+  # STUB: Spin tasks (not implemented yet)
   dev:spin:
-    desc: Start Spin development environment
+    desc: Start Spin development environment (STUB - not implemented)
     cmds:
-      - task: spin:spin:dev
+      - echo "⚠️  Spin services not implemented yet"
+      - exit 1
 
   # Build pipeline
   build:
     desc: Build all services for production
     deps: [build:check-deps]
     cmds:
-      - echo "ðŸ—ï¸ Building all services for production..."
+      - echo "🏗️ Building all services for production..."
       - task: build:frontend
-      - task: build:backend
-      - task: build:gateway
-      - task: build:spin
-      - echo "âœ… All services built successfully"
+      - echo "⚠️  Backend and gateway not implemented yet - skipping"
+      - echo "✅ Frontend built successfully"
 
   build:frontend:
     desc: Build frontend for production
     cmds:
       - task: frontend:frontend:build
 
+  # STUB: Backend build (not implemented yet)
   build:backend:
-    desc: Build backend services
+    desc: Build backend services (STUB - not implemented)
     cmds:
-      - task: backend:backend:build
+      - echo "⚠️  Backend not implemented yet"
+      - exit 1
 
+  # STUB: Gateway build (not implemented yet)
   build:gateway:
-    desc: Build gateway service
+    desc: Build gateway service (STUB - not implemented)
     cmds:
-      - task: gateway:gateway:build
+      - echo "⚠️  Gateway not implemented yet"
+      - exit 1
 
+  # STUB: Spin build (not implemented yet)
   build:spin:
-    desc: Build Spin WASM components
+    desc: Build Spin WASM components (STUB - not implemented)
     cmds:
-      - task: spin:spin:build
+      - echo "⚠️  Spin services not implemented yet"
+      - exit 1
 
   # Testing pipeline
   test:
     desc: Run all tests
     cmds:
-      - echo "ðŸ§ª Running complete test suite..."
+      - echo "🧪 Running complete test suite..."
       - task: test:frontend
-      - task: test:backend
-      - task: test:integration
-      - echo "âœ… All tests passed"
+      - echo "⚠️  Backend and integration tests not implemented yet - skipping"
+      - echo "✅ Frontend tests completed"
 
   test:frontend:
     desc: Run frontend tests
     cmds:
       - task: frontend:frontend:test
 
+  # STUB: Backend tests (not implemented yet)
   test:backend:
-    desc: Run backend tests
+    desc: Run backend tests (STUB - not implemented)
     cmds:
-      - task: backend:backend:test
+      - echo "⚠️  Backend not implemented yet"
+      - exit 1
 
+  # STUB: Integration tests (not implemented yet)
   test:integration:
-    desc: Run integration tests
+    desc: Run integration tests (STUB - not implemented)
     cmds:
-      - task: gateway:gateway:test
-      - task: spin:spin:test
+      - echo "⚠️  Integration tests not implemented yet"
+      - exit 1
 
   # Quality assurance
   quality:
     desc: Run all quality checks
     cmds:
-      - echo "ðŸ” Running quality checks..."
+      - echo "🔍 Running quality checks..."
       - task: quality:frontend
-      - task: quality:backend
-      - task: quality:gateway
-      - echo "âœ… Quality checks completed"
+      - echo "⚠️  Backend and gateway quality checks not implemented yet - skipping"
+      - echo "✅ Frontend quality checks completed"
 
   quality:frontend:
     desc: Run frontend quality checks
     cmds:
       - task: frontend:frontend:quality
 
+  # STUB: Backend quality checks (not implemented yet)
   quality:backend:
-    desc: Run backend quality checks
-    dir: backend
+    desc: Run backend quality checks (STUB - not implemented)
     cmds:
-      - cargo fmt --all
-      - cargo clippy --all-targets --all-features -- -D warnings
-      - cargo test --all
+      - echo "⚠️  Backend not implemented yet"
+      - exit 1
 
+  # STUB: Gateway quality checks (not implemented yet)
   quality:gateway:
-    desc: Run gateway quality checks
-    dir: gateway
+    desc: Run gateway quality checks (STUB - not implemented)
     cmds:
-      - cargo fmt --all
-      - cargo clippy --all-targets --all-features -- -D warnings
-      - cargo test --all
+      - echo "⚠️  Gateway not implemented yet"
+      - exit 1
 
   # Deployment pipeline
   deploy:
     desc: Deploy to production
     deps: [deploy:check-deps, deploy:validate]
     cmds:
-      - echo "ðŸš€ Deploying to production..."
-      - task: deploy:fermyon
-      - echo "âœ… Deployment completed"
+      - echo "🚀 Deploying to production..."
+      - echo "⚠️  Deployment not implemented yet"
+      - exit 1
 
+  # STUB: Fermyon deployment (not implemented yet)
   deploy:fermyon:
-    desc: Deploy to Fermyon Cloud
+    desc: Deploy to Fermyon Cloud (STUB - not implemented)
     cmds:
-      - task: spin:spin:deploy
+      - echo "⚠️  Fermyon deployment not implemented yet"
+      - exit 1
 
+  # STUB: Staging deployment (not implemented yet)
   deploy:staging:
-    desc: Deploy to staging environment
+    desc: Deploy to staging environment (STUB - not implemented)
     cmds:
-      - echo "ðŸ§ª Deploying to staging..."
-      - task: main:build
-        env:
-          ENVIRONMENT: staging
-      - task: spin:spin:deploy:staging
+      - echo "⚠️  Staging deployment not implemented yet"
+      - exit 1
 
+  # STUB: Local deployment (not implemented yet)
   deploy:local:
-    desc: Deploy locally with Spin
+    desc: Deploy locally with Spin (STUB - not implemented)
     cmds:
-      - task: spin:spin:up
+      - echo "⚠️  Local deployment not implemented yet"
+      - exit 1
 
   # Utility tasks
   clean:
     desc: Clean all build artifacts
     cmds:
-      - echo "ðŸ§¹ Cleaning build artifacts..."
+      - echo "🧹 Cleaning build artifacts..."
       - task: frontend:frontend:clean
-      - task: backend:backend:clean
-      - task: gateway:gateway:clean
-      - task: spin:spin:clean
-      - echo "âœ… All artifacts cleaned"
+      - echo "⚠️  Backend, gateway, and Spin clean not implemented yet - skipping"
+      - echo "✅ Frontend artifacts cleaned"
 
   setup:
     desc: Complete environment setup
     cmds:
-      - echo "âš™ï¸ Setting up development environment..."
+      - echo "⚙️ Setting up development environment..."
       - task: setup:deps
-      - task: setup:db
-      - task: setup:config
-      - echo "âœ… Environment setup completed"
+      - echo "⚠️  Database and config setup not fully implemented yet"
+      - echo "✅ Environment setup completed"
 
   setup:deps:
     desc: Install all dependencies
     cmds:
-      - echo "ðŸ“¦ Installing dependencies..."
+      - echo "📦 Installing dependencies..."
       - task: frontend:frontend:install
-      - task: backend:backend:install
-      - task: gateway:gateway:install
+      - echo "⚠️  Backend and gateway dependencies not implemented yet - skipping"
+      - echo "✅ Frontend dependencies installed"
 
+  # STUB: Database setup (not implemented yet)
   setup:db:
-    desc: Setup databases
+    desc: Setup databases (STUB - not implemented)
     cmds:
-      - echo "ðŸ—„ï¸ Setting up databases..."
-      - task: frontend:frontend:db:migrate
-      - task: backend:backend:db:migrate
+      - echo "⚠️  Database setup not implemented yet"
+      - exit 1
 
+  # STUB: Config setup (not implemented yet)
   setup:config:
-    desc: Setup configuration files
+    desc: Setup configuration files (STUB - not implemented)
     cmds:
-      - echo "âš™ï¸ Setting up configuration..."
-      - task: config:validate
-      - task: config:generate
+      - echo "⚠️  Config setup not implemented yet"
+      - exit 1
 
   # Configuration management
   config:
     desc: Manage configuration
     cmds:
-      - echo "âš™ï¸ Configuration management..."
+      - echo "⚙️ Configuration management..."
       - task: config:validate
 
   config:validate:
     desc: Validate configuration
     cmds:
-      - echo "ðŸ” Validating configuration..."
+      - echo "🔍 Validating configuration..."
       - task: frontend:frontend:check-env
-      - task: backend:backend:check-env
-      - task: gateway:gateway:check-env
+      - echo "⚠️  Backend and gateway config validation not implemented yet - skipping"
+      - echo "✅ Frontend configuration validated"
 
+  # STUB: Config generation (not implemented yet)
   config:generate:
-    desc: Generate configuration files
+    desc: Generate configuration files (STUB - not implemented)
     cmds:
-      - echo "ðŸ“ Generating configuration files..."
-      - task: frontend:frontend:generate-types
+      - echo "⚠️  Config generation not implemented yet"
+      - exit 1
 
   # Health checks
   health:
     desc: Check service health
     cmds:
-      - echo "ðŸ¥ Checking service health..."
+      - echo "🏥 Checking service health..."
       - task: health:frontend
-      - task: health:backend
-      - task: health:gateway
-      - task: health:spin
+      - echo "⚠️  Backend, gateway, and Spin health checks not implemented yet - skipping"
+      - echo "✅ Frontend health check completed"
 
   health:frontend:
     desc: Check frontend health
     cmds:
-      - echo "ðŸŒ Checking frontend health..."
-      - curl -f http://localhost:3000/health || echo "âš ï¸ Frontend not responding"
+      - echo "🌐 Checking frontend health..."
+      - curl -f http://localhost:4321/ || echo "⚠️  Frontend not responding"
 
+  # STUB: Backend health (not implemented yet)
   health:backend:
-    desc: Check backend health
+    desc: Check backend health (STUB - not implemented)
     cmds:
-      - echo "ðŸ”§ Checking backend health..."
-      - task: backend:backend:health
+      - echo "⚠️  Backend not implemented yet"
+      - exit 1
 
+  # STUB: Gateway health (not implemented yet)
   health:gateway:
-    desc: Check gateway health
+    desc: Check gateway health (STUB - not implemented)
     cmds:
-      - echo "ðŸšª Checking gateway health..."
-      - task: gateway:gateway:health
+      - echo "⚠️  Gateway not implemented yet"
+      - exit 1
 
+  # STUB: Spin health (not implemented yet)
   health:spin:
-    desc: Check Spin health
+    desc: Check Spin health (STUB - not implemented)
     cmds:
-      - echo "ðŸ”„ Checking Spin health..."
-      - task: spin:spin:health
+      - echo "⚠️  Spin not implemented yet"
+      - exit 1
 
   # Dependency checks
   dev:check-deps:
     desc: Check development dependencies
     cmds:
-      - echo "ðŸ” Checking development dependencies..."
-      - command -v pnpm >/dev/null 2>&1 || { echo "âŒ pnpm not found"; exit 1; }
-      - command -v cargo >/dev/null 2>&1 || { echo "âŒ Rust toolchain not found"; exit 1; }
-      - command -v spin >/dev/null 2>&1 || { echo "âŒ Spin not found"; exit 1; }
-      - echo "âœ… All dependencies available"
+      - echo "🔍 Checking development dependencies..."
+      - command -v pnpm >/dev/null 2>&1 || { echo "❌ pnpm not found"; exit 1; }
+      - echo "⚠️  Rust toolchain and Spin not required for frontend-only mode"
+      - echo "✅ Frontend dependencies available"
 
   deploy:check-deps:
     desc: Check deployment dependencies
     cmds:
-      - echo "ðŸ” Checking deployment dependencies..."
-      - command -v spin >/dev/null 2>&1 || { echo "âŒ Spin not found"; exit 1; }
-      - echo "âœ… Deployment dependencies available"
+      - echo "🔍 Checking deployment dependencies..."
+      - echo "⚠️  Deployment not implemented yet"
+      - exit 1
 
   deploy:validate:
     desc: Validate deployment configuration
     cmds:
-      - echo "âœ… Validating deployment configuration..."
-      - task: config:validate
-      - task: test
-      - task: build
+      - echo "✅ Validating deployment configuration..."
+      - echo "⚠️  Deployment not implemented yet"
+      - exit 1
 
   # Default task
   default:
     desc: Show available tasks
     cmds:
-      - echo "ðŸŽ¯ Albergue Municipal Carrascalejo - Development & Deployment"
+      - echo "🎯 Albergue Municipal Carrascalejo - Development & Deployment"
       - echo ""
-      - echo "Available tasks:"
-      - echo "  task dev          - Start development environment"
-      - echo "  task build        - Build all services"
-      - echo "  task test         - Run all tests"
-      - echo "  task quality      - Run quality checks"
-      - echo "  task deploy       - Deploy to production"
-      - echo "  task setup        - Setup development environment"
-      - echo "  task clean        - Clean build artifacts"
-      - echo "  task health       - Check service health"
+      - 'echo "Current Status: Frontend operational, backend/gateway not yet implemented"'
       - echo ""
+      - 'echo "Available tasks:"'
+      - echo "  task dev          - Start development environment (frontend only)"
+      - echo "  task build        - Build all services (frontend only currently)"
+      - echo "  task test         - Run all tests (frontend only currently)"
+      - echo "  task quality      - Run quality checks (frontend only currently)"
+      - echo "  task clean        - Clean build artifacts (frontend only currently)"
+      - echo "  task health       - Check service health (frontend only currently)"
+      - echo ""
+      - 'echo "For frontend-specific tasks, use: task frontend --list"'
       - echo "For more details, run task --list-all"
 
 

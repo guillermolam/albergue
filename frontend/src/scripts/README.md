@@ -4,7 +4,7 @@ This directory contains small client-side runtime modules used for progressive e
 
 ## Entry point
 
-- `runtime.ts` boots Alpine and initializes the other runtime modules.
+- `runtime.ts` initializes the progressive-enhancement runtime modules.
 
 The runtime is loaded from layouts:
 

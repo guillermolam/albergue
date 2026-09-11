@@ -7,5 +7,10 @@ export default defineConfig({
     setupFiles: ['./tests/setup.ts'],
     include: ['tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     exclude: ['node_modules', 'dist', '.astro'],
+    ssr: true,
+    environmentMatchGlobs: [
+      ['tests/**/*.server.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}', 'node'],
+      ['tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}', 'jsdom'],
+    ],
   },
 });

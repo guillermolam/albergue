@@ -59,17 +59,10 @@ const currentSize = sizes[size];
   texture={currentVariant.texture}
   textureOpacity={currentVariant.textureOpacity}
   hover={!disabled}
-  class={`ds-btn inline-flex items-center justify-center transition select-none ${currentVariant.class} ${currentSize.textClass} ${disabled ? 'opacity-60 pointer-events-none' : 'hover:translate-y--0.5 active:translate-y-0'}`}
+  class={`ds-btn group inline-flex items-center justify-center transition select-none ${currentVariant.class} ${currentSize.textClass} ${disabled ? 'opacity-60 pointer-events-none' : 'hover:translate-y--0.5 active:translate-y-0'}`}
   {...disabled && { 'aria-disabled': 'true' }}
 >
-  <span
-    x-data="{ pressed: false }"
-    x-bind:class="{ 'scale-95': pressed }"
-    x-on:pointerdown="pressed = true"
-    x-on:pointerup="pressed = false"
-    x-on:pointerleave="pressed = false"
-    class="inline-block transition-transform"
-  >
+  <span class="inline-block transition-transform group-active:scale-95">
     {text}
   </span>
 </RoughFrame>
