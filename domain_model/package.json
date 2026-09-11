@@ -1,0 +1,32 @@
+{
+  "name": "@albergue/domain-model",
+  "version": "1.0.0",
+  "description": "Domain model and database schemas for Albergue Carrascalejo",
+  "type": "module",
+  "main": "dist/schema.js",
+  "module": "dist/schema.js",
+  "types": "dist/schema.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/schema.d.ts",
+      "default": "./dist/schema.js"
+    },
+    "./schema": {
+      "types": "./dist/schema.d.ts",
+      "default": "./dist/schema.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.34.1",
+    "drizzle-zod": "^0.5.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "typescript": "^5.6.3"
+  }
+}

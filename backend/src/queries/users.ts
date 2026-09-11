@@ -4,7 +4,7 @@
  */
 
 import { db } from '../lib/db';
-import { users } from '../../domain_model/schema';
+import { users } from '@albergue/domain-model';
 import { eq, like, count, desc, asc } from 'drizzle-orm';
 import type { User } from '../types';
 import type { PaginatedResponse, PaginationParams } from '../types';
@@ -23,24 +23,20 @@ export async function getAllUsers(
   } = params;
 
   const offset = (page - 1) * pageSize;
-  const order = orderDirection === 'asc' ? asc : desc;
+  const sortOrder = orderDirection === 'asc' ? asc(users.username) : desc(users.username);
 
   // Get total count
   const [countResult] = await db
     .select({ count: count() })
     .from(users);
 
-  const total = countResult?.count || 0;
+  const total = Number(countResult?.count || 0);
 
   // Get paginated results
   const results = await db
     .select()
     .from(users)
-    .orderBy(
-      // @ts-ignore
-      orderBy in users ? users[orderBy] : users.username,
-      order
-    )
+    .orderBy(sortOrder)
     .limit(pageSize)
     .offset(offset);
 
@@ -91,7 +87,7 @@ export async function searchUsers(query: string, limit: number = 10): Promise<Us
     .where(
       like(users.username, `%${query}%`)
     )
-    .orderBy(users.username, asc)
+    .orderBy(asc(users.username))
     .limit(limit);
   
   return results;
@@ -105,7 +101,7 @@ export async function getUserCount(): Promise<number> {
     .select({ count: count() })
     .from(users);
   
-  return result?.count || 0;
+  return Number(result?.count || 0);
 }
 
 /**
@@ -115,7 +111,7 @@ export async function getRecentUsers(limit: number = 5): Promise<User[]> {
   const results = await db
     .select()
     .from(users)
-    .orderBy(users.createdAt, desc)
+    .orderBy(desc(users.createdAt))
     .limit(limit);
   
   return results;
@@ -130,7 +126,7 @@ export async function usernameExists(username: string): Promise<boolean> {
     .from(users)
     .where(eq(users.username, username));
   
-  return (result?.count || 0) > 0;
+  return Number(result?.count || 0) > 0;
 }
 
 /**
@@ -142,6 +138,6 @@ export async function getUserStats() {
     .from(users);
 
   return {
-    totalUsers: total?.count || 0,
+    totalUsers: Number(total?.count || 0),
   };
 }

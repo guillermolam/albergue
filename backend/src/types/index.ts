@@ -4,7 +4,7 @@
  */
 
 // Re-export everything from domain_model schema
-export * from '../../domain_model/schema';
+export * from '@albergue/domain-model';
 
 // Additional backend-specific types
 
