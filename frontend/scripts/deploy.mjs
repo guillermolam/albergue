@@ -16,11 +16,16 @@ function run(command, args) {
 async function deployToStormkit() {
   const apiKey = await getStormkitApiKey();
   if (!apiKey) {
-    throw new Error('STROMKIT_ALBERGUE_KEY is required to deploy with the Stormkit API.');
+    throw new Error(
+      'STORMKIT_ALBERGUE_KEY is required to deploy with the Stormkit API (legacy STROMKIT_ALBERGUE_KEY also accepted).'
+    );
   }
 
-  const branch = process.env.STORMKIT_BRANCH || execFileSync('git', ['branch', '--show-current'], { encoding: 'utf8' }).trim();
-  if (!branch) throw new Error('Stormkit deployment requires STORMKIT_BRANCH or a named Git branch.');
+  const branch =
+    process.env.STORMKIT_BRANCH ||
+    execFileSync('git', ['branch', '--show-current'], { encoding: 'utf8' }).trim();
+  if (!branch)
+    throw new Error('Stormkit deployment requires STORMKIT_BRANCH or a named Git branch.');
 
   const body = {
     branch,
@@ -28,7 +33,9 @@ async function deployToStormkit() {
     ...(process.env.STORMKIT_ENV_ID ? { envId: process.env.STORMKIT_ENV_ID } : {}),
   };
   if (dryRun) {
-    stdout.write(`Stormkit dry run: branch=${branch}, publish=${body.publish}, envId=${body.envId || 'environment-scoped-key'}\n`);
+    stdout.write(
+      `Stormkit dry run: branch=${branch}, publish=${body.publish}, envId=${body.envId || 'environment-scoped-key'}\n`
+    );
     return;
   }
   const response = await fetch('https://api.stormkit.io/v1/deploy', {
@@ -47,7 +54,9 @@ async function deployToStormkit() {
     result = { message: responseBody };
   }
   if (!response.ok) {
-    throw new Error(`Stormkit API returned ${response.status}: ${result.message || result.error || 'Deployment failed'}`);
+    throw new Error(
+      `Stormkit API returned ${response.status}: ${result.message || result.error || 'Deployment failed'}`
+    );
   }
 
   stdout.write(`Stormkit deployment ${result.id} created for branch ${result.branch || branch}.\n`);
@@ -55,7 +64,9 @@ async function deployToStormkit() {
 
 async function chooseProvider() {
   if (!stdin.isTTY) {
-    throw new Error(`A deployment provider is required in non-interactive mode: ${providers.join(', ')}`);
+    throw new Error(
+      `A deployment provider is required in non-interactive mode: ${providers.join(', ')}`
+    );
   }
 
   const prompt = createInterface({ input: stdin, output: stdout });
@@ -66,7 +77,9 @@ async function chooseProvider() {
   return providers[Number(answer) - 1] ?? answer.trim().toLowerCase();
 }
 
-const requestedProvider = args.find((argument) => argument !== '--' && argument !== '--dry-run') ?? process.env.DEPLOY_TARGET;
+const requestedProvider =
+  args.find((argument) => argument !== '--' && argument !== '--dry-run') ??
+  process.env.DEPLOY_TARGET;
 const provider = requestedProvider || (await chooseProvider());
 
 if (!providers.includes(provider)) {

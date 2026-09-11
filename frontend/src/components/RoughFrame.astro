@@ -53,12 +53,15 @@ const Tag = as;
   data-rough-bowing={bowing}
   data-rough-stroke-width={strokeWidth}
   data-rough-seed={seed}
-  {...hover && { 'data-rough-hover': true }}
-  {...href && { href }}
-  {...type && { type }}
+  {...(hover && { 'data-rough-hover': true })}
+  {...(href && { href })}
+  {...(type && { type })}
   class={`relative ${paddingClasses[padding]} ${className}`}
 >
-  <svg data-rough-svg class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true"
+  <svg
+    data-rough-svg
+    class="absolute inset-0 w-full h-full pointer-events-none"
+    aria-hidden="true"
   ></svg>
   <div class="relative z-1">
     <slot />

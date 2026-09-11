@@ -247,12 +247,7 @@ export interface Booking extends BaseEntity {
  * Booking status
  */
 export type BookingStatus =
-  | 'pending'
-  | 'confirmed'
-  | 'checked-in'
-  | 'checked-out'
-  | 'cancelled'
-  | 'no-show';
+  'pending' | 'confirmed' | 'checked-in' | 'checked-out' | 'cancelled' | 'no-show';
 
 /**
  * Payment status

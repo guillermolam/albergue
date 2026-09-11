@@ -16,11 +16,7 @@ interface Props {
   variant?: 'default' | 'doodle' | 'minimal';
 }
 
-const {
-  title,
-  subtitle,
-  variant = 'default',
-} = Astro.props;
+const { title, subtitle, variant = 'default' } = Astro.props;
 
 const variantClasses = {
   default: 'hero',
@@ -43,11 +39,19 @@ const variantClasses = {
   {variant === 'doodle' && (
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
       <!-- Decorative sketch lines -->
-      <svg class="absolute top-10 left-10 w-32 h-32 text-green-dark opacity-20" fill="none" viewBox="0 0 100 100">
+      <svg
+        class="absolute top-10 left-10 w-32 h-32 text-green-dark opacity-20"
+        fill="none"
+        viewBox="0 0 100 100"
+      >
         <path d="M10,50 Q50,10 90,50 T10,50" stroke="currentColor" stroke-width="2" />
         <path d="M20,80 Q50,20 80,80 T20,80" stroke="currentColor" stroke-width="2" />
       </svg>
-      <svg class="absolute bottom-10 right-10 w-32 h-32 text-green-dark opacity-20" fill="none" viewBox="0 0 100 100">
+      <svg
+        class="absolute bottom-10 right-10 w-32 h-32 text-green-dark opacity-20"
+        fill="none"
+        viewBox="0 0 100 100"
+      >
         <path d="M0,0 Q25,50 0,100 T0,0" stroke="currentColor" stroke-width="2" />
         <path d="M100,0 Q75,50 100,100 T100,0" stroke="currentColor" stroke-width="2" />
       </svg>

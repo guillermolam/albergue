@@ -160,12 +160,7 @@ declare namespace astroHTML.JSX {
     'aria-live'?: 'off' | 'assertive' | 'polite';
     'aria-atomic'?: boolean | 'true' | 'false';
     'aria-relevant'?:
-      | 'additions'
-      | 'additions removals'
-      | 'additions text'
-      | 'all'
-      | 'removals'
-      | 'text';
+      'additions' | 'additions removals' | 'additions text' | 'all' | 'removals' | 'text';
     'aria-busy'?: boolean | 'true' | 'false';
     'aria-expanded'?: boolean | 'true' | 'false';
     'aria-selected'?: boolean | 'true' | 'false';

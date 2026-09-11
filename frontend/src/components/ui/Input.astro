@@ -54,12 +54,13 @@ const classes = `${variantClasses[variant]} ${hasError ? 'border-status-error' :
 
 <div class="w-full">
   {label && (
-    <label
-      for={inputId}
-      class="block text-sm font-medium text-charcoal mb-2"
-    >
+    <label for={inputId} class="block text-sm font-medium text-charcoal mb-2">
       {label}
-      {required && <span class="text-status-error ml-1" aria-hidden="true">*</span>}
+      {required && (
+        <span class="text-status-error ml-1" aria-hidden="true">
+          *
+        </span>
+      )}
     </label>
   )}
 

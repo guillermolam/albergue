@@ -19,12 +19,7 @@ interface Props {
   variant?: 'default' | 'doodle';
 }
 
-const {
-  title,
-  value,
-  desc,
-  variant = 'default',
-} = Astro.props;
+const { title, value, desc, variant = 'default' } = Astro.props;
 
 const variantClasses = {
   default: 'stat',

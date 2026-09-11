@@ -59,27 +59,23 @@ const labelSizeClasses = {
   ]}
 >
   <!-- Icon (if provided) -->
-  {
-    icon && (
-      <div class="text-center mb-1 wobble">
-        <span class="text-2xl md:text-3xl">{icon}</span>
-      </div>
-    )
-  }
+  {icon && (
+    <div class="text-center mb-1 wobble">
+      <span class="text-2xl md:text-3xl">{icon}</span>
+    </div>
+  )}
 
   <!-- Label -->
-  {
-    label && (
-      <p
-        class:list={[
-          'text-center uppercase tracking-wide font-medium opacity-75',
-          labelSizeClasses[size as keyof typeof labelSizeClasses],
-        ]}
-      >
-        {label}
-      </p>
-    )
-  }
+  {label && (
+    <p
+      class:list={[
+        'text-center uppercase tracking-wide font-medium opacity-75',
+        labelSizeClasses[size as keyof typeof labelSizeClasses],
+      ]}
+    >
+      {label}
+    </p>
+  )}
 
   <!-- Value -->
   <p class:list={['text-center font-bold leading-none', 'sketch-title', valueSizeClasses[size]]}>
@@ -87,18 +83,16 @@ const labelSizeClasses = {
   </p>
 
   <!-- Sublabel -->
-  {
-    sublabel && (
-      <p
-        class:list={[
-          'text-center opacity-60 mt-0.5',
-          labelSizeClasses[size as keyof typeof labelSizeClasses],
-        ]}
-      >
-        {sublabel}
-      </p>
-    )
-  }
+  {sublabel && (
+    <p
+      class:list={[
+        'text-center opacity-60 mt-0.5',
+        labelSizeClasses[size as keyof typeof labelSizeClasses],
+      ]}
+    >
+      {sublabel}
+    </p>
+  )}
 
   <!-- Slot for additional content -->
   <slot />

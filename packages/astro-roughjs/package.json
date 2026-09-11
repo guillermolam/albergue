@@ -1,0 +1,57 @@
+{
+  "name": "astro-roughjs",
+  "version": "0.1.0",
+  "description": "Astro integration for roughjs - provides seamless integration of roughjs drawing capabilities in Astro applications",
+  "author": "Kilo Agent",
+  "license": "MIT",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs.js"
+    },
+    "./integration": {
+      "import": "./dist/integration.js",
+      "require": "./dist/integration.cjs.js"
+    },
+    "./client": {
+      "import": "./dist/client.js",
+      "require": "./dist/client.cjs.js"
+    },
+    "./frame": {
+      "import": "./dist/frame.js",
+      "require": "./dist/frame.cjs.js"
+    },
+    "./icon": {
+      "import": "./dist/icon.js",
+      "require": "./dist/icon.cjs.js"
+    }
+  },
+  "peerDependencies": {
+    "astro": "^5 || ^6 || ^7",
+    "roughjs": "^4.6.6"
+  },
+  "devDependencies": {
+    "astro": "^5.0.0",
+    "roughjs": "^4.6.6",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "@astrojs/renderer": "^1.0.0"
+  },
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite",
+    "test": "vitest",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "astro",
+    "integration",
+    "roughjs",
+    "drawing",
+    "canvas",
+    "sketchy"
+  ]
+}

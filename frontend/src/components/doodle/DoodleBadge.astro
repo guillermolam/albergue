@@ -85,14 +85,12 @@ const baseClasses = `
 ---
 
 <span id={id} class={baseClasses}>
-  {
-    dot && (
-      <span
-        class={`rounded-full animate-pulse ${dotColorClasses[variant]} ${dotSizeClasses[size]}`}
-        aria-hidden="true"
-      />
-    )
-  }
+  {dot && (
+    <span
+      class={`rounded-full animate-pulse ${dotColorClasses[variant]} ${dotSizeClasses[size]}`}
+      aria-hidden="true"
+    />
+  )}
   <slot />
 </span>
 

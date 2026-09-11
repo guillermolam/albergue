@@ -6,7 +6,7 @@
 export const swupAstroOptions = {
   theme: 'fade' as const,
   animationClass: 'transition-',
-  containers: ['#swup'],
+  containers: ['#main-content'],
   cache: true,
   preload: {
     hover: true,

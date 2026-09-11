@@ -1,11 +1,5 @@
 export type StatColor =
-  | 'primary'
-  | 'secondary'
-  | 'success'
-  | 'warning'
-  | 'error'
-  | 'info'
-  | 'default';
+  'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info' | 'default';
 export type StatSize = 'sm' | 'md' | 'lg';
 export type StatTrend = 'up' | 'down' | 'neutral';
 export type LayoutType = 'grid' | 'flex' | 'list';

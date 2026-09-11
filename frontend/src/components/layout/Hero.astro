@@ -114,35 +114,31 @@ const backgroundStyles = {
   <div
     class={`absolute inset-0 ${backgroundStyles[background]} ${background === 'image' && imageSrc ? `bg-[url(${imageSrc})]` : ''}`}
   >
-    {
-      background === 'image' && overlay && (
-        <div class="absolute inset-0 bg-linear-to-br from-black/40 via-black/20 to-transparent" />
-      )
-    }
+    {background === 'image' && overlay && (
+      <div class="absolute inset-0 bg-linear-to-br from-black/40 via-black/20 to-transparent" />
+    )}
   </div>
 
   <!-- Animated particles -->
-  {
-    particles && (
-      <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div class="particles-container">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <div
-              class={`particle particle-${i % 4} ${animated ? 'animate-float' : ''}`}
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${3 + Math.random() * 2}s`,
-              }}
-            >
-              <span class="inline-block w-2 h-2 bg-white/60 rounded-full" />
-            </div>
-          ))}
-        </div>
+  {particles && (
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="particles-container">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <div
+            class={`particle particle-${i % 4} ${animated ? 'animate-float' : ''}`}
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${3 + Math.random() * 2}s`,
+            }}
+          >
+            <span class="inline-block w-2 h-2 bg-white/60 rounded-full" />
+          </div>
+        ))}
       </div>
-    )
-  }
+    </div>
+  )}
 
   <!-- Decorative doodle elements -->
   <div class="absolute inset-0 pointer-events-none">
@@ -155,7 +151,8 @@ const backgroundStyles = {
           fill="none"
           stroke-linecap="round"
           stroke-linejoin="round"
-          class="text-primary"></path>
+          class="text-primary"
+        ></path>
         <path
           d="M32 14c-8 0-14 6-14 14s6 14 14 14 14-6 14-14-6-14-14-14z"
           stroke="currentColor"
@@ -163,7 +160,8 @@ const backgroundStyles = {
           fill="none"
           stroke-linecap="round"
           stroke-linejoin="round"
-          class="text-primary"></path>
+          class="text-primary"
+        ></path>
       </svg>
     </div>
     <div
@@ -181,16 +179,11 @@ const backgroundStyles = {
   <div class="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8" id="heroFrame">
     <div class={`max-w-4xl ${alignClasses[align]}`}>
       <!-- Subtitle -->
-      {
-        subtitle && (
-          <div
-            class={`${animated ? 'animate-slide-in-up' : ''} mb-4`}
-            style="animation-delay: 0.1s;"
-          >
-            <p class={`${subtitleSizes[size]} font-semibold text-white/90 mb-2`}>{subtitle}</p>
-          </div>
-        )
-      }
+      {subtitle && (
+        <div class={`${animated ? 'animate-slide-in-up' : ''} mb-4`} style="animation-delay: 0.1s;">
+          <p class={`${subtitleSizes[size]} font-semibold text-white/90 mb-2`}>{subtitle}</p>
+        </div>
+      )}
 
       <!-- Title -->
       <h1
@@ -203,55 +196,49 @@ const backgroundStyles = {
       </h1>
 
       <!-- Description -->
-      {
-        description && (
-          <p
-            class={`${descriptionSizes[size]} text-white/80 mb-8 leading-relaxed max-w-2xl ${align === 'center' ? 'mx-auto' : ''} ${animated ? 'animate-slide-in-up' : ''}`}
-            style="animation-delay: 0.3s;"
-          >
-            {description}
-          </p>
-        )
-      }
+      {description && (
+        <p
+          class={`${descriptionSizes[size]} text-white/80 mb-8 leading-relaxed max-w-2xl ${align === 'center' ? 'mx-auto' : ''} ${animated ? 'animate-slide-in-up' : ''}`}
+          style="animation-delay: 0.3s;"
+        >
+          {description}
+        </p>
+      )}
 
       <!-- Actions -->
-      {
-        (primaryAction || secondaryAction) && (
-          <div
-            class={`flex flex-col sm:flex-row gap-4 ${align === 'center' ? 'justify-center' : align === 'right' ? 'justify-end' : 'justify-start'} ${animated ? 'animate-slide-in-up' : ''}`}
-            style="animation-delay: 0.4s;"
-          >
-            {primaryAction && (
-              <a
-                href={primaryAction.href}
-                class="inline-flex items-center px-8 py-4 bg-brand-green text-white font-semibold rounded-lg border-2 border-brand-green hover:bg-brand-green/90 transition-all duration-200 hover:-translate-y-1"
-              >
-                {primaryActionText}
-              </a>
-            )}
+      {(primaryAction || secondaryAction) && (
+        <div
+          class={`flex flex-col sm:flex-row gap-4 ${align === 'center' ? 'justify-center' : align === 'right' ? 'justify-end' : 'justify-start'} ${animated ? 'animate-slide-in-up' : ''}`}
+          style="animation-delay: 0.4s;"
+        >
+          {primaryAction && (
+            <a
+              href={primaryAction.href}
+              class="inline-flex items-center px-8 py-4 bg-brand-green text-white font-semibold rounded-lg border-2 border-brand-green hover:bg-brand-green/90 transition-all duration-200 hover:-translate-y-1"
+            >
+              {primaryActionText}
+            </a>
+          )}
 
-            {secondaryAction && (
-              <a
-                href={secondaryAction.href}
-                class="inline-flex items-center px-8 py-4 bg-transparent text-white font-semibold rounded-lg border-2 border-white hover:bg-white/10 transition-all duration-200"
-              >
-                {secondaryActionText}
-              </a>
-            )}
-          </div>
-        )
-      }
+          {secondaryAction && (
+            <a
+              href={secondaryAction.href}
+              class="inline-flex items-center px-8 py-4 bg-transparent text-white font-semibold rounded-lg border-2 border-white hover:bg-white/10 transition-all duration-200"
+            >
+              {secondaryActionText}
+            </a>
+          )}
+        </div>
+      )}
     </div>
   </div>
 
   <!-- Scroll indicator -->
-  {
-    animated && (
-      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div class="text-white text-2xl">↓</div>
-      </div>
-    )
-  }
+  {animated && (
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <div class="text-white text-2xl">↓</div>
+    </div>
+  )}
 </section>
 
 <style>

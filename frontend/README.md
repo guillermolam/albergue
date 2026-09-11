@@ -42,11 +42,11 @@ pnpm run deploy stormkit
 Validate any provider without publishing by appending `--dry-run`, for example
 `pnpm run deploy stormkit --dry-run`.
 
-| Provider | Adapter/runtime | Build | Deploy |
-| --- | --- | --- | --- |
-| Cloudflare Workers | `@astrojs/cloudflare` | `pnpm run build:cloudflare` | `pnpm run deploy:cloudflare` |
-| Netlify Functions | `@astrojs/netlify` | `pnpm run build:netlify` | `pnpm run deploy:netlify` |
-| Stormkit | `@astrojs/node` standalone | `pnpm run build:stormkit` | `pnpm run deploy:stormkit` |
+| Provider           | Adapter/runtime            | Build                       | Deploy                       |
+| ------------------ | -------------------------- | --------------------------- | ---------------------------- |
+| Cloudflare Workers | `@astrojs/cloudflare`      | `pnpm run build:cloudflare` | `pnpm run deploy:cloudflare` |
+| Netlify Functions  | `@astrojs/netlify`         | `pnpm run build:netlify`    | `pnpm run deploy:netlify`    |
+| Stormkit           | `@astrojs/node` standalone | `pnpm run build:stormkit`   | `pnpm run deploy:stormkit`   |
 
 Cloudflare requires Wrangler authentication (`wrangler login` locally or
 `CLOUDFLARE_API_TOKEN` in CI). Netlify requires a linked site (`pnpm exec netlify link`) and
@@ -54,7 +54,8 @@ authentication (`netlify login` locally or `NETLIFY_AUTH_TOKEN` and `NETLIFY_SIT
 
 Import this repository in Stormkit, set the application root to `frontend`, and copy the settings
 from `stormkit.json`. `pnpm run deploy:stormkit` validates the standalone Node build and then calls
-Stormkit's Deployments API using `STROMKIT_ALBERGUE_KEY`. The current branch is deployed and
+Stormkit's Deployments API using `STORMKIT_ALBERGUE_KEY` (legacy `STROMKIT_ALBERGUE_KEY` also
+accepted). The current branch is deployed and
 published by default. Set `STORMKIT_BRANCH` to override the branch, `STORMKIT_PUBLISH=0` to create
 an unpublished deployment, and set `STORMKIT_ENV_ID` for this non-environment-level key. The
 environment ID is shown in Stormkit under **App → Environment → Config**.

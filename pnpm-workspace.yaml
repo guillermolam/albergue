@@ -4,6 +4,7 @@ packages:
   - 'domain_model'
 
 allowBuilds:
+  '@parcel/watcher': set this to true or false
   esbuild: true
   netlify-cli: true
   sharp: true

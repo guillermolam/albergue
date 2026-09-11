@@ -2,252 +2,163 @@
 export const prerender = true;
 
 import Layout from '../layouts/Layout.astro';
+import DoodleCard from '../components/doodle/DoodleCard.astro';
+import DoodleButton from '../components/doodle/DoodleButton.astro';
+import RoughIcon from '../components/core/RoughIcon.astro';
 ---
 
-<Layout title="Reservar Albergue - Camino Dashboard">
-  <main class="container mx-auto px-4 py-8">
-    <div class="text-center mb-12">
-      <h1 class="text-4xl font-bold text-primary-900 mb-4">Reserva tu Albergue</h1>
-      <p class="text-lg text-primary-600">Encuentra y reserva tu próximo refugio en el Camino</p>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-      <!-- Booking Form -->
-      <div class="card animate-slide-in-left">
-        <div class="flex items-center gap-4 mb-6">
-          <div class="text-3xl">🏨</div>
-          <div>
-            <h2 class="text-xl font-bold text-primary-900">Información de Reserva</h2>
-            <p class="text-sm text-primary-600">Completa los datos para tu estancia</p>
-          </div>
-        </div>
-
-        <form class="space-y-6">
-          <div>
-            <label for="name" class="block text-sm font-semibold text-primary-700 mb-2"
-              >Nombre completo</label
-            >
-            <input
-              type="text"
-              id="name"
-              name="name"
-              required
-              placeholder="Ingresa tu nombre completo"
-              class="input w-full"
-            />
-          </div>
-
-          <div>
-            <label for="email" class="block text-sm font-semibold text-primary-700 mb-2"
-              >Email</label
-            >
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              placeholder="tu@email.com"
-              class="input w-full"
-            />
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="date" class="block text-sm font-semibold text-primary-700 mb-2"
-                >Fecha de entrada</label
-              >
-              <input type="date" id="date" name="date" required class="input w-full" />
-            </div>
-            <div>
-              <label for="nights" class="block text-sm font-semibold text-primary-700 mb-2"
-                >Noches</label
-              >
-              <select id="nights" name="nights" required class="input w-full">
-                {
-                  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                    <option value={n}>
-                      {n} {n === 1 ? 'noche' : 'noches'}
-                    </option>
-                  ))
-                }
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label for="albergue" class="block text-sm font-semibold text-primary-700 mb-2"
-              >Albergue preferido</label
-            >
-            <select id="albergue" name="albergue" required class="input w-full">
-              <option value="">Selecciona un albergue</option>
-              <option value="carrascalejo">Albergue Municipal Carrascalejo</option>
-              <option value="merida">Albergue de Mérida</option>
-              <option value="zafra">Albergue de Zafra</option>
-              <option value="villafranca">Albergue de Villafranca</option>
-            </select>
-          </div>
-
-          <div>
-            <label for="message" class="block text-sm font-semibold text-primary-700 mb-2"
-              >Comentarios (opcional)</label
-            >
-            <textarea
-              id="message"
-              name="message"
-              rows="4"
-              placeholder="¿Alguna necesidad especial o comentario?"
-              class="input w-full resize-none"></textarea>
-          </div>
-
-          <div class="flex flex-col sm:flex-row gap-4 pt-4">
-            <button type="submit" class="btn btn-primary text-white flex-1">
-              🏨 Reservar Ahora
-            </button>
-            <button
-              type="button"
-              class="btn btn-outline text-primary-700 border-primary-300 flex-1"
-            >
-              📞 Contactar
-            </button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Progress Panel -->
-      <div class="card animate-slide-in-right">
-        <div class="flex items-center gap-4 mb-6">
-          <div class="text-3xl">📊</div>
-          <div>
-            <h2 class="text-xl font-bold text-primary-900">Tu Progreso en el Camino</h2>
-            <p class="text-sm text-primary-600">Mantén tu progreso actualizado</p>
-          </div>
-        </div>
-
-        <div class="space-y-8">
-          <!-- Daily Goal -->
-          <div>
-            <div class="flex justify-between items-center mb-4">
-              <div>
-                <span class="text-sm font-semibold text-primary-700">Meta diaria</span>
-                <div class="text-xs text-primary-500">Kilómetros por día</div>
-              </div>
-              <div class="flex gap-2 items-center">
-                <button
-                  data-action="goal:dec"
-                  class="px-2 py-1 text-sm bg-primary-100 rounded hover:bg-primary-200 transition-colors text-primary-700"
-                >
-                  −
-                </button>
-                <span
-                  data-store="dailyGoalKm"
-                  class="px-3 py-1 bg-white border border-primary-200 rounded font-semibold text-primary-900 min-w-[3rem] text-center"
-                  >25</span
-                >
-                <button
-                  data-action="goal:inc"
-                  class="px-2 py-1 text-sm bg-primary-100 rounded hover:bg-primary-200 transition-colors text-primary-700"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-            <div class="w-full bg-primary-200 rounded-full h-2">
-              <div class="bg-gradient-primary h-2 rounded-full w-5/6"></div>
-            </div>
-          </div>
-
-          <!-- Stage Progress -->
-          <div>
-            <div class="flex justify-between items-center mb-4">
-              <div>
-                <span class="text-sm font-semibold text-primary-700">Progreso de etapa</span>
-                <div class="text-xs text-primary-500">Actual etapa actual</div>
-              </div>
-              <div class="flex gap-2 items-center">
-                <button
-                  data-action="stage:dec"
-                  class="px-2 py-1 text-sm bg-primary-100 rounded hover:bg-primary-200 transition-colors text-primary-700"
-                >
-                  −5%
-                </button>
-                <span
-                  data-store="stageProgress"
-                  class="px-3 py-1 bg-white border border-primary-200 rounded font-semibold text-primary-900 min-w-[3rem] text-center"
-                  >68</span
-                >
-                <button
-                  data-action="stage:inc"
-                  class="px-2 py-1 text-sm bg-primary-100 rounded hover:bg-primary-200 transition-colors text-primary-700"
-                >
-                  +5%
-                </button>
-              </div>
-            </div>
-            <div class="w-full bg-primary-200 rounded-full h-2">
-              <div class="bg-gradient-primary h-2 rounded-full w-17/25"></div>
-            </div>
-          </div>
-
-          <!-- Remaining Days -->
-          <div class="pt-6 border-t border-primary-200">
-            <div class="flex justify-between items-center mb-4">
-              <div>
-                <span class="text-sm font-semibold text-primary-700">Tiempo restante</span>
-                <div class="text-xs text-primary-500">Estimado para terminar</div>
-              </div>
-              <span
-                data-store="remainingDays"
-                class="px-4 py-2 bg-accent-green-100 text-accent-green-800 rounded-full font-bold text-lg"
-                >29</span
-              >
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 text-sm text-primary-600">
-              <div class="bg-primary-50 p-3 rounded-lg">
-                <div class="font-semibold">Kilómetros totales</div>
-                <div class="text-primary-500">847 km</div>
-              </div>
-              <div class="bg-primary-50 p-3 rounded-lg">
-                <div class="font-semibold">Kilómetros restantes</div>
-                <div class="text-primary-500">720 km</div>
-              </div>
-            </div>
-
-            <div class="mt-6 flex gap-3">
-              <button
-                class="btn btn-outline text-primary-700 border-primary-300 w-full"
-                data-action="progress:sync"
-              >
-                🔄 Sincronizar Progreso
-              </button>
-            </div>
-          </div>
+<Layout title="Reservar Albergue - Albergue Municipal Carrascalejo">
+  <main class="bg-paper-bg">
+    <!-- Hero Section -->
+    <section class="relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-linear-to-br from-green-50 to-cream">
+      <div class="absolute inset-0 sketchy-bg opacity-70"></div>
+      <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+        <h1 class="text-4xl md:text-5xl font-bold text-charcoal mb-4 font-sketch">
+          Reserva tu Albergue
+        </h1>
+        <p class="text-xl text-dark-grey mb-8 font-handwritten">
+          Encuentra y reserva tu próximo refugio en el Camino de Santiago
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <DoodleButton href="/booking" variant="primary" size="lg">
+            Reservar Ahora
+          </DoodleButton>
+          <DoodleButton href="/info" variant="outline" size="lg">
+            Ver Disponibilidad
+          </DoodleButton>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Additional Info -->
-    <div class="mt-12 text-center">
-      <div class="card mx-auto max-w-2xl">
-        <div class="flex items-center justify-center gap-4 mb-4">
-          <div class="text-2xl">💡</div>
-          <h3 class="text-lg font-bold text-primary-900">Consejos para tu Reserva</h3>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-primary-600">
-          <div class="bg-primary-50 p-4 rounded-lg">
-            <div class="font-semibold mb-2">📅 Anticipación</div>
-            <p>Reserva con anticipación durante temporada alta (primavera/verano)</p>
-          </div>
-          <div class="bg-primary-50 p-4 rounded-lg">
-            <div class="font-semibold mb-2">💰 Precios</div>
-            <p>Precio estándar: €12 por noche, incluye desayuno</p>
-          </div>
-          <div class="bg-primary-50 p-4 rounded-lg">
-            <div class="font-semibold mb-2">⏰ Horarios</div>
-            <p>Entrada: 15:00, Salida: 11:00</p>
-          </div>
+    <!-- Booking Section -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          <!-- Booking Form -->
+          <DoodleCard variant="elevated" padding="lg">
+            <h2 class="text-2xl font-bold text-charcoal mb-6 font-sketch flex items-center gap-3">
+              <span class="text-3xl">🏨</span>
+              Información de Reserva
+            </h2>
+            <form class="space-y-6">
+              <div>
+                <label class="block text-sm font-semibold text-dark-grey mb-2">
+                  Nombre completo
+                </label>
+                <input type="text" placeholder="Ingresa tu nombre completo" class="input w-full" />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-dark-grey mb-2">Email</label>
+                <input type="email" placeholder="tu@email.com" class="input w-full" />
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-semibold text-dark-grey mb-2">
+                    Fecha de entrada
+                  </label>
+                  <input type="date" class="input w-full" />
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-dark-grey mb-2">Noches</label>
+                  <select class="input w-full">
+                    <option value="">Selecciona</option>
+                    {Array.from({ length: 10 }, (_, i) => (
+                      <option value={i + 1}>
+                        {i + 1} {i === 0 ? 'noche' : 'noches'}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-dark-grey mb-2">
+                  Albergue preferido
+                </label>
+                <select class="input w-full">
+                  <option value="">Selecciona un albergue</option>
+                  <option value="carrascalejo">Albergue Municipal Carrascalejo</option>
+                  <option value="merida">Albergue de Mérida</option>
+                  <option value="zafra">Albergue de Zafra</option>
+                  <option value="villafranca">Albergue de Villafranca</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-dark-grey mb-2">
+                  Comentarios (opcional)
+                </label>
+                <textarea
+                  rows="4"
+                  placeholder="¿Alguna necesidad especial?"
+                  class="input w-full resize-none"
+                ></textarea>
+              </div>
+              <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                <DoodleButton variant="primary" size="md" class="flex-1">
+                  Reservar Ahora
+                </DoodleButton>
+                <DoodleButton variant="outline" size="md" class="flex-1">
+                  Contactar
+                </DoodleButton>
+              </div>
+            </form>
+          </DoodleCard>
+
+          <!-- Progress Panel -->
+          <DoodleCard variant="gradient" gradient="green" padding="lg">
+            <h2 class="text-2xl font-bold text-charcoal mb-6 font-sketch flex items-center gap-3">
+              <span class="text-3xl">📊</span>
+              Tu Progreso en el Camino
+            </h2>
+            <div class="space-y-6">
+              <div>
+                <div class="flex justify-between mb-3">
+                  <span class="text-sm font-semibold text-dark-grey">Progreso total</span>
+                  <span class="text-sm font-bold text-green-darker">15%</span>
+                </div>
+                <div class="w-full bg-green-light rounded-full h-3">
+                  <div class="bg-green-dark h-3 rounded-full" style="width: 15%"></div>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="bg-green-light p-4 rounded-lg text-center">
+                  <div class="text-2xl font-bold text-green-dark">127</div>
+                  <div class="text-sm text-dark-grey">km recorridos</div>
+                </div>
+                <div class="bg-green-light p-4 rounded-lg text-center">
+                  <div class="text-2xl font-bold text-green-dark">7</div>
+                  <div class="text-sm text-dark-grey">Días en camino</div>
+                </div>
+              </div>
+            </div>
+          </DoodleCard>
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Tips Section -->
+    <section class="py-16 bg-linear-to-br from-green-50 to-cream">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold text-charcoal mb-8 font-sketch">
+          <RoughIcon name="star" size="xl" color="primary" animated /> Consejos para tu Reserva
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <DoodleCard variant="subtle" padding="md">
+            <div class="text-3xl mb-3">📅</div>
+            <h3 class="font-bold text-charcoal mb-2 font-sketch">Anticipación</h3>
+            <p class="text-sm text-dark-grey">Reserva con anticipación durante temporada alta</p>
+          </DoodleCard>
+          <DoodleCard variant="subtle" padding="md">
+            <div class="text-3xl mb-3">💰</div>
+            <h3 class="font-bold text-charcoal mb-2 font-sketch">Precios</h3>
+            <p class="text-sm text-dark-grey">Precio estándar: €12 por noche, incluye desayuno</p>
+          </DoodleCard>
+          <DoodleCard variant="subtle" padding="md">
+            <div class="text-3xl mb-3">⏰</div>
+            <h3 class="font-bold text-charcoal mb-2 font-sketch">Horarios</h3>
+            <p class="text-sm text-dark-grey">Entrada: 15:00, Salida: 11:00</p>
+          </DoodleCard>
+        </div>
+      </div>
+    </section>
   </main>
 </Layout>

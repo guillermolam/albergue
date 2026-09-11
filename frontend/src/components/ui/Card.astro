@@ -22,13 +22,7 @@ interface Props {
   href?: string;
 }
 
-const {
-  variant = 'default',
-  hoverable = true,
-  clickable = false,
-  padding,
-  href,
-} = Astro.props;
+const { variant = 'default', hoverable = true, clickable = false, padding, href } = Astro.props;
 
 const variantClasses = {
   default: 'card',
@@ -52,21 +46,21 @@ const Component = href ? 'a' : 'div';
 <Component
   class={classes}
   href={href}
-  {clickable ? 'role="button" tabindex="0"' : ''}
+  role={clickable ? 'button' : undefined}
+  tabindex={clickable ? 0 : undefined}
 >
   <slot />
 </Component>
 
-{clickable && (
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const card = document.currentScript.previousElementSibling;
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          card.click();
-        }
-      });
+{clickable && <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const card = document.currentScript?.previousElementSibling;
+    if (!card) return;
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        (card as HTMLElement).click();
+      }
     });
-  </script>
-)}
+  });
+</script>}

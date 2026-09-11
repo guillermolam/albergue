@@ -1,6 +1,7 @@
 import unocss from '@unocss/vite';
 import swup from '@swup/astro';
 import icon from 'astro-icon';
+import { webcore } from 'webcoreui/integration';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -14,10 +15,11 @@ export const sharedConfig = {
     defaultStrategy: 'hover',
   },
   integrations: [
+    webcore(),
     swup({
       theme: 'fade',
       animationClass: 'transition-',
-      containers: ['#swup'],
+      containers: ['#main-content'],
       cache: true,
       preload: {
         hover: true,
@@ -81,8 +83,15 @@ export const sharedConfig = {
     optimizeDeps: {
       include: ['roughjs', 'roughjs/bundled/rough.esm.js'],
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler',
+        },
+      },
+    },
     ssr: {
-      noExternal: ['@unocss/vite', 'unocss', 'roughjs'],
+      noExternal: ['@unocss/vite', 'unocss', 'roughjs', 'webcoreui'],
     },
     plugins: [
       unocss({

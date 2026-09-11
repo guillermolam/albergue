@@ -55,7 +55,13 @@ const additionalProps = href ? { href } : { type: 'button' };
     class="absolute inset-0 w-full h-full pointer-events-none -z-10"
     style="filter: blur(3px); opacity: 0.15;"
   >
-    <rect x="3" y="3" width="calc(100% - 6px)" height="calc(100% - 6px)" fill="black" rx="10"
+    <rect
+      x="3"
+      y="3"
+      width="calc(100% - 6px)"
+      height="calc(100% - 6px)"
+      fill="black"
+      rx="10"
     ></rect>
   </svg>
 
@@ -70,7 +76,8 @@ const additionalProps = href ? { href } : { type: 'button' };
       stroke="currentColor"
       stroke-width="2.5"
       rx="10"
-      style="opacity: 0.1;"></rect>
+      style="opacity: 0.1;"
+    ></rect>
   </svg>
 
   <!-- Button text -->
@@ -79,16 +86,14 @@ const additionalProps = href ? { href } : { type: 'button' };
   </span>
 
   <!-- Sparkles effect (pure CSS) -->
-  {
-    emphasis && (
-      <span class="sparkles">
-        <span class="sparkle" />
-        <span class="sparkle" />
-        <span class="sparkle" />
-        <span class="sparkle" />
-      </span>
-    )
-  }
+  {emphasis && (
+    <span class="sparkles">
+      <span class="sparkle" />
+      <span class="sparkle" />
+      <span class="sparkle" />
+      <span class="sparkle" />
+    </span>
+  )}
 </Component>
 
 <style>
