@@ -15,7 +15,24 @@ export const sharedConfig = {
   },
   integrations: [
     swup({
-      animationSelector: '[class*="transition-"]',
+      theme: 'fade',
+      animationClass: 'transition-',
+      containers: ['#swup'],
+      cache: true,
+      preload: {
+        hover: true,
+        visible: true,
+      },
+      accessibility: true,
+      forms: true,
+      progress: true,
+      smoothScrolling: true,
+      updateBodyClass: true,
+      updateHead: true,
+      reloadScripts: true,
+      debug: process.env.NODE_ENV !== 'production',
+      loadOnIdle: true,
+      globalInstance: true,
     }),
     icon({
       include: {
@@ -55,13 +72,17 @@ export const sharedConfig = {
         '@/styles': '/src/styles',
         '@/assets': '/src/assets',
         '@/public': '/public',
+        // Stable ESM entry — avoids stale Vite prebundle 404s for deep bundled path
+        'roughjs/bundled/rough.esm.js': fileURLToPath(
+          new URL('./node_modules/roughjs/bundled/rough.esm.js', import.meta.url)
+        ),
       },
     },
     optimizeDeps: {
-      include: [],
+      include: ['roughjs', 'roughjs/bundled/rough.esm.js'],
     },
     ssr: {
-      noExternal: ['@unocss/vite', 'unocss'],
+      noExternal: ['@unocss/vite', 'unocss', 'roughjs'],
     },
     plugins: [
       unocss({

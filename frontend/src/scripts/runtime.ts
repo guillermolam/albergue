@@ -1,5 +1,6 @@
 import { initRough } from './runtime_rough';
 import { initStoresBridge } from './runtime_stores_bridge';
+import { initializeSwupPlugins } from './swup-plugins';
 
 function onIdle(cb: () => void) {
   const w = window as unknown as { requestIdleCallback?: (fn: () => void) => number };
@@ -10,6 +11,7 @@ function onIdle(cb: () => void) {
 function bootstrap() {
   queueMicrotask(() => initStoresBridge());
   requestAnimationFrame(() => initRough());
+  void initializeSwupPlugins();
   onIdle(() => {
     document.dispatchEvent(new CustomEvent('app:ready'));
   });

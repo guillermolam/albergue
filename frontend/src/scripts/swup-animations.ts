@@ -3,7 +3,8 @@
  * Mind-blowing page transition animations for Albergue
  */
 
-import type { SwupPlugin } from '@swup/core';
+/** Local plugin shape — avoids broken `@swup/core` CDN-era import */
+type SwupPlugin = () => any;
 
 // Custom animation plugin with staggered element animations
 const complexAnimationsPlugin: SwupPlugin = () => {
