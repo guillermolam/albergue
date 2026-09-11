@@ -1,0 +1,89 @@
+---
+/**
+ * Input Component - Matching Figma Design
+ *
+ * Variants:
+ * - default: Standard input (default)
+ * - doodle: Hand-drawn sketchy style
+ *
+ * Props:
+ * - type: Input type (text, email, password, etc.)
+ * - placeholder: Placeholder text
+ * - label: Label text
+ * - error: Error message
+ * - helper: Helper text
+ * - required: Required field
+ * - disabled: Disabled state
+ */
+
+interface Props {
+  variant?: 'default' | 'doodle';
+  type?: 'text' | 'email' | 'password' | 'tel' | 'url' | 'number' | 'date' | 'search';
+  id?: string;
+  name?: string;
+  placeholder?: string;
+  label?: string;
+  error?: string;
+  helper?: string;
+  required?: boolean;
+  disabled?: boolean;
+}
+
+const {
+  variant = 'default',
+  type = 'text',
+  id,
+  name,
+  placeholder,
+  label,
+  error,
+  helper,
+  required = false,
+  disabled = false,
+} = Astro.props;
+
+const inputId = id || name;
+const hasError = !!error;
+const variantClasses = {
+  default: 'input',
+  doodle: 'input input-doodle',
+};
+
+const classes = `${variantClasses[variant]} ${hasError ? 'border-status-error' : ''}`;
+---
+
+<div class="w-full">
+  {label && (
+    <label
+      for={inputId}
+      class="block text-sm font-medium text-charcoal mb-2"
+    >
+      {label}
+      {required && <span class="text-status-error ml-1" aria-hidden="true">*</span>}
+    </label>
+  )}
+
+  <input
+    type={type}
+    id={inputId}
+    name={name}
+    placeholder={placeholder}
+    class={classes}
+    required={required}
+    disabled={disabled}
+    aria-invalid={hasError}
+    aria-describedby={hasError ? `${inputId}-error` : helper ? `${inputId}-helper` : undefined}
+  />
+
+  {hasError && (
+    <p id={`${inputId}-error`} class="mt-2 text-sm text-status-error" role="alert">
+      {error}
+    </p>
+  )}
+
+  {helper && !hasError && (
+    <p id={`${inputId}-helper`} class="mt-2 text-sm text-dark-grey">
+      {helper}
+    </p>
+  )}
+</div>

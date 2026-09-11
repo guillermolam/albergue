@@ -1,7 +1,7 @@
 import {
   defineConfig,
   presetTypography,
-  presetUno,
+  presetWind3,
   transformerVariantGroup,
 } from 'unocss';
 
@@ -13,170 +13,164 @@ export default defineConfig({
         './src/**/*.css',
       ],
     },
-    extract: {
-      include: [
-        './src/**/*.{astro,js,jsx,ts,tsx,vue,svelte}',
-        './src/**/*.css',
-      ],
-    },
   },
   presets: [
-    presetUno(),
+    presetWind3(),
     presetTypography(),
   ],
   theme: {
+    // Design System Tokens mapped to CSS variables
     colors: {
-      // Primary brand color (Extremadura government green)
-      primary: '#00AB39',
-      
-      // Base colors
-      white: '#FFFFFF',
-      black: '#000000',
-      
-      // Brand colors from Extremadura palette
-      brand: {
-        green: '#00AB39',
-        greenDark: '#008a2e',
-        greenLight: '#33c161',
-        blue: '#0071BC',
-        yellow: '#EAC102',
-        red: '#ED1C24',
-        ink: '#111111',
-      },
-      
-      // Neutral palette (matches Tailwind slate)
-      slate: {
-        50: '#f8fafc',
-        100: '#f1f5f9',
-        200: '#e2e8f0',
-        300: '#cbd5e1',
-        400: '#94a3b8',
-        500: '#64748b',
-        600: '#475569',
-        700: '#334155',
-        800: '#1e293b',
-        900: '#0f172a',
-      },
-      
-      // Stone palette for backgrounds
-      stone: {
-        50: '#fafaf9',
-        100: '#f5f5f4',
-        200: '#e7e5e4',
-        300: '#d6d3d1',
-        400: '#a8a29e',
-        500: '#78716c',
-        600: '#57534e',
-        700: '#44403c',
-        800: '#292524',
-        900: '#1c1917',
-      },
-      
-      // Gray palette
-      gray: {
-        50: '#f9fafb',
-        100: '#f3f4f6',
-        200: '#e5e7eb',
-        300: '#d1d5db',
-        400: '#9ca3af',
-        500: '#6b7280',
-        600: '#4b5563',
-        700: '#374151',
-        800: '#1f2937',
-        900: '#111827',
-      },
-      
-      // Accent colors matching figma-design.css (Tailwind palette)
-      // These are used for badge colors and status indicators
-      accent: {
-        green: {
-          50: '#ecfdf5',
-          100: '#d1fae5',
-          200: '#a7f3d0',
-          500: '#10b981',
-          600: '#059669',
-        },
-        blue: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          500: '#3b82f6',
-          600: '#2563eb',
-        },
-        yellow: {
-          50: '#fffbeb',
-          100: '#fef3c7',
-          200: '#fde68a',
-          500: '#f59e0b',
-          600: '#d97706',
-        },
-        red: {
-          50: '#fef2f2',
-          100: '#fee2e2',
-          200: '#fecaca',
-          500: '#ef4444',
-          600: '#dc2626',
-        },
-      },
-      
-      // Standard color shortcuts
-      yellow: '#EAC102',
-      red: '#ED1C24',
-      blue: '#0071BC',
+      'green-light': 'var(--green-light)',
+      'green-medium': 'var(--green-medium)',
+      'green-dark': 'var(--green-dark)',
+      'green-darker': 'var(--green-darker)',
+      'cream': 'var(--cream)',
+      'light-grey': 'var(--light-grey)',
+      'medium-grey': 'var(--medium-grey)',
+      'dark-grey': 'var(--dark-grey)',
+      'charcoal': 'var(--charcoal)',
+      'paper-bg': 'var(--paper-bg)',
+      'status-success': 'var(--status-success)',
+      'status-warning': 'var(--status-warning)',
+      'status-error': 'var(--status-error)',
+      'status-info': 'var(--status-info)',
+    },
+    fontFamily: {
+      handwritten: 'var(--font-handwritten)',
+      sketch: 'var(--font-sketch)',
+      accent: 'var(--font-accent)',
+      mono: 'var(--font-mono)',
+    },
+    boxShadow: {
+      doodle: 'var(--doodle-shadow)',
+    },
+    borderRadius: {
+      doodle: '255px 15px 225px 15px / 15px 225px 15px 255px',
     },
   },
   shortcuts: [
-    // Custom button styles
-    ['btn', 'px-4 py-2 rounded-lg font-medium transition-colors'],
-    ['btn-primary', 'btn bg-brand-green text-white hover:bg-brand-greenDark'],
-    ['btn-secondary', 'btn bg-brand-yellow text-brand-red'],
-    ['btn-outline', 'btn border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white'],
-    ['btn-circle', 'btn rounded-full aspect-square p-2'],
-    ['btn-square', 'btn aspect-square p-2'],
+    // Doodle border - organic, hand-drawn
+    ['doodle-border', 'border-radius:255px 15px 225px 15px/15px 225px 15px 255px'],
+    
+    // Wired-style double border
+    ['wired-border', 'border-2 border-charcoal shadow-[-2px_-2px_0_0_theme(colors.charcoal),2px_2px_0_0_theme(colors.charcoal)]'],
+    
+    // Sketchy single border
+    ['sketch-border', 'border-3 border-charcoal doodle-border'],
+    
+    // Paper texture
+    ['paper-texture', 'bg-[radial-gradient(circle_at_1px_1px,rgba(0,171,57,0.05)_1px,transparent_0)] bg-[length:20px_20px]'],
+    
+    // Crosshatch background
+    ['sketchy-bg', 'bg-[linear-gradient(45deg,rgba(0,171,57,0.1)_25%,transparent_25%),linear-gradient(-45deg,rgba(0,171,57,0.1)_25%,transparent_25%),linear-gradient(45deg,transparent_75%,rgba(0,171,57,0.1)_75%),linear-gradient(-45deg,transparent_75%,rgba(0,171,57,0.1)_75%)] bg-[length:20px_20px] bg-[position:0_0,0_10px,10px_-10px,-10px_0px]'],
+    
+    // Card styles matching Figma
+    ['card', 'bg-white rounded-lg p-6 shadow-md border border-light-grey transition-all duration-250'],
+    ['card-compact', 'card p-4'],
+    ['card-elevated', 'card shadow-xl border-green-light'],
+    ['card-doodle', 'bg-white doodle-border p-6 doodle-shadow border-3 border-charcoal'],
+    
+    // Button styles matching Figma
+    ['btn', 'inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-handwritten font-600 text-base cursor-pointer transition-all duration-250 whitespace-nowrap'],
+    ['btn-primary', 'btn bg-green-dark text-white hover:(bg-green-darker translate-y--2) active:translate-y-0'],
+    ['btn-secondary', 'btn bg-green-light text-green-darker hover:bg-green-medium'],
+    ['btn-outline', 'btn bg-transparent text-green-dark border-2 border-green-dark hover:(bg-green-light border-green-dark text-green-darker)'],
+    ['btn-ghost', 'btn bg-transparent text-green-dark hover:bg-[rgba(0,171,57,0.1)]'],
+    ['btn-doodle', 'btn bg-white text-charcoal sketch-border doodle-shadow font-sketch font-700 hover:translate-y--3'],
+    ['btn-circle', 'btn aspect-square p-0 rounded-full'],
+    ['btn-icon', 'btn aspect-square p-2'],
     ['btn-sm', 'btn px-3 py-1.5 text-sm'],
-    ['btn-ghost', 'btn text-brand-green hover:bg-brand-green/10'],
     
-    // Badge styles (replacing DaisyUI)
-    ['badge', 'px-3 py-1 rounded-full text-sm font-medium'],
-    ['badge-sm', 'px-2 py-0.5 rounded-full text-xs font-medium'],
-    ['badge-success', 'badge bg-accent-green-100 text-accent-green-600'],
-    ['badge-error', 'badge bg-accent-red-100 text-accent-red-600'],
-    ['badge-warning', 'badge bg-accent-yellow-100 text-accent-yellow-600'],
-    ['badge-blue', 'badge bg-accent-blue-100 text-accent-blue-600'],
+    // Badge styles matching Figma
+    ['badge', 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-600 font-handwritten uppercase tracking-wider'],
+    ['badge-sm', 'badge px-2 py-0.5 text-xs'],
+    ['badge-green', 'badge bg-green-light text-green-darker'],
+    ['badge-grey', 'badge bg-light-grey text-charcoal'],
+    ['badge-success', 'badge bg-status-success text-white'],
+    ['badge-warning', 'badge bg-status-warning text-charcoal'],
+    ['badge-error', 'badge bg-status-error text-white'],
+    ['badge-info', 'badge bg-status-info text-white'],
     
-    // Card styles
-    ['card', 'bg-white rounded-xl shadow-sm border border-stone-200'],
-    ['card-title', 'text-xl font-bold mb-2'],
-    ['card-brut', 'border-4 border-black bg-white shadow-[8px_8px_0_0_#000] rounded-none p-4'],
-    ['rounded-box', 'rounded-xl'],
+    // Input styles
+    ['input', 'w-full p-3 rounded-md border-2 border-medium-grey bg-white font-handwritten transition-all duration-250'],
+    ['input-doodle', 'input sketch-border'],
     
-    // DaisyUI stat component replacements
-    ['stat', 'bg-stone-50 rounded-xl p-6'],
-    ['stat-figure', 'text-brand-green'],
-    ['stat-title', 'text-sm text-slate-600'],
-    ['stat-value', 'text-3xl font-bold text-brand-green'],
-    ['stat-desc', 'text-xs text-slate-500'],
+    // Stat component styles
+    ['stat', 'bg-white rounded-lg p-6 shadow-sm border border-light-grey'],
+    ['stat-figure', 'text-green-dark mb-2'],
+    ['stat-title', 'text-sm text-dark-grey sketch-title uppercase tracking-wider mb-1'],
+    ['stat-value', 'text-3xl font-700 text-charcoal sketch-title leading-none'],
+    ['stat-desc', 'text-xs text-dark-grey mt-1'],
     
-    // Hero component
-    ['hero', 'min-h-[60vh] flex items-center justify-center'],
-    ['hero-content', 'text-center max-w-2xl'],
+    // Hero styles
+    ['hero', 'min-h-[60vh] flex items-center justify-center relative overflow-hidden'],
+    ['hero-content', 'text-center max-w-2xl px-4'],
+    ['hero-title', 'sketch-title text-[clamp(2.5rem,8vw,4rem)] font-700 text-charcoal leading-[1.1] mb-4'],
+    ['hero-subtitle', 'font-handwritten text-[clamp(1rem,2.5vw,1.25rem)] text-dark-grey leading-6 max-w-6xl mx-auto mb-16'],
     
-    // Custom doodle styles
-    ['ds-card', 'bg-white ring-1 ring-stone-200 shadow-sm rounded-3xl'],
-    ['ds-muted', 'text-stone-600'],
+    // Layout utilities
+    ['container', 'mx-auto max-w-7xl px-4'],
+    ['container-sm', 'mx-auto max-w-6xl px-4'],
+    ['container-md', 'mx-auto max-w-5xl px-4'],
+    ['container-lg', 'mx-auto max-w-4xl px-4'],
+    
+    // Flexbox utilities
+    ['flex-center', 'flex items-center justify-center'],
+    ['flex-between', 'flex items-center justify-between'],
+    ['flex-col-center', 'flex flex-col items-center justify-center'],
+    
+    // Gap utilities
+    ['gap-xs', 'gap-1'],
+    ['gap-sm', 'gap-2'],
+    ['gap-md', 'gap-4'],
+    ['gap-lg', 'gap-6'],
+    ['gap-xl', 'gap-8'],
+    
+    // Grid utilities
+    ['grid-cols-12', 'grid grid-cols-12'],
+    ['col-span-1', 'col-span-1'],
+    ['col-span-2', 'col-span-2'],
+    ['col-span-3', 'col-span-3'],
+    ['col-span-4', 'col-span-4'],
+    ['col-span-6', 'col-span-6'],
+    ['col-span-8', 'col-span-8'],
+    ['col-span-12', 'col-span-12'],
+    
+    // Animation utilities
+    ['wobble', 'animate-[wobble_3s_ease-in-out_infinite] origin-center'],
+    ['gentle-bounce', 'animate-[gentle-bounce_2s_ease-in-out_infinite]'],
+    ['float', 'animate-[float_3s_ease-in-out_infinite]'],
+    ['pulse', 'animate-[pulse_2s_ease-in-out_infinite]'],
+    ['parallax', 'will-change-transform'],
+    ['perspective', 'perspective-1000'],
+    ['perspective-3d', 'perspective-1200 transform-style-preserve-3d'],
+    
+    // Doodle utilities
+    ['doodle-card', 'card doodle-border doodle-shadow'],
+    ['sketch-title', 'font-sketch font-700'],
+    ['sketch-subtitle', 'font-sketch font-400'],
+    ['hand-drawn', 'font-handwritten'],
+    ['accent-text', 'font-accent'],
+    
+    // Legacy shortcuts (for backward compatibility)
+    ['card-brut', 'card-doodle'],
+    ['ds-card', 'card-doodle'],
+    ['ds-muted', 'text-dark-grey'],
     [
       'ds-btn',
-      'inline-flex items-center justify-center font-900 rounded-2xl px-6 py-3 transition select-none',
+      'btn btn-doodle',
     ],
-    ['ds-btn-primary', 'ds-btn bg-brand-green text-white'],
-    ['ds-btn-outline', 'ds-btn bg-white text-stone-900 border-2 border-stone-300'],
+    ['ds-btn-primary', 'ds-btn bg-green-dark text-white'],
+    ['ds-btn-outline', 'ds-btn bg-white text-charcoal border-2 border-charcoal'],
+    ['badge-doodle', 'badge badge-grey'],
     
     // Booking status classes
     ['booking-details', 'space-y-4'],
     ['booking-status', 'badge'],
   ],
   safelist: [
-    // Custom animation classes
+    // Custom animation classes from animations.css
     'animate-bounce-3d',
     'animate-float-3d',
     'animate-morph-path',
@@ -190,7 +184,10 @@ export default defineConfig({
     'animate-rotating-gradient',
     'animate-shimmer',
     'animate-typewriter',
+    'animate-wobble',
+    'animate-gentle-bounce',
     'animate-float',
+    'animate-pulse',
     
     // Custom hover effects
     'hover-3d',
@@ -202,40 +199,111 @@ export default defineConfig({
     'magic-border',
     'doodle-border',
     'doodle-shadow',
+    'wired-border',
+    'sketch-border',
     'hand-drawn',
-    'highlight-doodle',
-    'paper-texture',
     'sketch-title',
+    'sketch-subtitle',
     'sketch-underline',
+    'squiggle-top',
+    'sketchy-bg',
+    'paper-texture',
+    'accent-text',
     'arrow-doodle',
     'parallax-layer',
     'particle-network',
     'scrollbar-hide',
     'no-print',
     
-    // Brand colors
-    'bg-brand-green',
-    'bg-brand-blue',
-    'bg-brand-yellow',
-    'bg-brand-red',
-    'text-brand-green',
-    'text-brand-blue',
-    'text-brand-yellow',
-    'text-brand-red',
-    'border-brand-green',
-    'border-brand-blue',
+    // Figma design system classes
+    'font-handwritten',
+    'font-sketch',
+    'font-accent',
+    'text-charcoal',
+    'text-dark-grey',
+    'text-light-grey',
+    'text-medium-grey',
+    'text-green-dark',
+    'text-green-darker',
+    'text-green-light',
+    'text-green-medium',
+    'bg-paper-bg',
+    'bg-green-light',
+    'bg-green-medium',
+    'bg-green-dark',
+    'bg-green-darker',
+    'bg-cream',
+    'bg-light-grey',
+    'bg-medium-grey',
+    'bg-dark-grey',
+    'bg-charcoal',
+    'bg-status-success',
+    'bg-status-warning',
+    'bg-status-error',
+    'bg-status-info',
+    'border-green-dark',
+    'border-green-light',
+    'border-medium-grey',
+    'border-light-grey',
     
     // Custom shortcuts from components
-    'card-brut',
+    'card',
+    'card-compact',
+    'card-elevated',
+    'card-doodle',
     'btn',
     'btn-primary',
     'btn-secondary',
-    'badge-doodle',
+    'btn-outline',
+    'btn-ghost',
+    'btn-doodle',
+    'btn-circle',
+    'btn-icon',
+    'btn-sm',
+    'badge',
+    'badge-sm',
+    'badge-green',
+    'badge-grey',
+    'badge-success',
+    'badge-warning',
+    'badge-error',
+    'badge-info',
+    'input',
+    'input-doodle',
+    'stat',
+    'stat-figure',
+    'stat-title',
+    'stat-value',
+    'stat-desc',
+    'hero',
+    'hero-content',
+    'hero-title',
+    'hero-subtitle',
+    'container',
+    'flex-center',
+    'flex-between',
+    'flex-col-center',
+    'wobble',
+    'gentle-bounce',
+    'float',
+    'pulse',
+    'parallax',
+    'perspective',
+    'perspective-3d',
+    'doodle-card',
+    'sketch-title',
+    'sketch-subtitle',
+    'hand-drawn',
+    'accent-text',
+    'card-brut',
     'ds-card',
     'ds-muted',
     'ds-btn',
     'ds-btn-primary',
     'ds-btn-outline',
+    'badge-doodle',
+    'booking-details',
+    'booking-status',
   ],
   transformers: [transformerVariantGroup()],
 });

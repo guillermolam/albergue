@@ -1,0 +1,72 @@
+---
+/**
+ * Card Component - Matching Figma Design
+ *
+ * Variants:
+ * - default: Standard card (default)
+ * - compact: Less padding
+ * - elevated: Stronger shadow
+ * - doodle: Hand-drawn sketchy style
+ *
+ * Props:
+ * - hoverable: Add hover effects (default: true)
+ * - clickable: Make card clickable
+ * - padding: Custom padding (none, sm, md, lg)
+ */
+
+interface Props {
+  variant?: 'default' | 'compact' | 'elevated' | 'doodle';
+  hoverable?: boolean;
+  clickable?: boolean;
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+  href?: string;
+}
+
+const {
+  variant = 'default',
+  hoverable = true,
+  clickable = false,
+  padding,
+  href,
+} = Astro.props;
+
+const variantClasses = {
+  default: 'card',
+  compact: 'card card-compact',
+  elevated: 'card card-elevated',
+  doodle: 'card card-doodle',
+};
+
+const paddingClasses = {
+  none: 'p-0',
+  sm: 'p-4',
+  md: 'p-6',
+  lg: 'p-8',
+};
+
+const classes = `${variantClasses[variant]} ${padding ? paddingClasses[padding] : ''}`;
+
+const Component = href ? 'a' : 'div';
+---
+
+<Component
+  class={classes}
+  href={href}
+  {clickable ? 'role="button" tabindex="0"' : ''}
+>
+  <slot />
+</Component>
+
+{clickable && (
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const card = document.currentScript.previousElementSibling;
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.click();
+        }
+      });
+    });
+  </script>
+)}

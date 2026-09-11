@@ -1,0 +1,52 @@
+---
+/**
+ * Badge Component - Matching Figma Design
+ *
+ * Variants:
+ * - green: Green background (default)
+ * - grey: Grey background
+ * - success: Success status
+ * - warning: Warning status
+ * - error: Error status
+ * - info: Info status
+ *
+ * Sizes:
+ * - sm: Small
+ * - md: Medium (default)
+ */
+
+interface Props {
+  variant?: 'green' | 'grey' | 'success' | 'warning' | 'error' | 'info';
+  size?: 'sm' | 'md';
+  dot?: boolean;
+}
+
+const {
+  variant = 'green',
+  size = 'md',
+  dot = false,
+} = Astro.props;
+
+const variantClasses = {
+  green: 'badge-green',
+  grey: 'badge-grey',
+  success: 'badge-success',
+  warning: 'badge-warning',
+  error: 'badge-error',
+  info: 'badge-info',
+};
+
+const sizeClasses = {
+  sm: 'badge-sm',
+  md: '',
+};
+
+const classes = `badge ${variantClasses[variant]} ${sizeClasses[size]}`;
+---
+
+<span class={classes}>
+  {dot && (
+    <span class="w-1.5 h-1.5 rounded-full bg-current" aria-hidden="true" />
+  )}
+  <slot />
+</span>

@@ -285,6 +285,317 @@ const warpAnimationPlugin: SwupPlugin = () => {
   };
 };
 
+// Liquid/Smooth Transition Plugin
+const liquidAnimationPlugin: SwupPlugin = () => {
+  return {
+    name: 'LiquidAnimationPlugin',
+    
+    replace: {
+      animation: {
+        out: {
+          await: async ({ container }) => {
+            container.style.transition = 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+            container.style.transform = 'scale3d(1.1, 1.1, 1.1)';
+            container.style.filter = 'blur(10px)';
+            container.style.opacity = '0';
+            
+            await new Promise<void>((resolve) => {
+              container.addEventListener('transitionend', () => resolve(), { once: true });
+              setTimeout(() => resolve(), 600);
+            });
+          },
+        },
+        
+        in: {
+          await: async ({ container }) => {
+            container.style.transition = 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+            container.style.transform = 'scale3d(0.9, 0.9, 0.9)';
+            container.style.filter = 'blur(10px)';
+            container.style.opacity = '0';
+            
+            // Force reflow
+            void container.offsetHeight;
+            
+            container.style.transform = 'scale3d(1, 1, 1)';
+            container.style.filter = 'blur(0)';
+            container.style.opacity = '1';
+            
+            await new Promise<void>((resolve) => {
+              container.addEventListener('transitionend', () => resolve(), { once: true });
+              setTimeout(() => resolve(), 600);
+            });
+          },
+        },
+      },
+    },
+  };
+};
+
+// Particle Explosion Animation Plugin
+const particleExplosionPlugin: SwupPlugin = () => {
+  return {
+    name: 'ParticleExplosionPlugin',
+    
+    replace: {
+      animation: {
+        out: {
+          await: async ({ container }) => {
+            const duration = 800;
+            const particleCount = 20;
+            
+            // Create particle elements
+            const particles: HTMLElement[] = [];
+            for (let i = 0; i < particleCount; i++) {
+              const particle = document.createElement('div');
+              particle.style.cssText = `
+                position: fixed;
+                width: 10px;
+                height: 10px;
+                background: #00AB39;
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 9999;
+                opacity: 0;
+              `;
+              document.body.appendChild(particle);
+              particles.push(particle);
+            }
+            
+            // Position particles at center
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            
+            particles.forEach((p, i) => {
+              p.style.left = `${centerX}px`;
+              p.style.top = `${centerY}px`;
+              p.style.opacity = '1';
+              
+              const angle = (i / particleCount) * Math.PI * 2;
+              const distance = Math.random() * 300 + 100;
+              const x = Math.cos(angle) * distance;
+              const y = Math.sin(angle) * distance;
+              
+              p.style.transition = `all ${duration}ms ease-out`;
+              p.style.transform = `translate(${x}px, ${y}px) scale(0)`;
+              p.style.opacity = '0';
+            });
+            
+            await new Promise<void>((resolve) => setTimeout(resolve, duration));
+            
+            // Cleanup
+            particles.forEach(p => p.remove());
+          },
+        },
+        
+        in: {
+          await: async ({ container }) => {
+            container.style.transition = 'opacity 0.4s ease-out';
+            container.style.opacity = '0';
+            
+            await new Promise<void>((resolve) => {
+              container.addEventListener('transitionend', () => resolve(), { once: true });
+              setTimeout(() => resolve(), 400);
+            });
+            
+            container.style.opacity = '1';
+          },
+        },
+      },
+    },
+  };
+};
+
+// Neon Glow Animation Plugin
+const neonGlowPlugin: SwupPlugin = () => {
+  return {
+    name: 'NeonGlowPlugin',
+    
+    replace: {
+      animation: {
+        out: {
+          await: async ({ container }) => {
+            container.style.transition = 'all 0.5s ease-out';
+            container.style.filter = 'drop-shadow(0 0 20px rgba(0, 171, 57, 0.8))';
+            container.style.transform = 'scale(1.05)';
+            container.style.opacity = '0';
+            
+            await new Promise<void>((resolve) => {
+              container.addEventListener('transitionend', () => resolve(), { once: true });
+              setTimeout(() => resolve(), 500);
+            });
+          },
+        },
+        
+        in: {
+          await: async ({ container }) => {
+            container.style.transition = 'all 0.5s ease-out';
+            container.style.filter = 'drop-shadow(0 0 20px rgba(0, 171, 57, 0))';
+            container.style.transform = 'scale(0.95)';
+            container.style.opacity = '0';
+            
+            // Force reflow
+            void container.offsetHeight;
+            
+            container.style.filter = 'drop-shadow(0 0 0 rgba(0, 171, 57, 0.8))';
+            container.style.transform = 'scale(1)';
+            container.style.opacity = '1';
+            
+            await new Promise<void>((resolve) => {
+              container.addEventListener('transitionend', () => resolve(), { once: true });
+              setTimeout(() => resolve(), 500);
+            });
+          },
+        },
+      },
+    },
+  };
+};
+
+// Rotate Cube Animation Plugin
+const rotateCubePlugin: SwupPlugin = () => {
+  return {
+    name: 'RotateCubePlugin',
+    
+    replace: {
+      animation: {
+        out: {
+          await: async ({ container }) => {
+            container.style.transition = 'transform 0.8s ease-out, opacity 0.4s ease-out';
+            container.style.transformStyle = 'preserve-3d';
+            container.style.transform = 'rotateY(-90deg) rotateX(10deg)';
+            container.style.opacity = '0';
+            
+            await new Promise<void>((resolve) => {
+              container.addEventListener('transitionend', () => resolve(), { once: true });
+              setTimeout(() => resolve(), 800);
+            });
+          },
+        },
+        
+        in: {
+          await: async ({ container }) => {
+            container.style.transition = 'transform 0.8s ease-out, opacity 0.4s ease-out';
+            container.style.transformStyle = 'preserve-3d';
+            container.style.transform = 'rotateY(90deg) rotateX(-10deg)';
+            container.style.opacity = '0';
+            
+            // Force reflow
+            void container.offsetHeight;
+            
+            container.style.transform = 'rotateY(0deg) rotateX(0deg)';
+            container.style.opacity = '1';
+            
+            await new Promise<void>((resolve) => {
+              container.addEventListener('transitionend', () => resolve(), { once: true });
+              setTimeout(() => resolve(), 800);
+            });
+          },
+        },
+      },
+    },
+  };
+};
+
+// Wobble Animation Plugin
+const wobblePlugin: SwupPlugin = () => {
+  return {
+    name: 'WobblePlugin',
+    
+    replace: {
+      animation: {
+        out: {
+          await: async ({ container }) => {
+            container.style.transition = 'transform 0.3s ease-out';
+            
+            // Wobble effect
+            container.style.transform = 'translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg)';
+            await new Promise<void>((resolve) => setTimeout(resolve, 100));
+            
+            container.style.transform = 'translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg)';
+            await new Promise<void>((resolve) => setTimeout(resolve, 100));
+            
+            container.style.transform = 'translate3d(-10%, 0, 0) rotate3d(0, 0, 1, -2deg)';
+            await new Promise<void>((resolve) => setTimeout(resolve, 100));
+            
+            container.style.transform = 'translate3d(0, 0, 0) rotate3d(0, 0, 1, 0deg)';
+            container.style.opacity = '0';
+            
+            await new Promise<void>((resolve) => {
+              container.addEventListener('transitionend', () => resolve(), { once: true });
+              setTimeout(() => resolve(), 300);
+            });
+          },
+        },
+        
+        in: {
+          await: async ({ container }) => {
+            container.style.transition = 'transform 0.3s ease-out, opacity 0.4s ease-out';
+            container.style.transform = 'translate3d(0, 20px, 0) rotate3d(0, 0, 1, -2deg)';
+            container.style.opacity = '0';
+            
+            // Force reflow
+            void container.offsetHeight;
+            
+            container.style.transform = 'translate3d(0, 0, 0) rotate3d(0, 0, 1, 0deg)';
+            container.style.opacity = '1';
+            
+            await new Promise<void>((resolve) => {
+              container.addEventListener('transitionend', () => resolve(), { once: true });
+              setTimeout(() => resolve(), 400);
+            });
+          },
+        },
+      },
+    },
+  };
+};
+
+// Zoom Out to Black Plugin
+const zoomOutPlugin: SwupPlugin = () => {
+  return {
+    name: 'ZoomOutPlugin',
+    
+    replace: {
+      animation: {
+        out: {
+          await: async ({ container }) => {
+            container.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease-out';
+            container.style.transform = 'scale(0.8)';
+            container.style.opacity = '0';
+            container.style.filter = 'brightness(0)';
+            
+            await new Promise<void>((resolve) => {
+              container.addEventListener('transitionend', () => resolve(), { once: true });
+              setTimeout(() => resolve(), 600);
+            });
+          },
+        },
+        
+        in: {
+          await: async ({ container }) => {
+            container.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease-out, filter 0.6s ease-out';
+            container.style.transform = 'scale(1.2)';
+            container.style.opacity = '0';
+            container.style.filter = 'brightness(1.2)';
+            
+            // Force reflow
+            void container.offsetHeight;
+            
+            container.style.transform = 'scale(1)';
+            container.style.opacity = '1';
+            container.style.filter = 'brightness(1)';
+            
+            await new Promise<void>((resolve) => {
+              container.addEventListener('transitionend', () => resolve(), { once: true });
+              setTimeout(() => resolve(), 600);
+            });
+          },
+        },
+      },
+    },
+  };
+};
+
 // Export all plugins
 export {
   complexAnimationsPlugin,
@@ -292,6 +603,12 @@ export {
   morphAnimationPlugin,
   glitchAnimationPlugin,
   warpAnimationPlugin,
+  liquidAnimationPlugin,
+  particleExplosionPlugin,
+  neonGlowPlugin,
+  rotateCubePlugin,
+  wobblePlugin,
+  zoomOutPlugin,
 };
 
 // Auto-register plugins if using swup directly
@@ -304,6 +621,12 @@ if (typeof window !== 'undefined') {
       morphAnimationPlugin,
       glitchAnimationPlugin,
       warpAnimationPlugin,
+      liquidAnimationPlugin,
+      particleExplosionPlugin,
+      neonGlowPlugin,
+      rotateCubePlugin,
+      wobblePlugin,
+      zoomOutPlugin,
     ]);
   }
 }

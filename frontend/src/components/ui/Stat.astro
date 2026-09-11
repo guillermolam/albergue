@@ -1,0 +1,47 @@
+---
+/**
+ * Stat Component - Matching Figma Design
+ *
+ * A flexible stat display component with figure, title, value, and description.
+ *
+ * Props:
+ * - figure: Icon or image slot
+ * - title: Stat title
+ * - value: Stat value
+ * - desc: Stat description
+ * - variant: Visual variant (default, doodle)
+ */
+
+interface Props {
+  title?: string;
+  value?: string | number;
+  desc?: string;
+  variant?: 'default' | 'doodle';
+}
+
+const {
+  title,
+  value,
+  desc,
+  variant = 'default',
+} = Astro.props;
+
+const variantClasses = {
+  default: 'stat',
+  doodle: 'stat card-doodle',
+};
+---
+
+<div class={variantClasses[variant]}>
+  <div class="stat-figure">
+    <slot name="figure" />
+  </div>
+
+  {title && <div class="stat-title">{title}</div>}
+
+  {value !== undefined && <div class="stat-value">{value}</div>}
+
+  {desc && <div class="stat-desc">{desc}</div>}
+
+  <slot />
+</div>

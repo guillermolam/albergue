@@ -11,5 +11,11 @@ export default defineConfig({
       ['tests/**/*.server.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}', 'node'],
       ['tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}', 'jsdom'],
     ],
+    // SSR mode configuration for Astro
+    server: {
+      deps: {
+        inline: ['astro'],
+      },
+    },
   },
 });

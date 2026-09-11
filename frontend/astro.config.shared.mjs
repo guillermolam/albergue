@@ -9,6 +9,10 @@ const __dirname = dirname(__filename);
 
 export const sharedConfig = {
   output: 'server',
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'hover',
+  },
   integrations: [
     swup({
       animationSelector: '[class*="transition-"]',
