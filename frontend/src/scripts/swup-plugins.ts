@@ -55,6 +55,11 @@ export async function initializeSwupPlugins() {
     return;
   }
 
+  if (!swup.hooks || typeof swup.hooks.on !== 'function') {
+    console.warn('Swup hooks not available. Swup may not be fully initialized.');
+    return;
+  }
+
   window.__albergueSwupHooks = true;
 
   swup.hooks.on('link:click', () => {
