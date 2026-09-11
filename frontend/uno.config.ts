@@ -206,7 +206,4 @@ export default defineConfig({
     'ds-btn-outline',
   ],
   transformers: [transformerVariantGroup()],
-  
-  // SSR mode for Astro compatibility
-  mode: 'ssr',
 });
