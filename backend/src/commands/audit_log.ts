@@ -3,10 +3,10 @@
  * Write operations for audit_log
  */
 
-import { db } from '../lib/db';
-import { auditLog } from '../../domain_model/schema';
-import { eq, and, or } from 'drizzle-orm';
-import type { InsertAuditLog, AuditLog } from '../types';
+import { db } from '../lib/db.js';
+import { auditLog } from '@albergue/domain-model';
+import { eq, and, or, lt } from 'drizzle-orm';
+import type { InsertAuditLog, AuditLog } from '../types/index.js';
 
 /**
  * Create a new audit log entry
@@ -154,8 +154,7 @@ export async function cleanupOldAuditLogs(days: number = 365): Promise<number> {
     .delete(auditLog)
     .where(
       and(
-        // @ts-ignore
-        auditLog.createdAt.lt(cutoffDate)
+        lt(auditLog.createdAt, cutoffDate)
       )
     )
     .returning();

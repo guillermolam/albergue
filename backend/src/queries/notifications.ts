@@ -3,11 +3,11 @@
  * Read operations for notifications
  */
 
-import { db } from '../lib/db';
-import { notifications, bookings, pilgrims } from '../../domain_model/schema';
+import { db } from '../lib/db.js';
+import { notifications, bookings, pilgrims } from '@albergue/domain-model';
 import { eq, and, or, like, count, desc, asc, gte, lte } from 'drizzle-orm';
-import type { Notification } from '../types';
-import type { PaginatedResponse, PaginationParams } from '../types';
+import type { Notification } from '../types/index.js';
+import type { PaginatedResponse, PaginationParams } from '../types/index.js';
 
 /**
  * Get all notifications with pagination
@@ -23,7 +23,7 @@ export async function getAllNotifications(
   } = params;
 
   const offset = (page - 1) * pageSize;
-  const order = orderDirection === 'asc' ? asc : desc;
+  const orderFn = orderDirection === 'asc' ? asc : desc;
 
   // Get total count
   const [countResult] = await db
@@ -37,10 +37,8 @@ export async function getAllNotifications(
     .select()
     .from(notifications)
     .orderBy(
-      // @ts-ignore
-      orderBy in notifications ? notifications[orderBy] : notifications.createdAt,
-      order
-    )
+      orderFn(orderBy in notifications ? (notifications as any)[orderBy] : notifications.createdAt)
+      )
     .limit(pageSize)
     .offset(offset);
 
@@ -76,7 +74,7 @@ export async function getNotificationsByBooking(bookingId: number): Promise<Noti
     .select()
     .from(notifications)
     .where(eq(notifications.bookingId, bookingId))
-    .orderBy(notifications.createdAt, desc);
+    .orderBy(desc(notifications.createdAt));
   
   return results;
 }
@@ -89,7 +87,7 @@ export async function getNotificationsByPilgrim(pilgrimId: number): Promise<Noti
     .select()
     .from(notifications)
     .where(eq(notifications.pilgrimId, pilgrimId))
-    .orderBy(notifications.createdAt, desc);
+    .orderBy(desc(notifications.createdAt));
   
   return results;
 }
@@ -102,7 +100,7 @@ export async function getNotificationsByChannel(channel: string): Promise<Notifi
     .select()
     .from(notifications)
     .where(eq(notifications.channel, channel))
-    .orderBy(notifications.createdAt, desc);
+    .orderBy(desc(notifications.createdAt));
   
   return results;
 }
@@ -115,7 +113,7 @@ export async function getNotificationsByStatus(status: string): Promise<Notifica
     .select()
     .from(notifications)
     .where(eq(notifications.status, status))
-    .orderBy(notifications.createdAt, desc);
+    .orderBy(desc(notifications.createdAt));
   
   return results;
 }
@@ -133,7 +131,7 @@ export async function getPendingNotifications(): Promise<Notification[]> {
         eq(notifications.status, 'pending_retry')
       )
     )
-    .orderBy(notifications.createdAt, asc);
+    .orderBy(asc(notifications.createdAt));
   
   return results;
 }
@@ -146,7 +144,7 @@ export async function getFailedNotifications(): Promise<Notification[]> {
     .select()
     .from(notifications)
     .where(eq(notifications.status, 'failed'))
-    .orderBy(notifications.createdAt, desc);
+    .orderBy(desc(notifications.createdAt));
   
   return results;
 }
@@ -159,7 +157,7 @@ export async function getSentNotifications(): Promise<Notification[]> {
     .select()
     .from(notifications)
     .where(eq(notifications.status, 'sent'))
-    .orderBy(notifications.sentAt, desc);
+    .orderBy(desc(notifications.sentAt));
   
   return results;
 }
@@ -182,7 +180,7 @@ export async function getNotificationsByDateRange(
         lte(notifications.createdAt, endDate)
       )
     )
-    .orderBy(notifications.createdAt, desc);
+    .orderBy(desc(notifications.createdAt));
   
   return results;
 }
@@ -232,7 +230,7 @@ export async function searchNotifications(query: string, limit: number = 10): Pr
         like(bookings.referenceNumber, `%${query}%`)
       )
     )
-    .orderBy(notifications.createdAt, desc)
+    .orderBy(desc(notifications.createdAt))
     .limit(limit);
   
   return results.map(r => r.notification);
@@ -311,7 +309,7 @@ export async function getRecentNotifications(limit: number = 10): Promise<Notifi
   const results = await db
     .select()
     .from(notifications)
-    .orderBy(notifications.createdAt, desc)
+    .orderBy(desc(notifications.createdAt))
     .limit(limit);
   
   return results;
@@ -325,7 +323,7 @@ export async function getNotificationsByRecipient(recipient: string): Promise<No
     .select()
     .from(notifications)
     .where(eq(notifications.recipient, recipient))
-    .orderBy(notifications.createdAt, desc);
+    .orderBy(desc(notifications.createdAt));
   
   return results;
 }

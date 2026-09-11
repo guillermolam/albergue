@@ -14,8 +14,8 @@ import {
   getPaymentStats,
   getRecentPayments,
   searchPayments,
-} from '../queries/payments';
-import type { Payment, ApiResponse, PaginatedResponse } from '../types';
+} from '../queries/payments.js';
+import type { Payment, ApiResponse, PaginatedResponse } from '../types/index.js';
 
 const payments = new Hono();
 

@@ -11,8 +11,8 @@ import {
   getPricingByRoomType,
   getPricingStats,
   searchPricing,
-} from '../queries/pricing';
-import type { Pricing, ApiResponse, PaginatedResponse } from '../types';
+} from '../queries/pricing.js';
+import type { Pricing, ApiResponse, PaginatedResponse } from '../types/index.js';
 
 const pricing = new Hono();
 
@@ -52,7 +52,7 @@ pricing.get('/active', async (c: Context) => {
 
 pricing.get('/room-type/:roomType', async (c: Context) => {
   try {
-    const roomType = c.req.param('roomType');
+    const roomType = c.req.param('roomType')!;
     const pricing = await getPricingByRoomType(roomType);
     return c.json<ApiResponse<Pricing[]>>({
       success: true,

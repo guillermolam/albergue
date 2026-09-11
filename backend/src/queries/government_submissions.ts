@@ -3,11 +3,11 @@
  * Read operations for government_submissions
  */
 
-import { db } from '../lib/db';
-import { governmentSubmissions, bookings, pilgrims } from '../../domain_model/schema';
-import { eq, and, or, like, count, desc, asc, gte, lte } from 'drizzle-orm';
-import type { GovernmentSubmission } from '../types';
-import type { PaginatedResponse, PaginationParams } from '../types';
+import { db } from '../lib/db.js';
+import { governmentSubmissions, bookings, pilgrims } from '@albergue/domain-model';
+import { eq, and, or, like, count, desc, asc, gte, lte, lt, sql } from 'drizzle-orm';
+import type { GovernmentSubmission } from '../types/index.js';
+import type { PaginatedResponse, PaginationParams } from '../types/index.js';
 
 /**
  * Get all government submissions with pagination
@@ -23,7 +23,7 @@ export async function getAllGovernmentSubmissions(
   } = params;
 
   const offset = (page - 1) * pageSize;
-  const order = orderDirection === 'asc' ? asc : desc;
+  const orderFn = orderDirection === 'asc' ? asc : desc;
 
   // Get total count
   const [countResult] = await db
@@ -37,10 +37,8 @@ export async function getAllGovernmentSubmissions(
     .select()
     .from(governmentSubmissions)
     .orderBy(
-      // @ts-ignore
-      orderBy in governmentSubmissions ? governmentSubmissions[orderBy] : governmentSubmissions.createdAt,
-      order
-    )
+      orderFn(orderBy in governmentSubmissions ? (governmentSubmissions as any)[orderBy] : governmentSubmissions.createdAt)
+      )
     .limit(pageSize)
     .offset(offset);
 
@@ -76,7 +74,7 @@ export async function getGovernmentSubmissionsByBooking(bookingId: number): Prom
     .select()
     .from(governmentSubmissions)
     .where(eq(governmentSubmissions.bookingId, bookingId))
-    .orderBy(governmentSubmissions.createdAt, desc);
+    .orderBy(desc(governmentSubmissions.createdAt));
   
   return results;
 }
@@ -89,7 +87,7 @@ export async function getGovernmentSubmissionsByStatus(status: string): Promise<
     .select()
     .from(governmentSubmissions)
     .where(eq(governmentSubmissions.submissionStatus, status))
-    .orderBy(governmentSubmissions.createdAt, desc);
+    .orderBy(desc(governmentSubmissions.createdAt));
   
   return results;
 }
@@ -107,7 +105,7 @@ export async function getPendingGovernmentSubmissions(): Promise<GovernmentSubmi
         eq(governmentSubmissions.submissionStatus, 'pending_retry')
       )
     )
-    .orderBy(governmentSubmissions.createdAt, asc);
+    .orderBy(asc(governmentSubmissions.createdAt));
   
   return results;
 }
@@ -120,7 +118,7 @@ export async function getSuccessfulGovernmentSubmissions(): Promise<GovernmentSu
     .select()
     .from(governmentSubmissions)
     .where(eq(governmentSubmissions.submissionStatus, 'success'))
-    .orderBy(governmentSubmissions.lastAttempt, desc);
+    .orderBy(desc(governmentSubmissions.lastAttempt));
   
   return results;
 }
@@ -133,7 +131,7 @@ export async function getFailedGovernmentSubmissions(): Promise<GovernmentSubmis
     .select()
     .from(governmentSubmissions)
     .where(eq(governmentSubmissions.submissionStatus, 'failed'))
-    .orderBy(governmentSubmissions.lastAttempt, desc);
+    .orderBy(desc(governmentSubmissions.lastAttempt));
   
   return results;
 }
@@ -156,7 +154,7 @@ export async function getGovernmentSubmissionsByDateRange(
         lte(governmentSubmissions.createdAt, endDate)
       )
     )
-    .orderBy(governmentSubmissions.createdAt, desc);
+    .orderBy(desc(governmentSubmissions.createdAt));
   
   return results;
 }
@@ -205,7 +203,7 @@ export async function searchGovernmentSubmissions(query: string, limit: number =
         like(pilgrims.lastName1, `%${query}%`)
       )
     )
-    .orderBy(governmentSubmissions.createdAt, desc)
+    .orderBy(desc(governmentSubmissions.createdAt))
     .limit(limit);
   
   return results.map(r => r.submission);
@@ -283,7 +281,7 @@ export async function getRecentGovernmentSubmissions(limit: number = 10): Promis
   const results = await db
     .select()
     .from(governmentSubmissions)
-    .orderBy(governmentSubmissions.createdAt, desc)
+    .orderBy(desc(governmentSubmissions.createdAt))
     .limit(limit);
   
   return results;
@@ -299,16 +297,15 @@ export async function getSubmissionsNeedingRetry(maxAttempts: number = 3): Promi
     .where(
       and(
         eq(governmentSubmissions.submissionStatus, 'failed'),
-        // @ts-ignore
-        governmentSubmissions.attempts.lt(maxAttempts)
+        lt(governmentSubmissions.attempts, maxAttempts)
       )
     )
-    .orderBy(governmentSubmissions.lastAttempt, asc);
+    .orderBy(asc(governmentSubmissions.lastAttempt));
   
   return results;
 }
 
 // Helper for average
 function avg(column: any) {
-  return { avg: sql`AVG(${column})` };
+  return sql`AVG(${column})`;
 }

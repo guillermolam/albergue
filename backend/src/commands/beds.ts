@@ -3,10 +3,10 @@
  * Write operations for beds
  */
 
-import { db } from '../lib/db';
-import { beds } from '../../domain_model/schema';
-import { eq, and, or, isNull } from 'drizzle-orm';
-import type { InsertBed, UpdateBedInput, Bed } from '../types';
+import { db } from '../lib/db.js';
+import { beds } from '@albergue/domain-model';
+import { eq, and, or, isNull, lte } from 'drizzle-orm';
+import type { InsertBed, UpdateBedInput, Bed } from '../types/index.js';
 
 /**
  * Create a new bed
@@ -265,7 +265,7 @@ export async function cleanupExpiredReservations(): Promise<number> {
         // @ts-ignore
         or(
           isNull(beds.reservedUntil),
-          beds.reservedUntil.lte(now)
+          lte(beds.reservedUntil, now)
         )
       )
     )

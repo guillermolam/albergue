@@ -3,10 +3,10 @@
  * Write operations for bookings
  */
 
-import { db } from '../lib/db';
-import { bookings, beds } from '../../domain_model/schema';
-import { eq, and, or, isNull } from 'drizzle-orm';
-import type { InsertBooking, UpdateBookingInput, Booking } from '../types';
+import { db } from '../lib/db.js';
+import { bookings, beds } from '@albergue/domain-model';
+import { eq, and, or, isNull, lte } from 'drizzle-orm';
+import type { InsertBooking, UpdateBookingInput, Booking } from '../types/index.js';
 
 /**
  * Create a new booking
@@ -95,11 +95,22 @@ export async function updateBooking(id: number, input: UpdateBookingInput): Prom
   if (!existing) {
     return null;
   }
+
+  const {
+    id: _id,
+    totalAmount,
+    paymentDeadline,
+    reservationExpiresAt,
+    ...rest
+  } = input;
   
   const [result] = await db
     .update(bookings)
     .set({
-      ...input,
+      ...rest,
+      ...(totalAmount !== undefined ? { totalAmount: String(totalAmount) } : {}),
+      ...(paymentDeadline !== undefined ? { paymentDeadline: new Date(paymentDeadline) } : {}),
+      ...(reservationExpiresAt !== undefined ? { reservationExpiresAt: new Date(reservationExpiresAt) } : {}),
       updatedAt: new Date(),
     })
     .where(eq(bookings.id, id))
@@ -457,10 +468,21 @@ export async function bulkUpdateBookings(
   ids: number[],
   updates: Partial<UpdateBookingInput>
 ): Promise<number> {
+  const {
+    id: _id,
+    totalAmount,
+    paymentDeadline,
+    reservationExpiresAt,
+    ...rest
+  } = updates;
+
   const results = await db
     .update(bookings)
     .set({
-      ...updates,
+      ...rest,
+      ...(totalAmount !== undefined ? { totalAmount: String(totalAmount) } : {}),
+      ...(paymentDeadline !== undefined ? { paymentDeadline: new Date(paymentDeadline) } : {}),
+      ...(reservationExpiresAt !== undefined ? { reservationExpiresAt: new Date(reservationExpiresAt) } : {}),
       updatedAt: new Date(),
     })
     .where(or(...ids.map(id => eq(bookings.id, id))))
@@ -514,9 +536,4 @@ export async function cleanupExpiredBookings(): Promise<number> {
   }
   
   return count;
-}
-
-// Helper for lte
-function lte(column: any, value: any) {
-  return { lte: column.lte(value) };
 }

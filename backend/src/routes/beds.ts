@@ -19,7 +19,7 @@ import {
   getBedStats,
   getRecentBeds,
   getBedsWithBookings,
-} from '../queries/beds';
+} from '../queries/beds.js';
 import {
   createBed,
   createBedsBatch,
@@ -33,8 +33,8 @@ import {
   deleteBed,
   bulkUpdateBeds,
   cleanupExpiredReservations,
-} from '../commands/beds';
-import type { Bed, ApiResponse, PaginatedResponse, BedStats } from '../types';
+} from '../commands/beds.js';
+import type { Bed, ApiResponse, PaginatedResponse, BedStats } from '../types/index.js';
 
 const beds = new Hono();
 
@@ -181,6 +181,9 @@ beds.get('/room/:roomNumber', async (c: Context) => {
 beds.get('/type/:roomType', async (c: Context) => {
   try {
     const roomType = c.req.param('roomType');
+    if (!roomType) {
+      throw new HTTPException(400, { message: 'roomType is required' });
+    }
     const beds = await getBedsByRoomType(roomType);
     return c.json<ApiResponse<Bed[]>>({
       success: true,

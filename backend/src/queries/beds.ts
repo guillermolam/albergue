@@ -3,11 +3,11 @@
  * Read operations for beds
  */
 
-import { db } from '../lib/db';
-import { beds, bookings } from '../../domain_model/schema';
-import { eq, and, or, like, count, desc, asc, gte, lte, isNull } from 'drizzle-orm';
-import type { Bed } from '../types';
-import type { PaginatedResponse, PaginationParams, BedFilter, BedStats } from '../types';
+import { db } from '../lib/db.js';
+import { beds, bookings } from '@albergue/domain-model';
+import { eq, and, or, like, count, desc, asc, gte, lte, gt, lt, isNull } from 'drizzle-orm';
+import type { Bed } from '../types/index.js';
+import type { PaginatedResponse, PaginationParams, BedFilter, BedStats } from '../types/index.js';
 
 /**
  * Get all beds with pagination
@@ -27,7 +27,7 @@ export async function getAllBeds(
   } = params;
 
   const offset = (page - 1) * pageSize;
-  const order = orderDirection === 'asc' ? asc : desc;
+  const orderFn = orderDirection === 'asc' ? asc : desc;
 
   // Build where conditions
   const whereConditions = [];
@@ -62,10 +62,8 @@ export async function getAllBeds(
     .from(beds)
     .where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
     .orderBy(
-      // @ts-ignore
-      orderBy in beds ? beds[orderBy] : beds.roomNumber,
-      order
-    )
+      orderFn(orderBy in beds ? (beds as any)[orderBy] : beds.roomNumber)
+      )
     .limit(pageSize)
     .offset(offset);
 
@@ -130,7 +128,7 @@ export async function getAvailableBeds(): Promise<Bed[]> {
         )
       )
     )
-    .orderBy(beds.roomNumber, asc);
+    .orderBy(asc(beds.roomNumber));
   
   return results;
 }
@@ -151,7 +149,7 @@ export async function getOccupiedBeds(): Promise<Bed[]> {
         )
       )
     )
-    .orderBy(beds.roomNumber, asc);
+    .orderBy(asc(beds.roomNumber));
   
   return results;
 }
@@ -164,7 +162,7 @@ export async function getBedsInMaintenance(): Promise<Bed[]> {
     .select()
     .from(beds)
     .where(eq(beds.status, 'maintenance'))
-    .orderBy(beds.roomNumber, asc);
+    .orderBy(asc(beds.roomNumber));
   
   return results;
 }
@@ -177,7 +175,7 @@ export async function getBedsByRoomType(roomType: string): Promise<Bed[]> {
     .select()
     .from(beds)
     .where(eq(beds.roomType, roomType))
-    .orderBy(beds.roomNumber, asc);
+    .orderBy(asc(beds.roomNumber));
   
   return results;
 }
@@ -190,7 +188,7 @@ export async function getBedsByRoomNumber(roomNumber: number): Promise<Bed[]> {
     .select()
     .from(beds)
     .where(eq(beds.roomNumber, roomNumber))
-    .orderBy(beds.bedNumber, asc);
+    .orderBy(asc(beds.bedNumber));
   
   return results;
 }
@@ -205,7 +203,7 @@ export async function searchBeds(query: string, limit: number = 10): Promise<Bed
     .where(
       like(beds.roomName, `%${query}%`)
     )
-    .orderBy(beds.roomNumber, asc)
+    .orderBy(asc(beds.roomNumber))
     .limit(limit);
   
   return results;
@@ -285,7 +283,7 @@ export async function getRecentBeds(limit: number = 5): Promise<Bed[]> {
   const results = await db
     .select()
     .from(beds)
-    .orderBy(beds.createdAt, desc)
+    .orderBy(desc(beds.createdAt))
     .limit(limit);
   
   return results;
@@ -308,8 +306,9 @@ export async function getBedsWithBookings(): Promise<Bed[]> {
  * Get beds that will be available on a specific date
  */
 export async function getBedsAvailableOnDate(date: Date): Promise<Bed[]> {
+  const dateStr = date.toISOString().slice(0, 10);
   const results = await db
-    .select()
+    .select({ bed: beds })
     .from(beds)
     .leftJoin(
       bookings,
@@ -318,15 +317,13 @@ export async function getBedsAvailableOnDate(date: Date): Promise<Bed[]> {
         eq(bookings.status, 'reserved'),
         or(
           isNull(bookings.reservationExpiresAt),
-          // @ts-ignore
           gte(bookings.reservationExpiresAt, new Date())
         ),
         // Check for date overlap
         or(
-          // @ts-ignore
           and(
-            lte(bookings.checkInDate, date),
-            gte(bookings.checkOutDate, date)
+            lte(bookings.checkInDate, dateStr),
+            gte(bookings.checkOutDate, dateStr)
           )
         )
       )
@@ -339,15 +336,13 @@ export async function getBedsAvailableOnDate(date: Date): Promise<Bed[]> {
           isNull(bookings.bedAssignmentId),
           // Or reservation doesn't overlap
           or(
-            // @ts-ignore
-            bookings.checkInDate.gt(date),
-            // @ts-ignore
-            bookings.checkOutDate.lt(date)
+            gt(bookings.checkInDate, dateStr),
+            lt(bookings.checkOutDate, dateStr)
           )
         )
       )
     )
-    .orderBy(beds.roomNumber, asc);
+    .orderBy(asc(beds.roomNumber));
   
-  return results;
+  return results.map(r => r.bed);
 }

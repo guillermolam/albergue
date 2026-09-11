@@ -3,10 +3,10 @@
  * Write operations for pricing
  */
 
-import { db } from '../lib/db';
-import { pricing } from '../../domain_model/schema';
+import { db } from '../lib/db.js';
+import { pricing } from '@albergue/domain-model';
 import { eq, and } from 'drizzle-orm';
-import type { InsertPricing, UpdatePricingInput, Pricing } from '../types';
+import type { InsertPricing, UpdatePricingInput, Pricing } from '../types/index.js';
 
 /**
  * Create a new pricing entry

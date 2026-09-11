@@ -11,7 +11,8 @@
 
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { Pool, type PoolClient, type PoolConfig } from 'pg';
-import { withRetry, DatabaseError, dbCircuitBreaker, CircuitBreaker } from './errors';
+import * as schema from '@albergue/domain-model';
+import { withRetry, DatabaseError, dbCircuitBreaker, CircuitBreaker } from './errors.js';
 
 // Connection configuration
 const poolConfig: PoolConfig = {
@@ -20,8 +21,6 @@ const poolConfig: PoolConfig = {
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
-  // Enable connection retry
-  connectionInitSql: 'SELECT NOW()',
   // Application name for monitoring
   application_name: 'albergue-backend',
 };
@@ -29,9 +28,13 @@ const poolConfig: PoolConfig = {
 // Database connection pool
 const pool = new Pool(poolConfig);
 
-// Create Drizzle database instance
-// Type assertion for the database schema
-const db: NodePgDatabase<any> = drizzle(pool);
+// Preserve former connectionInitSql behavior via connect hook
+pool.on('connect', (client) => {
+  client.query('SELECT NOW()');
+});
+
+// Create Drizzle database instance typed with domain schema
+const db: NodePgDatabase<typeof schema> = drizzle(pool, { schema });
 
 // Enhanced database wrapper with retry and circuit breaker
 export const safeDb = {
@@ -202,8 +205,8 @@ export function stopConnectionMonitor() {
   }
 }
 
-// Export original pool and db
-export { pool, db, safeDb };
+// Export original pool and db (safeDb already exported above)
+export { pool, db };
 
 // Export types
 export type { PoolClient, NodePgDatabase };
@@ -227,4 +230,4 @@ export {
   executeBatch,
   formatError,
   wrapDatabaseOperation,
-} from './errors';
+} from './errors.js';

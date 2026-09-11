@@ -3,10 +3,10 @@
  * Write operations for notifications
  */
 
-import { db } from '../lib/db';
-import { notifications } from '../../domain_model/schema';
-import { eq, and, or } from 'drizzle-orm';
-import type { InsertNotification, Notification } from '../types';
+import { db } from '../lib/db.js';
+import { notifications } from '@albergue/domain-model';
+import { eq, and, or, isNull, lt } from 'drizzle-orm';
+import type { InsertNotification, Notification } from '../types/index.js';
 
 /**
  * Create a new notification
@@ -69,7 +69,6 @@ export async function updateNotification(
     .update(notifications)
     .set({
       ...updates,
-      updatedAt: new Date(),
     })
     .where(eq(notifications.id, id))
     .returning();
@@ -90,7 +89,6 @@ export async function markNotificationAsSent(
       status: 'sent',
       sentAt: new Date(),
       providerMessageId,
-      updatedAt: new Date(),
     })
     .where(eq(notifications.id, id))
     .returning();
@@ -110,7 +108,6 @@ export async function markNotificationAsFailed(
     .set({
       status: 'failed',
       errorMessage,
-      updatedAt: new Date(),
     })
     .where(eq(notifications.id, id))
     .returning();
@@ -126,7 +123,6 @@ export async function markNotificationAsDelivered(id: number): Promise<boolean> 
     .update(notifications)
     .set({
       status: 'delivered',
-      updatedAt: new Date(),
     })
     .where(eq(notifications.id, id))
     .returning();
@@ -142,7 +138,6 @@ export async function markNotificationAsRead(id: number): Promise<boolean> {
     .update(notifications)
     .set({
       status: 'read',
-      updatedAt: new Date(),
     })
     .where(eq(notifications.id, id))
     .returning();
@@ -154,23 +149,14 @@ export async function markNotificationAsRead(id: number): Promise<boolean> {
  * Retry failed notifications
  */
 export async function retryFailedNotifications(): Promise<number> {
+  // Schema has no attempts column — retry all failed notifications
   const results = await db
     .update(notifications)
     .set({
       status: 'pending_retry',
       errorMessage: null,
-      updatedAt: new Date(),
     })
-    .where(
-      and(
-        eq(notifications.status, 'failed'),
-        or(
-          isNull(notifications.attempts),
-          // @ts-ignore
-          notifications.attempts.lt(3)
-        )
-      )
-    )
+    .where(eq(notifications.status, 'failed'))
     .returning();
   
   return results.length;
@@ -187,7 +173,6 @@ export async function softDeleteNotification(id: number): Promise<boolean> {
       subject: '(DELETED)',
       message: '(DELETED)',
       recipient: '(DELETED)',
-      updatedAt: new Date(),
     })
     .where(eq(notifications.id, id))
     .returning();
@@ -231,7 +216,6 @@ export async function updateNotificationProviderMessageId(
     .update(notifications)
     .set({
       providerMessageId,
-      updatedAt: new Date(),
     })
     .where(eq(notifications.id, id))
     .returning();
@@ -255,8 +239,7 @@ export async function cleanupOldNotifications(days: number = 30): Promise<number
           eq(notifications.status, 'delivered'),
           eq(notifications.status, 'read')
         ),
-        // @ts-ignore
-        notifications.createdAt.lt(cutoffDate)
+        lt(notifications.createdAt, cutoffDate)
       )
     )
     .returning();

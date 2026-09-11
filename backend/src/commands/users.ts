@@ -3,10 +3,10 @@
  * Write operations for users
  */
 
-import { db } from '../lib/db';
-import { users } from '../../domain_model/schema';
+import { db } from '../lib/db.js';
+import { users } from '@albergue/domain-model';
 import { eq, and } from 'drizzle-orm';
-import type { InsertUser, User } from '../types';
+import type { InsertUser, User } from '../types/index.js';
 
 /**
  * Create a new user

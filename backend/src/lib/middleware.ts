@@ -5,7 +5,7 @@
 
 import type { Context, Next } from 'hono';
 import type { MiddlewareHandler } from 'hono';
-import { withRetry, formatError, CircuitBreaker, AppError } from './errors';
+import { withRetry, formatError, CircuitBreaker, AppError } from './errors.js';
 
 /**
  * Request ID generator
@@ -72,6 +72,7 @@ export function requestContextMiddleware(): MiddlewareHandler {
     // Update response time
     const responseTime = Date.now() - startTime;
     c.header('x-response-time', String(responseTime));
+    return;
   };
 }
 
@@ -83,6 +84,7 @@ export function errorHandlerMiddleware(): MiddlewareHandler {
   return async (c: Context, next: Next) => {
     try {
       await next();
+      return;
     } catch (error: any) {
       const requestContext = c.get('requestContext') || { requestId: 'unknown' };
       
@@ -97,14 +99,13 @@ Stack: ${error.stack || 'No stack'}
       const formatted = formatError(error);
       const status = formatted.status || 500;
       
-      c.status(status);
       return c.json({
         success: false,
         error: formatted.error,
         details: formatted.details,
         requestId: requestContext.requestId,
         timestamp: new Date().toISOString(),
-      });
+      }, status as any);
     }
   };
 }
@@ -122,6 +123,7 @@ export function circuitBreakerMiddleware(
     await breaker.execute(async () => {
       await next();
     });
+    return;
   };
 }
 
@@ -155,7 +157,7 @@ export function retryMiddleware(
         await next();
         return;
       } catch (error: any) {
-        lastError = error;
+        lastError = error instanceof Error ? error : new Error(String(error));
         attempt++;
         
         // Check if retryable
@@ -224,7 +226,6 @@ export function rateLimiterMiddleware(
     
     // Check if rate limited
     if (record.count >= maxRequests) {
-      c.status(429);
       c.header('retry-after', String(Math.ceil((record.resetTime - now) / 1000)));
       
       if (onRateLimited) {
@@ -236,7 +237,7 @@ export function rateLimiterMiddleware(
         error: 'Rate limit exceeded',
         retryAfter: record.resetTime - now,
         timestamp: new Date().toISOString(),
-      });
+      }, 429 as any);
     }
     
     // Increment and continue
@@ -249,6 +250,7 @@ export function rateLimiterMiddleware(
     }
     
     await next();
+    return;
   };
 }
 
@@ -290,7 +292,8 @@ export function cachingMiddleware(
 
   return async (c: Context, next: Next) => {
     if (c.req.method !== 'GET') {
-      return await next();
+      await next();
+      return;
     }
     
     const key = keyGenerator(c);
@@ -305,40 +308,55 @@ export function cachingMiddleware(
     
     if (onCacheMiss) onCacheMiss(c);
     
-    // Capture response
-    const originalJson = c.res.json.bind(c.res);
-    c.res.json = (data: any) => {
-      c.header('x-cache', shouldCache(c) ? 'MISS' : 'BYPASS');
-      
-      if (shouldCache(c)) {
-        memoryCache.set(key, {
-          data,
-          expires: Date.now() + ttl,
-        });
-      }
-      
-      return originalJson(data);
-    };
-    
     await next();
+
+    // After handler: cache JSON response body when cacheable
+    const cacheable = shouldCache(c);
+    c.header('x-cache', cacheable ? 'MISS' : 'BYPASS');
+
+    if (cacheable && c.res) {
+      try {
+        const contentType = c.res.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const cloned = c.res.clone();
+          const data = await cloned.json();
+          memoryCache.set(key, {
+            data,
+            expires: Date.now() + ttl,
+          });
+        }
+      } catch {
+        // Non-JSON or unreadable body — skip caching
+      }
+    }
+    return;
   };
 }
 
 /**
  * Response compression middleware
+ * Ensures JSON responses use a string body Response (lightweight stand-in for gzip)
  */
 export function compressionMiddleware(): MiddlewareHandler {
   return async (c: Context, next: Next) => {
     await next();
     
-    // Only compress JSON responses
+    // Only process JSON responses
     if (c.res.headers.get('content-type')?.includes('application/json')) {
-      const body = c.res.body;
-      if (body && typeof body === 'object') {
-        // Simple stringification (real compression would need compression library)
-        c.res.body = JSON.stringify(body);
+      try {
+        const cloned = c.res.clone();
+        const data = await cloned.json();
+        const headers = new Headers(c.res.headers);
+        c.res = new Response(JSON.stringify(data), {
+          status: c.res.status,
+          statusText: c.res.statusText,
+          headers,
+        });
+      } catch {
+        // Leave response as-is if body is not JSON-parseable
       }
     }
+    return;
   };
 }
 
@@ -375,8 +393,8 @@ export function validateRequest<T>(
       c.set('validatedData', validated);
       
       await next();
+      return;
     } catch (error: any) {
-      c.status(400);
       return c.json({
         success: false,
         error: 'Validation failed',
@@ -385,7 +403,7 @@ export function validateRequest<T>(
           message: e.message,
         })),
         timestamp: new Date().toISOString(),
-      });
+      }, 400 as any);
     }
   };
 }
@@ -406,24 +424,23 @@ export function authMiddleware(
     const user = c.get('user');
     
     if (requireAuth && !user) {
-      c.status(401);
       return c.json({
         success: false,
         error: 'Authentication required',
         timestamp: new Date().toISOString(),
-      });
+      }, 401 as any);
     }
     
     if (roles.length > 0 && user && !roles.includes(user.role)) {
-      c.status(403);
       return c.json({
         success: false,
         error: 'Insufficient permissions',
         timestamp: new Date().toISOString(),
-      });
+      }, 403 as any);
     }
     
     await next();
+    return;
   };
 }
 
@@ -475,6 +492,7 @@ Status: ${c.res.status}
 Duration: ${duration}ms
 `);
       }
+      return;
     } catch (error: any) {
       const duration = Date.now() - start;
       
@@ -510,20 +528,6 @@ export function correlationIdMiddleware(): MiddlewareHandler {
     c.header('x-correlation-id', correlationId);
     
     await next();
+    return;
   };
 }
-
-export {
-  generateRequestId,
-  requestContextMiddleware,
-  errorHandlerMiddleware,
-  circuitBreakerMiddleware,
-  retryMiddleware,
-  rateLimiterMiddleware,
-  cachingMiddleware,
-  compressionMiddleware,
-  validateRequest,
-  authMiddleware,
-  loggingMiddleware,
-  correlationIdMiddleware,
-};

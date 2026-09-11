@@ -12,8 +12,8 @@ import {
   getPendingNotifications,
   getNotificationStats,
   getRecentNotifications,
-} from '../queries/notifications';
-import type { Notification, ApiResponse, PaginatedResponse } from '../types';
+} from '../queries/notifications.js';
+import type { Notification, ApiResponse, PaginatedResponse } from '../types/index.js';
 
 const notifications = new Hono();
 

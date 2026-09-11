@@ -405,12 +405,20 @@ export async function executeBatch<T, R>(
   for (let i = 0; i < items.length; i += batchSize) {
     const batch = items.slice(i, i + batchSize);
     
-    const batchPromises = batch.map(async (item) => {
+    type BatchResult =
+      | { success: true; result: R }
+      | { success: false; error: Error; item: T };
+
+    const batchPromises = batch.map(async (item): Promise<BatchResult> => {
       try {
         const result = await operation(item);
         return { success: true, result };
       } catch (error: any) {
-        return { success: false, error: error instanceof Error ? error : new Error(String(error)), item };
+        return {
+          success: false,
+          error: error instanceof Error ? error : new Error(String(error)),
+          item,
+        };
       }
     });
 

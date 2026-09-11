@@ -155,6 +155,13 @@ export interface BookingStats {
   totalRevenue: string;
   averageStay: number;
   occupancyRate: number;
+  monthlyBookings: number;
+  byRoomType: Array<{
+    roomType: string;
+    occupied: number;
+    total: number;
+    occupancyRate: number;
+  }>;
 }
 
 export interface PilgrimStats {

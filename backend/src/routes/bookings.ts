@@ -20,14 +20,14 @@ import {
   getBookingWithDetails,
   searchBookings,
   getAvailableBedsForDates,
-} from '../queries/bookings';
+} from '../queries/bookings.js';
 import type {
   Booking,
   ApiResponse,
   PaginatedResponse,
   BookingFilter,
   BookingStats,
-} from '../types';
+} from '../types/index.js';
 
 const bookings = new Hono();
 
@@ -98,6 +98,9 @@ bookings.get('/:id', async (c: Context) => {
 bookings.get('/reference/:reference', async (c: Context) => {
   try {
     const reference = c.req.param('reference');
+    if (!reference) {
+      throw new HTTPException(400, { message: 'reference is required' });
+    }
     const booking = await getBookingByReference(reference);
     
     if (!booking) {

@@ -3,10 +3,10 @@
  * Write operations for government_submissions
  */
 
-import { db } from '../lib/db';
-import { governmentSubmissions } from '../../domain_model/schema';
-import { eq, and } from 'drizzle-orm';
-import type { InsertGovernmentSubmission, GovernmentSubmission } from '../types';
+import { db } from '../lib/db.js';
+import { governmentSubmissions } from '@albergue/domain-model';
+import { eq, and, sql } from 'drizzle-orm';
+import type { InsertGovernmentSubmission, GovernmentSubmission } from '../types/index.js';
 
 /**
  * Create a new government submission
@@ -73,7 +73,6 @@ export async function updateGovernmentSubmission(
     .update(governmentSubmissions)
     .set({
       ...updates,
-      updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
@@ -94,7 +93,6 @@ export async function markSubmissionAsSuccessful(
       submissionStatus: 'success',
       responseData,
       lastAttempt: new Date(),
-      updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
@@ -123,10 +121,9 @@ export async function markSubmissionAsFailed(
     .update(governmentSubmissions)
     .set({
       submissionStatus: 'failed',
-      attempts: existing.attempts + 1,
+      attempts: (existing.attempts ?? 0) + 1,
       lastAttempt: new Date(),
       responseData: { error: errorMessage },
-      updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
@@ -141,10 +138,8 @@ export async function incrementSubmissionAttempts(id: number): Promise<boolean> 
   const [result] = await db
     .update(governmentSubmissions)
     .set({
-      // @ts-ignore - drizzle increment
-      attempts: governmentSubmissions.attempts + 1,
+      attempts: sql`${governmentSubmissions.attempts} + 1`,
       lastAttempt: new Date(),
-      updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
@@ -160,7 +155,6 @@ export async function markSubmissionAsPendingRetry(id: number): Promise<boolean>
     .update(governmentSubmissions)
     .set({
       submissionStatus: 'pending_retry',
-      updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
@@ -183,7 +177,6 @@ export async function updateSubmissionXmlContent(
       attempts: 0,
       lastAttempt: null,
       responseData: null,
-      updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
@@ -201,7 +194,6 @@ export async function softDeleteGovernmentSubmission(id: number): Promise<boolea
       submissionStatus: 'deleted',
       xmlContent: '(DELETED)',
       responseData: null,
-      updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
@@ -242,7 +234,6 @@ export async function retryFailedSubmissions(bookingId: number): Promise<number>
     .update(governmentSubmissions)
     .set({
       submissionStatus: 'pending_retry',
-      updatedAt: new Date(),
     })
     .where(
       and(

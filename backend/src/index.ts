@@ -25,15 +25,15 @@ import {
   getConnectionStats,
   startConnectionMonitor,
   stopConnectionMonitor,
-} from './lib/db';
+} from './lib/db.js';
 import {
   requestContextMiddleware,
   errorHandlerMiddleware,
   rateLimiterMiddleware,
   loggingMiddleware,
   correlationIdMiddleware,
-} from './lib/middleware';
-import { CircuitBreaker } from './lib/errors';
+} from './lib/middleware.js';
+import { CircuitBreaker } from './lib/errors.js';
 import {
   pilgrims,
   bookings,
@@ -44,7 +44,7 @@ import {
   notifications,
   auditLog,
   users,
-} from './routes';
+} from './routes/index.js';
 
 // Create main Hono app
 const app = new Hono();

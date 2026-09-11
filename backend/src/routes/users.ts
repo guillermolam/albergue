@@ -10,9 +10,9 @@ import {
   getUserByUsername,
   searchUsers,
   getUserStats,
-} from '../queries/users';
-import { createUser } from '../commands/users';
-import type { User, ApiResponse, PaginatedResponse } from '../types';
+} from '../queries/users.js';
+import { createUser } from '../commands/users.js';
+import type { User, ApiResponse, PaginatedResponse } from '../types/index.js';
 
 const users = new Hono();
 
@@ -55,6 +55,9 @@ users.get('/:id', async (c: Context) => {
 users.get('/username/:username', async (c: Context) => {
   try {
     const username = c.req.param('username');
+    if (!username) {
+      throw new HTTPException(400, { message: 'username is required' });
+    }
     const user = await getUserByUsername(username);
     if (!user) throw new HTTPException(404, { message: 'User not found' });
     return c.json<ApiResponse<User>>({

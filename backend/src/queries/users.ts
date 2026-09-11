@@ -3,11 +3,11 @@
  * Read operations for users
  */
 
-import { db } from '../lib/db';
+import { db } from '../lib/db.js';
 import { users } from '@albergue/domain-model';
 import { eq, like, count, desc, asc } from 'drizzle-orm';
-import type { User } from '../types';
-import type { PaginatedResponse, PaginationParams } from '../types';
+import type { User } from '../types/index.js';
+import type { PaginatedResponse, PaginationParams } from '../types/index.js';
 
 /**
  * Get all users with pagination

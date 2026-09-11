@@ -3,6 +3,6 @@
  * Exports all utility modules
  */
 
-export * from './db';
-export * from './errors';
-export * from './middleware';
+export * from './db.js';
+export * from './errors.js';
+export * from './middleware.js';

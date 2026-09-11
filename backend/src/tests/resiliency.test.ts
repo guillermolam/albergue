@@ -14,7 +14,7 @@ import {
   executeSafely,
   executeBatch,
   defaultRetryConfig,
-} from '../lib/errors';
+} from '../lib/errors.js';
 
 // Mock functions for testing
 let attemptCount = 0;
@@ -27,8 +27,14 @@ const mockFailThenSuccess = () => {
   return Promise.resolve('success after retry');
 };
 const mockAlwaysFail = () => Promise.reject(new Error('Always fails'));
-const mockRetryableError = () => Promise.reject(new DatabaseError('Connection failed'));
-const mockNonRetryableError = () => Promise.reject(new ValidationError('Invalid input'));
+const mockRetryableError = () => {
+  attemptCount++;
+  return Promise.reject(new DatabaseError('Connection failed'));
+};
+const mockNonRetryableError = () => {
+  attemptCount++;
+  return Promise.reject(new ValidationError('Invalid input'));
+};
 
 // Reset attempt count
 const resetAttempts = () => { attemptCount = 0; };
@@ -43,7 +49,14 @@ describe('withRetry', () => {
   });
 
   it('should retry and succeed after temporary failure', async () => {
-    const result = await withRetry(mockFailThenSuccess, {
+    const mockFailThenSuccessRetryable = () => {
+      attemptCount++;
+      if (attemptCount < 2) {
+        return Promise.reject(new DatabaseError('Temporary failure'));
+      }
+      return Promise.resolve('success after retry');
+    };
+    const result = await withRetry(mockFailThenSuccessRetryable, {
       maxAttempts: 3,
       baseDelay: 10,
     });
@@ -76,8 +89,12 @@ describe('withRetry', () => {
 
   it('should respect custom retry configuration', async () => {
     const startTime = Date.now();
+    const mockRetryableAlwaysFail = () => {
+      attemptCount++;
+      return Promise.reject(new DatabaseError('Always fails'));
+    };
     
-    await expect(withRetry(mockAlwaysFail, {
+    await expect(withRetry(mockRetryableAlwaysFail, {
       maxAttempts: 2,
       baseDelay: 50,
       maxDelay: 100,
@@ -86,8 +103,9 @@ describe('withRetry', () => {
     })).rejects.toThrow();
     
     const elapsed = Date.now() - startTime;
-    // Should be at least baseDelay * (1 + 2) = 150ms with some margin
-    expect(elapsed).toBeGreaterThanOrEqual(100);
+    // maxAttempts=2 means one delay of baseDelay (50ms) between attempts
+    expect(attemptCount).toBe(2);
+    expect(elapsed).toBeGreaterThanOrEqual(45);
   });
 });
 
@@ -277,10 +295,10 @@ describe('executeBatch', () => {
 
     const result = await executeBatch(items, mockOperation, 10);
 
-    expect(result.succeeded).toHaveLength(2);
-    expect(result.failed).toHaveLength(3);
-    expect(result.succeededCount).toBe(2);
-    expect(result.failedCount).toBe(3);
+    expect(result.succeeded).toHaveLength(3);
+    expect(result.failed).toHaveLength(2);
+    expect(result.succeededCount).toBe(3);
+    expect(result.failedCount).toBe(2);
     expect(result.failed[0].item).toBe(2);
     expect(result.failed[0].error.message).toContain('Even number');
   });

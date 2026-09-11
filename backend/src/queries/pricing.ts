@@ -3,11 +3,11 @@
  * Read operations for pricing
  */
 
-import { db } from '../lib/db';
-import { pricing } from '../../domain_model/schema';
-import { eq, and, or, like, count, desc, asc } from 'drizzle-orm';
-import type { Pricing } from '../types';
-import type { PaginatedResponse, PaginationParams } from '../types';
+import { db } from '../lib/db.js';
+import { pricing } from '@albergue/domain-model';
+import { eq, and, or, like, count, desc, asc, sql } from 'drizzle-orm';
+import type { Pricing } from '../types/index.js';
+import type { PaginatedResponse, PaginationParams } from '../types/index.js';
 
 /**
  * Get all pricing entries with pagination
@@ -23,7 +23,7 @@ export async function getAllPricing(
   } = params;
 
   const offset = (page - 1) * pageSize;
-  const order = orderDirection === 'asc' ? asc : desc;
+  const orderFn = orderDirection === 'asc' ? asc : desc;
 
   // Get total count
   const [countResult] = await db
@@ -37,10 +37,8 @@ export async function getAllPricing(
     .select()
     .from(pricing)
     .orderBy(
-      // @ts-ignore
-      orderBy in pricing ? pricing[orderBy] : pricing.createdAt,
-      order
-    )
+      orderFn(orderBy in pricing ? (pricing as any)[orderBy] : pricing.createdAt)
+      )
     .limit(pageSize)
     .offset(offset);
 
@@ -76,7 +74,7 @@ export async function getActivePricing(): Promise<Pricing[]> {
     .select()
     .from(pricing)
     .where(eq(pricing.isActive, true))
-    .orderBy(pricing.roomType, asc);
+    .orderBy(asc(pricing.roomType));
   
   return results;
 }
@@ -89,7 +87,7 @@ export async function getPricingByRoomType(roomType: string): Promise<Pricing[]>
     .select()
     .from(pricing)
     .where(eq(pricing.roomType, roomType))
-    .orderBy(pricing.bedType, asc);
+    .orderBy(asc(pricing.bedType));
   
   return results;
 }
@@ -123,7 +121,7 @@ export async function getPricingByBedType(bedType: string): Promise<Pricing[]> {
     .select()
     .from(pricing)
     .where(eq(pricing.bedType, bedType))
-    .orderBy(pricing.roomType, asc);
+    .orderBy(asc(pricing.roomType));
   
   return results;
 }
@@ -136,7 +134,7 @@ export async function getPricingByCurrency(currency: string): Promise<Pricing[]>
     .select()
     .from(pricing)
     .where(eq(pricing.currency, currency))
-    .orderBy(pricing.roomType, asc);
+    .orderBy(asc(pricing.roomType));
   
   return results;
 }
@@ -149,7 +147,7 @@ export async function getInactivePricing(): Promise<Pricing[]> {
     .select()
     .from(pricing)
     .where(eq(pricing.isActive, false))
-    .orderBy(pricing.updatedAt, desc);
+    .orderBy(desc(pricing.updatedAt));
   
   return results;
 }
@@ -167,7 +165,7 @@ export async function searchPricing(query: string, limit: number = 10): Promise<
         like(pricing.bedType, `%${query}%`)
       )
     )
-    .orderBy(pricing.roomType, asc)
+    .orderBy(asc(pricing.roomType))
     .limit(limit);
   
   return results;
@@ -180,7 +178,7 @@ export async function getRecentPricing(limit: number = 5): Promise<Pricing[]> {
   const results = await db
     .select()
     .from(pricing)
-    .orderBy(pricing.createdAt, desc)
+    .orderBy(desc(pricing.createdAt))
     .limit(limit);
   
   return results;
@@ -244,10 +242,10 @@ export async function getAveragePriceByRoomType(roomType: string): Promise<strin
       )
     );
   
-  return result?.avg || null;
+  return result?.avg != null ? String(result.avg) : null;
 }
 
 // Helper for average
 function avg(column: any) {
-  return { avg: sql`AVG(${column}::numeric)` };
+  return sql`AVG(${column}::numeric)`;
 }
