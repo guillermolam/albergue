@@ -26,24 +26,39 @@ export default defineConfig({
   ],
   theme: {
     colors: {
+      // Primary brand color (Extremadura government green)
       primary: '#00AB39',
+      
+      // Base colors
       white: '#FFFFFF',
       black: '#000000',
-      yellow: '#EAC102',
-      red: '#ED1C24',
-      blue: '#0071BC',
-      gray: {
-        50: '#f9fafb',
-        100: '#f3f4f6',
-        200: '#e5e7eb',
-        300: '#d1d5db',
-        400: '#9ca3af',
-        500: '#6b7280',
-        600: '#4b5563',
-        700: '#374151',
-        800: '#1f2937',
-        900: '#111827',
+      
+      // Brand colors from Extremadura palette
+      brand: {
+        green: '#00AB39',
+        greenDark: '#008a2e',
+        greenLight: '#33c161',
+        blue: '#0071BC',
+        yellow: '#EAC102',
+        red: '#ED1C24',
+        ink: '#111111',
       },
+      
+      // Neutral palette (matches Tailwind slate)
+      slate: {
+        50: '#f8fafc',
+        100: '#f1f5f9',
+        200: '#e2e8f0',
+        300: '#cbd5e1',
+        400: '#94a3b8',
+        500: '#64748b',
+        600: '#475569',
+        700: '#334155',
+        800: '#1e293b',
+        900: '#0f172a',
+      },
+      
+      // Stone palette for backgrounds
       stone: {
         50: '#fafaf9',
         100: '#f5f5f4',
@@ -56,47 +71,64 @@ export default defineConfig({
         800: '#292524',
         900: '#1c1917',
       },
-      brand: {
-        green: '#00AB39',
-        greendark: '#008a2e',
-        greenlight: '#33c161',
-        blue: '#0071BC',
-        yellow: '#EAC102',
-        red: '#ED1C24',
-        ink: '#111111',
+      
+      // Gray palette
+      gray: {
+        50: '#f9fafb',
+        100: '#f3f4f6',
+        200: '#e5e7eb',
+        300: '#d1d5db',
+        400: '#9ca3af',
+        500: '#6b7280',
+        600: '#4b5563',
+        700: '#374151',
+        800: '#1f2937',
+        900: '#111827',
       },
+      
+      // Accent colors matching figma-design.css (Tailwind palette)
+      // These are used for badge colors and status indicators
       accent: {
         green: {
           50: '#ecfdf5',
           100: '#d1fae5',
           200: '#a7f3d0',
           500: '#10b981',
+          600: '#059669',
         },
         blue: {
           50: '#eff6ff',
           100: '#dbeafe',
           200: '#bfdbfe',
           500: '#3b82f6',
+          600: '#2563eb',
         },
         yellow: {
           50: '#fffbeb',
           100: '#fef3c7',
           200: '#fde68a',
           500: '#f59e0b',
+          600: '#d97706',
         },
         red: {
           50: '#fef2f2',
           100: '#fee2e2',
           200: '#fecaca',
           500: '#ef4444',
+          600: '#dc2626',
         },
       },
+      
+      // Standard color shortcuts
+      yellow: '#EAC102',
+      red: '#ED1C24',
+      blue: '#0071BC',
     },
   },
   shortcuts: [
     // Custom button styles
     ['btn', 'px-4 py-2 rounded-lg font-medium transition-colors'],
-    ['btn-primary', 'btn bg-brand-green text-white hover:bg-brand-greendark'],
+    ['btn-primary', 'btn bg-brand-green text-white hover:bg-brand-greenDark'],
     ['btn-secondary', 'btn bg-brand-yellow text-brand-red'],
     ['btn-outline', 'btn border-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-white'],
     ['btn-circle', 'btn rounded-full aspect-square p-2'],
@@ -107,10 +139,10 @@ export default defineConfig({
     // Badge styles (replacing DaisyUI)
     ['badge', 'px-3 py-1 rounded-full text-sm font-medium'],
     ['badge-sm', 'px-2 py-0.5 rounded-full text-xs font-medium'],
-    ['badge-success', 'badge bg-accent-green-100 text-accent-green-800'],
-    ['badge-error', 'badge bg-accent-red-100 text-accent-red-800'],
-    ['badge-warning', 'badge bg-accent-yellow-100 text-accent-yellow-800'],
-    ['badge-blue', 'badge bg-accent-blue-100 text-accent-blue-800'],
+    ['badge-success', 'badge bg-accent-green-100 text-accent-green-600'],
+    ['badge-error', 'badge bg-accent-red-100 text-accent-red-600'],
+    ['badge-warning', 'badge bg-accent-yellow-100 text-accent-yellow-600'],
+    ['badge-blue', 'badge bg-accent-blue-100 text-accent-blue-600'],
     
     // Card styles
     ['card', 'bg-white rounded-xl shadow-sm border border-stone-200'],
