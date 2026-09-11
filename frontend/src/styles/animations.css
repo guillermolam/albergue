@@ -45,8 +45,8 @@ html.is-animating .transition-slide-fade {
 }
 
 /* Reverse for backwards navigation */
-html.is-changing[data-swup-direction="back"] .transition-slide-fade,
-html.is-animating[data-swup-direction="back"] .transition-slide-fade {
+html.is-changing[data-swup-direction='back'] .transition-slide-fade,
+html.is-animating[data-swup-direction='back'] .transition-slide-fade {
   transform: translateX(50px);
 }
 
@@ -70,8 +70,8 @@ html.is-animating .transition-3d-perspective {
 }
 
 /* Backwards navigation */
-html.is-changing[data-swup-direction="back"] .transition-3d-perspective,
-html.is-animating[data-swup-direction="back"] .transition-3d-perspective {
+html.is-changing[data-swup-direction='back'] .transition-3d-perspective,
+html.is-animating[data-swup-direction='back'] .transition-3d-perspective {
   transform: perspective(1200px) rotateY(15deg) translateZ(-100px);
   box-shadow: 0 25px 100px -25px rgba(0, 0, 0, 0.5);
 }
@@ -91,13 +91,13 @@ html.is-animating .transition-morph {
 }
 
 /* Backwards */
-html.is-changing[data-swup-direction="back"] .transition-morph,
-html.is-animating[data-swup-direction="back"] .transition-morph {
+html.is-changing[data-swup-direction='back'] .transition-morph,
+html.is-animating[data-swup-direction='back'] .transition-morph {
   clip-path: circle(150% at 100% 50%);
 }
 
-html.is-changing[data-swup-direction="back"] .transition-morph.is-animating,
-html.is-animating[data-swup-direction="back"] .transition-morph {
+html.is-changing[data-swup-direction='back'] .transition-morph.is-animating,
+html.is-animating[data-swup-direction='back'] .transition-morph {
   clip-path: circle(0% at 0% 50%);
 }
 
@@ -151,12 +151,7 @@ html.is-animating .transition-particle::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    45deg,
-    transparent 40%,
-    rgba(0, 171, 57, 0.1) 50%,
-    transparent 60%
-  );
+  background: linear-gradient(45deg, transparent 40%, rgba(0, 171, 57, 0.1) 50%, transparent 60%);
   background-size: 20px 20px;
   animation: particleDissolve 0.5s ease-out forwards;
   pointer-events: none;
@@ -239,7 +234,8 @@ html.is-animating .transition-liquid {
    A. Floating Animation (3D Space)
    -------------------------------------------- */
 @keyframes float3d {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) translateZ(0) rotateX(0deg) rotateY(0deg);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   }
@@ -267,7 +263,8 @@ html.is-animating .transition-liquid {
    B. Particle Swarm (Micro-interactions)
    -------------------------------------------- */
 @keyframes particleSwarm {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
     opacity: 0;
   }
@@ -296,7 +293,8 @@ html.is-animating .transition-liquid {
    C. Neon Glow Pulse
    -------------------------------------------- */
 @keyframes neonPulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow:
       0 0 5px currentColor,
       0 0 10px currentColor,
@@ -323,13 +321,13 @@ html.is-animating .transition-liquid {
    -------------------------------------------- */
 @keyframes morphPath {
   0% {
-    d: path("M0,0 L100,0 L100,100 L0,100 Z");
+    d: path('M0,0 L100,0 L100,100 L0,100 Z');
   }
   50% {
-    d: path("M20,50 Q50,0 80,50 Q50,100 20,50 Z");
+    d: path('M20,50 Q50,0 80,50 Q50,100 20,50 Z');
   }
   100% {
-    d: path("M0,0 L100,0 L100,100 L0,100 Z");
+    d: path('M0,0 L100,0 L100,100 L0,100 Z');
   }
 }
 
@@ -353,13 +351,7 @@ html.is-animating .transition-liquid {
 }
 
 .animate-rotating-gradient {
-  background: linear-gradient(
-    -45deg,
-    #ee7752,
-    #e73c7e,
-    #23a6d5,
-    #23d5ab
-  );
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
   background-size: 400% 400%;
   animation: rotateGradient 8s ease infinite;
 }
@@ -377,7 +369,8 @@ html.is-animating .transition-liquid {
 }
 
 @keyframes blink {
-  from, to {
+  from,
+  to {
     border-color: transparent;
   }
   50% {
@@ -421,7 +414,8 @@ html.is-animating .transition-liquid {
    H. Bounce with Perspective
    -------------------------------------------- */
 @keyframes bounce3d {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) rotateX(0deg);
   }
   20% {
@@ -547,7 +541,9 @@ html.is-animating .transition-liquid {
 
 /* Glow Hover */
 .hover-glow {
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
 }
 
 .hover-glow:hover {
@@ -590,13 +586,7 @@ html.is-animating .transition-liquid {
   content: '';
   position: absolute;
   inset: -2px;
-  background: linear-gradient(
-    45deg,
-    #00ab39,
-    #eac102,
-    #0071bc,
-    #ed1c24
-  );
+  background: linear-gradient(45deg, #00ab39, #eac102, #0071bc, #ed1c24);
   background-size: 400% 400%;
   border-radius: 14px;
   z-index: -1;
@@ -623,7 +613,7 @@ html.is-animating .transition-liquid {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-image: 
+  background-image:
     radial-gradient(circle at 20% 80%, rgba(0, 171, 57, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 80% 20%, rgba(234, 193, 2, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 50% 50%, rgba(0, 113, 188, 0.05) 0%, transparent 70%);
@@ -640,6 +630,28 @@ html.is-animating .transition-liquid {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html.is-changing .transition-fade-scale,
+  html.is-changing .transition-slide-fade,
+  html.is-changing .transition-3d-perspective,
+  html.is-changing .transition-morph,
+  html.is-changing .transition-warp,
+  html.is-changing .transition-glitch,
+  html.is-changing .transition-particle,
+  html.is-changing .transition-liquid,
+  .animate-float-3d,
+  .animate-particle,
+  .animate-neon-pulse,
+  .animate-morph-path,
+  .animate-rotating-gradient,
+  .animate-typewriter,
+  .animate-shimmer,
+  .animate-bounce-3d,
+  .magic-border::before {
+    animation: none !important;
+    transition: none !important;
   }
 }
 
