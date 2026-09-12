@@ -18,7 +18,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "migration:check": "node scripts/check-migration-chain.mjs"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",

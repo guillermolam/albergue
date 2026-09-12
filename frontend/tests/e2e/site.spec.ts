@@ -20,7 +20,7 @@ for (const route of ['/info', '/book', '/admin']) {
     const response = await page.goto(route);
 
     expect(response?.status()).toBe(200);
-    await expect(page.locator('main')).toBeVisible();
+    await expect(page.locator('main').first()).toBeVisible();
   });
 }
 
