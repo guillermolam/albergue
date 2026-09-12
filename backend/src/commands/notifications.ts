@@ -5,7 +5,7 @@
 
 import { db } from '../lib/db.js';
 import { notifications } from '@albergue/domain-model';
-import { eq, and, or, isNull, lt, inArray } from 'drizzle-orm';
+import { eq, and, or, isNull, lt, inArray, sql } from 'drizzle-orm';
 import type { InsertNotification, Notification } from '../types/index.js';
 
 /**
@@ -20,11 +20,11 @@ export async function createNotification(input: InsertNotification): Promise<Not
       createdAt: new Date(),
     })
     .returning();
-  
+
   if (!result) {
     throw new Error('Failed to create notification');
   }
-  
+
   return result;
 }
 
@@ -44,7 +44,7 @@ export async function createNotificationsBatch(
       }))
     )
     .returning();
-  
+
   return results;
 }
 
@@ -60,11 +60,11 @@ export async function updateNotification(
     .from(notifications)
     .where(eq(notifications.id, id))
     .limit(1);
-  
+
   if (!existing) {
     return null;
   }
-  
+
   const [result] = await db
     .update(notifications)
     .set({
@@ -72,7 +72,7 @@ export async function updateNotification(
     })
     .where(eq(notifications.id, id))
     .returning();
-  
+
   return result || null;
 }
 
@@ -92,7 +92,7 @@ export async function markNotificationAsSent(
     })
     .where(eq(notifications.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -108,10 +108,11 @@ export async function markNotificationAsFailed(
     .set({
       status: 'failed',
       errorMessage,
+      attempts: sql`COALESCE(${notifications.attempts}, 0) + 1`,
     })
     .where(eq(notifications.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -126,7 +127,7 @@ export async function markNotificationAsDelivered(id: number): Promise<boolean> 
     })
     .where(eq(notifications.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -141,24 +142,31 @@ export async function markNotificationAsRead(id: number): Promise<boolean> {
     })
     .where(eq(notifications.id, id))
     .returning();
-  
+
   return !!result;
 }
 
 /**
  * Retry failed notifications
+ * Dead-letter safeguard: notifications at or over the attempt cap stay failed.
  */
+export const MAX_NOTIFICATION_ATTEMPTS = 3;
+
 export async function retryFailedNotifications(): Promise<number> {
-  // Schema has no attempts column — retry all failed notifications
   const results = await db
     .update(notifications)
     .set({
       status: 'pending_retry',
       errorMessage: null,
     })
-    .where(eq(notifications.status, 'failed'))
+    .where(
+      and(
+        eq(notifications.status, 'failed'),
+        lt(notifications.attempts, MAX_NOTIFICATION_ATTEMPTS)
+      )
+    )
     .returning();
-  
+
   return results.length;
 }
 
@@ -176,7 +184,7 @@ export async function softDeleteNotification(id: number): Promise<boolean> {
     })
     .where(eq(notifications.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -189,7 +197,7 @@ export async function deleteNotification(id: number): Promise<boolean> {
     .delete(notifications)
     .where(eq(notifications.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -202,7 +210,7 @@ export async function bulkDeleteNotifications(ids: number[]): Promise<number> {
     .delete(notifications)
     .where(inArray(notifications.id, ids))
     .returning();
-  
+
   return results.length;
 }
 
@@ -220,7 +228,7 @@ export async function updateNotificationProviderMessageId(
     })
     .where(eq(notifications.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -230,7 +238,7 @@ export async function updateNotificationProviderMessageId(
 export async function cleanupOldNotifications(days: number = 30): Promise<number> {
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - days);
-  
+
   const results = await db
     .delete(notifications)
     .where(
@@ -244,6 +252,6 @@ export async function cleanupOldNotifications(days: number = 30): Promise<number
       )
     )
     .returning();
-  
+
   return results.length;
 }

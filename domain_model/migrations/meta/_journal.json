@@ -15,6 +15,13 @@
       "when": 1789220000000,
       "tag": "0001_government_submissions_updated_at",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789220001000,
+      "tag": "0002_notifications_attempts",
+      "breakpoints": true
     }
   ]
 }

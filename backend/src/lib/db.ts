@@ -28,9 +28,12 @@ const poolConfig: PoolConfig = {
 // Database connection pool
 const pool = new Pool(poolConfig);
 
-// Preserve former connectionInitSql behavior via connect hook
+// pg has no connectionInitSql equivalent; run an async warmup query instead.
+// The rejection must be handled — an unhandled one would crash the process.
 pool.on('connect', (client) => {
-  client.query('SELECT NOW()');
+  client.query('SELECT NOW()').catch((err) => {
+    console.error('Connection warmup query failed:', err);
+  });
 });
 
 // Create Drizzle database instance typed with domain schema
@@ -78,17 +81,17 @@ export async function checkDbHealth(retries: number = 2) {
     const client = await pool.connect();
     try {
       const result = await client.query('SELECT NOW()');
-      
+
       connectionState.lastConnected = new Date();
       connectionState.lastError = null;
       connectionState.consecutiveFailures = 0;
       connectionState.isHealthy = true;
-      
+
       client.release();
-      return { 
-        healthy: true, 
+      return {
+        healthy: true,
         timestamp: result.rows[0].now,
-        state: connectionState 
+        state: connectionState
       };
     } catch (error) {
       throw error;
@@ -97,17 +100,17 @@ export async function checkDbHealth(retries: number = 2) {
     connectionState.lastError = error as Error;
     connectionState.consecutiveFailures++;
     connectionState.isHealthy = false;
-    
+
     if (retries > 0) {
       // Wait and retry
       await new Promise(resolve => setTimeout(resolve, 1000));
       return checkDbHealth(retries - 1);
     }
-    
-    return { 
-      healthy: false, 
+
+    return {
+      healthy: false,
       error: String(error),
-      state: connectionState 
+      state: connectionState
     };
   }
 }
@@ -123,7 +126,7 @@ export function getConnectionStats() {
   return {
     ...connectionState,
     pool: poolStats,
-    uptime: connectionState.lastConnected ? 
+    uptime: connectionState.lastConnected ?
       Math.floor((Date.now() - connectionState.lastConnected.getTime()) / 1000) : 0,
   };
 }
@@ -160,17 +163,17 @@ export async function testDbConnection() {
 // Reconnect to database (for hot reload or connection issues)
 export async function reconnectDb() {
   console.log('Attempting to reconnect to database...');
-  
+
   try {
     await closeDb();
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // Create new pool
     poolConfig.application_name = `albergue-backend-reconnected-${Date.now()}`;
-    
+
     // Note: We can't reassign const pool, but in practice you'd need to restart
     console.log('Database reconnection requires process restart');
-    
+
     return checkDbHealth();
   } catch (error) {
     throw new DatabaseError('Database reconnection failed', { error: String(error) });
@@ -184,9 +187,9 @@ export function startConnectionMonitor(interval: number = 60000) {
   if (connectionMonitor) {
     stopConnectionMonitor();
   }
-  
+
   console.log(`Starting database connection monitor (interval: ${interval}ms)`);
-  
+
   connectionMonitor = setInterval(async () => {
     const health = await checkDbHealth(1);
     if (!health.healthy) {

@@ -114,3 +114,5 @@ jobs:
             "select count(*) from information_schema.tables where table_schema='public' and table_name in ('users','pilgrims','beds','bookings','payments','pricing','government_submissions','notifications','audit_log')")" = "9"
           test "$(psql -h localhost -U postgres -d albergue_test -Atc \
             "select count(*) from information_schema.columns where table_schema='public' and table_name='government_submissions' and column_name='updated_at'")" = "1"
+          test "$(psql -h localhost -U postgres -d albergue_test -Atc \
+            "select count(*) from information_schema.columns where table_schema='public' and table_name='notifications' and column_name='attempts'")" = "1"

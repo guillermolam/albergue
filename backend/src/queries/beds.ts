@@ -31,19 +31,19 @@ export async function getAllBeds(
 
   // Build where conditions
   const whereConditions = [];
-  
+
   if (roomType) {
     whereConditions.push(eq(beds.roomType, roomType));
   }
-  
+
   if (roomNumber) {
     whereConditions.push(eq(beds.roomNumber, roomNumber));
   }
-  
+
   if (isAvailable !== undefined) {
     whereConditions.push(eq(beds.isAvailable, isAvailable));
   }
-  
+
   if (status) {
     whereConditions.push(eq(beds.status, status));
   }
@@ -63,7 +63,7 @@ export async function getAllBeds(
     .where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
     .orderBy(
       orderFn(orderBy in beds ? (beds as any)[orderBy] : beds.roomNumber)
-      )
+    )
     .limit(pageSize)
     .offset(offset);
 
@@ -87,7 +87,7 @@ export async function getBedById(id: number): Promise<Bed | null> {
     .from(beds)
     .where(eq(beds.id, id))
     .limit(1);
-  
+
   return result || null;
 }
 
@@ -108,7 +108,7 @@ export async function getBedByRoomAndNumber(
       )
     )
     .limit(1);
-  
+
   return result || null;
 }
 
@@ -129,7 +129,7 @@ export async function getAvailableBeds(): Promise<Bed[]> {
       )
     )
     .orderBy(asc(beds.roomNumber));
-  
+
   return results;
 }
 
@@ -150,7 +150,7 @@ export async function getOccupiedBeds(): Promise<Bed[]> {
       )
     )
     .orderBy(asc(beds.roomNumber));
-  
+
   return results;
 }
 
@@ -163,7 +163,7 @@ export async function getBedsInMaintenance(): Promise<Bed[]> {
     .from(beds)
     .where(eq(beds.status, 'maintenance'))
     .orderBy(asc(beds.roomNumber));
-  
+
   return results;
 }
 
@@ -176,7 +176,7 @@ export async function getBedsByRoomType(roomType: string): Promise<Bed[]> {
     .from(beds)
     .where(eq(beds.roomType, roomType))
     .orderBy(asc(beds.roomNumber));
-  
+
   return results;
 }
 
@@ -189,7 +189,7 @@ export async function getBedsByRoomNumber(roomNumber: number): Promise<Bed[]> {
     .from(beds)
     .where(eq(beds.roomNumber, roomNumber))
     .orderBy(asc(beds.bedNumber));
-  
+
   return results;
 }
 
@@ -205,7 +205,7 @@ export async function searchBeds(query: string, limit: number = 10): Promise<Bed
     )
     .orderBy(asc(beds.roomNumber))
     .limit(limit);
-  
+
   return results;
 }
 
@@ -285,7 +285,7 @@ export async function getRecentBeds(limit: number = 5): Promise<Bed[]> {
     .from(beds)
     .orderBy(desc(beds.createdAt))
     .limit(limit);
-  
+
   return results;
 }
 
@@ -298,7 +298,7 @@ export async function getBedsWithBookings(): Promise<Bed[]> {
     .from(beds)
     .innerJoin(bookings, eq(bookings.bedAssignmentId, beds.id))
     .groupBy(beds.id);
-  
+
   return results.map(r => r.bed);
 }
 
@@ -306,7 +306,11 @@ export async function getBedsWithBookings(): Promise<Bed[]> {
  * Get beds that will be available on a specific date
  */
 export async function getBedsAvailableOnDate(date: Date): Promise<Bed[]> {
+  // Column types differ deliberately: check_in_date/check_out_date are `date`
+  // columns and compare as 'YYYY-MM-DD' strings; reservation_expires_at is a
+  // `timestamp` and compares as a Date. Drizzle maps each to its wire type.
   const dateStr = date.toISOString().slice(0, 10);
+  const now = new Date();
   const results = await db
     .select({ bed: beds })
     .from(beds)
@@ -317,32 +321,18 @@ export async function getBedsAvailableOnDate(date: Date): Promise<Bed[]> {
         eq(bookings.status, 'reserved'),
         or(
           isNull(bookings.reservationExpiresAt),
-          gte(bookings.reservationExpiresAt, new Date())
+          gte(bookings.reservationExpiresAt, now)
         ),
-        // Check for date overlap
-        or(
-          and(
-            lte(bookings.checkInDate, dateStr),
-            gte(bookings.checkOutDate, dateStr)
-          )
-        )
+        // Night of `dateStr` is occupied when checkIn <= dateStr <= checkOut
+        lte(bookings.checkInDate, dateStr),
+        gte(bookings.checkOutDate, dateStr)
       )
     )
-    .where(
-      or(
-        isNull(bookings.id),
-        // Bed is not reserved for this date
-        and(
-          isNull(bookings.bedAssignmentId),
-          // Or reservation doesn't overlap
-          or(
-            gt(bookings.checkInDate, dateStr),
-            lt(bookings.checkOutDate, dateStr)
-          )
-        )
-      )
-    )
+    // A joined row is an active overlapping reservation; no row means the bed
+    // is free. (Joined rows always have bed_assignment_id = beds.id, so any
+    // isNull(bedAssignmentId) branch would be dead code.)
+    .where(isNull(bookings.id))
     .orderBy(asc(beds.roomNumber));
-  
+
   return results.map(r => r.bed);
 }

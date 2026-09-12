@@ -94,9 +94,9 @@ app.get('/health', async (c) => {
   try {
     const dbHealth = await checkDbHealth(2);
     const connectionStats = getConnectionStats();
-    
+
     const isHealthy = dbHealth.healthy && connectionStats.isHealthy;
-    
+
     return c.json({
       success: true,
       status: isHealthy ? 'healthy' : 'degraded',
@@ -153,8 +153,9 @@ app.get('/health/stats', (c) => {
 // API version prefix
 const api = new Hono();
 
-// Transitional fail-closed gate. No identity provider is wired yet, so these
-// privileged capabilities remain unreachable until Phase 5 supplies verified users.
+// Privileged capabilities require a verified identity. Until Phase 5 wires
+// session auth, authMiddleware accepts an ADMIN_API_TOKEN bearer credential
+// and fails closed when it is unset or wrong.
 api.use('/users/*', authMiddleware({ roles: ['admin'] }));
 api.use('/audit-log/*', authMiddleware({ roles: ['admin'] }));
 api.use('/government-submissions/*', authMiddleware({ roles: ['admin'] }));
@@ -176,7 +177,7 @@ app.route('/api', api);
 // Global error handler
 app.onError((err, c) => {
   console.error('Error:', err);
-  
+
   if (err instanceof HTTPException) {
     return c.json({
       success: false,
@@ -185,7 +186,7 @@ app.onError((err, c) => {
       timestamp: new Date().toISOString(),
     }, err.status as any);
   }
-  
+
   return c.json({
     success: false,
     error: 'Internal Server Error',
