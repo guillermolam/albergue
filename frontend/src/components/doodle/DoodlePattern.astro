@@ -126,9 +126,7 @@ const patterns = {
 const selectedPattern = patterns[pattern] || patterns.dots;
 ---
 
-<css-doodle class={`doodle-pattern ${className}`}>
-  {selectedPattern}
-</css-doodle>
+<css-doodle class={`doodle-pattern ${className}`}>{selectedPattern}</css-doodle>
 
 <style>
   .doodle-pattern {

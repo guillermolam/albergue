@@ -28,28 +28,15 @@ const {
     <script type="module" src="/src/scripts/runtime.ts"></script>
     <!-- Swup View Transitions -->
     <meta name="view-transition" content="same-origin" />
-    <!-- Load Swup plugins from CDN for better performance -->
-    <script src="https://unpkg.com/@swup/accessibility-plugin@1/dist/SwupAccessibilityPlugin.umd.js"></script>
-    <script src="https://unpkg.com/@swup/body-class-plugin@1/dist/SwupBodyClassPlugin.umd.js"></script>
-    <script src="https://unpkg.com/@swup/debug-plugin@1/dist/SwupDebugPlugin.umd.js"></script>
-    <script src="https://unpkg.com/@swup/forms-plugin@1/dist/SwupFormsPlugin.umd.js"></script>
-    <script src="https://unpkg.com/@swup/fragment-plugin@1/dist/SwupFragmentPlugin.umd.js"></script>
-    <script src="https://unpkg.com/@swup/head-plugin@1/dist/SwupHeadPlugin.umd.js"></script>
-    <script src="https://unpkg.com/@swup/js-plugin@1/dist/SwupJsPlugin.umd.js"></script>
-    <script src="https://unpkg.com/@swup/parallel-plugin@1/dist/SwupParallelPlugin.umd.js"></script>
-    <script src="https://unpkg.com/@swup/preload-plugin@1/dist/SwupPreloadPlugin.umd.js"></script>
-    <script src="https://unpkg.com/@swup/progress-bar-plugin@1/dist/SwupProgressBarPlugin.umd.js"></script>
-    <script src="https://unpkg.com/@swup/route-name-plugin@1/dist/SwupRouteNamePlugin.umd.js"></script>
-    <script src="https://unpkg.com/@swup/scripts-plugin@1/dist/SwupScriptsPlugin.umd.js"></script>
-    <script src="https://unpkg.com/@swup/scroll-plugin@1/dist/SwupScrollPlugin.umd.js"></script>
-    <!-- Initialize swup plugins -->
-    <script type="module">
-      import '../scripts/swup-plugins';
-      import '../scripts/swup-animations';
-    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Patrick+Hand&family=Shadows+Into+Light&family=Cabin+Sketch:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body class="paper-texture min-h-screen">
-    <div id="swup" class="transition-fade-scale">
+    <div id="main-content" class="transition-fade">
       {showHeader && (
         <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/60 shadow-sm">
           <nav class="container mx-auto px-4 py-4">

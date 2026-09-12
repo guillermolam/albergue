@@ -12,12 +12,12 @@ test_connection() {
 	local url=$1
 	local env_name=$2
 
-	echo "Testing $env_name connection..."
-	if psql "$url" -c "SELECT version();" &>/dev/null; then
-		echo " $env_name connection successful"
+	echo "Testing ${env_name} connection..."
+	if psql "${url}" -c "SELECT version();" &>/dev/null; then
+		echo " ${env_name} connection successful"
 		return 0
 	else
-		echo " $env_name connection failed"
+		echo " ${env_name} connection failed"
 		return 1
 	fi
 }
@@ -27,40 +27,40 @@ setup_database() {
 	local url=$1
 	local env_name=$2
 
-	echo "Setting up $env_name database..."
+	echo "Setting up ${env_name} database..."
 
 	# Test connection first
-	if ! test_connection "$url" "$env_name"; then
+	if ! test_connection "${url}" "${env_name}"; then
 		return 1
 	fi
 
 	# Apply migrations
 	echo " Applying migrations..."
 	for migration in ../migrations/*.sql; do
-		if [ -f "$migration" ]; then
-			echo "   Running $(basename $migration)..."
-			psql "$url" -f "$migration"
+		if [[ -f ${migration} ]]; then
+			echo "   Running $(basename "${migration}")..."
+			psql "${url}" -f "${migration}"
 		fi
 	done
 
 	# Apply NeonDB configuration
 	echo "  Applying NeonDB configuration..."
-	psql "$url" -f ../neon-config.sql
+	psql "${url}" -f ../neon-config.sql
 
 	# Apply seed data
 	echo " Applying seed data..."
-	psql "$url" -f ../seed/dev_seed.sql
+	psql "${url}" -f ../seed/dev_seed.sql
 
-	echo " $env_name setup complete"
+	echo " ${env_name} setup complete"
 }
 
 # Main setup
-if [ "$1" = "prod" ]; then
+if [[ $1 == "prod" ]]; then
 	echo "Setting up production database..."
-	setup_database "$PROD_URL" "Production"
-elif [ "$1" = "dev" ]; then
+	setup_database "${PROD_URL}" "Production"
+elif [[ $1 == "dev" ]]; then
 	echo "Setting up development database..."
-	setup_database "$DEV_URL" "Development"
+	setup_database "${DEV_URL}" "Development"
 else
 	echo "Usage: $0 [prod|dev]"
 	echo ""
@@ -78,8 +78,8 @@ echo ""
 echo " Database setup complete!"
 echo ""
 echo "Connection details:"
-echo "  Production: $PROD_URL"
-echo "  Development: $DEV_URL"
+echo "  Production: ${PROD_URL}"
+echo "  Development: ${DEV_URL}"
 echo ""
 echo "Next steps:"
 echo "1. Update your .env.local file with the appropriate URL"

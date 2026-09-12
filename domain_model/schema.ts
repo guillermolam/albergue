@@ -11,7 +11,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -136,6 +136,7 @@ export const governmentSubmissions = pgTable("government_submissions", {
   attempts: integer("attempts").default(0),
   lastAttempt: timestamp("last_attempt"),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const notifications = pgTable("notifications", {
@@ -149,6 +150,7 @@ export const notifications = pgTable("notifications", {
   status: text("status").default("pending"),
   providerMessageId: text("provider_message_id"),
   errorMessage: text("error_message"),
+  attempts: integer("attempts").default(0),
   sentAt: timestamp("sent_at"),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -262,6 +264,7 @@ export const insertGovernmentSubmissionSchema = createInsertSchema(
 ).omit({
   id: true,
   createdAt: true,
+  updatedAt: true,
 });
 
 export const insertPricingSchema = createInsertSchema(pricing).omit({
@@ -272,6 +275,7 @@ export const insertPricingSchema = createInsertSchema(pricing).omit({
 
 export const insertNotificationSchema = createInsertSchema(notifications).omit({
   id: true,
+  attempts: true,
   createdAt: true,
 });
 

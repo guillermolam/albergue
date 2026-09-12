@@ -92,11 +92,9 @@ const socialLinks = [
     <meta name="background-color" content={backgroundColor} />
     <meta name="robots" content={noIndex ? 'noindex' : 'index'} />
     <link rel="canonical" href={canonical} />
-    {
-      structuredData && (
-        <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
-      )
-    }
+    {structuredData && (
+      <script type="application/ld+json" set:html={JSON.stringify(structuredData)}></script>
+    )}
 
     <!-- Preload critical fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -107,7 +105,6 @@ const socialLinks = [
     />
     <!-- Load anime.js for animations -->
     <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
-
     <!-- Custom CSS for Figma-inspired design -->
     <style>
       /* Figma-inspired custom properties */
@@ -261,22 +258,16 @@ const socialLinks = [
     </a>
 
     <!-- Header -->
-    <header
-      class="sticky top-0 z-50 bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-sm"
-    >
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-sm">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <!-- Logo -->
           <div class="flex items-center gap-3">
-            <div
-              class="w-10 h-10 bg-linear-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg"
-            >
+            <div class="w-10 h-10 bg-linear-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
               <DoodleIcons name="shell" size="lg" />
             </div>
             <div>
-              <h1
-                class="text-xl font-bold bg-linear-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent"
-              >
+              <h1 class="text-xl font-bold bg-linear-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                 Albergue Carrascalejo
               </h1>
               <p class="text-xs text-gray-500">Tu refugio en el Camino</p>
@@ -285,17 +276,15 @@ const socialLinks = [
 
           <!-- Navigation -->
           <nav class="hidden md:flex items-center gap-2">
-            {
-              navigationItems.map((item) => (
-                <DoodleButton
-                  href={item.href}
-                  variant={Astro.url.pathname === item.href ? 'primary' : 'ghost'}
-                  size="sm"
-                >
-                  {item.label}
-                </DoodleButton>
-              ))
-            }
+            {navigationItems.map((item) => (
+              <DoodleButton
+                href={item.href}
+                variant={Astro.url.pathname === item.href ? 'primary' : 'ghost'}
+                size="sm"
+              >
+                {item.label}
+              </DoodleButton>
+            ))}
           </nav>
 
           <!-- Mobile menu button -->
@@ -320,9 +309,7 @@ const socialLinks = [
           <!-- About -->
           <div class="space-y-4">
             <div class="flex items-center gap-3">
-              <div
-                class="w-8 h-8 bg-linear-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center"
-              >
+              <div class="w-8 h-8 bg-linear-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
                 <!-- Replaced DoodleIcon with a simple inline SVG shell icon -->
                 <svg
                   class="w-4 h-4 text-white"
@@ -330,9 +317,7 @@ const socialLinks = [
                   viewBox="0 0 24 24"
                   aria-hidden="true"
                 >
-                  <path
-                    d="M12 2C8 2 5 5 5 9c0 2.5 1.5 4.5 3 6l-2 5h12l-2-5c1.5-1.5 3-3.5 3-6 0-4-3-7-7-7zm0 2c2.8 0 5 2.2 5 5 0 1.8-1 3.5-2.5 4.5L12 18l-2.5-4.5C8 12.5 7 10.8 7 9c0-2.8 2.2-5 5-5z"
-                  ></path>
+                  <path d="M12 2C8 2 5 5 5 9c0 2.5 1.5 4.5 3 6l-2 5h12l-2-5c1.5-1.5 3-3.5 3-6 0-4-3-7-7-7zm0 2c2.8 0 5 2.2 5 5 0 1.8-1 3.5-2.5 4.5L12 18l-2.5-4.5C8 12.5 7 10.8 7 9c0-2.8 2.2-5 5-5z"></path>
                 </svg>
               </div>
               <h3 class="text-lg font-bold">Albergue Carrascalejo</h3>
@@ -342,17 +327,15 @@ const socialLinks = [
               peregrinos del Camino de Santiago.
             </p>
             <div class="flex gap-3">
-              {
-                socialLinks.map((social) => (
-                  <a
-                    href={social.href}
-                    class="text-gray-300 hover:text-green-400 transition-colors text-lg"
-                    aria-label={social.label}
-                  >
-                    {social.icon}
-                  </a>
-                ))
-              }
+              {socialLinks.map((social) => (
+                <a
+                  href={social.href}
+                  class="text-gray-300 hover:text-green-400 transition-colors text-lg"
+                  aria-label={social.label}
+                >
+                  {social.icon}
+                </a>
+              ))}
             </div>
           </div>
 
@@ -360,18 +343,16 @@ const socialLinks = [
           <div class="space-y-4">
             <h3 class="text-lg font-bold text-green-400">Servicios</h3>
             <ul class="space-y-2">
-              {
-                footerLinks.services.map((link) => (
-                  <li>
-                    <a
-                      href={link.href}
-                      class="text-gray-300 hover:text-green-400 transition-colors text-sm"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))
-              }
+              {footerLinks.services.map((link) => (
+                <li>
+                  <a
+                    href={link.href}
+                    class="text-gray-300 hover:text-green-400 transition-colors text-sm"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -379,18 +360,16 @@ const socialLinks = [
           <div class="space-y-4">
             <h3 class="text-lg font-bold text-green-400">Información</h3>
             <ul class="space-y-2">
-              {
-                footerLinks.information.map((link) => (
-                  <li>
-                    <a
-                      href={link.href}
-                      class="text-gray-300 hover:text-green-400 transition-colors text-sm"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))
-              }
+              {footerLinks.information.map((link) => (
+                <li>
+                  <a
+                    href={link.href}
+                    class="text-gray-300 hover:text-green-400 transition-colors text-sm"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -398,18 +377,16 @@ const socialLinks = [
           <div class="space-y-4">
             <h3 class="text-lg font-bold text-green-400">Contacto</h3>
             <ul class="space-y-2">
-              {
-                footerLinks.contact.map((link) => (
-                  <li>
-                    <a
-                      href={link.href}
-                      class="text-gray-300 hover:text-green-400 transition-colors text-sm"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))
-              }
+              {footerLinks.contact.map((link) => (
+                <li>
+                  <a
+                    href={link.href}
+                    class="text-gray-300 hover:text-green-400 transition-colors text-sm"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
             </ul>
             <div class="pt-4 border-t border-gray-700">
               <p class="text-xs text-gray-400">
@@ -438,7 +415,8 @@ const socialLinks = [
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="2"
-          d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+          d="M5 10l7-7m0 0l7 7m-7-7v18"
+        ></path>
       </svg>
     </button>
 

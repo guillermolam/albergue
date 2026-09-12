@@ -1,5 +1,5 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import AdminLayout from '../../layouts/AdminLayout.astro';
 ---
@@ -60,7 +60,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
           </svg>
         </div>
         <div class="stat-title">System Health</div>
@@ -75,7 +76,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
           </svg>
         </div>
         <div class="stat-title">Avg Response</div>
@@ -179,31 +181,41 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
                   <td class="font-mono text-sm">14:32:15</td>
                   <td>PostgreSQL</td>
                   <td>Health check passed</td>
-                  <td><span class="badge badge-success badge-sm">Healthy</span></td>
+                  <td>
+                    <span class="badge badge-success badge-sm">Healthy</span>
+                  </td>
                 </tr>
                 <tr>
                   <td class="font-mono text-sm">14:31:45</td>
                   <td>API Gateway</td>
                   <td>Connection timeout</td>
-                  <td><span class="badge badge-error badge-sm">Error</span></td>
+                  <td>
+                    <span class="badge badge-error badge-sm">Error</span>
+                  </td>
                 </tr>
                 <tr>
                   <td class="font-mono text-sm">14:30:22</td>
                   <td>Redis</td>
                   <td>High memory usage</td>
-                  <td><span class="badge badge-warning badge-sm">Warning</span></td>
+                  <td>
+                    <span class="badge badge-warning badge-sm">Warning</span>
+                  </td>
                 </tr>
                 <tr>
                   <td class="font-mono text-sm">14:29:18</td>
                   <td>Fermyon Spin</td>
                   <td>Health check passed</td>
-                  <td><span class="badge badge-success badge-sm">Healthy</span></td>
+                  <td>
+                    <span class="badge badge-success badge-sm">Healthy</span>
+                  </td>
                 </tr>
                 <tr>
                   <td class="font-mono text-sm">14:28:05</td>
                   <td>MQTT Broker</td>
                   <td>Health check passed</td>
-                  <td><span class="badge badge-success badge-sm">Healthy</span></td>
+                  <td>
+                    <span class="badge badge-success badge-sm">Healthy</span>
+                  </td>
                 </tr>
               </tbody>
             </table>

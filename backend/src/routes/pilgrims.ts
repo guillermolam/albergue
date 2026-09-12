@@ -15,7 +15,7 @@ import {
   getPilgrimsWithActiveBookings,
   getPilgrimStats,
   getRecentPilgrims,
-} from '../queries/pilgrims';
+} from '../queries/pilgrims.js';
 import {
   createPilgrim,
   createPilgrimsBatch,
@@ -28,7 +28,7 @@ import {
   updatePilgrimDocument,
   bulkUpdatePilgrims,
   cleanupExpiredPilgrims,
-} from '../commands/pilgrims';
+} from '../commands/pilgrims.js';
 import type {
   CreatePilgrimInput,
   UpdatePilgrimInput,
@@ -37,7 +37,7 @@ import type {
   PaginatedResponse,
   PilgrimFilter,
   PilgrimStats,
-} from '../types';
+} from '../types/index.js';
 
 const pilgrims = new Hono();
 
@@ -108,6 +108,9 @@ pilgrims.get('/:id', async (c: Context) => {
 pilgrims.get('/email/:email', async (c: Context) => {
   try {
     const email = c.req.param('email');
+    if (!email) {
+      throw new HTTPException(400, { message: 'email is required' });
+    }
     const pilgrim = await getPilgrimByEmail(email);
     
     if (!pilgrim) {
@@ -135,6 +138,9 @@ pilgrims.get('/document/:type/:number', async (c: Context) => {
   try {
     const type = c.req.param('type');
     const number = c.req.param('number');
+    if (!type || !number) {
+      throw new HTTPException(400, { message: 'document type and number are required' });
+    }
     const pilgrim = await getPilgrimByDocumentNumber(type, number);
     
     if (!pilgrim) {

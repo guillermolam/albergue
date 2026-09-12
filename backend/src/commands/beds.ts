@@ -3,10 +3,10 @@
  * Write operations for beds
  */
 
-import { db } from '../lib/db';
-import { beds } from '../../domain_model/schema';
-import { eq, and, or, isNull } from 'drizzle-orm';
-import type { InsertBed, UpdateBedInput, Bed } from '../types';
+import { db } from '../lib/db.js';
+import { beds } from '@albergue/domain-model';
+import { eq, and, or, isNull, lte, inArray } from 'drizzle-orm';
+import type { InsertBed, UpdateBedInput, Bed } from '../types/index.js';
 
 /**
  * Create a new bed
@@ -115,6 +115,7 @@ export async function reserveBed(
   reservedUntil: Date,
   status: string = 'reserved'
 ): Promise<boolean> {
+  // Atomic claim: only an available bed can be reserved.
   const [result] = await db
     .update(beds)
     .set({
@@ -123,7 +124,7 @@ export async function reserveBed(
       reservedUntil,
       updatedAt: new Date(),
     })
-    .where(eq(beds.id, id))
+    .where(and(eq(beds.id, id), eq(beds.isAvailable, true)))
     .returning();
   
   return !!result;
@@ -232,13 +233,14 @@ export async function bulkUpdateBeds(
   ids: number[],
   updates: Partial<UpdateBedInput>
 ): Promise<number> {
+  if (ids.length === 0) return 0;
   const results = await db
     .update(beds)
     .set({
       ...updates,
       updatedAt: new Date(),
     })
-    .where(or(...ids.map(id => eq(beds.id, id))))
+    .where(inArray(beds.id, ids))
     .returning();
   
   return results.length;
@@ -265,7 +267,7 @@ export async function cleanupExpiredReservations(): Promise<number> {
         // @ts-ignore
         or(
           isNull(beds.reservedUntil),
-          beds.reservedUntil.lte(now)
+          lte(beds.reservedUntil, now)
         )
       )
     )

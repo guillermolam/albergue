@@ -1,0 +1,13 @@
+{
+  "plugins": {
+    "slack": {
+      "enabled": true
+    },
+    "context7-plugin": {
+      "enabled": true
+    },
+    "supabase": {
+      "enabled": true
+    }
+  }
+}

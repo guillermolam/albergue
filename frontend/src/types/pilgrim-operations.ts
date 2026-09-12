@@ -35,7 +35,7 @@ import type {
   SearchQuery,
   ExportConfig,
   ImportConfig,
-} from './pilgrim';
+} from "./pilgrim";
 
 /**
  * Pilgrim repository interface for data access
@@ -51,7 +51,7 @@ export interface IPilgrimRepository {
   getProfileByEmail(email: string): Promise<ApiResponse<PilgrimProfile>>;
   getProfiles(
     filters?: FilterInfo[],
-    pagination?: PaginationInfo
+    pagination?: PaginationInfo,
   ): Promise<PaginatedResponse<PilgrimProfile>>;
   getPilgrimageById(id: string): Promise<ApiResponse<Pilgrimage>>;
   getPilgrimagesByProfileId(profileId: string): Promise<ApiResponse<Pilgrimage[]>>;
@@ -76,7 +76,7 @@ export interface IPilgrimRepository {
   searchProfiles(query: SearchQuery): Promise<PaginatedResponse<PilgrimProfile>>;
   filterProfiles(
     filters: FilterInfo[],
-    sorting?: SortingInfo[]
+    sorting?: SortingInfo[],
   ): Promise<PaginatedResponse<PilgrimProfile>>;
 
   // Export/Import
@@ -92,7 +92,7 @@ export interface IPilgrimService {
   registerPilgrim(profile: CreatePilgrimProfileDto): Promise<ApiResponse<PilgrimProfile>>;
   updatePilgrimProfile(
     id: string,
-    updates: UpdatePilgrimProfileDto
+    updates: UpdatePilgrimProfileDto,
   ): Promise<ApiResponse<PilgrimProfile>>;
   deactivatePilgrim(id: string, reason: string): Promise<ApiResponse<boolean>>;
   reactivatePilgrim(id: string): Promise<ApiResponse<boolean>>;
@@ -100,15 +100,15 @@ export interface IPilgrimService {
   // Pilgrimage management
   startPilgrimage(
     profileId: string,
-    pilgrimage: CreatePilgrimageDto
+    pilgrimage: CreatePilgrimageDto,
   ): Promise<ApiResponse<Pilgrimage>>;
   updatePilgrimageProgress(
     id: string,
-    progress: UpdateProgressDto
+    progress: UpdateProgressDto,
   ): Promise<ApiResponse<Pilgrimage>>;
   completePilgrimage(
     id: string,
-    completion: CompletePilgrimageDto
+    completion: CompletePilgrimageDto,
   ): Promise<ApiResponse<Pilgrimage>>;
   cancelPilgrimage(id: string, reason: string): Promise<ApiResponse<Pilgrimage>>;
 
@@ -138,7 +138,7 @@ export interface IPilgrimService {
   createSocialProfile(profile: CreateSocialProfileDto): Promise<ApiResponse<SocialProfile>>;
   findCompanions(
     profileId: string,
-    preferences: CompanionPreferencesDto
+    preferences: CompanionPreferencesDto,
   ): Promise<ApiResponse<PilgrimProfile[]>>;
   sendFriendRequest(senderId: string, receiverId: string): Promise<ApiResponse<boolean>>;
   acceptFriendRequest(requestId: string): Promise<ApiResponse<boolean>>;
@@ -149,7 +149,7 @@ export interface IPilgrimService {
   verifyPhoneNumber(phone: string, code: string): Promise<ApiResponse<boolean>>;
 
   // Export/Import
-  exportPilgrimData(profileId: string, format: 'json' | 'csv' | 'pdf'): Promise<ApiResponse<Blob>>;
+  exportPilgrimData(profileId: string, format: "json" | "csv" | "pdf"): Promise<ApiResponse<Blob>>;
   importPilgrimData(file: File): Promise<ApiResponse<ImportResult>>;
 }
 
@@ -170,8 +170,8 @@ export interface CreatePilgrimProfileDto {
     medicalInfo?: MedicalInfo;
   };
   languages: string[];
-  experienceLevel: 'beginner' | 'intermediate' | 'advanced' | 'expert';
-  preferredPace: 'slow' | 'moderate' | 'fast';
+  experienceLevel: "beginner" | "intermediate" | "advanced" | "expert";
+  preferredPace: "slow" | "moderate" | "fast";
   motivation: string;
   previousCaminoExperience?: CaminoExperience[];
   socialLinks?: SocialLinks;
@@ -195,7 +195,7 @@ export interface CreateBookingDto {
   accommodationName: string;
   checkInDate: Date;
   checkOutDate: Date;
-  roomType: 'shared' | 'private' | 'family';
+  roomType: "shared" | "private" | "family";
   numberOfBeds: number;
   specialRequests?: string;
 }
@@ -206,8 +206,8 @@ export interface CreateBookingDto {
 export interface UpdatePilgrimProfileDto {
   personalInfo?: Partial<PersonalInfo>;
   languages?: string[];
-  experienceLevel?: 'beginner' | 'intermediate' | 'advanced' | 'expert';
-  preferredPace?: 'slow' | 'moderate' | 'fast';
+  experienceLevel?: "beginner" | "intermediate" | "advanced" | "expert";
+  preferredPace?: "slow" | "moderate" | "fast";
   motivation?: string;
   bio?: string;
   profilePicture?: string;
@@ -226,7 +226,7 @@ export interface UpdatePilgrimageDto {
 export interface UpdateBookingDto {
   checkInDate?: Date;
   checkOutDate?: Date;
-  roomType?: 'shared' | 'private' | 'family';
+  roomType?: "shared" | "private" | "family";
   numberOfBeds?: number;
   specialRequests?: string;
   status?: BookingStatus;
@@ -258,13 +258,13 @@ export interface CompletePilgrimageDto {
  * Health and safety DTOs
  */
 export interface HealthCheckDto {
-  overallFeeling: 'excellent' | 'good' | 'fair' | 'poor' | 'bad';
+  overallFeeling: "excellent" | "good" | "fair" | "poor" | "bad";
   energyLevel: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
   painLevel: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
-  sleepQuality: 'excellent' | 'good' | 'fair' | 'poor';
+  sleepQuality: "excellent" | "good" | "fair" | "poor";
   hoursSlept: number;
-  hydrationLevel: 'well-hydrated' | 'adequate' | 'dehydrated';
-  nutritionQuality: 'excellent' | 'good' | 'fair' | 'poor';
+  hydrationLevel: "well-hydrated" | "adequate" | "dehydrated";
+  nutritionQuality: "excellent" | "good" | "fair" | "poor";
   notes?: string;
   symptoms?: string[];
   medicationsTaken?: string[];
@@ -273,8 +273,8 @@ export interface HealthCheckDto {
 export interface IncidentReportDto {
   date: Date;
   time: string;
-  type: 'injury' | 'illness' | 'lost' | 'theft' | 'accident' | 'other';
-  severity: 'minor' | 'moderate' | 'severe' | 'critical';
+  type: "injury" | "illness" | "lost" | "theft" | "accident" | "other";
+  severity: "minor" | "moderate" | "severe" | "critical";
   description: string;
   location?: GeoLocation;
   photos?: string[];
@@ -287,7 +287,7 @@ export interface CreateSocialProfileDto {
   displayName: string;
   bio?: string;
   profilePicture?: string;
-  privacyLevel: 'public' | 'friends' | 'private';
+  privacyLevel: "public" | "friends" | "private";
   languages: string[];
   interests: string[];
   isLookingForCompanions: boolean;
@@ -299,13 +299,13 @@ export interface CompanionPreferencesDto {
     min: number;
     max: number;
   };
-  preferredExperienceLevel: ('beginner' | 'intermediate' | 'advanced')[];
+  preferredExperienceLevel: ("beginner" | "intermediate" | "advanced")[];
   preferredTravelStyle: TravelStyle[];
   languages: string[];
   maxGroupSize: number;
-  sameGenderPreference?: 'yes' | 'no' | 'no-preference';
-  smokingPreference?: 'yes' | 'no' | 'no-preference';
-  pacePreference?: 'slower' | 'same' | 'faster' | 'no-preference';
+  sameGenderPreference?: "yes" | "no" | "no-preference";
+  smokingPreference?: "yes" | "no" | "no-preference";
+  pacePreference?: "slower" | "same" | "faster" | "no-preference";
 }
 
 /**
@@ -315,7 +315,7 @@ export interface CheckAvailabilityDto {
   accommodationId: string;
   checkInDate: Date;
   checkOutDate: Date;
-  roomType: 'shared' | 'private' | 'family';
+  roomType: "shared" | "private" | "family";
   numberOfBeds: number;
 }
 
@@ -441,10 +441,10 @@ export class PilgrimError extends Error {
     message: string,
     public code: string,
     public statusCode: number = 500,
-    public details?: Record<string, unknown>
+    public details?: Record<string, unknown>,
   ) {
     super(message);
-    this.name = 'PilgrimError';
+    this.name = "PilgrimError";
   }
 }
 
@@ -452,33 +452,33 @@ export class ValidationError extends PilgrimError {
   constructor(
     message: string,
     public validationErrors: ValidationError[],
-    public details?: Record<string, unknown>
+    public details?: Record<string, unknown>,
   ) {
-    super(message, 'VALIDATION_ERROR', 400, details);
-    this.name = 'ValidationError';
+    super(message, "VALIDATION_ERROR", 400, details);
+    this.name = "ValidationError";
   }
 }
 
 export class NotFoundError extends PilgrimError {
   constructor(resource: string, id: string) {
-    super(`${resource} not found: ${id}`, 'NOT_FOUND', 404);
-    this.name = 'NotFoundError';
+    super(`${resource} not found: ${id}`, "NOT_FOUND", 404);
+    this.name = "NotFoundError";
   }
 }
 
 export class UnauthorizedError extends PilgrimError {
-  constructor(message: string = 'Unauthorized access') {
-    super(message, 'UNAUTHORIZED', 401);
-    this.name = 'UnauthorizedError';
+  constructor(message: string = "Unauthorized access") {
+    super(message, "UNAUTHORIZED", 401);
+    this.name = "UnauthorizedError";
   }
 }
 
 export class ConflictError extends PilgrimError {
   constructor(
     message: string,
-    public conflictingField?: string
+    public conflictingField?: string,
   ) {
-    super(message, 'CONFLICT', 409);
-    this.name = 'ConflictError';
+    super(message, "CONFLICT", 409);
+    this.name = "ConflictError";
   }
 }

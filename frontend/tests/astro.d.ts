@@ -1,7 +1,7 @@
 // TypeScript declarations for Astro components in tests
 // This file helps Vitest understand .astro file imports
 
-declare module '*.astro' {
+declare module "*.astro" {
   const content: any;
   export default content;
 }

@@ -3,10 +3,24 @@
  * Write operations for payments
  */
 
-import { db } from '../lib/db';
-import { payments } from '../../domain_model/schema';
-import { eq, and } from 'drizzle-orm';
-import type { InsertPayment, UpdatePaymentInput, Payment } from '../types';
+import { db } from '../lib/db.js';
+import { payments } from '@albergue/domain-model';
+import { eq, inArray } from 'drizzle-orm';
+import { ValidationError } from '../lib/errors.js';
+import type { InsertPayment, UpdatePaymentInput, Payment } from '../types/index.js';
+
+/**
+ * payment_deadline is a timestamp column — Drizzle expects a Date on write.
+ * JSON bodies deliver ISO strings, so convert and reject unparseable input
+ * with a 400 instead of letting an Invalid Date reach Postgres as a 500.
+ */
+function parsePaymentDeadline(value: string | Date): Date {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    throw new ValidationError(`Invalid paymentDeadline: ${String(value)}`);
+  }
+  return date;
+}
 
 /**
  * Create a new payment
@@ -22,11 +36,11 @@ export async function createPayment(input: InsertPayment): Promise<Payment> {
       updatedAt: new Date(),
     })
     .returning();
-  
+
   if (!result) {
     throw new Error('Failed to create payment');
   }
-  
+
   return result;
 }
 
@@ -46,7 +60,7 @@ export async function createPaymentsBatch(inputs: InsertPayment[]): Promise<Paym
       }))
     )
     .returning();
-  
+
   return results;
 }
 
@@ -59,20 +73,25 @@ export async function updatePayment(id: number, input: UpdatePaymentInput): Prom
     .from(payments)
     .where(eq(payments.id, id))
     .limit(1);
-  
+
   if (!existing) {
     return null;
   }
-  
+
   const [result] = await db
     .update(payments)
     .set({
-      ...input,
+      ...(input.bookingId !== undefined ? { bookingId: input.bookingId } : {}),
+      ...(input.amount !== undefined ? { amount: String(input.amount) } : {}),
+      ...(input.paymentType !== undefined ? { paymentType: input.paymentType } : {}),
+      ...(input.currency !== undefined ? { currency: input.currency } : {}),
+      ...(input.paymentDeadline !== undefined ? { paymentDeadline: parsePaymentDeadline(input.paymentDeadline) } : {}),
+      ...(input.transactionId !== undefined ? { transactionId: input.transactionId } : {}),
       updatedAt: new Date(),
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return result || null;
 }
 
@@ -97,7 +116,7 @@ export async function markPaymentAsPaid(
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -112,12 +131,12 @@ export async function markPaymentAsFailed(
     .update(payments)
     .set({
       paymentStatus: 'failed',
-      errorMessage,
+      gatewayResponse: { error: errorMessage, failedAt: new Date().toISOString() },
       updatedAt: new Date(),
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -133,7 +152,7 @@ export async function markPaymentAsCancelled(id: number): Promise<boolean> {
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -153,7 +172,7 @@ export async function markPaymentAsRefunded(
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -172,7 +191,7 @@ export async function updatePaymentDeadline(
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -187,13 +206,13 @@ export async function updatePaymentAmount(
   const [result] = await db
     .update(payments)
     .set({
-      amount,
+      amount: String(amount),
       currency: currency || 'EUR',
       updatedAt: new Date(),
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -205,14 +224,14 @@ export async function softDeletePayment(id: number): Promise<boolean> {
     .update(payments)
     .set({
       paymentStatus: 'deleted',
-      amount: 0,
+      amount: '0',
       transactionId: null,
       gatewayResponse: null,
       updatedAt: new Date(),
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -225,7 +244,7 @@ export async function deletePayment(id: number): Promise<boolean> {
     .delete(payments)
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -236,15 +255,21 @@ export async function bulkUpdatePayments(
   ids: number[],
   updates: Partial<UpdatePaymentInput>
 ): Promise<number> {
+  if (ids.length === 0) return 0;
   const results = await db
     .update(payments)
     .set({
-      ...updates,
+      ...(updates.bookingId !== undefined ? { bookingId: updates.bookingId } : {}),
+      ...(updates.amount !== undefined ? { amount: String(updates.amount) } : {}),
+      ...(updates.paymentType !== undefined ? { paymentType: updates.paymentType } : {}),
+      ...(updates.currency !== undefined ? { currency: updates.currency } : {}),
+      ...(updates.paymentDeadline !== undefined ? { paymentDeadline: parsePaymentDeadline(updates.paymentDeadline) } : {}),
+      ...(updates.transactionId !== undefined ? { transactionId: updates.transactionId } : {}),
       updatedAt: new Date(),
     })
-    .where(and(...ids.map(id => eq(payments.id, id))))
+    .where(inArray(payments.id, ids))
     .returning();
-  
+
   return results.length;
 }
 
@@ -263,6 +288,6 @@ export async function recordGatewayResponse(
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }

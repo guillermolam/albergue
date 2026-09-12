@@ -19,8 +19,8 @@ const gtagUrl = `https://www.googletagmanager.com/gtag/js?id=${id}`;
 </script>
 
 <script type="module" define:vars={{ selector }}>
-  import anime from 'animejs/lib/anime.es.js';
-  import rough from 'roughjs/bundled/rough.esm.js';
+  import anime from 'https://esm.sh/animejs@4.5.0';
+  import rough from 'https://esm.sh/roughjs@4.6.6/bundled/rough.esm.js';
 
   function setupConversionTargets(sel) {
     const targets = Array.from(document.querySelectorAll(sel));

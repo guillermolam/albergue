@@ -259,15 +259,15 @@ declare global {
 
 ```javascript
 // Manual chunk splitting for better caching
-rollupOptions: {
+const rollupOptions = {
   output: {
     manualChunks: {
-      "solid-js": ["solid-js"],
-      "nanostores": ["nanostores", "@nanostores/persistent", "@nanostores/solid"],
-      "ui-components": ["./src/components/ui"],
+      'solid-js': ['solid-js'],
+      nanostores: ['nanostores', '@nanostores/persistent', '@nanostores/solid'],
+      'ui-components': ['./src/components/ui'],
     },
   },
-}
+};
 ```
 
 ### Code Splitting

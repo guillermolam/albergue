@@ -3,11 +3,11 @@
  * Read operations for audit_log
  */
 
-import { db } from '../lib/db';
-import { auditLog, users } from '../../domain_model/schema';
+import { db } from '../lib/db.js';
+import { auditLog, users } from '@albergue/domain-model';
 import { eq, and, or, like, count, desc, asc, gte, lte } from 'drizzle-orm';
-import type { AuditLog } from '../types';
-import type { PaginatedResponse, PaginationParams } from '../types';
+import type { AuditLog } from '../types/index.js';
+import type { PaginatedResponse, PaginationParams } from '../types/index.js';
 
 /**
  * Get all audit log entries with pagination
@@ -23,7 +23,7 @@ export async function getAllAuditLogs(
   } = params;
 
   const offset = (page - 1) * pageSize;
-  const order = orderDirection === 'asc' ? asc : desc;
+  const orderFn = orderDirection === 'asc' ? asc : desc;
 
   // Get total count
   const [countResult] = await db
@@ -37,10 +37,8 @@ export async function getAllAuditLogs(
     .select()
     .from(auditLog)
     .orderBy(
-      // @ts-ignore
-      orderBy in auditLog ? auditLog[orderBy] : auditLog.createdAt,
-      order
-    )
+      orderFn(orderBy in auditLog ? (auditLog as any)[orderBy] : auditLog.createdAt)
+      )
     .limit(pageSize)
     .offset(offset);
 
@@ -76,7 +74,7 @@ export async function getAuditLogsByTable(tableName: string): Promise<AuditLog[]
     .select()
     .from(auditLog)
     .where(eq(auditLog.tableName, tableName))
-    .orderBy(auditLog.createdAt, desc);
+    .orderBy(desc(auditLog.createdAt));
   
   return results;
 }
@@ -89,7 +87,7 @@ export async function getAuditLogsByRecord(recordId: string): Promise<AuditLog[]
     .select()
     .from(auditLog)
     .where(eq(auditLog.recordId, recordId))
-    .orderBy(auditLog.createdAt, desc);
+    .orderBy(desc(auditLog.createdAt));
   
   return results;
 }
@@ -102,7 +100,7 @@ export async function getAuditLogsByAction(action: string): Promise<AuditLog[]> 
     .select()
     .from(auditLog)
     .where(eq(auditLog.action, action))
-    .orderBy(auditLog.createdAt, desc);
+    .orderBy(desc(auditLog.createdAt));
   
   return results;
 }
@@ -115,7 +113,7 @@ export async function getAuditLogsByUser(userId: number): Promise<AuditLog[]> {
     .select()
     .from(auditLog)
     .where(eq(auditLog.userId, userId))
-    .orderBy(auditLog.createdAt, desc);
+    .orderBy(desc(auditLog.createdAt));
   
   return results;
 }
@@ -138,7 +136,7 @@ export async function getAuditLogsByDateRange(
         lte(auditLog.createdAt, endDate)
       )
     )
-    .orderBy(auditLog.createdAt, desc);
+    .orderBy(desc(auditLog.createdAt));
   
   return results;
 }
@@ -157,7 +155,7 @@ export async function getAuditLogsWithUsers() {
     })
     .from(auditLog)
     .leftJoin(users, eq(auditLog.userId, users.id))
-    .orderBy(auditLog.createdAt, desc);
+    .orderBy(desc(auditLog.createdAt));
   
   return results;
 }
@@ -207,7 +205,7 @@ export async function getAuditLogStats() {
       createdAt: auditLog.createdAt,
     })
     .from(auditLog)
-    .orderBy(auditLog.createdAt, desc)
+    .orderBy(desc(auditLog.createdAt))
     .limit(10);
 
   return {
@@ -244,7 +242,7 @@ export async function searchAuditLogs(query: string, limit: number = 10): Promis
         like(auditLog.action, `%${query}%`)
       )
     )
-    .orderBy(auditLog.createdAt, desc)
+    .orderBy(desc(auditLog.createdAt))
     .limit(limit);
   
   return results;
@@ -257,7 +255,7 @@ export async function getRecentAuditLogs(limit: number = 10): Promise<AuditLog[]
   const results = await db
     .select()
     .from(auditLog)
-    .orderBy(auditLog.createdAt, desc)
+    .orderBy(desc(auditLog.createdAt))
     .limit(limit);
   
   return results;
@@ -279,7 +277,7 @@ export async function getAuditLogsForRecord(
         eq(auditLog.recordId, recordId)
       )
     )
-    .orderBy(auditLog.createdAt, desc);
+    .orderBy(desc(auditLog.createdAt));
   
   return results;
 }
@@ -292,7 +290,7 @@ export async function getCreateAuditLogs(): Promise<AuditLog[]> {
     .select()
     .from(auditLog)
     .where(eq(auditLog.action, 'create'))
-    .orderBy(auditLog.createdAt, desc);
+    .orderBy(desc(auditLog.createdAt));
   
   return results;
 }
@@ -305,7 +303,7 @@ export async function getUpdateAuditLogs(): Promise<AuditLog[]> {
     .select()
     .from(auditLog)
     .where(eq(auditLog.action, 'update'))
-    .orderBy(auditLog.createdAt, desc);
+    .orderBy(desc(auditLog.createdAt));
   
   return results;
 }
@@ -318,7 +316,7 @@ export async function getDeleteAuditLogs(): Promise<AuditLog[]> {
     .select()
     .from(auditLog)
     .where(eq(auditLog.action, 'delete'))
-    .orderBy(auditLog.createdAt, desc);
+    .orderBy(desc(auditLog.createdAt));
   
   return results;
 }

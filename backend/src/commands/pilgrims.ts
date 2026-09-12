@@ -3,10 +3,10 @@
  * Write operations for pilgrims
  */
 
-import { db } from '../lib/db';
-import { pilgrims } from '../../domain_model/schema';
-import { eq, and } from 'drizzle-orm';
-import type { InsertPilgrim, UpdatePilgrimInput, Pilgrim } from '../types';
+import { db } from '../lib/db.js';
+import { pilgrims } from '@albergue/domain-model';
+import { eq, and, lte } from 'drizzle-orm';
+import type { InsertPilgrim, UpdatePilgrimInput, Pilgrim } from '../types/index.js';
 
 /**
  * Create a new pilgrim
@@ -23,11 +23,11 @@ export async function createPilgrim(input: InsertPilgrim): Promise<Pilgrim> {
       updatedAt: new Date(),
     })
     .returning();
-  
+
   if (!result) {
     throw new Error('Failed to create pilgrim');
   }
-  
+
   return result;
 }
 
@@ -47,7 +47,7 @@ export async function createPilgrimsBatch(inputs: InsertPilgrim[]): Promise<Pilg
       }))
     )
     .returning();
-  
+
   return results;
 }
 
@@ -60,11 +60,11 @@ export async function updatePilgrim(id: number, input: UpdatePilgrimInput): Prom
     .from(pilgrims)
     .where(eq(pilgrims.id, id))
     .limit(1);
-  
+
   if (!existing) {
     return null;
   }
-  
+
   const [result] = await db
     .update(pilgrims)
     .set({
@@ -73,7 +73,7 @@ export async function updatePilgrim(id: number, input: UpdatePilgrimInput): Prom
     })
     .where(eq(pilgrims.id, id))
     .returning();
-  
+
   return result || null;
 }
 
@@ -88,13 +88,13 @@ export async function softDeletePilgrim(id: number): Promise<boolean> {
       // Mark fields that indicate deletion
       firstName: '(DELETED)',
       lastName1: '(DELETED)',
-      email: null,
-      phone: null,
+      email: null, // nullable column — null marks erased data
+      phone: '(DELETED)', // NOT NULL column — tombstone marker, not ''
       updatedAt: new Date(),
     })
     .where(eq(pilgrims.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -107,7 +107,7 @@ export async function deletePilgrim(id: number): Promise<boolean> {
     .delete(pilgrims)
     .where(eq(pilgrims.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -125,7 +125,7 @@ export async function deactivatePilgrim(id: number): Promise<boolean> {
     })
     .where(eq(pilgrims.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -140,7 +140,7 @@ export async function updatePilgrimLastAccess(id: number): Promise<boolean> {
     })
     .where(eq(pilgrims.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -156,7 +156,7 @@ export async function updatePilgrimLanguage(id: number, language: string): Promi
     })
     .where(eq(pilgrims.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -179,7 +179,7 @@ export async function updatePilgrimDocument(
     })
     .where(eq(pilgrims.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -201,7 +201,7 @@ export async function bulkUpdatePilgrims(
       inArray(pilgrims.id, ids)
     ))
     .returning();
-  
+
   return results.length;
 }
 
@@ -211,18 +211,17 @@ export async function bulkUpdatePilgrims(
  */
 export async function cleanupExpiredPilgrims(): Promise<number> {
   const now = new Date();
-  
-  const [result] = await db
+
+  const results = await db
     .delete(pilgrims)
     .where(
       and(
         eq(pilgrims.consentGiven, false),
-        // @ts-ignore
-        pilgrims.dataRetentionUntil.lte(now)
+        lte(pilgrims.dataRetentionUntil, now)
       )
     )
     .returning();
-  
+
   // Return count of deleted records
-  return result?.length || 0;
+  return results.length;
 }

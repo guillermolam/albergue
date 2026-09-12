@@ -19,7 +19,7 @@ import {
   getBedStats,
   getRecentBeds,
   getBedsWithBookings,
-} from '../queries/beds';
+} from '../queries/beds.js';
 import {
   createBed,
   createBedsBatch,
@@ -33,8 +33,8 @@ import {
   deleteBed,
   bulkUpdateBeds,
   cleanupExpiredReservations,
-} from '../commands/beds';
-import type { Bed, ApiResponse, PaginatedResponse, BedStats } from '../types';
+} from '../commands/beds.js';
+import type { Bed, ApiResponse, PaginatedResponse, BedStats } from '../types/index.js';
 
 const beds = new Hono();
 
@@ -181,6 +181,9 @@ beds.get('/room/:roomNumber', async (c: Context) => {
 beds.get('/type/:roomType', async (c: Context) => {
   try {
     const roomType = c.req.param('roomType');
+    if (!roomType) {
+      throw new HTTPException(400, { message: 'roomType is required' });
+    }
     const beds = await getBedsByRoomType(roomType);
     return c.json<ApiResponse<Bed[]>>({
       success: true,
@@ -263,7 +266,8 @@ beds.patch('/:id/reserve', async (c: Context) => {
     
     const { reservedUntil, status } = await c.req.json();
     const success = await reserveBed(id, new Date(reservedUntil), status);
-    if (!success) throw new HTTPException(404, { message: 'Bed not found' });
+    // Atomic claim fails when the bed is taken (409) or missing (404)
+    if (!success) throw new HTTPException(409, { message: 'Bed unavailable or not found' });
     
     return c.json<ApiResponse<null>>({
       success: true,
@@ -295,6 +299,24 @@ beds.patch('/:id/release', async (c: Context) => {
   } catch (error) {
     if (error instanceof HTTPException) throw error;
     throw new HTTPException(400, { message: `Failed to release bed: ${String(error)}` });
+  }
+});
+
+/**
+ * POST /beds/cleanup-expired - Release beds whose reservation TTL has lapsed (BOOK-003)
+ */
+beds.post('/cleanup-expired', async (c: Context) => {
+  try {
+    const released = await cleanupExpiredReservations();
+    return c.json<ApiResponse<{ released: number }>>({
+      success: true,
+      data: { released },
+      message: `Released ${released} expired reservation(s)`,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    if (error instanceof HTTPException) throw error;
+    throw new HTTPException(500, { message: `Failed to cleanup expired reservations: ${String(error)}` });
   }
 });
 

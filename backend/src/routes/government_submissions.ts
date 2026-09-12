@@ -11,8 +11,8 @@ import {
   getPendingGovernmentSubmissions,
   getGovernmentSubmissionStats,
   getRecentGovernmentSubmissions,
-} from '../queries/government_submissions';
-import type { GovernmentSubmission, ApiResponse, PaginatedResponse } from '../types';
+} from '../queries/government_submissions.js';
+import type { GovernmentSubmission, ApiResponse, PaginatedResponse } from '../types/index.js';
 
 const governmentSubmissions = new Hono();
 

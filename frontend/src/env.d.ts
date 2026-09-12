@@ -1,13 +1,12 @@
 /// <reference types="astro/client" />
 /// <reference types="vite/client" />
-/// <reference types="@clerk/astro/types" />
 /// <reference path="../worker-configuration.d.ts" />
 
 // ── CSS side-effect imports ────────────────────────────────────────────────
 // Vite handles .css files at build time. This declaration silences ts(2882)
 // in Astro frontmatter where CSS files are imported for bundling.
-declare module '*.css' {}
-declare module '*.module.css' {
+declare module "*.css" {}
+declare module "*.module.css" {
   const classes: Record<string, string>;
   export default classes;
 }
@@ -36,7 +35,7 @@ interface Env {
   OCR_SERVICE?: CloudflareServiceBinding;
 }
 
-declare module 'cloudflare:workers' {
+declare module "cloudflare:workers" {
   export const env: Env;
 }
 
@@ -56,17 +55,19 @@ interface Window {
 }
 
 // In @astrojs/cloudflare v13+, Runtime only exposes cfContext.
-type Runtime = import('@astrojs/cloudflare').Runtime;
+type Runtime = import("@astrojs/cloudflare").Runtime;
 
 declare namespace App {
-  // Merged with Runtime and Clerk's locals so all bindings are typed correctly.
+  // Merged with Runtime so all bindings are typed correctly.
   interface Locals extends Runtime {
-    /** Authenticated user — null when role is 'guest'. */
+    /** Authenticated user — null when role is 'guest'. Populated in Phase 5. */
     user: { id: string; email: string; name: string } | null;
-    /** Coarse-grained role: 'admin' set via Clerk publicMetadata.role. */
-    role: 'admin' | 'pilgrim' | 'guest';
+    /** Coarse-grained role for server-side RBAC. */
+    role: "admin" | "pilgrim" | "guest";
     locale: string;
-    /** Always null — session is managed by Clerk cookies. */
+    /** HttpOnly session token — always null until Phase 5 session auth. */
     sessionToken: string | null;
+    /** Correlation ID for the current request (ASTRO-004). */
+    requestId: string;
   }
 }

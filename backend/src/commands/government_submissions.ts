@@ -3,10 +3,10 @@
  * Write operations for government_submissions
  */
 
-import { db } from '../lib/db';
-import { governmentSubmissions } from '../../domain_model/schema';
-import { eq, and } from 'drizzle-orm';
-import type { InsertGovernmentSubmission, GovernmentSubmission } from '../types';
+import { db } from '../lib/db.js';
+import { governmentSubmissions } from '@albergue/domain-model';
+import { eq, and, sql, inArray } from 'drizzle-orm';
+import type { InsertGovernmentSubmission, GovernmentSubmission } from '../types/index.js';
 
 /**
  * Create a new government submission
@@ -21,13 +21,14 @@ export async function createGovernmentSubmission(
       submissionStatus: input.submissionStatus || 'pending',
       attempts: input.attempts || 0,
       createdAt: new Date(),
+      updatedAt: new Date(),
     })
     .returning();
-  
+
   if (!result) {
     throw new Error('Failed to create government submission');
   }
-  
+
   return result;
 }
 
@@ -45,10 +46,11 @@ export async function createGovernmentSubmissionsBatch(
         submissionStatus: input.submissionStatus || 'pending',
         attempts: input.attempts || 0,
         createdAt: new Date(),
+        updatedAt: new Date(),
       }))
     )
     .returning();
-  
+
   return results;
 }
 
@@ -64,11 +66,11 @@ export async function updateGovernmentSubmission(
     .from(governmentSubmissions)
     .where(eq(governmentSubmissions.id, id))
     .limit(1);
-  
+
   if (!existing) {
     return null;
   }
-  
+
   const [result] = await db
     .update(governmentSubmissions)
     .set({
@@ -77,7 +79,7 @@ export async function updateGovernmentSubmission(
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
-  
+
   return result || null;
 }
 
@@ -98,7 +100,7 @@ export async function markSubmissionAsSuccessful(
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -114,23 +116,23 @@ export async function markSubmissionAsFailed(
     .from(governmentSubmissions)
     .where(eq(governmentSubmissions.id, id))
     .limit(1);
-  
+
   if (!existing) {
     return false;
   }
-  
+
   const [result] = await db
     .update(governmentSubmissions)
     .set({
       submissionStatus: 'failed',
-      attempts: existing.attempts + 1,
+      attempts: (existing.attempts ?? 0) + 1,
       lastAttempt: new Date(),
       responseData: { error: errorMessage },
       updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -141,14 +143,13 @@ export async function incrementSubmissionAttempts(id: number): Promise<boolean> 
   const [result] = await db
     .update(governmentSubmissions)
     .set({
-      // @ts-ignore - drizzle increment
-      attempts: governmentSubmissions.attempts + 1,
+      attempts: sql`${governmentSubmissions.attempts} + 1`,
       lastAttempt: new Date(),
       updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -164,7 +165,7 @@ export async function markSubmissionAsPendingRetry(id: number): Promise<boolean>
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -187,7 +188,7 @@ export async function updateSubmissionXmlContent(
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -205,7 +206,7 @@ export async function softDeleteGovernmentSubmission(id: number): Promise<boolea
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -218,7 +219,7 @@ export async function deleteGovernmentSubmission(id: number): Promise<boolean> {
     .delete(governmentSubmissions)
     .where(eq(governmentSubmissions.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -226,11 +227,12 @@ export async function deleteGovernmentSubmission(id: number): Promise<boolean> {
  * Bulk delete government submissions
  */
 export async function bulkDeleteGovernmentSubmissions(ids: number[]): Promise<number> {
+  if (ids.length === 0) return 0;
   const results = await db
     .delete(governmentSubmissions)
-    .where(and(...ids.map(id => eq(governmentSubmissions.id, id))))
+    .where(inArray(governmentSubmissions.id, ids))
     .returning();
-  
+
   return results.length;
 }
 
@@ -251,6 +253,6 @@ export async function retryFailedSubmissions(bookingId: number): Promise<number>
       )
     )
     .returning();
-  
+
   return results.length;
 }

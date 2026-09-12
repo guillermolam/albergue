@@ -11,8 +11,8 @@ import {
   getAuditLogsByAction,
   getAuditLogStats,
   getRecentAuditLogs,
-} from '../queries/audit_log';
-import type { AuditLog, ApiResponse, PaginatedResponse } from '../types';
+} from '../queries/audit_log.js';
+import type { AuditLog, ApiResponse, PaginatedResponse } from '../types/index.js';
 
 const auditLog = new Hono();
 
@@ -55,6 +55,9 @@ auditLog.get('/:id', async (c: Context) => {
 auditLog.get('/table/:tableName', async (c: Context) => {
   try {
     const tableName = c.req.param('tableName');
+    if (!tableName) {
+      throw new HTTPException(400, { message: 'tableName is required' });
+    }
     const logs = await getAuditLogsByTable(tableName);
     return c.json<ApiResponse<AuditLog[]>>({
       success: true,
@@ -70,6 +73,9 @@ auditLog.get('/table/:tableName', async (c: Context) => {
 auditLog.get('/action/:action', async (c: Context) => {
   try {
     const action = c.req.param('action');
+    if (!action) {
+      throw new HTTPException(400, { message: 'action is required' });
+    }
     const logs = await getAuditLogsByAction(action);
     return c.json<ApiResponse<AuditLog[]>>({
       success: true,

@@ -3,11 +3,11 @@
  * Read operations for pilgrims
  */
 
-import { db } from '../lib/db';
-import { pilgrims, bookings } from '../../domain_model/schema';
-import { eq, and, like, or, isNull, count, desc, asc } from 'drizzle-orm';
-import type { Pilgrim, Booking } from '../types';
-import type { PaginatedResponse, PaginationParams, PilgrimFilter } from '../types';
+import { db } from '../lib/db.js';
+import { pilgrims, bookings } from '@albergue/domain-model';
+import { eq, and, like, or, isNull, isNotNull, count, desc, asc, gt, gte, lte } from 'drizzle-orm';
+import type { Pilgrim, Booking } from '../types/index.js';
+import type { PaginatedResponse, PaginationParams, PilgrimFilter } from '../types/index.js';
 
 /**
  * Get all pilgrims with pagination
@@ -27,7 +27,7 @@ export async function getAllPilgrims(
   } = params;
 
   const offset = (page - 1) * pageSize;
-  const order = orderDirection === 'asc' ? asc : desc;
+  const orderFn = orderDirection === 'asc' ? asc : desc;
 
   // Build where conditions
   const whereConditions = [];
@@ -44,26 +44,25 @@ export async function getAllPilgrims(
   let query = db
     .select({
       pilgrim: pilgrims,
-      hasActiveBooking: count(bookings.id).gt(0),
+      hasActiveBooking: gt(count(bookings.id), 0),
     })
     .from(pilgrims)
     .leftJoin(bookings, eq(bookings.pilgrimId, pilgrims.id))
-    .groupBy(pilgrims.id);
+    .groupBy(pilgrims.id)
+    .$dynamic();
 
   if (checkInDateFrom || checkInDateTo) {
     const dateConditions = [];
     if (checkInDateFrom) {
       dateConditions.push(and(
-        isNull(bookings.checkInDate).not(),
-        // @ts-ignore - drizzle types
-        bookings.checkInDate.gte(new Date(checkInDateFrom))
+        isNotNull(bookings.checkInDate),
+        gte(bookings.checkInDate, checkInDateFrom)
       ));
     }
     if (checkInDateTo) {
       dateConditions.push(and(
-        isNull(bookings.checkInDate).not(),
-        // @ts-ignore
-        bookings.checkInDate.lte(new Date(checkInDateTo))
+        isNotNull(bookings.checkInDate),
+        lte(bookings.checkInDate, checkInDateTo)
       ));
     }
     whereConditions.push(or(...dateConditions));
@@ -86,10 +85,8 @@ export async function getAllPilgrims(
   // Get paginated results
   const results = await query
     .orderBy(
-      // @ts-ignore
-      orderBy in pilgrims ? pilgrims[orderBy] : pilgrims.createdAt,
-      order
-    )
+      orderFn(orderBy in pilgrims ? (pilgrims as any)[orderBy] : pilgrims.createdAt)
+      )
     .limit(pageSize)
     .offset(offset);
 
@@ -165,7 +162,7 @@ export async function searchPilgrims(query: string, limit: number = 10): Promise
         like(pilgrims.lastName2, `%${query}%`)
       )
     )
-    .orderBy(pilgrims.lastName1, asc)
+    .orderBy(asc(pilgrims.lastName1))
     .limit(limit);
   
   return results;
@@ -184,8 +181,7 @@ export async function getPilgrimsWithActiveBookings(): Promise<Pilgrim[]> {
         eq(bookings.status, 'reserved'),
         or(
           isNull(bookings.reservationExpiresAt),
-          // @ts-ignore
-          bookings.reservationExpiresAt.gt(new Date())
+          gt(bookings.reservationExpiresAt, new Date())
         )
       )
     )
@@ -208,7 +204,7 @@ export async function getPilgrimStats() {
       count: count(),
     })
     .from(pilgrims)
-    .where(isNull(pilgrims.nationality).not())
+    .where(isNotNull(pilgrims.nationality))
     .groupBy(pilgrims.nationality)
     .orderBy(desc(count()));
   
@@ -244,7 +240,7 @@ export async function getRecentPilgrims(limit: number = 5): Promise<Pilgrim[]> {
   const results = await db
     .select()
     .from(pilgrims)
-    .orderBy(pilgrims.createdAt, desc)
+    .orderBy(desc(pilgrims.createdAt))
     .limit(limit);
   
   return results;

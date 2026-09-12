@@ -51,13 +51,14 @@ const id = `rough-icon-${name}-${Math.random().toString(36).slice(2)}`;
     data-raw-svg={rawSvg ? encodeURIComponent(rawSvg) : ''}
     data-icon-name={name}
     data-stroke={stroke}
-    data-size={px}></svg>
+    data-size={px}
+  ></svg>
 </span>
 
 <script define:vars={{ id, animated }}>
   const svg = document.querySelector(`[data-rough-icon='${id}']`);
   if (svg) {
-    import('roughjs/bundled/rough.esm.js').then(({ default: rough }) => {
+    import('https://esm.sh/roughjs@4.6.6/bundled/rough.esm.js').then(({ default: rough }) => {
       const rc = rough.svg(svg);
       const stroke = svg.getAttribute('data-stroke') || 'currentColor';
       const size = Number(svg.getAttribute('data-size') || 28);

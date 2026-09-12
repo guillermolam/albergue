@@ -3,7 +3,7 @@
 
 export interface HealthCheckResponse {
   service: string;
-  status: 'healthy' | 'warning' | 'error';
+  status: "healthy" | "warning" | "error";
   timestamp: string;
   responseTime: number;
   uptime: number;
@@ -12,7 +12,7 @@ export interface HealthCheckResponse {
 
 export interface ServiceHealth {
   name: string;
-  status: 'healthy' | 'warning' | 'error';
+  status: "healthy" | "warning" | "error";
   lastCheck: string;
   responseTime: string;
   uptime: string;
@@ -24,109 +24,96 @@ export interface ServiceHealth {
 // Mock health check data for demonstration
 export const mockHealthChecks: ServiceHealth[] = [
   {
-    name: 'Sentry',
-    status: 'healthy',
-    lastCheck: '2 seconds ago',
-    responseTime: '45ms',
-    uptime: '99.9%',
-    description: 'Error tracking and monitoring',
-    message: 'All systems operational',
+    name: "Sentry",
+    status: "healthy",
+    lastCheck: "2 seconds ago",
+    responseTime: "45ms",
+    uptime: "99.9%",
+    description: "Error tracking and monitoring",
+    message: "All systems operational",
     details: {
       events_processed: 1247,
       error_rate: 0.01,
     },
   },
   {
-    name: 'PostgreSQL',
-    status: 'healthy',
-    lastCheck: '5 seconds ago',
-    responseTime: '12ms',
-    uptime: '99.8%',
-    description: 'Primary database',
-    message: 'Connection stable',
+    name: "PostgreSQL",
+    status: "healthy",
+    lastCheck: "5 seconds ago",
+    responseTime: "12ms",
+    uptime: "99.8%",
+    description: "Primary database",
+    message: "Connection stable",
     details: {
       connections: 24,
       max_connections: 100,
-      database_size: '2.3GB',
+      database_size: "2.3GB",
     },
   },
   {
-    name: 'Redis',
-    status: 'warning',
-    lastCheck: '1 minute ago',
-    responseTime: '89ms',
-    uptime: '98.5%',
-    description: 'Caching and session storage',
-    message: 'Memory usage high',
+    name: "Redis",
+    status: "warning",
+    lastCheck: "1 minute ago",
+    responseTime: "89ms",
+    uptime: "98.5%",
+    description: "Caching and session storage",
+    message: "Memory usage high",
     details: {
-      memory_usage: '78%',
+      memory_usage: "78%",
       hit_ratio: 0.94,
       keys: 1247,
     },
   },
   {
-    name: 'Supabase',
-    status: 'healthy',
-    lastCheck: '3 seconds ago',
-    responseTime: '67ms',
-    uptime: '99.7%',
-    description: 'Backend services',
-    message: 'API functioning normally',
-    details: {
-      api_calls: 4521,
-      storage_usage: '1.2GB',
-    },
-  },
-  {
-    name: 'Fermyon Spin',
-    status: 'healthy',
-    lastCheck: '10 seconds ago',
-    responseTime: '156ms',
-    uptime: '99.6%',
-    description: 'WASM runtime platform',
-    message: 'Runtime healthy',
+    name: "Fermyon Spin",
+    status: "healthy",
+    lastCheck: "10 seconds ago",
+    responseTime: "156ms",
+    uptime: "99.6%",
+    description: "WASM runtime platform",
+    message: "Runtime healthy",
     details: {
       active_instances: 8,
-      memory_usage: '512MB',
+      memory_usage: "512MB",
     },
   },
   {
-    name: 'MQTT Broker',
-    status: 'healthy',
-    lastCheck: '7 seconds ago',
-    responseTime: '23ms',
-    uptime: '99.9%',
-    description: 'Message broker for real-time updates',
-    message: 'Broker accepting connections',
+    name: "MQTT Broker",
+    status: "healthy",
+    lastCheck: "7 seconds ago",
+    responseTime: "23ms",
+    uptime: "99.9%",
+    description: "Message broker for real-time updates",
+    message: "Broker accepting connections",
     details: {
       connected_clients: 24,
       messages_per_second: 12,
     },
   },
   {
-    name: 'WebSocket Gateway',
-    status: 'healthy',
-    lastCheck: '4 seconds ago',
-    responseTime: '34ms',
-    uptime: '99.4%',
-    description: 'Real-time communication',
-    message: 'Gateway operational',
+    name: "WebSocket Gateway",
+    status: "healthy",
+    lastCheck: "4 seconds ago",
+    responseTime: "34ms",
+    uptime: "99.4%",
+    description: "Real-time communication",
+    message: "Gateway operational",
     details: {
       active_connections: 18,
       messages_delivered: 8921,
     },
   },
   {
-    name: 'API Gateway',
-    status: 'error',
-    lastCheck: '30 seconds ago',
-    responseTime: 'Timeout',
-    uptime: '95.2%',
-    description: 'API routing and load balancing',
-    message: 'Connection timeout',
+    name: "API Gateway",
+    status: "error",
+    lastCheck: "30 seconds ago",
+    responseTime: "Timeout",
+    uptime: "95.2%",
+    description: "API routing and load balancing",
+    message: "Connection timeout",
     details: {
-      error: 'Connection timeout',
-      last_successful_check: '2 minutes ago',
+      error: "Connection timeout",
+      last_successful_check: "2 minutes ago",
     },
   },
 ];
@@ -142,7 +129,7 @@ export const healthCheckEndpoints = {
 
   async checkService(serviceName: string): Promise<ServiceHealth | null> {
     const service = mockHealthChecks.find(
-      (s) => s.name.toLowerCase() === serviceName.toLowerCase()
+      (s) => s.name.toLowerCase() === serviceName.toLowerCase(),
     );
     return service || null;
   },
@@ -154,8 +141,8 @@ export const healthCheckEndpoints = {
     const responseTime = Date.now() - start;
 
     return {
-      service: 'PostgreSQL',
-      status: 'healthy',
+      service: "PostgreSQL",
+      status: "healthy",
       timestamp: new Date().toISOString(),
       responseTime,
       uptime: 99.8,
@@ -172,32 +159,14 @@ export const healthCheckEndpoints = {
     const responseTime = Date.now() - start;
 
     return {
-      service: 'Redis',
-      status: responseTime > 100 ? 'warning' : 'healthy',
+      service: "Redis",
+      status: responseTime > 100 ? "warning" : "healthy",
       timestamp: new Date().toISOString(),
       responseTime,
       uptime: 98.5,
       details: {
-        memory_usage: '78%',
+        memory_usage: "78%",
         hit_ratio: 0.94,
-      },
-    };
-  },
-
-  async checkSupabase(): Promise<HealthCheckResponse> {
-    const start = Date.now();
-    // Mock Supabase check
-    const responseTime = Date.now() - start;
-
-    return {
-      service: 'Supabase',
-      status: 'healthy',
-      timestamp: new Date().toISOString(),
-      responseTime,
-      uptime: 99.7,
-      details: {
-        api_calls: 4521,
-        storage_usage: '1.2GB',
       },
     };
   },
@@ -208,14 +177,14 @@ export const healthCheckEndpoints = {
     const responseTime = Date.now() - start;
 
     return {
-      service: 'Fermyon Spin',
-      status: 'healthy',
+      service: "Fermyon Spin",
+      status: "healthy",
       timestamp: new Date().toISOString(),
       responseTime,
       uptime: 99.6,
       details: {
         active_instances: 8,
-        memory_usage: '512MB',
+        memory_usage: "512MB",
       },
     };
   },
@@ -226,8 +195,8 @@ export const healthCheckEndpoints = {
     const responseTime = Date.now() - start;
 
     return {
-      service: 'MQTT Broker',
-      status: 'healthy',
+      service: "MQTT Broker",
+      status: "healthy",
       timestamp: new Date().toISOString(),
       responseTime,
       uptime: 99.9,
@@ -244,8 +213,8 @@ export const healthCheckEndpoints = {
     const responseTime = Date.now() - start;
 
     return {
-      service: 'WebSocket Gateway',
-      status: 'healthy',
+      service: "WebSocket Gateway",
+      status: "healthy",
       timestamp: new Date().toISOString(),
       responseTime,
       uptime: 99.4,
@@ -260,14 +229,14 @@ export const healthCheckEndpoints = {
     // Mock API Gateway check (simulating timeout)
 
     return {
-      service: 'API Gateway',
-      status: 'error',
+      service: "API Gateway",
+      status: "error",
       timestamp: new Date().toISOString(),
       responseTime: 30000, // 30 second timeout
       uptime: 95.2,
       details: {
-        error: 'Connection timeout',
-        last_successful_check: '2 minutes ago',
+        error: "Connection timeout",
+        last_successful_check: "2 minutes ago",
       },
     };
   },
@@ -281,9 +250,9 @@ export function subscribeToHealthUpdates(callback: (services: ServiceHealth[]) =
     // Simulate some status changes
     const updatedServices = mockHealthChecks.map((service) => ({
       ...service,
-      lastCheck: 'just now',
+      lastCheck: "just now",
       responseTime:
-        service.status === 'error' ? 'Timeout' : `${Math.floor(Math.random() * 200 + 10)}ms`,
+        service.status === "error" ? "Timeout" : `${Math.floor(Math.random() * 200 + 10)}ms`,
     }));
 
     callback(updatedServices);

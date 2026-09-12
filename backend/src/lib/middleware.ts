@@ -5,7 +5,8 @@
 
 import type { Context, Next } from 'hono';
 import type { MiddlewareHandler } from 'hono';
-import { withRetry, formatError, CircuitBreaker, AppError } from './errors';
+import { timingSafeEqual } from 'node:crypto';
+import { withRetry, formatError, CircuitBreaker, AppError } from './errors.js';
 
 /**
  * Request ID generator
@@ -29,11 +30,17 @@ export interface RequestContext {
   sessionId?: string;
 }
 
+export interface AuthenticatedUser {
+  id: string;
+  role: string;
+}
+
 // Type-safe way to add context to request
 declare global {
   namespace Hono {
     interface ContextVariableMap {
       requestContext: RequestContext;
+      user?: AuthenticatedUser;
     }
   }
 }
@@ -46,32 +53,33 @@ export function requestContextMiddleware(): MiddlewareHandler {
   return async (c: Context, next: Next) => {
     const requestId = generateRequestId();
     const startTime = Date.now();
-    
-    const ip = c.req.header('x-forwarded-for') || 
-               c.req.header('x-real-ip') || 
-               c.env?.remoteAddress || 
-               'unknown';
-    
+
+    const ip = c.req.header('x-forwarded-for') ||
+      c.req.header('x-real-ip') ||
+      c.env?.remoteAddress ||
+      'unknown';
+
     const userAgent = c.req.header('user-agent');
-    
+
     const requestContext: RequestContext = {
       requestId,
       startTime,
       ip,
       userAgent,
     };
-    
+
     c.set('requestContext', requestContext);
-    
+
     // Add request ID to response headers
     c.header('x-request-id', requestId);
     c.header('x-response-time', '0'); // Will be updated later
-    
+
     await next();
-    
+
     // Update response time
     const responseTime = Date.now() - startTime;
     c.header('x-response-time', String(responseTime));
+    return;
   };
 }
 
@@ -83,9 +91,10 @@ export function errorHandlerMiddleware(): MiddlewareHandler {
   return async (c: Context, next: Next) => {
     try {
       await next();
+      return;
     } catch (error: any) {
       const requestContext = c.get('requestContext') || { requestId: 'unknown' };
-      
+
       console.error(`
 [${new Date().toISOString()}] 
 [${requestContext.requestId}] 
@@ -96,15 +105,14 @@ Stack: ${error.stack || 'No stack'}
 
       const formatted = formatError(error);
       const status = formatted.status || 500;
-      
-      c.status(status);
+
       return c.json({
         success: false,
         error: formatted.error,
         details: formatted.details,
         requestId: requestContext.requestId,
         timestamp: new Date().toISOString(),
-      });
+      }, status as any);
     }
   };
 }
@@ -117,11 +125,12 @@ export function circuitBreakerMiddleware(
   circuitBreaker?: CircuitBreaker
 ): MiddlewareHandler {
   const breaker = circuitBreaker || new CircuitBreaker();
-  
+
   return async (c: Context, next: Next) => {
     await breaker.execute(async () => {
       await next();
     });
+    return;
   };
 }
 
@@ -155,14 +164,14 @@ export function retryMiddleware(
         await next();
         return;
       } catch (error: any) {
-        lastError = error;
+        lastError = error instanceof Error ? error : new Error(String(error));
         attempt++;
-        
+
         // Check if retryable
         const status = error.status || error.statusCode || 0;
-        const isRetryable = retryableStatuses.includes(status) || 
-                          (error.name === 'TypeError' && error.message?.includes('fetch'));
-        
+        const isRetryable = retryableStatuses.includes(status) ||
+          (error.name === 'TypeError' && error.message?.includes('fetch'));
+
         if (!isRetryable || attempt >= maxAttempts) {
           throw error;
         }
@@ -172,11 +181,11 @@ export function retryMiddleware(
           baseDelay * Math.pow(2, attempt - 1),
           maxDelay
         ) * (0.5 + Math.random()); // Add jitter
-        
+
         if (onRetry) {
           onRetry(attempt, lastError);
         }
-        
+
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
@@ -213,42 +222,42 @@ export function rateLimiterMiddleware(
   return async (c: Context, next: Next) => {
     const key = keyGenerator(c);
     const now = Date.now();
-    
+
     const record = rateLimitStore[key] || { count: 0, resetTime: now + windowMs };
-    
+
     // Reset if window has passed
     if (now > record.resetTime) {
       record.count = 0;
       record.resetTime = now + windowMs;
     }
-    
+
     // Check if rate limited
     if (record.count >= maxRequests) {
-      c.status(429);
       c.header('retry-after', String(Math.ceil((record.resetTime - now) / 1000)));
-      
+
       if (onRateLimited) {
         onRateLimited(c);
       }
-      
+
       return c.json({
         success: false,
         error: 'Rate limit exceeded',
         retryAfter: record.resetTime - now,
         timestamp: new Date().toISOString(),
-      });
+      }, 429 as any);
     }
-    
+
     // Increment and continue
     record.count++;
     rateLimitStore[key] = record;
-    
+
     // Cleanup old entries periodically
     if (Math.random() < 0.01) {
       cleanupRateLimitStore(now);
     }
-    
+
     await next();
+    return;
   };
 }
 
@@ -290,55 +299,71 @@ export function cachingMiddleware(
 
   return async (c: Context, next: Next) => {
     if (c.req.method !== 'GET') {
-      return await next();
+      await next();
+      return;
     }
-    
+
     const key = keyGenerator(c);
     const cached = memoryCache.get(key);
-    
+
     if (cached && cached.expires > Date.now()) {
       if (onCacheHit) onCacheHit(c);
-      
+
       c.header('x-cache', 'HIT');
       return c.json(cached.data);
     }
-    
+
     if (onCacheMiss) onCacheMiss(c);
-    
-    // Capture response
-    const originalJson = c.res.json.bind(c.res);
-    c.res.json = (data: any) => {
-      c.header('x-cache', shouldCache(c) ? 'MISS' : 'BYPASS');
-      
-      if (shouldCache(c)) {
-        memoryCache.set(key, {
-          data,
-          expires: Date.now() + ttl,
-        });
-      }
-      
-      return originalJson(data);
-    };
-    
+
     await next();
+
+    // After handler: cache JSON response body when cacheable
+    const cacheable = shouldCache(c);
+    c.header('x-cache', cacheable ? 'MISS' : 'BYPASS');
+
+    if (cacheable && c.res) {
+      try {
+        const contentType = c.res.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const cloned = c.res.clone();
+          const data = await cloned.json();
+          memoryCache.set(key, {
+            data,
+            expires: Date.now() + ttl,
+          });
+        }
+      } catch {
+        // Non-JSON or unreadable body — skip caching
+      }
+    }
+    return;
   };
 }
 
 /**
  * Response compression middleware
+ * Ensures JSON responses use a string body Response (lightweight stand-in for gzip)
  */
 export function compressionMiddleware(): MiddlewareHandler {
   return async (c: Context, next: Next) => {
     await next();
-    
-    // Only compress JSON responses
+
+    // Only process JSON responses
     if (c.res.headers.get('content-type')?.includes('application/json')) {
-      const body = c.res.body;
-      if (body && typeof body === 'object') {
-        // Simple stringification (real compression would need compression library)
-        c.res.body = JSON.stringify(body);
+      try {
+        const cloned = c.res.clone();
+        const data = await cloned.json();
+        const headers = new Headers(c.res.headers);
+        c.res = new Response(JSON.stringify(data), {
+          status: c.res.status,
+          statusText: c.res.statusText,
+          headers,
+        });
+      } catch {
+        // Leave response as-is if body is not JSON-parseable
       }
     }
+    return;
   };
 }
 
@@ -351,7 +376,7 @@ export function validateRequest<T>(
 ): MiddlewareHandler {
   return async (c: Context, next: Next) => {
     let data: unknown;
-    
+
     try {
       switch (source) {
         case 'body':
@@ -366,17 +391,17 @@ export function validateRequest<T>(
         default:
           data = await c.req.json();
       }
-      
+
       // Validate with schema
       // @ts-ignore - Zod schema parsing
       const validated = schema.parse(data);
-      
+
       // Store validated data on context
       c.set('validatedData', validated);
-      
+
       await next();
+      return;
     } catch (error: any) {
-      c.status(400);
       return c.json({
         success: false,
         error: 'Validation failed',
@@ -385,13 +410,35 @@ export function validateRequest<T>(
           message: e.message,
         })),
         timestamp: new Date().toISOString(),
-      });
+      }, 400 as any);
     }
   };
 }
 
 /**
- * Authentication middleware (placeholder)
+ * Resolve caller identity from request credentials and set it on the context.
+ *
+ * Until Phase 5 wires session/OIDC verification, the only accepted credential
+ * is a static admin bearer token in ADMIN_API_TOKEN, compared timing-safe.
+ * Fail-closed: no token configured (or mismatch) means no identity.
+ */
+async function resolveIdentity(c: Context): Promise<AuthenticatedUser | null> {
+  const header = c.req.header('authorization');
+  if (!header?.startsWith('Bearer ')) return null;
+
+  const configured = process.env.ADMIN_API_TOKEN;
+  const presented = header.slice('Bearer '.length).trim();
+  if (!configured || !presented) return null;
+
+  const a = Buffer.from(presented);
+  const b = Buffer.from(configured);
+  if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
+
+  return { id: 'admin-api-token', role: 'admin' };
+}
+
+/**
+ * Authentication middleware
  */
 export function authMiddleware(
   options: {
@@ -402,28 +449,33 @@ export function authMiddleware(
   const { requireAuth = true, roles = [] } = options;
 
   return async (c: Context, next: Next) => {
-    // In a real implementation, this would validate tokens, sessions, etc.
-    const user = c.get('user');
-    
+    let user = c.get('user');
+    if (!user) {
+      const resolved = await resolveIdentity(c);
+      if (resolved) {
+        c.set('user', resolved);
+        user = resolved;
+      }
+    }
+
     if (requireAuth && !user) {
-      c.status(401);
       return c.json({
         success: false,
         error: 'Authentication required',
         timestamp: new Date().toISOString(),
-      });
+      }, 401 as any);
     }
-    
+
     if (roles.length > 0 && user && !roles.includes(user.role)) {
-      c.status(403);
       return c.json({
         success: false,
         error: 'Insufficient permissions',
         timestamp: new Date().toISOString(),
-      });
+      }, 403 as any);
     }
-    
+
     await next();
+    return;
   };
 }
 
@@ -448,7 +500,7 @@ export function loggingMiddleware(
   return async (c: Context, next: Next) => {
     const start = Date.now();
     const requestContext = c.get('requestContext') || {};
-    
+
     // Log request
     if (logRequests) {
       logger(`
@@ -459,12 +511,12 @@ IP: ${requestContext.ip}
 UA: ${requestContext.userAgent || 'unknown'}
 `);
     }
-    
+
     try {
       await next();
-      
+
       const duration = Date.now() - start;
-      
+
       // Log response
       if (logResponses) {
         logger(`
@@ -475,9 +527,10 @@ Status: ${c.res.status}
 Duration: ${duration}ms
 `);
       }
+      return;
     } catch (error: any) {
       const duration = Date.now() - start;
-      
+
       // Log error
       if (logErrors) {
         logger(`
@@ -489,7 +542,7 @@ Duration: ${duration}ms
 Error: ${error.message || String(error)}
 `);
       }
-      
+
       throw error;
     }
   };
@@ -501,29 +554,15 @@ Error: ${error.message || String(error)}
  */
 export function correlationIdMiddleware(): MiddlewareHandler {
   return async (c: Context, next: Next) => {
-    const correlationId = 
-      c.req.header('x-correlation-id') || 
-      c.req.header('x-request-id') || 
+    const correlationId =
+      c.req.header('x-correlation-id') ||
+      c.req.header('x-request-id') ||
       generateRequestId();
-    
+
     c.set('correlationId', correlationId);
     c.header('x-correlation-id', correlationId);
-    
+
     await next();
+    return;
   };
 }
-
-export {
-  generateRequestId,
-  requestContextMiddleware,
-  errorHandlerMiddleware,
-  circuitBreakerMiddleware,
-  retryMiddleware,
-  rateLimiterMiddleware,
-  cachingMiddleware,
-  compressionMiddleware,
-  validateRequest,
-  authMiddleware,
-  loggingMiddleware,
-  correlationIdMiddleware,
-};

@@ -11,7 +11,8 @@
 
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { Pool, type PoolClient, type PoolConfig } from 'pg';
-import { withRetry, DatabaseError, dbCircuitBreaker, CircuitBreaker } from './errors';
+import * as schema from '@albergue/domain-model';
+import { withRetry, DatabaseError, dbCircuitBreaker, CircuitBreaker } from './errors.js';
 
 // Connection configuration
 const poolConfig: PoolConfig = {
@@ -20,8 +21,6 @@ const poolConfig: PoolConfig = {
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
-  // Enable connection retry
-  connectionInitSql: 'SELECT NOW()',
   // Application name for monitoring
   application_name: 'albergue-backend',
 };
@@ -29,9 +28,16 @@ const poolConfig: PoolConfig = {
 // Database connection pool
 const pool = new Pool(poolConfig);
 
-// Create Drizzle database instance
-// Type assertion for the database schema
-const db: NodePgDatabase<any> = drizzle(pool);
+// pg has no connectionInitSql equivalent; run an async warmup query instead.
+// The rejection must be handled — an unhandled one would crash the process.
+pool.on('connect', (client) => {
+  client.query('SELECT NOW()').catch((err) => {
+    console.error('Connection warmup query failed:', err);
+  });
+});
+
+// Create Drizzle database instance typed with domain schema
+const db: NodePgDatabase<typeof schema> = drizzle(pool, { schema });
 
 // Enhanced database wrapper with retry and circuit breaker
 export const safeDb = {
@@ -75,17 +81,17 @@ export async function checkDbHealth(retries: number = 2) {
     const client = await pool.connect();
     try {
       const result = await client.query('SELECT NOW()');
-      
+
       connectionState.lastConnected = new Date();
       connectionState.lastError = null;
       connectionState.consecutiveFailures = 0;
       connectionState.isHealthy = true;
-      
+
       client.release();
-      return { 
-        healthy: true, 
+      return {
+        healthy: true,
         timestamp: result.rows[0].now,
-        state: connectionState 
+        state: connectionState
       };
     } catch (error) {
       throw error;
@@ -94,17 +100,17 @@ export async function checkDbHealth(retries: number = 2) {
     connectionState.lastError = error as Error;
     connectionState.consecutiveFailures++;
     connectionState.isHealthy = false;
-    
+
     if (retries > 0) {
       // Wait and retry
       await new Promise(resolve => setTimeout(resolve, 1000));
       return checkDbHealth(retries - 1);
     }
-    
-    return { 
-      healthy: false, 
+
+    return {
+      healthy: false,
       error: String(error),
-      state: connectionState 
+      state: connectionState
     };
   }
 }
@@ -120,7 +126,7 @@ export function getConnectionStats() {
   return {
     ...connectionState,
     pool: poolStats,
-    uptime: connectionState.lastConnected ? 
+    uptime: connectionState.lastConnected ?
       Math.floor((Date.now() - connectionState.lastConnected.getTime()) / 1000) : 0,
   };
 }
@@ -157,17 +163,17 @@ export async function testDbConnection() {
 // Reconnect to database (for hot reload or connection issues)
 export async function reconnectDb() {
   console.log('Attempting to reconnect to database...');
-  
+
   try {
     await closeDb();
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // Create new pool
     poolConfig.application_name = `albergue-backend-reconnected-${Date.now()}`;
-    
+
     // Note: We can't reassign const pool, but in practice you'd need to restart
     console.log('Database reconnection requires process restart');
-    
+
     return checkDbHealth();
   } catch (error) {
     throw new DatabaseError('Database reconnection failed', { error: String(error) });
@@ -181,9 +187,9 @@ export function startConnectionMonitor(interval: number = 60000) {
   if (connectionMonitor) {
     stopConnectionMonitor();
   }
-  
+
   console.log(`Starting database connection monitor (interval: ${interval}ms)`);
-  
+
   connectionMonitor = setInterval(async () => {
     const health = await checkDbHealth(1);
     if (!health.healthy) {
@@ -202,8 +208,8 @@ export function stopConnectionMonitor() {
   }
 }
 
-// Export original pool and db
-export { pool, db, safeDb };
+// Export original pool and db (safeDb already exported above)
+export { pool, db };
 
 // Export types
 export type { PoolClient, NodePgDatabase };
@@ -227,4 +233,4 @@ export {
   executeBatch,
   formatError,
   wrapDatabaseOperation,
-} from './errors';
+} from './errors.js';

@@ -1,33 +1,343 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
+import { actions } from 'astro:actions';
 import Layout from '../layouts/Layout.astro';
+import { DoodleCard } from '../components';
+import DoodleButton from '../components/doodle/DoodleButton.astro';
+import { backendJson } from '../lib/backend-api';
+import {
+  BOOKING_DRAFT_SESSION_KEY,
+  type BookingDraft,
+  type BookingStep,
+} from '../lib/booking-draft';
+
+interface AvailableBed {
+  id: number;
+  bedNumber: number;
+  roomNumber: number;
+  roomName: string;
+  roomType: string | null;
+  pricePerNight: string;
+  currency: string | null;
+}
+
+const STEPS: { id: BookingStep; label: string }[] = [
+  { id: 'dates', label: 'Fechas' },
+  { id: 'guests', label: 'Huéspedes' },
+  { id: 'beds', label: 'Cama' },
+  { id: 'contact', label: 'Datos' },
+  { id: 'payment', label: 'Pago' },
+];
+
+const submitResult = Astro.getActionResult(actions.booking.submit);
+if (submitResult?.data?.bookingReference && !submitResult.data.payment?.gatewayUrl) {
+  return Astro.redirect(
+    `/booking-confirmed?ref=${encodeURIComponent(submitResult.data.bookingReference)}`
+  );
+}
+
+const draft = (await Astro.session?.get<BookingDraft>(BOOKING_DRAFT_SESSION_KEY)) ?? undefined;
+const step: BookingStep = draft?.step ?? 'dates';
+const paymentFailed = Astro.url.searchParams.get('payment') === 'failed';
+
+const datesResult = Astro.getActionResult(actions.booking.setDates);
+const guestsResult = Astro.getActionResult(actions.booking.setGuests);
+const bedsResult = Astro.getActionResult(actions.booking.setBeds);
+const contactResult = Astro.getActionResult(actions.booking.setContact);
+const actionError =
+  datesResult?.error ||
+  guestsResult?.error ||
+  bedsResult?.error ||
+  contactResult?.error ||
+  submitResult?.error;
+
+let beds: AvailableBed[] = [];
+let bedsError: string | undefined;
+if (step === 'beds' && draft?.arrivalDate && draft.departureDate) {
+  const listed = await backendJson<AvailableBed[]>(
+    `/api/bookings/available-beds?checkInDate=${encodeURIComponent(draft.arrivalDate)}&checkOutDate=${encodeURIComponent(draft.departureDate)}`
+  );
+  if (listed.ok) {
+    beds = listed.data;
+  } else {
+    bedsError = listed.message;
+  }
+}
+
+const redsys = submitResult?.data?.payment?.gatewayUrl ? submitResult.data.payment : null;
 ---
 
 <Layout
-  title="Reserva - Albergue Municipal Carrascalejo"
-  description="Reserva tu cama en el albergue"
+  title="Reservar - Albergue Municipal Carrascalejo"
+  description="Reserva una cama. El precio y la disponibilidad los confirma el servidor."
 >
-  <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <h2 class="text-3xl font-bold text-foreground mb-6">Reservas</h2>
-    <div class="bg-card p-6 rounded-lg shadow-md border border-border">
-      <p class="text-muted-foreground mb-4">
-        Sistema de reservas en desarrollo. Próximamente disponible.
+  <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-3xl">
+    <h1 class="text-3xl font-bold text-charcoal mb-2 font-sketch">Reservar</h1>
+    <p class="text-dark-grey mb-6 font-handwritten">
+      El total lo calcula el servidor. Los datos de tarjeta van a Redsys, no a este sitio.
+    </p>
+
+    <ol class="flex flex-wrap gap-2 mb-6" aria-label="Pasos de reserva">
+      {STEPS.map((item) => (
+        <li
+          class:list={[
+            'px-3 py-1 rounded-full text-sm border',
+            item.id === step
+              ? 'bg-charcoal text-cream border-charcoal'
+              : 'bg-white text-charcoal border-charcoal/30',
+          ]}
+        >
+          {item.label}
+        </li>
+      ))}
+    </ol>
+
+    {paymentFailed && (
+      <p role="alert" class="mb-4 text-red-700 text-sm">
+        El pago no se completó. Puedes reintentar el envío.
       </p>
-      <div class="space-y-3">
-        <a
-          href="/booking-confirmed"
-          class="inline-block bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+    )}
+
+    {actionError && (
+      <p role="alert" class="mb-4 text-red-700 text-sm">
+        {actionError.message}
+      </p>
+    )}
+
+    {!Astro.session && (
+      <p role="status" class="mb-4 text-amber-800 text-sm">
+        Las sesiones no están disponibles en este despliegue (falta el binding SESSION).
+      </p>
+    )}
+
+    <DoodleCard variant="elevated" padding="lg">
+      {redsys && redsys.gatewayUrl ? (
+        <form method="post" action={redsys.gatewayUrl} class="flex flex-col gap-4">
+          <p class="text-charcoal">
+            Redirigiendo a Redsys para el pago. No se envían datos de tarjeta aquí.
+          </p>
+          {draft?.quote && (
+            <p class="font-bold">
+              Total: {draft.quote.totalAmount} {draft.quote.currency}
+            </p>
+          )}
+          <input type="hidden" name="Ds_SignatureVersion" value="HMAC_SHA256_V1" />
+          <input type="hidden" name="Ds_MerchantParameters" value={redsys.clientToken} />
+          <input type="hidden" name="Ds_Signature" value={redsys.signature} />
+          <DoodleButton type="submit" variant="primary">
+            Pagar con Redsys
+          </DoodleButton>
+        </form>
+      ) : step === 'dates' ? (
+        <form method="post" action={actions.booking.setDates} class="flex flex-col gap-4">
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-bold text-charcoal">Llegada</span>
+            <input
+              type="date"
+              name="arrivalDate"
+              required
+              value={draft?.arrivalDate ?? ''}
+              class="border border-charcoal/30 rounded px-3 py-2 bg-white"
+            />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-bold text-charcoal">Salida</span>
+            <input
+              type="date"
+              name="departureDate"
+              required
+              value={draft?.departureDate ?? ''}
+              class="border border-charcoal/30 rounded px-3 py-2 bg-white"
+            />
+          </label>
+          <DoodleButton type="submit" variant="primary">
+            Continuar
+          </DoodleButton>
+        </form>
+      ) : step === 'guests' ? (
+        <form method="post" action={actions.booking.setGuests} class="flex flex-col gap-4">
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-bold text-charcoal">Número de huéspedes</span>
+            <input
+              type="number"
+              name="guestCount"
+              min="1"
+              max="50"
+              required
+              value={draft?.guestCount ?? 1}
+              class="border border-charcoal/30 rounded px-3 py-2 bg-white"
+            />
+          </label>
+          <DoodleButton type="submit" variant="primary">
+            Continuar
+          </DoodleButton>
+        </form>
+      ) : step === 'beds' ? (
+        <form method="post" action={actions.booking.setBeds} class="flex flex-col gap-4">
+          {bedsError && <p class="text-red-700 text-sm">{bedsError}</p>}
+          {beds.length === 0 && !bedsError && (
+            <p class="text-dark-grey">No hay camas libres para esas fechas.</p>
+          )}
+          {beds.map((bed) => (
+            <label class="flex items-center gap-3 border border-charcoal/20 rounded p-3">
+              <input
+                type="radio"
+                name="selectedBedId"
+                value={String(bed.id)}
+                required
+                checked={draft?.selectedBedIds?.[0] === String(bed.id)}
+              />
+              <span>
+                {bed.roomName} · cama {bed.bedNumber} · {bed.pricePerNight} {bed.currency ?? 'EUR'}
+                /noche
+              </span>
+            </label>
+          ))}
+          {beds.length > 0 && (
+            <DoodleButton type="submit" variant="primary">
+              Continuar
+            </DoodleButton>
+          )}
+        </form>
+      ) : step === 'contact' ? (
+        <form
+          method="post"
+          action={actions.booking.setContact}
+          class="grid grid-cols-1 sm:grid-cols-2 gap-4"
         >
-          Ver Demo de Confirmación
-        </a>
-        <a
-          href="/demo-booking-confirmed"
-          class="inline-block bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ml-3"
-        >
-          Ver Demo Interactiva
-        </a>
-      </div>
-    </div>
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-bold text-charcoal">Nombre</span>
+            <input
+              name="firstName"
+              required
+              class="border border-charcoal/30 rounded px-3 py-2 bg-white"
+            />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-bold text-charcoal">Primer apellido</span>
+            <input
+              name="lastName1"
+              required
+              class="border border-charcoal/30 rounded px-3 py-2 bg-white"
+            />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-bold text-charcoal">Email</span>
+            <input
+              type="email"
+              name="email"
+              class="border border-charcoal/30 rounded px-3 py-2 bg-white"
+            />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-bold text-charcoal">Teléfono</span>
+            <input
+              name="phone"
+              required
+              class="border border-charcoal/30 rounded px-3 py-2 bg-white"
+            />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-bold text-charcoal">Documento</span>
+            <select
+              name="documentType"
+              class="border border-charcoal/30 rounded px-3 py-2 bg-white"
+            >
+              <option value="dni">DNI</option>
+              <option value="nie">NIE</option>
+              <option value="passport">Pasaporte</option>
+            </select>
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-bold text-charcoal">Número de documento</span>
+            <input
+              name="documentNumber"
+              required
+              class="border border-charcoal/30 rounded px-3 py-2 bg-white"
+            />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-bold text-charcoal">Fecha de nacimiento</span>
+            <input
+              type="date"
+              name="birthDate"
+              required
+              class="border border-charcoal/30 rounded px-3 py-2 bg-white"
+            />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-bold text-charcoal">Género</span>
+            <select name="gender" class="border border-charcoal/30 rounded px-3 py-2 bg-white">
+              <option value="male">Hombre</option>
+              <option value="female">Mujer</option>
+              <option value="other">Otro</option>
+            </select>
+          </label>
+          <label class="flex flex-col gap-1 sm:col-span-2">
+            <span class="text-sm font-bold text-charcoal">Calle</span>
+            <input
+              name="addressStreet"
+              required
+              class="border border-charcoal/30 rounded px-3 py-2 bg-white"
+            />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-bold text-charcoal">Ciudad</span>
+            <input
+              name="addressCity"
+              required
+              class="border border-charcoal/30 rounded px-3 py-2 bg-white"
+            />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-bold text-charcoal">Código postal</span>
+            <input
+              name="addressPostalCode"
+              required
+              class="border border-charcoal/30 rounded px-3 py-2 bg-white"
+            />
+          </label>
+          <label class="flex flex-col gap-1 sm:col-span-2">
+            <span class="text-sm font-bold text-charcoal">País</span>
+            <input
+              name="addressCountry"
+              required
+              value="ES"
+              class="border border-charcoal/30 rounded px-3 py-2 bg-white"
+            />
+          </label>
+          <div class="sm:col-span-2">
+            <DoodleButton type="submit" variant="primary">
+              Continuar
+            </DoodleButton>
+          </div>
+        </form>
+      ) : (
+        <form method="post" action={actions.booking.submit} class="flex flex-col gap-4">
+          <dl class="grid grid-cols-2 gap-2 text-sm">
+            <dt class="text-dark-grey">Llegada</dt>
+            <dd class="font-bold">{draft?.arrivalDate}</dd>
+            <dt class="text-dark-grey">Salida</dt>
+            <dd class="font-bold">{draft?.departureDate}</dd>
+            <dt class="text-dark-grey">Huéspedes</dt>
+            <dd class="font-bold">{draft?.guestCount}</dd>
+            {draft?.quote && (
+              <>
+                <dt class="text-dark-grey">Noches</dt>
+                <dd class="font-bold">{draft.quote.numberOfNights}</dd>
+                <dt class="text-dark-grey">Total (servidor)</dt>
+                <dd class="font-bold">
+                  {draft.quote.totalAmount} {draft.quote.currency}
+                </dd>
+              </>
+            )}
+          </dl>
+          <DoodleButton type="submit" variant="primary">
+            Confirmar reserva
+          </DoodleButton>
+        </form>
+      )}
+    </DoodleCard>
   </main>
 </Layout>

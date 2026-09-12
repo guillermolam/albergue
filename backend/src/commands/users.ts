@@ -3,27 +3,26 @@
  * Write operations for users
  */
 
-import { db } from '../lib/db';
-import { users } from '../../domain_model/schema';
-import { eq, and } from 'drizzle-orm';
-import type { InsertUser, User } from '../types';
+import { db } from '../lib/db.js';
+import { users } from '@albergue/domain-model';
+import { eq, inArray } from 'drizzle-orm';
+import { hashPassword } from '../lib/passwords.js';
+import type { InsertUser, User } from '../types/index.js';
 
 /**
- * Create a new user
+ * Create a new user (password hashed with scrypt — AUTH-001)
  */
 export async function createUser(input: InsertUser): Promise<User> {
   const [result] = await db
     .insert(users)
     .values({
-      ...input,
+      username: input.username,
+      password: await hashPassword(input.password),
       createdAt: new Date(),
     })
     .returning();
-  
-  if (!result) {
-    throw new Error('Failed to create user');
-  }
-  
+
+  if (!result) throw new Error('Failed to create user');
   return result;
 }
 
@@ -31,17 +30,15 @@ export async function createUser(input: InsertUser): Promise<User> {
  * Create multiple users (batch)
  */
 export async function createUsersBatch(inputs: InsertUser[]): Promise<User[]> {
-  const results = await db
-    .insert(users)
-    .values(
-      inputs.map(input => ({
-        ...input,
-        createdAt: new Date(),
-      }))
-    )
-    .returning();
-  
-  return results;
+  if (inputs.length === 0) return [];
+  const values = await Promise.all(
+    inputs.map(async (input) => ({
+      username: input.username,
+      password: await hashPassword(input.password),
+      createdAt: new Date(),
+    }))
+  );
+  return db.insert(users).values(values).returning();
 }
 
 /**
@@ -53,12 +50,10 @@ export async function updateUserPassword(
 ): Promise<boolean> {
   const [result] = await db
     .update(users)
-    .set({
-      password,
-    })
+    .set({ password: await hashPassword(password) })
     .where(eq(users.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -98,9 +93,10 @@ export async function deleteUser(id: number): Promise<boolean> {
  * WARNING: Only use when absolutely necessary
  */
 export async function bulkDeleteUsers(ids: number[]): Promise<number> {
+  if (ids.length === 0) return 0;
   const results = await db
     .delete(users)
-    .where(and(...ids.map(id => eq(users.id, id))))
+    .where(inArray(users.id, ids))
     .returning();
   
   return results.length;

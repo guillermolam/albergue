@@ -80,10 +80,27 @@ const initialLanguageFlag = currentLanguage.flag;
     aria-haspopup="menu"
     aria-controls="language-dropdown"
   >
-    {showFlags && <span class="text-lg" aria-hidden="true">{initialLanguageFlag}</span>}
-    <span class="font-medium text-gray-700">{compact ? initialLanguageCode.toUpperCase() : initialLanguageName}</span>
-    <svg class="w-4 h-4 text-gray-500 transition-transform duration-200" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M19 9l-7 7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    {showFlags && (
+      <span class="text-lg" aria-hidden="true">
+        {initialLanguageFlag}
+      </span>
+    )}
+    <span class="font-medium text-gray-700">
+      {compact ? initialLanguageCode.toUpperCase() : initialLanguageName}
+    </span>
+    <svg
+      class="w-4 h-4 text-gray-500 transition-transform duration-200"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path
+        d="M19 9l-7 7-7-7"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"
+      />
     </svg>
   </button>
 
@@ -103,14 +120,25 @@ const initialLanguageFlag = currentLanguage.flag;
           role="menuitem"
           aria-selected={initialLanguageCode === language.code}
         >
-          {showFlags && <span class="text-lg" aria-hidden="true">{language.flag}</span>}
+          {showFlags && (
+            <span class="text-lg" aria-hidden="true">
+              {language.flag}
+            </span>
+          )}
           <div class="flex-1">
             <div class="font-medium">{language.name}</div>
             <div class="text-sm text-gray-500">{language.code.toUpperCase()}</div>
           </div>
           {initialLanguageCode === language.code && (
             <svg class="w-4 h-4 text-primary-600" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+              <path
+                d="M5 13l4 4L19 7"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                fill="none"
+              />
             </svg>
           )}
         </button>
@@ -120,15 +148,14 @@ const initialLanguageFlag = currentLanguage.flag;
 </div>
 
 <script is:inline>
-  (function() {
+  (function () {
     'use strict';
 
     const selector = document.getElementById('language-selector');
     const toggleBtn = document.getElementById('language-toggle');
     const dropdown = document.getElementById('language-dropdown');
-    const currentLang = selector?.dataset.currentLanguage || 'es';
-    const showFlags = selector?.dataset.showFlags !== 'false';
-    const isCompact = selector?.dataset.compact === 'true';
+    const showFlags = !(selector && selector.dataset.showFlags === 'false');
+    const isCompact = !!(selector && selector.dataset.compact === 'true');
 
     let isOpen = false;
 
@@ -137,7 +164,7 @@ const initialLanguageFlag = currentLanguage.flag;
       if (dropdown) {
         dropdown.classList.remove('opacity-100', 'scale-100', 'visible');
         dropdown.classList.add('opacity-0', 'scale-95', 'invisible', 'pointer-events-none');
-        toggleBtn?.setAttribute('aria-expanded', 'false');
+        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
       }
     }
 
@@ -146,7 +173,7 @@ const initialLanguageFlag = currentLanguage.flag;
       if (dropdown) {
         dropdown.classList.remove('opacity-0', 'scale-95', 'invisible', 'pointer-events-none');
         dropdown.classList.add('opacity-100', 'scale-100', 'visible');
-        toggleBtn?.setAttribute('aria-expanded', 'true');
+        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'true');
       }
     }
 
@@ -157,27 +184,36 @@ const initialLanguageFlag = currentLanguage.flag;
         open();
       }
       if (isOpen) {
-        queueMicrotask(() => dropdown?.focus());
+        queueMicrotask(function () {
+          if (dropdown) dropdown.focus();
+        });
       }
     }
 
-    async function selectLanguage(code: string) {
+    async function selectLanguage(code) {
       close();
       try {
         const response = await fetch('/api/auth/change-language', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
           body: JSON.stringify({ locale: code, timestamp: new Date().toISOString() }),
           keepalive: true,
         });
         const data = await response.json();
-        if (!response.ok || !data.success) throw new Error(data.error || 'Failed to change language');
+        if (!response.ok || !data.success)
+          throw new Error(data.error || 'Failed to change language');
 
         document.documentElement.lang = code;
 
-        const language: any = { code, name: '', flag: '' };
-        const langData = (selector as any)?.languages || [];
-        const foundLang = langData.find((l: any) => l.code === code) || language;
+        const language = { code: code, name: '', flag: '' };
+        const langData = (selector && selector.languages) || [];
+        const foundLang =
+          langData.find(function (l) {
+            return l.code === code;
+          }) || language;
 
         if (toggleBtn) {
           const flagSpan = toggleBtn.querySelector('span[aria-hidden="true"]');
@@ -194,25 +230,27 @@ const initialLanguageFlag = currentLanguage.flag;
       }
     }
 
-    document.addEventListener('click', (event) => {
-      if (!selector?.contains(event.target as Node)) {
+    document.addEventListener('click', function (event) {
+      if (selector && !selector.contains(event.target)) {
         close();
       }
     });
 
-    document.addEventListener('keydown', (event) => {
+    document.addEventListener('keydown', function (event) {
       if (event.key === 'Escape') {
         close();
       }
     });
 
-    toggleBtn?.addEventListener('click', toggle);
+    if (toggleBtn) toggleBtn.addEventListener('click', toggle);
 
-    dropdown?.querySelectorAll('[data-language-code]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        selectLanguage(btn.getAttribute('data-language-code') || '');
+    if (dropdown) {
+      dropdown.querySelectorAll('[data-language-code]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          selectLanguage(btn.getAttribute('data-language-code') || '');
+        });
       });
-    });
+    }
   })();
 </script>
 

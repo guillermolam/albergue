@@ -1,0 +1,66 @@
+---
+export const prerender = false;
+
+import { actions } from 'astro:actions';
+import Layout from '../layouts/Layout.astro';
+import { DoodleCard } from '../components';
+
+// Already authenticated → straight to admin
+if (Astro.locals.user) {
+  return Astro.redirect('/admin');
+}
+
+// Successful login → admin; error → rendered below
+const result = Astro.getActionResult(actions.auth.login);
+if (result?.data?.ok) {
+  return Astro.redirect('/admin');
+}
+---
+
+<Layout title="Acceso - Albergue Municipal Carrascalejo">
+  <main class="bg-paper-bg min-h-screen flex items-center justify-center py-16">
+    <div class="w-full max-w-md px-4">
+      <DoodleCard variant="elevated" padding="lg">
+        <h1 class="text-2xl font-bold text-charcoal mb-2 font-sketch text-center">
+          Acceso al panel
+        </h1>
+        <p class="text-dark-grey font-handwritten text-center mb-6">Solo personal del albergue</p>
+
+        {result?.error && (
+          <p role="alert" class="mb-4 text-red-700 text-sm text-center">
+            Credenciales no válidas
+          </p>
+        )}
+
+        <form method="post" action={actions.auth.login} class="flex flex-col gap-4">
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-bold text-charcoal">Usuario</span>
+            <input
+              type="text"
+              name="username"
+              required
+              autocomplete="username"
+              class="border border-charcoal/30 rounded px-3 py-2 bg-white"
+            />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-bold text-charcoal">Contraseña</span>
+            <input
+              type="password"
+              name="password"
+              required
+              autocomplete="current-password"
+              class="border border-charcoal/30 rounded px-3 py-2 bg-white"
+            />
+          </label>
+          <button
+            type="submit"
+            class="mt-2 bg-charcoal text-cream font-bold rounded px-4 py-2 hover:bg-charcoal/90"
+          >
+            Entrar
+          </button>
+        </form>
+      </DoodleCard>
+    </div>
+  </main>
+</Layout>

@@ -173,13 +173,13 @@ const difficultyPill = (difficulty: string) =>
     <div class="rounded-2xl bg-white shadow-sm ring-1 ring-stone-200 p-6">
       <div class="flex justify-between">
         <h2 class="text-lg font-700">Progreso General</h2>
-        <span id="stage-progress">68%</span>
+        <span id="overall-progress">68%</span>
       </div>
       <div class="mt-4 h-3 bg-stone-100 overflow-hidden">
         <div
           class="h-full bg-stone-900 transition-[width] duration-500"
           style="width: 68%"
-          id="stage-progress-bar"
+          id="overall-progress-bar"
         ></div>
       </div>
       <div class="mt-4 grid grid-cols-3 gap-3 text-center">
@@ -343,7 +343,8 @@ const difficultyPill = (difficulty: string) =>
     (function () {
       'use strict';
 
-      const dashboard = document.currentScript?.parentElement;
+      // Astro bundles scripts, so document.currentScript is unreliable.
+      const dashboard = document.querySelector('[data-hydrated="true"]');
       if (!dashboard) return;
 
       let stageProgress = 68;
@@ -362,7 +363,8 @@ const difficultyPill = (difficulty: string) =>
 
       function updateStageProgress() {
         if (stageProgressEl) stageProgressEl.textContent = `${stageProgress}%`;
-        if (stageProgressBarEl) stageProgressBarEl.style.width = `${stageProgress}%`;
+        if (stageProgressBarEl)
+          (stageProgressBarEl as HTMLElement).style.width = `${stageProgress}%`;
         const totalDistance = 38.2;
         if (stageCompletedEl)
           stageCompletedEl.textContent = `${Math.round((totalDistance * stageProgress) / 100)} km completados`;

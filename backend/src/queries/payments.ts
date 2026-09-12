@@ -3,11 +3,11 @@
  * Read operations for payments
  */
 
-import { db } from '../lib/db';
-import { payments, bookings, pilgrims } from '../../domain_model/schema';
+import { db } from '../lib/db.js';
+import { payments, bookings, pilgrims } from '@albergue/domain-model';
 import { eq, and, or, like, count, sum, desc, asc, gte, lte, between } from 'drizzle-orm';
-import type { Payment } from '../types';
-import type { PaginatedResponse, PaginationParams } from '../types';
+import type { Payment } from '../types/index.js';
+import type { PaginatedResponse, PaginationParams } from '../types/index.js';
 
 /**
  * Get all payments with pagination
@@ -23,7 +23,7 @@ export async function getAllPayments(
   } = params;
 
   const offset = (page - 1) * pageSize;
-  const order = orderDirection === 'asc' ? asc : desc;
+  const orderFn = orderDirection === 'asc' ? asc : desc;
 
   // Get total count
   const [countResult] = await db
@@ -37,10 +37,8 @@ export async function getAllPayments(
     .select()
     .from(payments)
     .orderBy(
-      // @ts-ignore
-      orderBy in payments ? payments[orderBy] : payments.createdAt,
-      order
-    )
+      orderFn(orderBy in payments ? (payments as any)[orderBy] : payments.createdAt)
+      )
     .limit(pageSize)
     .offset(offset);
 
@@ -76,7 +74,7 @@ export async function getPaymentsByBooking(bookingId: number): Promise<Payment[]
     .select()
     .from(payments)
     .where(eq(payments.bookingId, bookingId))
-    .orderBy(payments.createdAt, desc);
+    .orderBy(desc(payments.createdAt));
   
   return results;
 }
@@ -89,7 +87,7 @@ export async function getPaymentsByStatus(status: string): Promise<Payment[]> {
     .select()
     .from(payments)
     .where(eq(payments.paymentStatus, status))
-    .orderBy(payments.createdAt, desc);
+    .orderBy(desc(payments.createdAt));
   
   return results;
 }
@@ -110,7 +108,7 @@ export async function getPendingPayments(): Promise<Payment[]> {
         gte(payments.paymentDeadline, now)
       )
     )
-    .orderBy(payments.paymentDeadline, asc);
+    .orderBy(asc(payments.paymentDeadline));
   
   return results;
 }
@@ -145,7 +143,7 @@ export async function getOverduePayments(): Promise<Payment[]> {
         lte(payments.paymentDeadline, now)
       )
     )
-    .orderBy(payments.paymentDeadline, asc);
+    .orderBy(asc(payments.paymentDeadline));
   
   return results.map(r => r.payment);
 }
@@ -158,7 +156,7 @@ export async function getPaidPayments(): Promise<Payment[]> {
     .select()
     .from(payments)
     .where(eq(payments.paymentStatus, 'paid'))
-    .orderBy(payments.paymentDate, desc);
+    .orderBy(desc(payments.paymentDate));
   
   return results;
 }
@@ -181,7 +179,7 @@ export async function getPaymentsByDateRange(
         lte(payments.paymentDate, endDate)
       )
     )
-    .orderBy(payments.paymentDate, desc);
+    .orderBy(desc(payments.paymentDate));
   
   return results;
 }
@@ -316,7 +314,7 @@ export async function getRecentPayments(limit: number = 10): Promise<Payment[]> 
   const results = await db
     .select()
     .from(payments)
-    .orderBy(payments.createdAt, desc)
+    .orderBy(desc(payments.createdAt))
     .limit(limit);
   
   return results;
@@ -361,7 +359,7 @@ export async function searchPayments(query: string, limit: number = 10): Promise
         like(bookings.referenceNumber, `%${query}%`)
       )
     )
-    .orderBy(payments.createdAt, desc)
+    .orderBy(desc(payments.createdAt))
     .limit(limit);
   
   return results.map(r => r.payment);

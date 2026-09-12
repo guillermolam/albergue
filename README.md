@@ -1,138 +1,214 @@
 # Albergue Municipal Carrascalejo
 
-Pilgrim hostel management system for the Camino de Santiago / Via de la Plata.
+![Albergue Municipal Carrascalejo Logo](./frontend/public/favicon.svg)
+
+Pilgrim Management System & Booking Platform for the Camino de Santiago (Vía de la Plata)
+
+[![Astro](https://img.shields.io/badge/Astro-7.3.2-ff5d01?style=flat-square&logo=astro&logoColor=white)](https://astro.build)
+[![Hono](https://img.shields.io/badge/Hono-4.13-E36002?style=flat-square&logo=hono&logoColor=white)](https://hono.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![pnpm workspace](https://img.shields.io/badge/pnpm-workspace-F69220?style=flat-square&logo=pnpm&logoColor=white)](https://pnpm.io)
+[![Node.js](https://img.shields.io/badge/Node.js->=22.12.0-339933?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![Drizzle ORM](https://img.shields.io/badge/Drizzle_ORM-0.45-C5F740?style=flat-square&logo=drizzle&logoColor=black)](https://orm.drizzle.team)
+
+[Overview](#overview) • [Features](#features) • [Architecture](#architecture) • [Getting started](#getting-started) • [Available scripts](#available-scripts) • [Deployment](#deployment) • [Project structure](#project-structure)
+
+---
+
+## Overview
+
+**Albergue Municipal Carrascalejo** is a modern monorepo application built to streamline operations and reservation workflows for the municipal pilgrim hostel in Carrascalejo, a key resting point along the historic **Vía de la Plata** route of the **Camino de Santiago**.
+
+The application combines a lightweight, hand-drawn design system for pilgrims with a resilient API and compliance engine that automates check-ins, bed allocations, encrypted identity verification, and mandatory government traveller submissions (Guardia Civil / Hospederías XML reports).
+
+> [!NOTE]
+> The frontend UI incorporates custom hand-drawn canvas components via **RoughJS** and **webcoreui**, creating a warm, organic experience designed for pilgrims on desktop and mobile devices.
+
+---
+
+## Features
+
+- **Bed Booking & Reservation**: Real-time bed availability tracking (€10/night across 24 beds), automated expiration timers for pending reservations, and multi-language support (ES, EN, EU, KO, ID, PT, AR).
+- **Pilgrim Identity Protection**: End-to-end PII data protection with encrypted personal storage (passport/national ID numbers, birth dates, phone numbers, and addresses) in compliance with GDPR data retention policies.
+- **Hospitalero Management Dashboard**: Real-time room assignment, bed status monitoring, maintenance notes, and payment status verification.
+- **Automated Law Enforcement Compliance**: Automatic XML document generation and transmission for Spanish police traveller logs (_partes de hospederías_ / Guardia Civil).
+- **CQRS Backend Architecture**: Built with Hono and Drizzle ORM using strict Command/Query separation, rate limiting (100 req/min per IP), circuit breakers, and health diagnostics.
+- **Multi-Cloud Target Support**: Front-end deployment configured for Cloudflare Workers/Pages (default via Wrangler), Netlify, or Stormkit.
+
+---
 
 ## Architecture
 
-Multicloud, trunk-based development. Three runtime targets:
-
-| Target                   | Runtime                            | Size limit      | Services                                                                                 |
-| ------------------------ | ---------------------------------- | --------------- | ---------------------------------------------------------------------------------------- |
-| **Cloudflare Workers**   | `wasm32-unknown-unknown` (workerd) | 10 MB / worker  | booking, notification, reviews, document-validation, info-on-arrival, location, language |
-| **Spin / Fermyon Cloud** | `wasm32-wasip2` (Spin v3.6+)       | 50 MB free tier | gateway, auth, rate-limiter, redis, security                                             |
-| **Oracle Cloud (OCI)**   | Docker / ARM (Always Free)         | --              | ocr-service (Tesseract, ML inference)                                                    |
-
-## Repository layout
-
-```
-frontend/          Astro 7.3 + UnoCSS (presetMini) + Solid.js islands
-backend/           Rust workspace: Workers-target services (worker crate + wrangler)
-gateway/           Rust workspace: Spin gateway (api-gateway, api-gateway-core, edge-proxy)
-infra/             Terraform / Spacelift (Cloudflare, OCI, Neon)
-security/policies/ OPA Rego policy framework (21 rules, enforced via pre-commit hook)
-docs/              Arc42 architecture docs, ADRs, reference
-tests/             Integration / API tests
-taskfiles/         go-task definitions
-.github/           CI workflows, agent instructions
-GIS/               Geospatial vector data (KML, GPX only -- binaries gitignored)
-```
-
-## Design system
-
-Doodled / Hand-Written / Sketched / 3D meets Neo-Brutalism.
-
-- **Palette**: `#FFFFFF` (white), `#00AB39` (green), grey scale (`#111`--`#F5F5F5`), `#000000` (black)
-- **Borders**: 2--4 px solid black, no border-radius
-- **Shadows**: offset black box-shadows (`4px 4px 0 0 #000`)
-- **Fonts**: sketch family (Caveat, Patrick Hand) for headings; IBM Plex for body
-- **No emojis, no gradients, no extra colours**
-
-## Banned technologies
-
-| Banned                                                     | Replacement                                       |
-| ---------------------------------------------------------- | ------------------------------------------------- |
-| Tailwind CSS                                               | UnoCSS `presetMini` (non-Tailwind base)           |
-| `presetUno` / `presetWind` / `presetWind3` / `presetWind4` | `presetMini` only                                 |
-| daisyUI                                                    | Custom neo-brutalism shortcuts in `uno.config.ts` |
-| React / react-dom                                          | Solid.js for interactive islands                  |
-| Bun                                                        | pnpm                                              |
-
-## Tooling
-
-- **Node.js** >= 22, **pnpm** 10.x (frontend)
-- **Rust** stable + targets: `wasm32-unknown-unknown`, `wasm32-wasip2`
-- **Spin CLI** v3.6+ (Fermyon)
-- **wrangler** (Cloudflare Workers)
-- **Netlify CLI** (installed in the frontend workspace)
-- **Stormkit** (Git-connected deployment using the standalone Node build)
-- **Trunk** v1.25+ (lint, format, security -- pre-commit/pre-push)
-- **OPA** v1.15+ (Rego policy enforcement -- pre-commit/commit-msg)
-- **go-task** (`task -l` for available commands)
-
-## Quick start
+This project is structured as a **pnpm workspace monorepo**:
 
 ```bash
-# List all tasks
-task -l
-
-# Frontend dev server
-cd frontend && pnpm install && pnpm dev
-
-# Run OPA policy tests
-opa test security/policies/ -v
-
-# Trunk check
-trunk check
+.
+├── packages/
+│   ├── frontend/        # Astro 7 frontend web application
+│   ├── backend/         # Hono API server (CQRS pattern)
+│   └── domain_model/    # Shared Drizzle schemas & Zod models (@albergue/domain-model)
 ```
 
-## Policy enforcement (OPA / Rego)
+### Technology Stack
 
-Every commit is evaluated against `security/policies/*.rego` before it reaches Trunk:
+| Layer             | Technologies                                                                   |
+| :---------------- | :----------------------------------------------------------------------------- |
+| **Frontend**      | Astro 7.3, RoughJS, webcoreui, UnoCSS, Swup, Nanostores, Playwright, Vitest    |
+| **Backend**       | Hono 4.13, Node.js (`@hono/node-server`), Drizzle ORM, Zod, Vitest             |
+| **Domain & Data** | PostgreSQL, Drizzle ORM schemas, Drizzle-Zod validation models, SQL migrations |
+| **Deployment**    | Cloudflare Workers / Pages, Netlify, Stormkit                                  |
 
-| Policy | Gate  | Description                                           |
-| ------ | ----- | ----------------------------------------------------- |
-| P001   | error | No Tailwind CSS references                            |
-| P002   | error | No unauthorized root directories                      |
-| P003   | error | No emojis in source files                             |
-| P005   | error | Workers must not import spin-sdk                      |
-| P006   | error | Spin services must not import worker crate            |
-| P007   | warn  | Conventional commit messages                          |
-| P008   | warn  | No lazy stub patterns (TODO: implement, etc.)         |
-| P009   | error | No secrets in committed files                         |
-| P010   | error | No React anywhere                                     |
-| P011   | error | No Tailwind-compat UnoCSS presets                     |
-| P012   | error | Trunk-based development (no develop/release branches) |
-| P013   | error | Test coverage >= 95%                                  |
-| P014   | error | .gitignore integrity                                  |
-| P015   | error | security/policies/ read-only for agents               |
-| P018   | error | No hiding source from scanners via .gitignore         |
-| P019   | error | No mass lint/security suppressions                    |
-| P020   | error | No weakening scanner configs without human approval   |
-| P021   | error | No deleting test files                                |
-| P022   | error | No large files (>50 MB) or banned binary extensions   |
+---
 
-Human override: `OPA_HUMAN_VERIFIED=1 git commit ...`
+## Getting started
 
-## CI pipelines
+### Prerequisites
 
-| Workflow             | Trigger                                               | Target                        |
-| -------------------- | ----------------------------------------------------- | ----------------------------- |
-| `deploy-backend.yml` | Push to `backend/**`                                  | Cloudflare Workers (wrangler) |
-| `deploy-spin.yml`    | Push to `gateway/**`, `backend/auth-service/**`, etc. | Fermyon Cloud (spin deploy)   |
-| `deploy-ocr.yml`     | Push to `backend/ocr-service/**`                      | OCI ARM (Docker)              |
+Ensure you have the following installed on your local development machine:
 
-## Dependency management
+- **Node.js**: `^22.12.0` (frontend requires `>=22.12.0`, backend `>=18.0.0`)
+- **pnpm**: `>=10.0.0`
+- **PostgreSQL**: Local instance or remote database connection (e.g. Neon, Supabase)
 
-Dependabot monitors 7 ecosystems daily/weekly:
+### Local Environment Setup
 
-| Ecosystem       | Directory                    | Schedule |
-| --------------- | ---------------------------- | -------- |
-| npm             | `/frontend`                  | daily    |
-| Cargo (Rust)    | `/` (workspace)              | daily    |
-| GitHub Actions  | `/`                          | daily    |
-| Terraform       | `/infra`                     | weekly   |
-| Terraform (OCI) | `/infra/modules/oci-compute` | weekly   |
-| Go (Terratest)  | `/infra/tests`               | weekly   |
-| Docker          | `/backend/ocr-service`       | weekly   |
+1. **Clone the repository:**
 
-## Documentation
+   ```bash
+   git clone https://github.com/guillermolam/albergue.git
+   cd albergue
+   ```
 
-- [Architecture (arc42)](docs/arc42/README.md)
-- [ADRs](docs/adr/README.md)
-- [Frontend](frontend/README.md)
-- [Backend](backend/README.md)
-- [Gateway](gateway/README.md)
-- [Tests](tests/README.md)
-- [Security policy](SECURITY.md)
-- [Changelog](CHANGELOG.md)
-- [License](LICENSE) (Apache 2.0)
+2. **Install workspace dependencies:**
+
+   ```bash
+   pnpm install
+   ```
+
+3. **Configure environment variables:**
+
+   Create a `.env` file in `packages/backend/` and `packages/frontend/` based on required variables:
+
+   ```bash
+   # Backend (packages/backend/.env)
+   PORT=3001
+   DATABASE_URL=postgresql://user:password@localhost:5432/albergue_dev
+   NODE_ENV=development
+
+   # Frontend (packages/frontend/.env)
+   PUBLIC_APP_URL=http://localhost:4321
+   ```
+
+4. **Start local development servers:**
+
+   Run both frontend and backend concurrently:
+
+   ```bash
+   pnpm dev:all
+   ```
+
+   Or start components individually:
+
+   ```bash
+   # Start frontend (http://localhost:4321)
+   pnpm dev
+
+   # Start backend API (http://localhost:3001)
+   pnpm dev:backend
+   ```
+
+> [!TIP]
+> You can also use [go-task](https://taskfile.dev) if installed locally by running `task dev` to start the development workflow.
+
+---
+
+## Available scripts
+
+All scripts are defined at the root workspace level and can be executed via `pnpm`:
+
+| Command            | Description                                                 |
+| :----------------- | :---------------------------------------------------------- |
+| `pnpm dev`         | Starts the Astro frontend dev server (`localhost:4321`)     |
+| `pnpm dev:backend` | Starts the Hono backend API dev server (`localhost:3001`)   |
+| `pnpm dev:all`     | Runs frontend and backend dev servers in parallel           |
+| `pnpm build`       | Builds the frontend for Cloudflare Pages (default)          |
+| `pnpm build:all`   | Builds all packages (`domain_model`, `backend`, `frontend`) |
+| `pnpm type-check`  | Runs TypeScript type checking across all workspace packages |
+| `pnpm test`        | Runs unit tests for the backend package via Vitest          |
+
+### Frontend-specific commands
+
+From the `packages/frontend` directory or using `--filter albergue-carrascalejo-frontend`:
+
+```bash
+# Build targets
+pnpm --filter albergue-carrascalejo-frontend build:cloudflare  # Cloudflare Workers/Pages
+pnpm --filter albergue-carrascalejo-frontend build:netlify     # Netlify
+pnpm --filter albergue-carrascalejo-frontend build:stormkit    # Stormkit
+
+# Code quality & testing
+pnpm --filter albergue-carrascalejo-frontend format            # Format code with Prettier
+pnpm --filter albergue-carrascalejo-frontend check:astro       # Run Astro diagnostic checks
+pnpm --filter albergue-carrascalejo-frontend e2e               # Run Playwright E2E tests
+```
+
+---
+
+## Deployment
+
+The frontend deployment adapter is selected automatically via environment or target flags using the deploy script (`scripts/deploy.mjs`).
+
+### Deploying Frontend
+
+```bash
+# Cloudflare Pages / Workers (default)
+pnpm --filter albergue-carrascalejo-frontend deploy:cloudflare
+
+# Netlify
+pnpm --filter albergue-carrascalejo-frontend deploy:netlify
+
+# Stormkit
+pnpm --filter albergue-carrascalejo-frontend deploy:stormkit
+```
+
+> [!IMPORTANT]
+> Ensure `PUBLIC_APP_URL` is configured in your production deployment environment to ensure correct absolute URLs for emails and sitemap generation.
+
+### Deploying Backend
+
+The backend is built with Hono and can be deployed as a standard Node.js server via `node dist/index.js` or exported to serverless environments such as Cloudflare Workers.
+
+---
+
+## Project structure
+
+```bash
+.
+├── AGENTS.md                   # Workspace agent and coding guidelines
+├── Taskfile.yml                # Task runner configuration
+├── pnpm-workspace.yaml         # pnpm monorepo workspace definition
+├── package.json                # Root package configurations & workspace scripts
+└── packages/
+    ├── backend/
+    │   ├── src/
+    │   │   ├── commands/      # CQRS command handlers (beds, payments, pricing)
+    │   │   ├── queries/       # CQRS query handlers (pilgrims, bookings, users)
+    │   │   ├── routes/        # Hono REST API endpoints
+    │   │   ├── lib/           # Database pools, error handling, rate limiters
+    │   │   └── index.ts       # Backend entry point
+    │   └── drizzle.config.ts  # Drizzle kit database migrations config
+    ├── domain_model/
+    │   ├── migrations/        # SQL migration files
+    │   ├── schema.ts          # Drizzle ORM table definitions & Zod schemas
+    │   └── seed/              # Development & test seed datasets
+    └── frontend/
+        ├── astro.config.*.mjs # Cloudflare, Netlify, Stormkit Astro configs
+        ├── scripts/           # Deployment & locale build utility scripts
+        ├── src/
+        │   ├── components/    # UI components, RoughJS doodles, stats widgets
+        │   ├── layouts/       # Main, Figma, and page layouts
+        │   ├── locales/       # PO translation files for multi-language support
+        │   ├── pages/         # Astro route pages (booking, admin, info)
+        │   └── stores/        # Nanostores state management
+        └── tests/             # Vitest unit tests & Playwright E2E specs
+```

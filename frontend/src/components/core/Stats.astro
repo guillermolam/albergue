@@ -27,12 +27,11 @@ const layoutClasses = getLayoutClasses(layout, columns, gap);
 ---
 
 <div class={`${layoutClasses} ${className}`}>
-  {
-    stats.map((stat, index) => {
-      const iconColor = stat.color === 'default' ? 'current' : stat.color || 'primary';
-      return (
-        <div
-          class={`
+  {stats.map((stat, index) => {
+    const iconColor = stat.color === 'default' ? 'current' : stat.color || 'primary';
+    return (
+      <div
+        class={`
           ${getVariantClasses(variant)}
           ${getColorClasses(stat.color || 'default')}
           ${getSizeClasses(stat.size || 'md')}
@@ -42,89 +41,88 @@ const layoutClasses = getLayoutClasses(layout, columns, gap);
           relative
           overflow-hidden
         `}
-          data-stat-card
-          style={animated ? { animationDelay: `${index * 100}ms` } : {}}
-          aria-label={`Stat for ${stat.label}: ${stat.value}${stat.unit ? ` ${stat.unit}` : ''}`}
-        >
-          {/* Decorative background elements */}
-          <div class="absolute top-2 right-2 opacity-20 group-hover:opacity-40 transition-opacity">
-            {stat.icon && <RoughIcon name={stat.icon} size="xl" color={iconColor} animated />}
-          </div>
+        data-stat-card
+        style={animated ? { animationDelay: `${index * 100}ms` } : {}}
+        aria-label={`Stat for ${stat.label}: ${stat.value}${stat.unit ? ` ${stat.unit}` : ''}`}
+      >
+        {/* Decorative background elements */}
+        <div class="absolute top-2 right-2 opacity-20 group-hover:opacity-40 transition-opacity">
+          {stat.icon && <RoughIcon name={stat.icon} size="xl" color={iconColor} animated />}
+        </div>
 
-          <div class="absolute inset-0 pointer-events-none">
-            <div class="stat-overlay h-full w-full bg-linear-to-r from-transparent via-white/30 to-transparent" />
-            <svg class="stat-hatch absolute inset-0 w-full h-full" />
-          </div>
+        <div class="absolute inset-0 pointer-events-none">
+          <div class="stat-overlay h-full w-full bg-linear-to-r from-transparent via-white/30 to-transparent" />
+          <svg class="stat-hatch absolute inset-0 w-full h-full" />
+        </div>
 
-          <div class="relative z-10">
-            {/* Icon */}
-            {stat.icon && (
-              <div class="mb-3">
-                <RoughIcon name={stat.icon} size="lg" color={iconColor} animated />
-              </div>
-            )}
-
-            {/* Label */}
-            <div class="mb-2">
-              <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                {stat.label}
-              </h3>
-            </div>
-
-            {/* Value */}
+        <div class="relative z-10">
+          {/* Icon */}
+          {stat.icon && (
             <div class="mb-3">
-              <div class="flex items-baseline gap-2">
-                <span class={`text-3xl font-bold ${getValueColorClass(stat.color || 'default')}`}>
-                  {stat.value}
-                </span>
-                {stat.unit && <span class="text-lg text-gray-500 font-medium">{stat.unit}</span>}
-              </div>
+              <RoughIcon name={stat.icon} size="lg" color={iconColor} animated />
             </div>
+          )}
 
-            {/* Trend and Change */}
-            {(stat.trend || stat.change) && (
-              <div class="flex items-center gap-2">
-                {stat.trend && (
-                  <span
-                    class={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${getTrendColor(stat.trend)}`}
-                  >
-                    <span>{getTrendIcon(stat.trend)}</span>
-                    <span>
-                      {stat.trend === 'up'
-                        ? 'Subiendo'
-                        : stat.trend === 'down'
-                          ? 'Bajando'
-                          : 'Estable'}
-                    </span>
-                  </span>
-                )}
-                {stat.change && <span class="text-sm text-gray-600">{stat.change}</span>}
-              </div>
-            )}
+          {/* Label */}
+          <div class="mb-2">
+            <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+              {stat.label}
+            </h3>
           </div>
 
-          {/* Progress indicator for animated stats */}
-          {animated && (
-            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gray-200 rounded-full overflow-hidden">
-              <div
-                class={`h-full bg-linear-to-r ${getProgressBarColors(stat.color || 'default')} transition-all duration-1000 ease-out`}
-                style={{
-                  width: '0%',
-                  animation: 'fillProgress 2s ease-out forwards',
-                  animationDelay: `${index * 200}ms`,
-                }}
-              />
+          {/* Value */}
+          <div class="mb-3">
+            <div class="flex items-baseline gap-2">
+              <span class={`text-3xl font-bold ${getValueColorClass(stat.color || 'default')}`}>
+                {stat.value}
+              </span>
+              {stat.unit && <span class="text-lg text-gray-500 font-medium">{stat.unit}</span>}
+            </div>
+          </div>
+
+          {/* Trend and Change */}
+          {(stat.trend || stat.change) && (
+            <div class="flex items-center gap-2">
+              {stat.trend && (
+                <span
+                  class={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${getTrendColor(stat.trend)}`}
+                >
+                  <span>{getTrendIcon(stat.trend)}</span>
+                  <span>
+                    {stat.trend === 'up'
+                      ? 'Subiendo'
+                      : stat.trend === 'down'
+                        ? 'Bajando'
+                        : 'Estable'}
+                  </span>
+                </span>
+              )}
+              {stat.change && <span class="text-sm text-gray-600">{stat.change}</span>}
             </div>
           )}
         </div>
-      );
-    })
-  }
+
+        {/* Progress indicator for animated stats */}
+        {animated && (
+          <div class="absolute bottom-0 left-0 right-0 h-1 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              class={`h-full bg-linear-to-r ${getProgressBarColors(stat.color || 'default')} transition-all duration-1000 ease-out`}
+              style={{
+                width: '0%',
+                animation: 'fillProgress 2s ease-out forwards',
+                animationDelay: `${index * 200}ms`,
+              }}
+            />
+          </div>
+        )}
+      </div>
+    );
+  })}
 </div>
 
 <script type="module">
-  import { animate } from 'animejs';
-  import rough from 'roughjs/bundled/rough.esm.js';
+  import { animate } from 'https://esm.sh/animejs@4.5.0';
+  import rough from 'https://esm.sh/roughjs@4.6.6/bundled/rough.esm.js';
 
   const overlays = document.querySelectorAll('.stat-overlay');
   overlays.forEach((overlay) => {

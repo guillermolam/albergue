@@ -154,7 +154,7 @@ tasks:
         echo "   Add .env to .gitignore"
 
   test-connection:
-    desc: Test Fermyon Cloud connection with token     
+    desc: Test Fermyon Cloud connection with token
     cmds:
       - |
         if [ -z "$FERMYON_CLOUD_TOKEN" ]; then

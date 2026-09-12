@@ -8,7 +8,7 @@
 /* =========================================================================
    FONT IMPORTS - Hand-Drawn Doodle Typography
    ========================================================================= */
-@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Cabin+Sketch:wght@400;700&family=Shadows+Into+Light&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&family=Patrick+Hand&family=Shadows+Into+Light&family=Cabin+Sketch:wght@400;700&display=swap');
 
 /* IBM Plex as fallback for system elements */
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap');
@@ -20,40 +20,72 @@
    COLOR PALETTE (STRICT - Only These Colors)
    ========================================================================= */
 :root {
-  /* Greens - Primary Brand Colors */
-  --green-light: #E8F5E9;      /* Backgrounds, accents */
-  --green-medium: #66BB6A;    /* Secondary elements */
-  --green-dark: #00AB39;      /* Primary brand color */
-  --green-darker: #006b24;    /* Sidebar, headers */
-  
-  /* Greys */
-  --cream: #FAFAFA;           /* Warm backgrounds */
-  --light-grey: #F5F5F5;      /* Cards, surfaces */
-  --medium-grey: #E8E8E8;     /* Borders, dividers */
-  --dark-grey: #4A4A4A;       /* Secondary text */
-  --charcoal: #1A1A1A;        /* Primary text */
-  
+  --font-size: 16px;
+
+  /* Prototype semantic tokens */
+  --background: #fff9f0;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --primary: #00ab39;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #1a1a1a;
+  --muted: #e8e8e8;
+  --muted-foreground: #666666;
+  --accent: #e8f5e9;
+  --accent-foreground: #1a1a1a;
+  --destructive: #1a1a1a;
+  --destructive-foreground: #ffffff;
+  --border: rgba(26, 26, 26, 0.15);
+  --input: transparent;
+  --input-background: #f9f9f9;
+  --switch-background: #d0d0d0;
+  --ring: #00ab39;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+
+  --sidebar: #006b24;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #00ab39;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #008c2f;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #005a1e;
+  --sidebar-ring: #00ab39;
+
+  /* Extended palette */
+  --cream: #fafafa;
+  --light-grey: #f5f5f5;
+  --medium-grey: #e8e8e8;
+  --dark-grey: #4a4a4a;
+  --charcoal: #1a1a1a;
+  --green-light: #e8f5e9;
+  --green-medium: #66bb6a;
+  --green-dark: #00ab39;
+  --green-darker: #006b24;
+  --paper-bg: #fff9f0;
+
   /* Neutrals */
-  --white: #FFFFFF;
+  --white: #ffffff;
   --black: #000000;
-  
-  /* Accent Backgrounds */
-  --paper-bg: #FFF9F0;        /* Main page background */
-  
+
   /* Status Colors (ONLY for indicators - use sparingly) */
-  --status-success: #66BB6A;
-  --status-warning: #FFB74D;
-  --status-error: #EF5350;
-  --status-info: #42A5F5;
-  
+  --status-success: #66bb6a;
+  --status-warning: #ffb74d;
+  --status-error: #ef5350;
+  --status-info: #42a5f5;
+
   /* =======================================================================
      TYPOGRAPHY - Hand-Drawn Fonts
      ======================================================================= */
-  --font-handwritten: 'Patrick Hand', cursive;
-  --font-sketch: 'Cabin Sketch', cursive;
+  --font-handwritten: 'Patrick Hand', 'Indie Flower', cursive;
+  --font-sketch: 'Cabin Sketch', 'Patrick Hand', cursive;
   --font-accent: 'Shadows Into Light', cursive;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  
+
   /* =======================================================================
      SPACING
      ======================================================================= */
@@ -64,20 +96,22 @@
   --space-xl: 2rem;
   --space-2xl: 3rem;
   --space-3xl: 4rem;
-  
+
   /* =======================================================================
-     BORDERS & RADII
+     BORDERS & RADII (prototype: --radius 1rem + derived)
      ======================================================================= */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --radius: 1rem;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: 24px;
   --radius-full: 9999px;
-  
+
   /* Doodle border - organic, hand-drawn */
   --radius-doodle: 255px 15px 225px 15px / 15px 225px 15px 255px;
-  
+  --radius-doodle-alt: 15px 255px 15px 225px / 225px 15px 255px 15px;
+
   /* =======================================================================
      SHADOWS
      ======================================================================= */
@@ -86,13 +120,12 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  
-  /* Layered sketch shadow for depth */
-  --doodle-shadow: 
-    0 2px 4px rgba(0,0,0,0.1),
-    0 8px 16px rgba(0,0,0,0.1),
-    0 16px 32px rgba(0,0,0,0.05);
-  
+
+  /* Prototype doodle shadows */
+  --doodle-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2), 4px 4px 0 rgba(0, 0, 0, 0.1);
+  --doodle-shadow-md: 3px 3px 0 rgba(0, 0, 0, 0.2), 6px 6px 0 rgba(0, 0, 0, 0.1);
+  --doodle-shadow-lg: 4px 4px 0 rgba(0, 0, 0, 0.2), 8px 8px 0 rgba(0, 0, 0, 0.12);
+
   /* =======================================================================
      TRANSITIONS
      ======================================================================= */
@@ -100,7 +133,7 @@
   --transition-base: 250ms ease;
   --transition-slow: 400ms ease;
   --transition-bounce: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  
+
   /* =======================================================================
      LAYOUT
      ======================================================================= */
@@ -110,7 +143,7 @@
   --container-xl: 1280px;
   --container-2xl: 1536px;
   --gutter: 1rem;
-  
+
   /* =======================================================================
      Z-INDEX SCALE
      ======================================================================= */
@@ -148,11 +181,11 @@ body {
 
 body {
   margin: 0;
-  font-family: var(--font-handwritten);
+  font-family: 'Patrick Hand', 'Indie Flower', cursive;
   font-weight: 400;
   line-height: 1.6;
-  color: var(--charcoal);
-  background: var(--paper-bg);
+  color: var(--foreground);
+  background: var(--background);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -163,27 +196,70 @@ body {
 
 /* All body text uses Patrick Hand by default */
 
-/* Headings use Cabin Sketch */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-sketch);
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--charcoal);
+/* Headings use Cabin Sketch; h4+ use Patrick Hand (prototype) */
+h1,
+h2,
+h3 {
+  font-family: 'Cabin Sketch', 'Patrick Hand', cursive;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--foreground);
   letter-spacing: -0.02em;
 }
 
-.h1, .h1 { font-size: 2.5rem; line-height: 1.1; }
-.h2, .h2 { font-size: 2rem; line-height: 1.2; }
-.h3, .h3 { font-size: 1.75rem; line-height: 1.25; }
-.h4, .h4 { font-size: 1.5rem; line-height: 1.3; }
-.h5, .h5 { font-size: 1.25rem; line-height: 1.35; }
-.h6, .h6 { font-size: 1rem; line-height: 1.4; }
+h4,
+h5,
+h6 {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--foreground);
+}
+
+label,
+button,
+input {
+  font-family: 'Patrick Hand', cursive;
+}
+
+.h1,
+.h1 {
+  font-size: 2.5rem;
+  line-height: 1.1;
+}
+.h2,
+.h2 {
+  font-size: 2rem;
+  line-height: 1.2;
+}
+.h3,
+.h3 {
+  font-size: 1.75rem;
+  line-height: 1.25;
+}
+.h4,
+.h4 {
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+.h5,
+.h5 {
+  font-size: 1.25rem;
+  line-height: 1.35;
+}
+.h6,
+.h6 {
+  font-size: 1rem;
+  line-height: 1.4;
+}
 
 /* Handwritten accents use Shadows Into Light */
-.hand-drawn { font-family: var(--font-handwritten); }
-.sketch-title { 
-  font-family: var(--font-sketch); 
-  font-weight: 700; 
+.hand-drawn {
+  font-family: 'Shadows Into Light', cursive;
+}
+.sketch-title {
+  font-family: 'Cabin Sketch', cursive;
+  font-weight: 700;
 }
 .sketch-subtitle {
   font-family: var(--font-sketch);
@@ -262,25 +338,64 @@ textarea::placeholder {
 }
 
 /* =========================================================================
-   DOODLE BORDERS & SHADOWS
+   DOODLE BORDERS & SHADOWS (prototype parity)
    ========================================================================= */
 
-/* Organic, hand-drawn border radius */
 .doodle-border {
+  position: relative;
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+}
+
+.doodle-radius {
   border-radius: var(--radius-doodle);
 }
 
-/* Layered sketch shadow for depth */
+.doodle-radius-lg {
+  border-radius: 255px 25px 225px 25px / 25px 225px 25px 255px;
+}
+
 .doodle-shadow {
   box-shadow: var(--doodle-shadow);
 }
 
-/* Wired-style double border using box-shadow */
+.doodle-shadow-md {
+  box-shadow: var(--doodle-shadow-md);
+}
+
+.doodle-shadow-lg {
+  box-shadow: var(--doodle-shadow-lg);
+}
+
+.doodle-shadow-sm {
+  box-shadow:
+    1px 1px 0 rgba(0, 0, 0, 0.2),
+    2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Wired-style double border via ::before / ::after (prototype) */
 .wired-border {
-  border: 2px solid var(--charcoal);
-  box-shadow: 
-    -2px -2px 0 0 var(--charcoal),
-    2px 2px 0 0 var(--charcoal);
+  position: relative;
+  background: white;
+}
+
+.wired-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 2px solid currentColor;
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.wired-border::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 2px solid currentColor;
+  border-radius: 15px 255px 15px 225px / 225px 15px 255px 15px;
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 /* Sketchy single border */
@@ -290,10 +405,9 @@ textarea::placeholder {
 }
 
 /* =========================================================================
-   SKETCHY DECORATIONS
+   SKETCHY DECORATIONS (prototype parity)
    ========================================================================= */
 
-/* Squiggly underline */
 .sketch-underline {
   position: relative;
   display: inline-block;
@@ -302,15 +416,15 @@ textarea::placeholder {
 .sketch-underline::after {
   content: '';
   position: absolute;
-  bottom: -8px;
+  bottom: -5px;
   left: 0;
   right: 0;
-  height: 4px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 4'%3E%3Cpath d='M0,2 Q25,0 50,2 T100,2' stroke='%2300AB39' stroke-width='3' fill='none'/%3E%3C/svg%3E") repeat-x;
-  background-size: 20px 4px;
+  height: 3px;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='3' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,2 Q5,0 10,2 T20,2 T30,2 T40,2 T50,2 T60,2 T70,2 T80,2 T90,2 T100,2' stroke='%2300AB39' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: 100px 3px;
 }
 
-/* Wavy top decoration */
 .squiggle-top {
   position: relative;
 }
@@ -318,40 +432,79 @@ textarea::placeholder {
 .squiggle-top::before {
   content: '';
   position: absolute;
-  top: -20px;
-  left: 0;
-  right: 0;
-  height: 20px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20'%3E%3Cpath d='M0,10 Q10,0 20,10 T40,10 T60,10 T80,10 T100,10' stroke='%2300AB39' stroke-width='2' fill='none'/%3E%3C/svg%3E") repeat-x;
-  background-size: 30px 20px;
+  top: -10px;
+  left: 10%;
+  right: 10%;
+  height: 5px;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,2.5 Q5,0 10,2.5 T20,2.5 T30,2.5 T40,2.5 T50,2.5 T60,2.5 T70,2.5 T80,2.5 T90,2.5 T100,2.5' stroke='currentColor' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  opacity: 0.6;
 }
 
-/* Crosshatch background */
 .sketchy-bg {
-  background-image: 
-    linear-gradient(45deg, rgba(0,171,57,0.1) 25%, transparent 25%),
-    linear-gradient(-45deg, rgba(0,171,57,0.1) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, rgba(0,171,57,0.1) 75%),
-    linear-gradient(-45deg, transparent 75%, rgba(0,171,57,0.1) 75%);
-  background-size: 20px 20px;
-  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(0, 0, 0, 0.02) 10px,
+      rgba(0, 0, 0, 0.02) 11px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 10px,
+      rgba(0, 0, 0, 0.02) 10px,
+      rgba(0, 0, 0, 0.02) 11px
+    );
 }
 
-/* Paper texture */
 .paper-texture {
-  background-image: 
-    radial-gradient(circle at 1px 1px, rgba(0,171,57,0.05) 1px, transparent 0);
-  background-size: 20px 20px;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+.highlight-doodle {
+  background: linear-gradient(180deg, transparent 60%, #eac102 60%);
+  padding: 0 0.2em;
+}
+
+.arrow-doodle {
+  position: relative;
+}
+
+.arrow-doodle::after {
+  content: '→';
+  font-size: 1.5em;
+  margin-left: 0.3em;
+  display: inline-block;
+  transform: rotate(-5deg);
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* =========================================================================
    ANIMATIONS
    ========================================================================= */
 
-/* Gentle rotation animation (3s loop) */
+/* Gentle rotation animation (prototype: ±0.5deg) */
 @keyframes wobble {
-  0%, 100% { transform: rotate(-2deg); }
-  50% { transform: rotate(2deg); }
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(0.5deg);
+  }
+  75% {
+    transform: rotate(-0.5deg);
+  }
 }
 
 .wobble {
@@ -361,8 +514,13 @@ textarea::placeholder {
 
 /* Gentle bounce animation */
 @keyframes gentle-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 .gentle-bounce {
@@ -371,8 +529,13 @@ textarea::placeholder {
 
 /* Float animation */
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .float {
@@ -381,8 +544,13 @@ textarea::placeholder {
 
 /* Pulse animation */
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 .pulse {
@@ -512,9 +680,9 @@ textarea::placeholder {
 
 .btn-doodle:hover {
   transform: translateY(-3px);
-  box-shadow: 
-    0 4px 8px rgba(0,0,0,0.15),
-    0 16px 32px rgba(0,0,0,0.1);
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.15),
+    0 16px 32px rgba(0, 0, 0, 0.1);
 }
 
 .btn-circle {
@@ -681,11 +849,26 @@ textarea::placeholder {
   padding: 0 var(--gutter);
 }
 
-.container-sm { max-width: var(--container-sm); margin: 0 auto; }
-.container-md { max-width: var(--container-md); margin: 0 auto; }
-.container-lg { max-width: var(--container-lg); margin: 0 auto; }
-.container-xl { max-width: var(--container-xl); margin: 0 auto; }
-.container-2xl { max-width: var(--container-2xl); margin: 0 auto; }
+.container-sm {
+  max-width: var(--container-sm);
+  margin: 0 auto;
+}
+.container-md {
+  max-width: var(--container-md);
+  margin: 0 auto;
+}
+.container-lg {
+  max-width: var(--container-lg);
+  margin: 0 auto;
+}
+.container-xl {
+  max-width: var(--container-xl);
+  margin: 0 auto;
+}
+.container-2xl {
+  max-width: var(--container-2xl);
+  margin: 0 auto;
+}
 
 /* Flexbox */
 .flex {
@@ -720,47 +903,104 @@ textarea::placeholder {
   flex-wrap: wrap;
 }
 
-.gap-xs { gap: var(--space-xs); }
-.gap-sm { gap: var(--space-sm); }
-.gap-md { gap: var(--space-md); }
-.gap-lg { gap: var(--space-lg); }
-.gap-xl { gap: var(--space-xl); }
+.gap-xs {
+  gap: var(--space-xs);
+}
+.gap-sm {
+  gap: var(--space-sm);
+}
+.gap-md {
+  gap: var(--space-md);
+}
+.gap-lg {
+  gap: var(--space-lg);
+}
+.gap-xl {
+  gap: var(--space-xl);
+}
 
 /* Grid */
 .grid {
   display: grid;
 }
 
-.grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
-.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
-.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
-.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
-.grid-cols-5 { grid-template-columns: repeat(5, 1fr); }
-.grid-cols-6 { grid-template-columns: repeat(6, 1fr); }
+.grid-cols-1 {
+  grid-template-columns: repeat(1, 1fr);
+}
+.grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+.grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+.grid-cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+.grid-cols-5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+.grid-cols-6 {
+  grid-template-columns: repeat(6, 1fr);
+}
 
 /* Spacing */
-.m-auto { margin: auto; }
-.mx-auto { margin-left: auto; margin-right: auto; }
-.my-auto { margin-top: auto; margin-bottom: auto; }
+.m-auto {
+  margin: auto;
+}
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+.my-auto {
+  margin-top: auto;
+  margin-bottom: auto;
+}
 
 /* Visibility */
-.hidden { display: none; }
-.visible { visibility: visible; }
-.invisible { visibility: hidden; }
+.hidden {
+  display: none;
+}
+.visible {
+  visibility: visible;
+}
+.invisible {
+  visibility: hidden;
+}
 
 /* Position */
-.relative { position: relative; }
-.absolute { position: absolute; }
-.fixed { position: fixed; }
-.sticky { position: sticky; }
+.relative {
+  position: relative;
+}
+.absolute {
+  position: absolute;
+}
+.fixed {
+  position: fixed;
+}
+.sticky {
+  position: sticky;
+}
 
-.inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
 
 /* Z-index */
-.z-dropdown { z-index: var(--z-dropdown); }
-.z-sticky { z-index: var(--z-sticky); }
-.z-fixed { z-index: var(--z-fixed); }
-.z-modal { z-index: var(--z-modal); }
+.z-dropdown {
+  z-index: var(--z-dropdown);
+}
+.z-sticky {
+  z-index: var(--z-sticky);
+}
+.z-fixed {
+  z-index: var(--z-fixed);
+}
+.z-modal {
+  z-index: var(--z-modal);
+}
 
 /* =========================================================================
    ACCESSIBILITY
@@ -788,7 +1028,7 @@ textarea::placeholder {
   top: 0;
 }
 
-/* Reduced motion */
+/* Reduced motion — disable infinite loops (prototype claimed; now real) */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -796,6 +1036,21 @@ textarea::placeholder {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .wobble,
+  .gentle-bounce,
+  .float,
+  .pulse,
+  .animate-float-3d,
+  .animate-particle,
+  .animate-neon-pulse,
+  .animate-morph-path,
+  .animate-rotating-gradient,
+  .animate-bounce-3d,
+  .animate-shimmer {
+    animation: none !important;
   }
 }
 
@@ -820,12 +1075,12 @@ textarea::placeholder {
   .no-print {
     display: none !important;
   }
-  
+
   body {
     background: white;
     color: black;
   }
-  
+
   .card {
     box-shadow: none;
     border: 1px solid #ccc;

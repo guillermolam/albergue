@@ -4,7 +4,7 @@
  */
 
 // Re-export everything from domain_model schema
-export * from '@albergue/domain-model';
+export * from "@albergue/domain-model";
 
 // Additional backend-specific types
 
@@ -29,7 +29,7 @@ export interface PaginationParams {
   page?: number;
   pageSize?: number;
   orderBy?: string;
-  orderDirection?: 'asc' | 'desc';
+  orderDirection?: "asc" | "desc";
 }
 
 // Filter types
@@ -155,6 +155,13 @@ export interface BookingStats {
   totalRevenue: string;
   averageStay: number;
   occupancyRate: number;
+  monthlyBookings: number;
+  byRoomType: Array<{
+    roomType: string;
+    occupied: number;
+    total: number;
+    occupancyRate: number;
+  }>;
 }
 
 export interface PilgrimStats {

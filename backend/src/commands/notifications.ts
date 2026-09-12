@@ -3,10 +3,10 @@
  * Write operations for notifications
  */
 
-import { db } from '../lib/db';
-import { notifications } from '../../domain_model/schema';
-import { eq, and, or } from 'drizzle-orm';
-import type { InsertNotification, Notification } from '../types';
+import { db } from '../lib/db.js';
+import { notifications } from '@albergue/domain-model';
+import { eq, and, or, isNull, lt, inArray, sql } from 'drizzle-orm';
+import type { InsertNotification, Notification } from '../types/index.js';
 
 /**
  * Create a new notification
@@ -20,11 +20,11 @@ export async function createNotification(input: InsertNotification): Promise<Not
       createdAt: new Date(),
     })
     .returning();
-  
+
   if (!result) {
     throw new Error('Failed to create notification');
   }
-  
+
   return result;
 }
 
@@ -44,7 +44,7 @@ export async function createNotificationsBatch(
       }))
     )
     .returning();
-  
+
   return results;
 }
 
@@ -60,20 +60,19 @@ export async function updateNotification(
     .from(notifications)
     .where(eq(notifications.id, id))
     .limit(1);
-  
+
   if (!existing) {
     return null;
   }
-  
+
   const [result] = await db
     .update(notifications)
     .set({
       ...updates,
-      updatedAt: new Date(),
     })
     .where(eq(notifications.id, id))
     .returning();
-  
+
   return result || null;
 }
 
@@ -90,11 +89,10 @@ export async function markNotificationAsSent(
       status: 'sent',
       sentAt: new Date(),
       providerMessageId,
-      updatedAt: new Date(),
     })
     .where(eq(notifications.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -110,11 +108,11 @@ export async function markNotificationAsFailed(
     .set({
       status: 'failed',
       errorMessage,
-      updatedAt: new Date(),
+      attempts: sql`COALESCE(${notifications.attempts}, 0) + 1`,
     })
     .where(eq(notifications.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -126,11 +124,10 @@ export async function markNotificationAsDelivered(id: number): Promise<boolean> 
     .update(notifications)
     .set({
       status: 'delivered',
-      updatedAt: new Date(),
     })
     .where(eq(notifications.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -142,37 +139,37 @@ export async function markNotificationAsRead(id: number): Promise<boolean> {
     .update(notifications)
     .set({
       status: 'read',
-      updatedAt: new Date(),
     })
     .where(eq(notifications.id, id))
     .returning();
-  
+
   return !!result;
 }
 
 /**
  * Retry failed notifications
+ * Dead-letter safeguard: notifications at or over the attempt cap stay failed.
  */
+export const MAX_NOTIFICATION_ATTEMPTS = 3;
+
 export async function retryFailedNotifications(): Promise<number> {
   const results = await db
     .update(notifications)
     .set({
       status: 'pending_retry',
       errorMessage: null,
-      updatedAt: new Date(),
     })
     .where(
       and(
         eq(notifications.status, 'failed'),
         or(
           isNull(notifications.attempts),
-          // @ts-ignore
-          notifications.attempts.lt(3)
+          lt(notifications.attempts, MAX_NOTIFICATION_ATTEMPTS)
         )
       )
     )
     .returning();
-  
+
   return results.length;
 }
 
@@ -187,11 +184,10 @@ export async function softDeleteNotification(id: number): Promise<boolean> {
       subject: '(DELETED)',
       message: '(DELETED)',
       recipient: '(DELETED)',
-      updatedAt: new Date(),
     })
     .where(eq(notifications.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -204,7 +200,7 @@ export async function deleteNotification(id: number): Promise<boolean> {
     .delete(notifications)
     .where(eq(notifications.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -212,11 +208,12 @@ export async function deleteNotification(id: number): Promise<boolean> {
  * Bulk delete notifications
  */
 export async function bulkDeleteNotifications(ids: number[]): Promise<number> {
+  if (ids.length === 0) return 0;
   const results = await db
     .delete(notifications)
-    .where(and(...ids.map(id => eq(notifications.id, id))))
+    .where(inArray(notifications.id, ids))
     .returning();
-  
+
   return results.length;
 }
 
@@ -231,11 +228,10 @@ export async function updateNotificationProviderMessageId(
     .update(notifications)
     .set({
       providerMessageId,
-      updatedAt: new Date(),
     })
     .where(eq(notifications.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -245,7 +241,7 @@ export async function updateNotificationProviderMessageId(
 export async function cleanupOldNotifications(days: number = 30): Promise<number> {
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - days);
-  
+
   const results = await db
     .delete(notifications)
     .where(
@@ -255,11 +251,10 @@ export async function cleanupOldNotifications(days: number = 30): Promise<number
           eq(notifications.status, 'delivered'),
           eq(notifications.status, 'read')
         ),
-        // @ts-ignore
-        notifications.createdAt.lt(cutoffDate)
+        lt(notifications.createdAt, cutoffDate)
       )
     )
     .returning();
-  
+
   return results.length;
 }

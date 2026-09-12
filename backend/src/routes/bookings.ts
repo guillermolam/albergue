@@ -20,14 +20,24 @@ import {
   getBookingWithDetails,
   searchBookings,
   getAvailableBedsForDates,
-} from '../queries/bookings';
+} from '../queries/bookings.js';
+import { createBooking, updateBookingStatus } from '../commands/bookings.js';
+import { computeBookingQuote } from '../queries/pricing.js';
+import { randomBytes } from 'node:crypto';
+import {
+  BOOKING_STATUSES,
+  type CreateBookingRequest,
+  type UpdateBookingStatusRequest,
+  type BookingQuoteRequest,
+  type BookingQuote,
+} from '@albergue/api-contract';
 import type {
   Booking,
   ApiResponse,
   PaginatedResponse,
   BookingFilter,
   BookingStats,
-} from '../types';
+} from '../types/index.js';
 
 const bookings = new Hono();
 
@@ -98,6 +108,9 @@ bookings.get('/:id', async (c: Context) => {
 bookings.get('/reference/:reference', async (c: Context) => {
   try {
     const reference = c.req.param('reference');
+    if (!reference) {
+      throw new HTTPException(400, { message: 'reference is required' });
+    }
     const booking = await getBookingByReference(reference);
     
     if (!booking) {
@@ -364,6 +377,148 @@ bookings.get('/:id/details', async (c: Context) => {
     throw new HTTPException(500, {
       message: `Failed to get booking details: ${String(error)}`,
     });
+  }
+});
+
+/** Parse an ISO 8601 wire value into a Date, or throw a 400. */
+function parseIsoDate(value: string, field: string): Date {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    throw new HTTPException(400, { message: `Invalid ${field}: expected ISO 8601 datetime` });
+  }
+  return date;
+}
+
+/**
+ * POST /bookings - Create a booking (transactional; claims bedId atomically)
+ */
+bookings.post('/', async (c: Context) => {
+  try {
+    const body = await c.req.json<CreateBookingRequest>();
+
+    if (!body.pilgrimId || !body.checkInDate || !body.checkOutDate) {
+      throw new HTTPException(400, {
+        message: 'Missing required fields: pilgrimId, checkInDate, checkOutDate',
+      });
+    }
+
+    const now = Date.now();
+    const checkIn = parseIsoDate(body.checkInDate, 'checkInDate');
+    const checkOut = parseIsoDate(body.checkOutDate, 'checkOutDate');
+    let numberOfNights = Math.round((checkOut.getTime() - checkIn.getTime()) / (24 * 60 * 60 * 1000));
+    if (numberOfNights < 1) {
+      throw new HTTPException(400, { message: 'checkOutDate must be after checkInDate' });
+    }
+
+    // BOOK-001: the server recomputes price/nights from the bed row; the
+    // browser-posted totalAmount is an estimate and is never trusted.
+    // totalAmount is required only for bed-less staff bookings.
+    let totalAmount: string;
+    if (body.bedId) {
+      const quote = await computeBookingQuote(body.bedId, body.checkInDate, body.checkOutDate);
+      if (!quote) throw new HTTPException(404, { message: 'Bed not found' });
+      numberOfNights = quote.numberOfNights;
+      totalAmount = quote.totalAmount;
+    } else {
+      if (!body.totalAmount) {
+        throw new HTTPException(400, {
+          message: 'totalAmount is required when no bedId is provided',
+        });
+      }
+      totalAmount = body.totalAmount;
+    }
+
+    const booking = await createBooking({
+      pilgrimId: body.pilgrimId,
+      checkInDate: body.checkInDate,
+      checkOutDate: body.checkOutDate,
+      numberOfNights,
+      numberOfPersons: body.numberOfPersons,
+      numberOfRooms: body.numberOfRooms,
+      hasInternet: body.hasInternet,
+      estimatedArrivalTime: body.estimatedArrivalTime,
+      notes: body.notes,
+      bedAssignmentId: body.bedId,
+      totalAmount,
+      // BOOK-005: unguessable confirmation reference (48 bits of entropy)
+      referenceNumber:
+        body.referenceNumber ?? `ALB-${randomBytes(6).toString('hex').toUpperCase()}`,
+      reservationExpiresAt: body.reservationExpiresAt
+        ? parseIsoDate(body.reservationExpiresAt, 'reservationExpiresAt')
+        : new Date(now + 24 * 60 * 60 * 1000),
+      paymentDeadline: body.paymentDeadline
+        ? parseIsoDate(body.paymentDeadline, 'paymentDeadline')
+        : new Date(now + 48 * 60 * 60 * 1000),
+    });
+
+    return c.json<ApiResponse<Booking>>({
+      success: true,
+      data: booking,
+      message: 'Booking created successfully',
+      timestamp: new Date().toISOString(),
+    }, 201);
+  } catch (error) {
+    if (error instanceof HTTPException) throw error;
+    // Atomic bed-claim failure surfaces as an Error from the transaction
+    if (String(error).includes('unavailable')) {
+      throw new HTTPException(409, { message: String(error) });
+    }
+    throw new HTTPException(400, { message: `Failed to create booking: ${String(error)}` });
+  }
+});
+
+/**
+ * POST /bookings/quote - Authoritative server-side price quote (BOOK-001)
+ */
+bookings.post('/quote', async (c: Context) => {
+  try {
+    const body = await c.req.json<BookingQuoteRequest>();
+    if (!body.bedId || !body.checkInDate || !body.checkOutDate) {
+      throw new HTTPException(400, {
+        message: 'Missing required fields: bedId, checkInDate, checkOutDate',
+      });
+    }
+
+    const quote = await computeBookingQuote(body.bedId, body.checkInDate, body.checkOutDate);
+    if (!quote) throw new HTTPException(404, { message: 'Bed not found or invalid dates' });
+
+    return c.json<ApiResponse<BookingQuote>>({
+      success: true,
+      data: quote,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    if (error instanceof HTTPException) throw error;
+    throw new HTTPException(400, { message: `Failed to compute quote: ${String(error)}` });
+  }
+});
+
+/**
+ * PATCH /bookings/:id/status - Transition booking status
+ */
+bookings.patch('/:id/status', async (c: Context) => {
+  try {
+    const id = Number(c.req.param('id'));
+    if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid booking ID' });
+
+    const { status } = await c.req.json<UpdateBookingStatusRequest>();
+    if (!BOOKING_STATUSES.includes(status)) {
+      throw new HTTPException(400, {
+        message: `Invalid status: expected one of ${BOOKING_STATUSES.join(', ')}`,
+      });
+    }
+
+    const success = await updateBookingStatus(id, status);
+    if (!success) throw new HTTPException(404, { message: 'Booking not found' });
+
+    return c.json<ApiResponse<null>>({
+      success: true,
+      message: `Booking status updated to ${status}`,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    if (error instanceof HTTPException) throw error;
+    throw new HTTPException(400, { message: `Failed to update booking status: ${String(error)}` });
   }
 });
 

@@ -3,11 +3,11 @@
  * Read operations for bookings
  */
 
-import { db } from '../lib/db';
-import { bookings, pilgrims, beds, payments } from '../../domain_model/schema';
-import { eq, and, or, isNull, like, count, sum, desc, asc, gte, lte, between } from 'drizzle-orm';
-import type { Booking, Bed } from '../types';
-import type { PaginatedResponse, PaginationParams, BookingFilter } from '../types';
+import { db } from '../lib/db.js';
+import { bookings, pilgrims, beds, payments } from '@albergue/domain-model';
+import { eq, and, or, isNull, like, count, sum, desc, asc, gte, lte, between, gt, sql } from 'drizzle-orm';
+import type { Booking, Bed } from '../types/index.js';
+import type { PaginatedResponse, PaginationParams, BookingFilter } from '../types/index.js';
 
 /**
  * Get all bookings with pagination
@@ -28,7 +28,7 @@ export async function getAllBookings(
   } = params;
 
   const offset = (page - 1) * pageSize;
-  const order = orderDirection === 'asc' ? asc : desc;
+  const orderFn = orderDirection === 'asc' ? asc : desc;
 
   // Build where conditions
   const whereConditions = [];
@@ -76,7 +76,8 @@ export async function getAllBookings(
     })
     .from(bookings)
     .leftJoin(pilgrims, eq(bookings.pilgrimId, pilgrims.id))
-    .leftJoin(beds, eq(bookings.bedAssignmentId, beds.id));
+    .leftJoin(beds, eq(bookings.bedAssignmentId, beds.id))
+    .$dynamic();
 
   if (roomType) {
     whereConditions.push(eq(beds.roomType, roomType));
@@ -104,10 +105,8 @@ export async function getAllBookings(
   // Get paginated results
   const results = await query
     .orderBy(
-      // @ts-ignore
-      orderBy in bookings ? bookings[orderBy] : bookings.createdAt,
-      order
-    )
+      orderFn(orderBy in bookings ? (bookings as any)[orderBy] : bookings.createdAt)
+      )
     .limit(pageSize)
     .offset(offset);
 
@@ -156,7 +155,7 @@ export async function getBookingsByPilgrim(pilgrimId: number): Promise<Booking[]
     .select()
     .from(bookings)
     .where(eq(bookings.pilgrimId, pilgrimId))
-    .orderBy(bookings.createdAt, desc);
+    .orderBy(desc(bookings.createdAt));
   
   return results;
 }
@@ -180,7 +179,7 @@ export async function getActiveBookings(): Promise<Booking[]> {
         )
       )
     )
-    .orderBy(bookings.checkInDate, asc);
+    .orderBy(asc(bookings.checkInDate));
   
   return results;
 }
@@ -203,7 +202,7 @@ export async function getBookingsByDateRange(
         lte(bookings.checkInDate, endDate)
       )
     )
-    .orderBy(bookings.checkInDate, asc);
+    .orderBy(asc(bookings.checkInDate));
   
   return results;
 }
@@ -236,7 +235,7 @@ export async function getUpcomingCheckIns(days: number = 7): Promise<Booking[]> 
         eq(bookings.status, 'reserved')
       )
     )
-    .orderBy(bookings.checkInDate, asc);
+    .orderBy(asc(bookings.checkInDate));
   
   return results.map(r => r.booking);
 }
@@ -267,7 +266,7 @@ export async function getOverdueReservations(): Promise<Booking[]> {
         lte(bookings.reservationExpiresAt, now)
       )
     )
-    .orderBy(bookings.reservationExpiresAt, asc);
+    .orderBy(asc(bookings.reservationExpiresAt));
   
   return results.map(r => r.booking);
 }
@@ -356,6 +355,16 @@ export async function getBookingStats() {
     ))
     .groupBy(beds.roomType);
   
+  const byRoomType = roomTypeStats.map(s => ({
+      roomType: s.roomType || 'unknown',
+      occupied: s.occupied || 0,
+      total: s.total || 0,
+      occupancyRate: s.total > 0 ? Math.round((s.occupied / s.total) * 100) : 0,
+    }));
+
+  const occupiedBeds = byRoomType.reduce((sum, s) => sum + s.occupied, 0);
+  const totalBeds = byRoomType.reduce((sum, s) => sum + s.total, 0);
+
   return {
     totalBookings: total?.count || 0,
     activeBookings: active?.count || 0,
@@ -363,13 +372,9 @@ export async function getBookingStats() {
     cancelledBookings: cancelled?.count || 0,
     totalRevenue: revenue?.total || '0',
     averageStay: avgStay?.avg ? Math.round(parseFloat(String(avgStay.avg)) * 100) / 100 : 0,
+    occupancyRate: totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0,
     monthlyBookings: monthly?.count || 0,
-    byRoomType: roomTypeStats.map(s => ({
-      roomType: s.roomType || 'unknown',
-      occupied: s.occupied || 0,
-      total: s.total || 0,
-      occupancyRate: s.total > 0 ? Math.round((s.occupied / s.total) * 100) : 0,
-    })),
+    byRoomType,
   };
 }
 
@@ -380,7 +385,7 @@ export async function getRecentBookings(limit: number = 10): Promise<Booking[]> 
   const results = await db
     .select()
     .from(bookings)
-    .orderBy(bookings.createdAt, desc)
+    .orderBy(desc(bookings.createdAt))
     .limit(limit);
   
   return results;
@@ -430,7 +435,7 @@ export async function searchBookings(query: string, limit: number = 10): Promise
         like(pilgrims.lastName2, `%${query}%`)
       )
     )
-    .orderBy(bookings.createdAt, desc)
+    .orderBy(desc(bookings.createdAt))
     .limit(limit);
   
   return results.map(r => r.booking);
@@ -444,11 +449,13 @@ export async function getAvailableBedsForDates(
   checkOutDate: Date,
   roomType?: string
 ): Promise<Bed[]> {
+  const checkInStr = checkInDate.toISOString().slice(0, 10);
+  const checkOutStr = checkOutDate.toISOString().slice(0, 10);
   // Find beds that are not reserved during the date range
   const results = await db
     .select({
       bed: beds,
-      hasBooking: count(bookings.id).gt(0),
+      hasBooking: gt(count(bookings.id), 0),
     })
     .from(beds)
     .leftJoin(bookings, and(
@@ -456,21 +463,19 @@ export async function getAvailableBedsForDates(
       eq(bookings.status, 'reserved'),
       or(
         isNull(bookings.reservationExpiresAt),
-        // @ts-ignore
         gte(bookings.reservationExpiresAt, new Date())
       ),
       // Check for date overlap
       or(
-        // @ts-ignore
         and(
-          lte(bookings.checkInDate, checkOutDate),
-          gte(bookings.checkOutDate, checkInDate)
+          lte(bookings.checkInDate, checkOutStr),
+          gte(bookings.checkOutDate, checkInStr)
         )
       )
     ))
     .groupBy(beds.id)
-    .having(count(bookings.id).eq(0))
-    .orderBy(beds.roomNumber, asc);
+    .having(eq(count(bookings.id), 0))
+    .orderBy(asc(beds.roomNumber));
   
   return results
     .filter(r => roomType ? r.bed.roomType === roomType : true)
@@ -479,5 +484,5 @@ export async function getAvailableBedsForDates(
 
 // Helper for average
 function avg(column: any) {
-  return { avg: sql`AVG(${column})` };
+  return sql`AVG(${column})`;
 }

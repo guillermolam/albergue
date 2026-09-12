@@ -1,6 +1,7 @@
 {
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
+    "rootDir": ".",
     "paths": {
       "@/*": [
         "./src/*"
@@ -39,12 +40,12 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
+    "src/**/*.astro",
     ".astro/types.d.ts",
     "src/**/*.tsx",
     "./worker-configuration.d.ts"
   ],
   "exclude": [
-    ".astro",
     "dist",
     "node_modules",
     "tests",

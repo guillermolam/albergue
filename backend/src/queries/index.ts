@@ -3,12 +3,12 @@
  * Exports all query functions
  */
 
-export * from './pilgrims';
-export * from './bookings';
-export * from './beds';
-export * from './payments';
-export * from './pricing';
-export * from './government_submissions';
-export * from './notifications';
-export * from './audit_log';
-export * from './users';
+export * from "./pilgrims.js";
+export * from "./bookings.js";
+export * from "./beds.js";
+export * from "./payments.js";
+export * from "./pricing.js";
+export * from "./government_submissions.js";
+export * from "./notifications.js";
+export * from "./audit_log.js";
+export * from "./users.js";

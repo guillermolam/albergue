@@ -1,4 +1,12 @@
 {
   "name": "albergue-carrascalejo",
-  "compatibility_date": "2025-05-21"
+  "compatibility_date": "2025-05-21",
+
+  // Phase 4 prerequisite (ASTRO-002): Astro sessions use the Cloudflare KV
+  // driver with the default `SESSION` binding. Provision with:
+  //   wrangler kv namespace create SESSION
+  // then uncomment and fill in the emitted id (and preview_id for dev).
+  // "kv_namespaces": [
+  //   { "binding": "SESSION", "id": "<namespace-id>", "preview_id": "<preview-id>" }
+  // ],
 }

@@ -21,11 +21,7 @@ interface Props {
   dot?: boolean;
 }
 
-const {
-  variant = 'green',
-  size = 'md',
-  dot = false,
-} = Astro.props;
+const { variant = 'green', size = 'md', dot = false } = Astro.props;
 
 const variantClasses = {
   green: 'badge-green',
@@ -45,8 +41,6 @@ const classes = `badge ${variantClasses[variant]} ${sizeClasses[size]}`;
 ---
 
 <span class={classes}>
-  {dot && (
-    <span class="w-1.5 h-1.5 rounded-full bg-current" aria-hidden="true" />
-  )}
+  {dot && <span class="w-1.5 h-1.5 rounded-full bg-current" aria-hidden="true" />}
   <slot />
 </span>
