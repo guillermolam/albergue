@@ -2,6 +2,7 @@
 export const prerender = true;
 
 import Layout from '../layouts/Layout.astro';
+import '../styles/booking-confirmation.css';
 
 export interface Props {
   bookingReference: string;
@@ -37,7 +38,6 @@ const statusBg = status === 'confirmed' ? 'bg-green-50' : 'bg-yellow-50';
   title="Reserva Confirmada - Albergue Municipal Carrascalejo"
   description="Tu reserva ha sido confirmada"
 >
-  <link rel="stylesheet" href="/src/styles/booking-confirmation.css" />
   <main class="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
     <div class="w-full max-w-4xl">
       {/* Main Confirmation Card - Enhanced 3D Effect */}
