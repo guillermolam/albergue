@@ -8,8 +8,8 @@ export {
   bookingStore,
   loadPersistedBooking,
   persistBooking,
-} from './bookingStore';
-export { i18nActions, i18nStore, loadPersistedLocale, t } from './i18nStore';
+} from "./bookingStore";
+export { i18nActions, i18nStore, loadPersistedLocale, t } from "./i18nStore";
 
 // Camino progress stores
 export {
@@ -21,7 +21,7 @@ export {
   setDailyGoal,
   setStageProgress,
   syncProgressToServer,
-} from './app';
+} from "./app";
 
 // User stores
 export {
@@ -33,5 +33,4 @@ export {
   updateBookingCart,
   updateUserPreferences,
   userPreferences,
-} from './user';
-
+} from "./user";

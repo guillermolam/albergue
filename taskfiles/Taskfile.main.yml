@@ -344,6 +344,3 @@ tasks:
       - echo ""
       - 'echo "For frontend-specific tasks, use: task frontend --list"'
       - echo "For more details, run task --list-all"
-
-
-

@@ -1,48 +1,48 @@
-import unocss from '@unocss/vite';
-import swup from '@swup/astro';
-import icon from 'astro-icon';
-import { webcore } from 'webcoreui/integration';
-import { envField } from 'astro/config';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import unocss from "@unocss/vite";
+import swup from "@swup/astro";
+import icon from "astro-icon";
+import { webcore } from "webcoreui/integration";
+import { envField } from "astro/config";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export const sharedConfig = {
-  output: 'server',
+  output: "server",
   // ASTRO-001: validated env schema. Client vars are inlined at build time;
   // server secrets are read via `astro:env/server` and never shipped.
   env: {
     schema: {
       PUBLIC_APP_URL: envField.string({
-        context: 'client',
-        access: 'public',
+        context: "client",
+        access: "public",
         optional: true,
       }),
       PUBLIC_API_MODE: envField.enum({
-        context: 'client',
-        access: 'public',
-        values: ['local', 'mock'],
-        default: 'local',
+        context: "client",
+        access: "public",
+        values: ["local", "mock"],
+        default: "local",
       }),
       BACKEND_API_URL: envField.string({
-        context: 'server',
-        access: 'secret',
+        context: "server",
+        access: "secret",
         optional: true,
       }),
     },
   },
   prefetch: {
     prefetchAll: true,
-    defaultStrategy: 'hover',
+    defaultStrategy: "hover",
   },
   integrations: [
     webcore(),
     swup({
-      theme: 'fade',
-      animationClass: 'transition-',
-      containers: ['#main-content'],
+      theme: "fade",
+      animationClass: "transition-",
+      containers: ["#main-content"],
       cache: true,
       preload: {
         hover: true,
@@ -55,28 +55,28 @@ export const sharedConfig = {
       updateBodyClass: true,
       updateHead: true,
       reloadScripts: true,
-      debug: process.env.NODE_ENV !== 'production',
+      debug: process.env.NODE_ENV !== "production",
       loadOnIdle: true,
       globalInstance: true,
     }),
     icon({
       include: {
-        logos: ['astro', 'unocss', 'threejs', 'roughjs', 'animejs'],
-        uil: ['football', 'heart'],
-        ph: ['footprints-duotone'],
+        logos: ["astro", "unocss", "threejs", "roughjs", "animejs"],
+        uil: ["football", "heart"],
+        ph: ["footprints-duotone"],
       },
     }),
   ],
-  site: process.env.PUBLIC_APP_URL || 'https://albergue-carrascalejo.com',
-  base: '/',
+  site: process.env.PUBLIC_APP_URL || "https://albergue-carrascalejo.com",
+  base: "/",
   build: {
-    format: 'directory',
-    inlineStylesheets: 'auto',
+    format: "directory",
+    inlineStylesheets: "auto",
   },
   vite: {
     build: {
-      target: 'es2022',
-      minify: 'esbuild',
+      target: "es2022",
+      minify: "esbuild",
       cssMinify: true,
     },
     server: {
@@ -90,43 +90,43 @@ export const sharedConfig = {
     },
     resolve: {
       alias: {
-        '@': '/src',
-        '@/components': '/src/components',
-        '@/layouts': '/src/layouts',
-        '@/pages': '/src/pages',
-        '@/styles': '/src/styles',
-        '@/assets': '/src/assets',
-        '@/public': '/public',
+        "@": "/src",
+        "@/components": "/src/components",
+        "@/layouts": "/src/layouts",
+        "@/pages": "/src/pages",
+        "@/styles": "/src/styles",
+        "@/assets": "/src/assets",
+        "@/public": "/public",
         // Stable ESM entry — avoids stale Vite prebundle 404s for deep bundled path
-        'roughjs/bundled/rough.esm.js': fileURLToPath(
-          new URL('./node_modules/roughjs/bundled/rough.esm.js', import.meta.url)
+        "roughjs/bundled/rough.esm.js": fileURLToPath(
+          new URL("./node_modules/roughjs/bundled/rough.esm.js", import.meta.url),
         ),
       },
     },
     optimizeDeps: {
-      include: ['roughjs', 'roughjs/bundled/rough.esm.js'],
+      include: ["roughjs", "roughjs/bundled/rough.esm.js"],
     },
     css: {
       preprocessorOptions: {
         scss: {
-          api: 'modern-compiler',
+          api: "modern-compiler",
         },
       },
     },
     ssr: {
-      noExternal: ['@unocss/vite', 'unocss', 'roughjs', 'webcoreui'],
+      noExternal: ["@unocss/vite", "unocss", "roughjs", "webcoreui"],
     },
     plugins: [
       unocss({
-        configFile: fileURLToPath(new URL('./uno.config.ts', import.meta.url)),
-        mode: 'global',
+        configFile: fileURLToPath(new URL("./uno.config.ts", import.meta.url)),
+        mode: "global",
         injectReset: true,
       }),
     ],
   },
   image: {
     service: {
-      entrypoint: 'astro/assets/services/sharp',
+      entrypoint: "astro/assets/services/sharp",
     },
   },
   compressHTML: true,

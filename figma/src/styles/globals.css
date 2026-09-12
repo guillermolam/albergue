@@ -1,5 +1,6 @@
 /* Prevent horizontal overflow globally */
-html, body {
+html,
+body {
   max-width: 100vw;
   overflow-x: hidden;
   font-size: var(--font-size);
@@ -14,59 +15,59 @@ html, body {
     @apply bg-background text-foreground;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: 'Patrick Hand', 'Indie Flower', cursive;
+    font-family: "Patrick Hand", "Indie Flower", cursive;
   }
 }
 
 @layer base {
-  :where(:not(:has([class*=' text-']), :not(:has([class^='text-'])))) {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
     h1 {
       font-size: var(--text-2xl);
       font-weight: var(--font-weight-medium);
       line-height: 1.5;
-      font-family: 'Cabin Sketch', 'Patrick Hand', cursive;
+      font-family: "Cabin Sketch", "Patrick Hand", cursive;
     }
 
     h2 {
       font-size: var(--text-xl);
       font-weight: var(--font-weight-medium);
       line-height: 1.5;
-      font-family: 'Cabin Sketch', 'Patrick Hand', cursive;
+      font-family: "Cabin Sketch", "Patrick Hand", cursive;
     }
 
     h3 {
       font-size: var(--text-lg);
       font-weight: var(--font-weight-medium);
       line-height: 1.5;
-      font-family: 'Cabin Sketch', 'Patrick Hand', cursive;
+      font-family: "Cabin Sketch", "Patrick Hand", cursive;
     }
 
     h4 {
       font-size: var(--text-base);
       font-weight: var(--font-weight-medium);
       line-height: 1.5;
-      font-family: 'Patrick Hand', cursive;
+      font-family: "Patrick Hand", cursive;
     }
 
     label {
       font-size: var(--text-base);
       font-weight: var(--font-weight-medium);
       line-height: 1.5;
-      font-family: 'Patrick Hand', cursive;
+      font-family: "Patrick Hand", cursive;
     }
 
     button {
       font-size: var(--text-base);
       font-weight: var(--font-weight-medium);
       line-height: 1.5;
-      font-family: 'Patrick Hand', cursive;
+      font-family: "Patrick Hand", cursive;
     }
 
     input {
       font-size: var(--text-base);
       font-weight: var(--font-weight-normal);
       line-height: 1.5;
-      font-family: 'Patrick Hand', cursive;
+      font-family: "Patrick Hand", cursive;
     }
   }
 }
@@ -89,7 +90,7 @@ html, body {
   }
 
   .sketch-underline::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -5px;
     left: 0;
@@ -127,17 +128,24 @@ html, body {
   }
 
   @keyframes wobble {
-    0%, 100% { transform: rotate(0deg); }
-    25%       { transform: rotate(0.5deg); }
-    75%       { transform: rotate(-0.5deg); }
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(0.5deg);
+    }
+    75% {
+      transform: rotate(-0.5deg);
+    }
   }
 
   .hand-drawn {
-    font-family: 'Shadows Into Light', cursive;
+    font-family: "Shadows Into Light", cursive;
   }
 
   .sketch-title {
-    font-family: 'Cabin Sketch', cursive;
+    font-family: "Cabin Sketch", cursive;
     font-weight: 700;
   }
 
@@ -147,7 +155,7 @@ html, body {
   }
 
   .wired-border::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: -2px;
     border: 2px solid currentColor;
@@ -156,7 +164,7 @@ html, body {
   }
 
   .wired-border::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: -2px;
     border: 2px solid currentColor;
@@ -165,7 +173,7 @@ html, body {
   }
 
   .squiggle-top::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -10px;
     left: 10%;
@@ -181,7 +189,7 @@ html, body {
   }
 
   .arrow-doodle::after {
-    content: '→';
+    content: "→";
     font-size: 1.5em;
     margin-left: 0.3em;
     display: inline-block;
@@ -189,7 +197,7 @@ html, body {
   }
 
   .highlight-doodle {
-    background: linear-gradient(180deg, transparent 60%, #EAC102 60%);
+    background: linear-gradient(180deg, transparent 60%, #eac102 60%);
     padding: 0 0.2em;
   }
 

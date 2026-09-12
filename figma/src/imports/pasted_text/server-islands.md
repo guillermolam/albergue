@@ -8,6 +8,7 @@ description: "Combine high performance static HTML with dynamic server-rendered 
 tags:
   - "clippings"
 ---
+
 Server islands allow you to on-demand render dynamic or personalized “islands” individually, without sacrificing the performance of the rest of the page.
 
 This means your visitor will see the most important parts of your page sooner, and allows your main content to be more aggressively cached, providing faster performance.

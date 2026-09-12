@@ -5,10 +5,10 @@
  * beds or take payment — submission goes through the backend write API
  * (ARCH-005) in Phase 4.
  */
-import { defineAction, ActionError } from 'astro:actions';
-import { z } from 'astro:schema';
-import { BACKEND_API_URL } from 'astro:env/server';
-import { AUTH_SESSION_KEY, type LoginResponse } from '@albergue/api-contract';
+import { defineAction, ActionError } from "astro:actions";
+import { z } from "astro:schema";
+import { BACKEND_API_URL } from "astro:env/server";
+import { AUTH_SESSION_KEY, type LoginResponse } from "@albergue/api-contract";
 import {
   BOOKING_DRAFT_SESSION_KEY,
   updateBookingDates,
@@ -16,19 +16,19 @@ import {
   updateBookingBeds,
   type BookingDraft,
   type BookingStep,
-} from '../lib/booking-draft';
+} from "../lib/booking-draft";
 
 const isoDate = z.string().date();
 
 async function persistDraft(
-  session: ActionAPIContext['session'],
-  draft: BookingDraft
+  session: ActionAPIContext["session"],
+  draft: BookingDraft,
 ): Promise<{ step: BookingStep }> {
   if (!session) {
     // Adapter has no session driver (SESSION KV binding not provisioned yet).
     throw new ActionError({
-      code: 'SERVICE_UNAVAILABLE',
-      message: 'Booking sessions are not available on this deployment yet.',
+      code: "SERVICE_UNAVAILABLE",
+      message: "Booking sessions are not available on this deployment yet.",
     });
   }
   await session.set(BOOKING_DRAFT_SESSION_KEY, draft);
@@ -49,29 +49,29 @@ export const server = {
       handler: async (input, context) => {
         if (!context.session) {
           throw new ActionError({
-            code: 'SERVICE_UNAVAILABLE',
-            message: 'Sessions are not available on this deployment yet.',
+            code: "SERVICE_UNAVAILABLE",
+            message: "Sessions are not available on this deployment yet.",
           });
         }
         if (!BACKEND_API_URL) {
           throw new ActionError({
-            code: 'SERVICE_UNAVAILABLE',
-            message: 'Backend API is not configured (BACKEND_API_URL).',
+            code: "SERVICE_UNAVAILABLE",
+            message: "Backend API is not configured (BACKEND_API_URL).",
           });
         }
 
         const response = await fetch(`${BACKEND_API_URL}/api/auth/login`, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
+          method: "POST",
+          headers: { "content-type": "application/json" },
           body: JSON.stringify(input),
         });
         if (!response.ok) {
-          throw new ActionError({ code: 'UNAUTHORIZED', message: 'Invalid credentials' });
+          throw new ActionError({ code: "UNAUTHORIZED", message: "Invalid credentials" });
         }
 
         const envelope = (await response.json()) as { data?: LoginResponse };
         if (!envelope.data) {
-          throw new ActionError({ code: 'BAD_GATEWAY', message: 'Malformed backend response' });
+          throw new ActionError({ code: "BAD_GATEWAY", message: "Malformed backend response" });
         }
 
         await context.session.set(AUTH_SESSION_KEY, envelope.data);
@@ -96,7 +96,7 @@ export const server = {
           departureDate: isoDate,
         })
         .refine((v) => v.departureDate > v.arrivalDate, {
-          message: 'departureDate must be after arrivalDate',
+          message: "departureDate must be after arrivalDate",
         }),
       handler: async (input, context) => {
         const current = await context.session?.get<BookingDraft>(BOOKING_DRAFT_SESSION_KEY);
@@ -127,5 +127,5 @@ export const server = {
 };
 
 // Type-only import placed at the bottom to keep the action definitions readable.
-import type { APIContext } from 'astro';
+import type { APIContext } from "astro";
 type ActionAPIContext = APIContext;

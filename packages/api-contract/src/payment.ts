@@ -6,7 +6,7 @@
  */
 
 /** Providers the boundary supports. The concrete choice is a Phase 4 decision. */
-export type PaymentProvider = 'stripe' | 'redsys';
+export type PaymentProvider = "stripe" | "redsys";
 
 /** Opaque PSP handle — the only payment artefact this system stores. */
 export interface PaymentIntentReference {

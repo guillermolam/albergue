@@ -4,7 +4,7 @@
  * admin bearer token (ADMIN_API_TOKEN) verified by the backend.
  */
 
-export type Role = 'admin' | 'pilgrim' | 'guest';
+export type Role = "admin" | "pilgrim" | "guest";
 
 export interface AuthenticatedUser {
   id: string;
@@ -12,10 +12,10 @@ export interface AuthenticatedUser {
 }
 
 /** Header carrying `Bearer <token>` credentials. */
-export const AUTHORIZATION_HEADER = 'authorization';
+export const AUTHORIZATION_HEADER = "authorization";
 
 /** Astro session key under which the verified identity is stored (AUTH-002). */
-export const AUTH_SESSION_KEY = 'auth';
+export const AUTH_SESSION_KEY = "auth";
 
 export interface LoginRequest {
   username: string;

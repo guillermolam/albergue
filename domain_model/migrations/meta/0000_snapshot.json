@@ -76,12 +76,8 @@
           "name": "audit_log_user_id_users_id_fk",
           "tableFrom": "audit_log",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -322,12 +318,8 @@
           "name": "bookings_pilgrim_id_pilgrims_id_fk",
           "tableFrom": "bookings",
           "tableTo": "pilgrims",
-          "columnsFrom": [
-            "pilgrim_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["pilgrim_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -335,12 +327,8 @@
           "name": "bookings_bed_assignment_id_beds_id_fk",
           "tableFrom": "bookings",
           "tableTo": "beds",
-          "columnsFrom": [
-            "bed_assignment_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["bed_assignment_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -350,9 +338,7 @@
         "bookings_reference_number_unique": {
           "name": "bookings_reference_number_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "reference_number"
-          ]
+          "columns": ["reference_number"]
         }
       }
     },
@@ -418,12 +404,8 @@
           "name": "government_submissions_booking_id_bookings_id_fk",
           "tableFrom": "government_submissions",
           "tableTo": "bookings",
-          "columnsFrom": [
-            "booking_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["booking_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -516,12 +498,8 @@
           "name": "notifications_booking_id_bookings_id_fk",
           "tableFrom": "notifications",
           "tableTo": "bookings",
-          "columnsFrom": [
-            "booking_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["booking_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -529,12 +507,8 @@
           "name": "notifications_pilgrim_id_pilgrims_id_fk",
           "tableFrom": "notifications",
           "tableTo": "pilgrims",
-          "columnsFrom": [
-            "pilgrim_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["pilgrim_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -635,12 +609,8 @@
           "name": "payments_booking_id_bookings_id_fk",
           "tableFrom": "payments",
           "tableTo": "bookings",
-          "columnsFrom": [
-            "booking_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["booking_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -925,9 +895,7 @@
         "users_username_unique": {
           "name": "users_username_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
+          "columns": ["username"]
         }
       }
     }

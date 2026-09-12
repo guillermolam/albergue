@@ -8,6 +8,7 @@ description: "Learn how to use middleware in Astro."
 tags:
   - "clippings"
 ---
+
 **Middleware** allows you to intercept requests and responses and inject behaviors dynamically every time a page or endpoint is about to be rendered. This rendering occurs at build time for all prerendered pages, but occurs when the route is requested for pages rendered on demand, making [additional SSR features like cookies and headers](https://docs.astro.build/en/guides/on-demand-rendering/#on-demand-rendering-features) available.
 
 Middleware also allows you to set and share request-specific information across endpoints and pages by mutating a `locals` object that is available in all Astro components and API endpoints. This object is available even when this middleware runs at build time.
@@ -16,24 +17,24 @@ Middleware also allows you to set and share request-specific information across 
 
 1. Create `src/middleware.js|ts` (Alternatively, you can create `src/middleware/index.js|ts`.)
 2. Inside this file, export an [`onRequest()`](https://docs.astro.build/en/reference/modules/astro-middleware/#onrequest) function that can be passed a [`context` object](#the-context-object) and `next()` function. This must not be a default export.
-	```js
-	export function onRequest (context, next) {
-	    // intercept data from a request
-	    // optionally, modify the properties in \`locals\`
-	    context.locals.title = "New title";
-	    context.locals.property = "information";
-	    // return a Response or the result of calling \`next()\`
-	    return next();
-	};
-	```
+   ```js
+   export function onRequest(context, next) {
+     // intercept data from a request
+     // optionally, modify the properties in \`locals\`
+     context.locals.title = "New title";
+     context.locals.property = "information";
+     // return a Response or the result of calling \`next()\`
+     return next();
+   }
+   ```
 3. Inside any `.astro` file, access response data using `Astro.locals`.
-	```astro
-	---
-	const data = Astro.locals;
-	---
-	<h1>{data.title}</h1>
-	<p>This {data.property} is from middleware.</p>
-	```
+   ```astro
+   ---
+   const data = Astro.locals;
+   ---
+   <h1>{data.title}</h1>
+   <p>This {data.property} is from middleware.</p>
+   ```
 
 ### The context object
 
@@ -50,19 +51,19 @@ This `locals` object is forwarded across the request handling process and is ava
 You can store any type of data inside `locals`: strings, numbers, and even complex data types such as functions and maps.
 
 ```js
-export function onRequest (context, next) {
-    // intercept data from a request
-    // optionally, modify the properties in \`locals\`
-    context.locals.user = { id: 1, name: "John Wick" };
-    context.locals.welcomeTitle = () => {
-        return "Welcome back " + context.locals.user.name;
-    };
-    context.locals.orders = new Map([["1", { product: "socks" }]]);
-    context.locals.property = "information";
+export function onRequest(context, next) {
+  // intercept data from a request
+  // optionally, modify the properties in \`locals\`
+  context.locals.user = { id: 1, name: "John Wick" };
+  context.locals.welcomeTitle = () => {
+    return "Welcome back " + context.locals.user.name;
+  };
+  context.locals.orders = new Map([["1", { product: "socks" }]]);
+  context.locals.property = "information";
 
-    // return a Response or the result of calling \`next()\`
-    return next();
-};
+  // return a Response or the result of calling \`next()\`
+  return next();
+}
 ```
 
 Then you can use this information inside any `.astro` file with `Astro.locals`.
@@ -90,14 +91,14 @@ The example below uses middleware to replace “PRIVATE INFO” with the word �
 
 ```js
 export const onRequest = async (context, next) => {
-    const response = await next();
-    const html = await response.text();
-    const redactedHtml = html.replaceAll("PRIVATE INFO", "REDACTED");
+  const response = await next();
+  const html = await response.text();
+  const redactedHtml = html.replaceAll("PRIVATE INFO", "REDACTED");
 
-    return new Response(redactedHtml, {
-        status: 200,
-        headers: response.headers
-    });
+  return new Response(redactedHtml, {
+    status: 200,
+    headers: response.headers,
+  });
 };
 ```
 
@@ -109,9 +110,7 @@ You can import and use the utility function [`defineMiddleware()`](https://docs.
 import { defineMiddleware } from "astro:middleware";
 
 // \`context\` and \`next\` are automatically typed
-export const onRequest = defineMiddleware((context, next) => {
-
-});
+export const onRequest = defineMiddleware((context, next) => {});
 ```
 
 Instead, if you’re using JsDoc to take advantage of type safety, you can use `MiddlewareHandler`:
@@ -121,9 +120,7 @@ Instead, if you’re using JsDoc to take advantage of type safety, you can use `
  * @type {import("astro").MiddlewareHandler}
  */
 // \`context\` and \`next\` are automatically typed
-export const onRequest = (context, next) => {
-
-};
+export const onRequest = (context, next) => {};
 ```
 
 To type the information inside `Astro.locals`, which gives you autocompletion inside `.astro` files and middleware code, [extend the global types](https://docs.astro.build/en/guides/typescript/#extending-global-types) by declaring a global namespace in the `env.d.ts` file:
@@ -154,24 +151,24 @@ Multiple middlewares can be joined in a specified order using [`sequence()`](htt
 import { sequence } from "astro:middleware";
 
 async function validation(_, next) {
-    console.log("validation request");
-    const response = await next();
-    console.log("validation response");
-    return response;
+  console.log("validation request");
+  const response = await next();
+  console.log("validation response");
+  return response;
 }
 
 async function auth(_, next) {
-    console.log("auth request");
-    const response = await next();
-    console.log("auth response");
-    return response;
+  console.log("auth request");
+  const response = await next();
+  console.log("auth response");
+  return response;
 }
 
 async function greeting(_, next) {
-    console.log("greeting request");
-    const response = await next();
-    console.log("greeting response");
-    return response;
+  console.log("greeting request");
+  const response = await next();
+  console.log("greeting response");
+  return response;
 }
 
 export const onRequest = sequence(validation, auth, greeting);
@@ -197,41 +194,45 @@ The `APIContext` exposes a method called [`rewrite()`](https://docs.astro.build/
 Use `context.rewrite()` inside middleware to display a different page’s content without [redirecting](https://docs.astro.build/en/guides/routing/#dynamic-redirects) your visitor to a new page. This will trigger a new rendering phase, causing any middleware to be re-executed.
 
 ```js
-import { isLoggedIn } from "~/auth.js"
-export function onRequest (context, next) {
+import { isLoggedIn } from "~/auth.js";
+export function onRequest(context, next) {
   if (!isLoggedIn(context)) {
     // If the user is not logged in, update the Request to render the \`/login\` route and
     // add header to indicate where the user should be sent after a successful login.
     // Re-execute middleware.
-    return context.rewrite(new Request("/login", {
-      headers: {
-        "x-redirect-to": context.url.pathname
-      }
-    }));
+    return context.rewrite(
+      new Request("/login", {
+        headers: {
+          "x-redirect-to": context.url.pathname,
+        },
+      }),
+    );
   }
 
   return next();
-};
+}
 ```
 
 You can also pass the `next()` function an optional URL path parameter to rewrite the current `Request` without retriggering a new rendering phase. The location of the rewrite path can be provided as a string, URL, or `Request`:
 
 ```js
-import { isLoggedIn } from "~/auth.js"
-export function onRequest (context, next) {
+import { isLoggedIn } from "~/auth.js";
+export function onRequest(context, next) {
   if (!isLoggedIn(context)) {
     // If the user is not logged in, update the Request to render the \`/login\` route and
     // add header to indicate where the user should be sent after a successful login.
     // Return a new \`context\` to any following middlewares.
-    return next(new Request("/login", {
-      headers: {
-        "x-redirect-to": context.url.pathname
-      }
-    }));
+    return next(
+      new Request("/login", {
+        headers: {
+          "x-redirect-to": context.url.pathname,
+        },
+      }),
+    );
   }
 
   return next();
-};
+}
 ```
 
 The `next()` function accepts the same payload as [the `Astro.rewrite()` function](https://docs.astro.build/en/reference/api-reference/#rewrite). The location of the rewrite path can be provided as a string, URL, or `Request`.
@@ -247,10 +248,10 @@ import { sequence } from "astro:middleware";
 
 // First middleware function
 async function first(context, next) {
-  console.log(context.url.pathname) // this will log "/blog"
+  console.log(context.url.pathname); // this will log "/blog"
   // Rewrite to a new route, the homepage
   // Return updated \`context\` which is passed to next function
-  return next("/")
+  return next("/");
 }
 
 // Current URL is still https://example.com/blog
@@ -258,8 +259,8 @@ async function first(context, next) {
 // Second middleware function
 async function second(context, next) {
   // Receives updated \`context\`
-  console.log(context.url.pathname) // this will log  "/"
-  return next()
+  console.log(context.url.pathname); // this will log  "/"
+  return next();
 }
 
 export const onRequest = sequence(first, second);

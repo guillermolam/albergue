@@ -1,32 +1,37 @@
 # 🎨 Doodle Design System - Albergue Carrascalejo
 
 ## Overview
+
 The Albergue booking system now features a **hand-drawn, doodle-style illustration aesthetic** inspired by DoodleCSS and Wired.js, creating a warm, playful, and rustic-modern experience perfect for the Camino de Santiago pilgrim journey.
 
 ## 🖋️ Typography
 
 ### Fonts
+
 - **Patrick Hand** - Primary body text (handwritten, casual)
 - **Cabin Sketch** - Headings and titles (bold sketch style)
 - **Shadows Into Light** - Special accents (flowing handwritten)
 - **Indie Flower** - Alternative handwritten style
 
 ### Usage
+
 ```tsx
-className="hand-drawn"      // Shadows Into Light
-className="sketch-title"    // Cabin Sketch bold
+className = "hand-drawn"; // Shadows Into Light
+className = "sketch-title"; // Cabin Sketch bold
 // Default body: Patrick Hand
 ```
 
 ## 🎨 Color Palette
 
 ### Primary Colors (Official Extremadura)
+
 - **Green**: `#00AB39` - Primary actions, available beds
 - **Blue**: `#0071BC` - Selected items, information
 - **Yellow**: `#EAC102` - Reserved/warning states
 - **Red**: `#ED1C24` - Occupied/error states
 
 ### Rustic Accents
+
 - **Cream**: `#FFF9F0` - Main background
 - **Warm Beige**: `#F5E6D3` - Card backgrounds
 - **Terracotta**: `#D4A574` - Decorative elements
@@ -36,7 +41,9 @@ className="sketch-title"    // Cabin Sketch bold
 ## 🎭 Custom Components
 
 ### DoodleCard
+
 Hand-drawn card component with sketchy borders
+
 ```tsx
 <DoodleCard color="#00AB39" delay={0.1}>
   <h3>Your Content</h3>
@@ -44,15 +51,18 @@ Hand-drawn card component with sketchy borders
 ```
 
 **Features:**
+
 - SVG hand-drawn borders (double-line sketch effect)
 - Random squiggle decorations
 - Hover animations with rotation
 - Paper texture overlay
 
 ### WiredButton
+
 Button with hand-drawn wired.js-inspired styling
+
 ```tsx
-<WiredButton 
+<WiredButton
   variant="primary|secondary|outline"
   size="sm|md|lg"
   onClick={handleClick}
@@ -62,27 +72,31 @@ Button with hand-drawn wired.js-inspired styling
 ```
 
 **Variants:**
+
 - `primary` - Green fill, white text
 - `secondary` - Cream fill, brown text
 - `outline` - Transparent, green border
 
 **Features:**
+
 - Rough SVG borders with filter effects
 - Decorative doodle accent (animated +)
 - Spring physics hover animations
 
 ### DoodleBadge
+
 Small floating badge with elliptical shape
+
 ```tsx
-<DoodleBadge color="#00AB39">
-  📍 Location
-</DoodleBadge>
+<DoodleBadge color="#00AB39">📍 Location</DoodleBadge>
 ```
 
 ### DoodleBed
+
 Interactive bed visualization for booking grid
+
 ```tsx
-<DoodleBed 
+<DoodleBed
   bedNumber={1}
   status="available|selected|reserved|occupied"
   onClick={handleClick}
@@ -90,6 +104,7 @@ Interactive bed visualization for booking grid
 ```
 
 **Features:**
+
 - Hand-drawn bed illustration with headboard, pillow, sheets
 - Status-based coloring
 - Interactive animations
@@ -98,6 +113,7 @@ Interactive bed visualization for booking grid
 ## 🎨 Utility Classes
 
 ### Doodle Effects
+
 ```css
 .doodle-border        /* Asymmetric organic border radius */
 .doodle-shadow        /* Offset shadow layers */
@@ -111,22 +127,28 @@ Interactive bed visualization for booking grid
 ```
 
 ### Usage Examples
+
 ```tsx
 <div className="doodle-border doodle-shadow paper-texture">
   <h2 className="sketch-underline">Title</h2>
-  <p>Some <span className="highlight-doodle">highlighted</span> text</p>
+  <p>
+    Some <span className="highlight-doodle">highlighted</span> text
+  </p>
 </div>
 ```
 
 ## 🎬 Animations
 
 ### Spring Physics
+
 All animations use spring physics for organic, natural movement:
+
 ```tsx
 transition={{ type: "spring", stiffness: 150, damping: 15 }}
 ```
 
 ### Common Patterns
+
 - **Entry**: opacity 0→1, y offset, slight rotation
 - **Hover**: scale 1.05, rotate ±2deg
 - **Tap**: scale 0.95
@@ -135,18 +157,21 @@ transition={{ type: "spring", stiffness: 150, damping: 15 }}
 ## 📐 Layout Principles
 
 ### Hand-Drawn Aesthetic
+
 1. **Asymmetry**: Use irregular border-radius values
 2. **Layering**: Stack multiple offset borders for depth
 3. **Imperfection**: Dashed/dotted strokes, slight rotations
 4. **Decoration**: Squiggles, stars, arrows as accents
 
 ### Paper & Texture
+
 - Cream/beige backgrounds throughout
 - Paper texture overlay on all sections
 - Cross-hatched patterns for variety
 - Grain/noise filters for authenticity
 
 ### Spacing & Rhythm
+
 - Generous padding in doodle cards (p-6)
 - Staggered animation delays (delay: index * 0.1)
 - Organic spacing with decorative elements
@@ -154,6 +179,7 @@ transition={{ type: "spring", stiffness: 150, damping: 15 }}
 ## 🎯 Page-Specific Features
 
 ### Hero Section
+
 - Parallax scrolling background
 - Floating doodle badges with emojis
 - Hand-drawn scroll indicator
@@ -161,18 +187,21 @@ transition={{ type: "spring", stiffness: 150, damping: 15 }}
 - Sketch underline on tagline
 
 ### Navigation
+
 - Hand-drawn SVG logo with animated star
 - Squiggly active underline (SVG path animation)
 - Language switcher with elliptical SVG button
 - Mobile menu with doodle-border cards
 
 ### Booking Grid
+
 - DoodleBed components in 3×4 / 4×6 grid
 - Color-coded dormitories
 - Hand-drawn legend with sketchy circles
 - Date picker with doodle-border styling
 
 ### Features Section
+
 - Emoji icons (instead of SVG icons)
 - DoodleCard grid layout
 - Hand-drawn arrow decorations
@@ -181,13 +210,16 @@ transition={{ type: "spring", stiffness: 150, damping: 15 }}
 ## 🔧 Technical Stack
 
 ### Compatible with Astro/TypeScript/Vite
+
 - All components are framework-agnostic React
 - CSS custom properties for theming
 - SVG for hand-drawn effects (no external libs needed)
 - Motion/React for animations
 
 ### No External Doodle Libraries
+
 We've implemented DoodleCSS and Wired.js aesthetics using:
+
 - Custom SVG paths and filters
 - CSS border-radius tricks
 - Tailwind utility classes

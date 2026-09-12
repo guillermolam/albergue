@@ -21,7 +21,7 @@ cd "$(dirname "$0")/frontend"
 # ---------------------------------------------------------------- BATCH 1
 
 task_tokens() {
-opencode run "Este es un proyecto Astro 7 con UnoCSS en frontend/. Existe un prototipo
+	opencode run "Este es un proyecto Astro 7 con UnoCSS en frontend/. Existe un prototipo
 en Figma Make que es una SPA React con shadcn/ui + Tailwind, y tengo que hacer que
 el Astro se vea identico. El bloqueo principal es que los dos usan namespaces de
 variables CSS disjuntos y hay que unificarlos antes de portar nada.
@@ -51,7 +51,7 @@ Verifica con: pnpm run check:astro && pnpm run type-check && pnpm run build"
 }
 
 task_dedupe() {
-opencode run "Proyecto Astro 7 en frontend/. src/components/ tiene componentes
+	opencode run "Proyecto Astro 7 en frontend/. src/components/ tiene componentes
 duplicados con el mismo nombre en distintos subdirectorios, lo que hace que
 distintas paginas importen variantes distintas del mismo componente y el sitio
 se vea inconsistente.
@@ -74,7 +74,7 @@ Verifica con: pnpm run check:astro && pnpm run type-check && pnpm run build"
 }
 
 task_primitives() {
-opencode run "Proyecto Astro 7 + UnoCSS en frontend/. Tengo que portar primitivas
+	opencode run "Proyecto Astro 7 + UnoCSS en frontend/. Tengo que portar primitivas
 de UI con comportamiento desde un prototipo React que usa shadcn/ui (Radix) a
 Astro nativo sin framework de UI. Son las que bloquean todo lo demas porque el
 flujo de reserva las necesita.
@@ -107,7 +107,7 @@ Verifica con: pnpm run check:astro && pnpm run type-check && pnpm run build && p
 # ---------------------------------------------------------------- BATCH 2
 
 task_booking() {
-opencode run "Proyecto Astro 7 en frontend/. Tengo que portar el flujo de reserva
+	opencode run "Proyecto Astro 7 en frontend/. Tengo que portar el flujo de reserva
 completo desde un prototipo React. Es la mayor brecha funcional del proyecto: en
 React es una maquina de estados de seis pasos y en Astro no existe nada de esto.
 
@@ -134,7 +134,7 @@ Verifica con: pnpm run check:astro && pnpm run type-check && pnpm run build && p
 }
 
 task_pages() {
-opencode run "Proyecto Astro 7 en frontend/. Faltan paginas y el chrome de
+	opencode run "Proyecto Astro 7 en frontend/. Faltan paginas y el chrome de
 navegacion que si existen en el prototipo React.
 
 Chrome (primero, lo usa todo lo demas): Navigation, Footer, LoginModal,
@@ -160,17 +160,27 @@ Verifica con: pnpm run check:astro && pnpm run type-check && pnpm run build"
 # ---------------------------------------------------------------- runner
 
 case "${1:-}" in
-  tokens)     task_tokens ;;
-  dedupe)     task_dedupe ;;
-  primitives) task_primitives ;;
-  booking)    task_booking ;;
-  pages)      task_pages ;;
-  batch1)     task_tokens & task_dedupe & task_primitives & wait ;;
-  batch2)     task_booking & task_pages & wait ;;
-  *)
-    echo "uso: $0 {tokens|dedupe|primitives|booking|pages|batch1|batch2}"
-    echo
-    echo "  batch1  tokens + dedupe + primitives   (paralelo, ficheros disjuntos)"
-    echo "  batch2  booking + pages                (requiere batch1 en verde)"
-    exit 1 ;;
+tokens) task_tokens ;;
+dedupe) task_dedupe ;;
+primitives) task_primitives ;;
+booking) task_booking ;;
+pages) task_pages ;;
+batch1)
+	task_tokens &
+	task_dedupe &
+	task_primitives &
+	wait
+	;;
+batch2)
+	task_booking &
+	task_pages &
+	wait
+	;;
+*)
+	echo "uso: $0 {tokens|dedupe|primitives|booking|pages|batch1|batch2}"
+	echo
+	echo "  batch1  tokens + dedupe + primitives   (paralelo, ficheros disjuntos)"
+	echo "  batch2  booking + pages                (requiere batch1 en verde)"
+	exit 1
+	;;
 esac

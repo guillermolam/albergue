@@ -8,6 +8,7 @@ description: "Prefetch links for snappier navigation between pages."
 tags:
   - "clippings"
 ---
+
 Page load times play a big role in the usability and overall enjoyment of a site. Astro’s **opt-in prefetching** brings the benefits of near-instant page navigations to your multi-page application (MPA) as your visitors interact with the site.
 
 ## Enable prefetching
@@ -15,17 +16,17 @@ Page load times play a big role in the usability and overall enjoyment of a site
 You can enable prefetching with the `prefetch` config:
 
 ```js
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
-  prefetch: true
+  prefetch: true,
 });
 ```
 
 A prefetch script will be added to all pages of your site. You can then add the `data-astro-prefetch` attribute to any `<a />` links on your site to opt-in to prefetching. When you hover over the link, the script will fetch the page in the background.
 
 ```html
-<a href="/about" data-astro-prefetch>
+<a href="/about" data-astro-prefetch></a>
 ```
 
 Note that prefetching only works for links within your site, and not external links.
@@ -59,12 +60,12 @@ Each strategy is fine-tuned to only prefetch when needed and save your users’ 
 The default prefetch strategy when adding the `data-astro-prefetch` attribute is `hover`. To change it, you can configure [`prefetch.defaultStrategy`](https://docs.astro.build/en/reference/configuration-reference/#prefetchdefaultstrategy) in your `astro.config.mjs` file:
 
 ```js
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
   prefetch: {
-    defaultStrategy: 'viewport'
-  }
+    defaultStrategy: "viewport",
+  },
 });
 ```
 
@@ -73,12 +74,12 @@ export default defineConfig({
 If you want to prefetch all links, including those without the `data-astro-prefetch` attribute, you can set [`prefetch.prefetchAll`](https://docs.astro.build/en/reference/configuration-reference/#prefetchprefetchall) to `true`:
 
 ```js
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
   prefetch: {
-    prefetchAll: true
-  }
+    prefetchAll: true,
+  },
 });
 ```
 
@@ -113,7 +114,7 @@ To ignore slow connection detection, you can use the `ignoreSlowConnection` opti
 
 ```js
 // Prefetch even on data saver mode or slow connection
-prefetch('/about', { ignoreSlowConnection: true });
+prefetch("/about", { ignoreSlowConnection: true });
 ```
 
 ### eagerness
@@ -147,7 +148,7 @@ prefetch('/terms-of-service', { eagerness: 'moderate' });
 </script>
 ```
 
-To use `prefetch()` programmatically with large sets of links, you can set `eagerness: 'moderate'` to take advantage of [First In, First Out (FIFO)](https://en.wikipedia.org/wiki/FIFO_\(computing_and_electronics\)) strategies and browser heuristics to let the browser decide when to prerender/prefetch them and in what order:
+To use `prefetch()` programmatically with large sets of links, you can set `eagerness: 'moderate'` to take advantage of [First In, First Out (FIFO)](<https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)>) strategies and browser heuristics to let the browser decide when to prerender/prefetch them and in what order:
 
 ```astro
 <a class="link-moderate" href="/nice-link-1">A Nice Link 1</a>
@@ -177,22 +178,22 @@ When you use [Astro’s `<ClientRouter />`](https://docs.astro.build/en/guides/v
 You can customize the prefetch configuration in `astro.config.mjs` to override the default. For example:
 
 ```js
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
   // Disable prefetch completely
-  prefetch: false
+  prefetch: false,
 });
 ```
 
 ```js
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
   // Keep prefetch, but only prefetch for links with \`data-astro-prefetch\`
   prefetch: {
-    prefetchAll: false
-  }
+    prefetchAll: false,
+  },
 });
 ```
 
@@ -235,26 +236,27 @@ For dynamic and server-side rendered pages, set the appropriate cache headers yo
 The `@astrojs/prefetch` integration was deprecated in v3.5.0 and is no longer maintained. Use the following instructions to migrate to Astro’s built-in prefetching which replaces this integration.
 
 1. Remove the `@astrojs/prefetch` integration and enable the `prefetch` config in `astro.config.mjs`:
-	```js
-	import { defineConfig } from 'astro/config';
-	import prefetch from '@astrojs/prefetch';
-	export default defineConfig({
-	  integrations: [prefetch()],
-	  prefetch: true
-	});
-	```
+   ```js
+   import { defineConfig } from "astro/config";
+   import prefetch from "@astrojs/prefetch";
+   export default defineConfig({
+     integrations: [prefetch()],
+     prefetch: true,
+   });
+   ```
 2. Convert from `@astrojs/prefetch` ’s configuration options:
-	- The deprecated integration used the `selector` config option to specify which links should be prefetched upon entering the viewport.
-		Add `data-astro-prefetch="viewport"` to these individual links instead.
-		```html
-		<a href="/about" data-astro-prefetch="viewport">
-		```
-		- The deprecated integration used the `intentSelector` config option to specify which links should be prefetched when they were hovered over or focused.
-		Add `data-astro-prefetch` or `data-astro-prefetch="hover"` to these individual links instead:
-		```html
-		<!-- You can omit the value if \`defaultStrategy\` is set to \`hover\` (default) -->
-		<a href="/about" data-astro-prefetch>
-		<!-- Otherwise, you can explicitly define the prefetch strategy -->
-		<a href="/about" data-astro-prefetch="hover">
-		```
-		- The `throttles` option from `@astrojs/prefetch` is no longer needed as the new prefetch feature will automatically schedule and prefetch optimally.
+   - The deprecated integration used the `selector` config option to specify which links should be prefetched upon entering the viewport.
+     Add `data-astro-prefetch="viewport"` to these individual links instead.
+     ```html
+     <a href="/about" data-astro-prefetch="viewport"></a>
+     ```
+     - The deprecated integration used the `intentSelector` config option to specify which links should be prefetched when they were hovered over or focused.
+       Add `data-astro-prefetch` or `data-astro-prefetch="hover"` to these individual links instead:
+     ```html
+     <!-- You can omit the value if \`defaultStrategy\` is set to \`hover\` (default) -->
+     <a href="/about" data-astro-prefetch>
+       <!-- Otherwise, you can explicitly define the prefetch strategy -->
+       <a href="/about" data-astro-prefetch="hover"></a
+     ></a>
+     ```
+     - The `throttles` option from `@astrojs/prefetch` is no longer needed as the new prefetch feature will automatically schedule and prefetch optimally.

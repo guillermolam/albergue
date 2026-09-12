@@ -8,6 +8,7 @@ description: "Learn about Astro's built-in support for Markdown."
 tags:
   - "clippings"
 ---
+
 [Markdown](https://daringfireball.net/projects/markdown/) is commonly used to author text-heavy content like blog posts and documentation. Astro includes built-in support for Markdown files that can also include [frontmatter YAML](https://dev.to/paulasantamaria/introduction-to-yaml-125f) (or [TOML](https://toml.io/)) to define custom properties such as a title, description, and tags.
 
 In Astro, you can author content in [GitHub Flavored Markdown](https://github.github.com/gfm/), then render it in `.astro` components. This combines a familiar writing format designed for content with the flexibility of Astro’s component syntax and architecture.
@@ -34,8 +35,8 @@ After importing or querying Markdown files, you can write dynamic HTML templates
 
 ```md
 ---
-title: 'The greatest post of all time'
-author: 'Ben'
+title: "The greatest post of all time"
+author: "Ben"
 ---
 
 Here is my _great_ post!
@@ -98,13 +99,19 @@ Astro.props = {
     description: "Astro 0.18 is our biggest release since Astro launch.",
   },
   getHeadings: () => [
-    {"depth": 1, "text": "Astro 0.18 Release", "slug": "astro-018-release"},
-    {"depth": 2, "text": "Responsive partial hydration", "slug": "responsive-partial-hydration"}
+    { depth: 1, text: "Astro 0.18 Release", slug: "astro-018-release" },
+    {
+      depth: 2,
+      text: "Responsive partial hydration",
+      slug: "responsive-partial-hydration",
+    },
     /* ... */
   ],
-  rawContent: () => "# Astro 0.18 Release\nA little over a month ago, the first public beta [...]",
-  compiledContent: () => "<h1>Astro 0.18 Release</h1>\n<p>A little over a month ago, the first public beta [...]</p>",
-}
+  rawContent: () =>
+    "# Astro 0.18 Release\nA little over a month ago, the first public beta [...]",
+  compiledContent: () =>
+    "<h1>Astro 0.18 Release</h1>\n<p>A little over a month ago, the first public beta [...]</p>",
+};
 ```
 
 ## The \<Content /> component
@@ -139,6 +146,7 @@ Writing headings in Markdown will automatically give you anchor links so you can
 ---
 title: My page of content
 ---
+
 ## Introduction
 
 I can link internally to [my conclusion](#conclusion) on the same page when writing Markdown.
@@ -162,9 +170,9 @@ Astro injects `id` attributes after your custom plugins have run, so any ID set 
 - [Unified](#tab-panel-0-1)
 
 ```js
-import { defineConfig } from 'astro/config';
-import { satteri, satteriHeadingIdsPlugin } from '@astrojs/markdown-satteri';
-import { otherPluginThatReliesOnHeadingIDs } from 'some/plugin/source';
+import { defineConfig } from "astro/config";
+import { satteri, satteriHeadingIdsPlugin } from "@astrojs/markdown-satteri";
+import { otherPluginThatReliesOnHeadingIDs } from "some/plugin/source";
 
 export default defineConfig({
   markdown: {
@@ -216,22 +224,22 @@ Astro provides [Markdown configuration options](https://docs.astro.build/en/refe
 Sätteri works without any installation or configuration by default. Install it explicitly to configure its features or add plugins:
 
 1. Install the [`@astrojs/markdown-satteri`](https://www.npmjs.com/package/@astrojs/markdown-satteri) package:
-	- [npm](#tab-panel-1-0)
-	- [pnpm](#tab-panel-1-1)
-	- [Yarn](#tab-panel-1-2)
-	```shell
-	pnpm add @astrojs/markdown-satteri
-	```
+   - [npm](#tab-panel-1-0)
+   - [pnpm](#tab-panel-1-1)
+   - [Yarn](#tab-panel-1-2)
+   ```shell
+   pnpm add @astrojs/markdown-satteri
+   ```
 2. Import `satteri` from `@astrojs/markdown-satteri` and pass it to the [`markdown.processor`](https://docs.astro.build/en/reference/configuration-reference/#markdownprocessor) option in your Astro config:
-	```js
-	import { defineConfig } from "astro/config";
-	import { satteri } from "@astrojs/markdown-satteri";
-	export default defineConfig({
-	  markdown: {
-	    processor: satteri(),
-	  },
-	});
-	```
+   ```js
+   import { defineConfig } from "astro/config";
+   import { satteri } from "@astrojs/markdown-satteri";
+   export default defineConfig({
+     markdown: {
+       processor: satteri(),
+     },
+   });
+   ```
 
 ### Built-in features
 
@@ -373,35 +381,35 @@ export default defineConfig({
 You can add frontmatter properties to all of your Markdown and MDX files by using processor plugins.
 
 1. Append your custom properties to the `data.astro.frontmatter` object.
-	`data.astro.frontmatter` already contains all properties from the Markdown or MDX document’s frontmatter. This allows you to modify existing frontmatter properties, or compute new properties from them.
-	- [Sätteri](#tab-panel-9-0)
-	- [Unified](#tab-panel-9-1)
-	```ts
-	import { defineMdastPlugin } from "satteri";
-	export const exampleMdastPlugin = defineMdastPlugin({
-	  name: "example-mdast-plugin",
-	  text(node, ctx) {
-	    if (ctx.data.astro !== undefined) {
-	      ctx.data.astro.frontmatter.newProperty = "New property";
-	      // Assuming \`title\` is a required frontmatter property
-	      ctx.data.astro.frontmatter.computedProperty = \`${ctx.data.astro.frontmatter.title} | My Site Name\`;
-	    }
-	  },
-	});
-	```
+   `data.astro.frontmatter` already contains all properties from the Markdown or MDX document’s frontmatter. This allows you to modify existing frontmatter properties, or compute new properties from them.
+   - [Sätteri](#tab-panel-9-0)
+   - [Unified](#tab-panel-9-1)
+   ```ts
+   import { defineMdastPlugin } from "satteri";
+   export const exampleMdastPlugin = defineMdastPlugin({
+     name: "example-mdast-plugin",
+     text(node, ctx) {
+       if (ctx.data.astro !== undefined) {
+         ctx.data.astro.frontmatter.newProperty = "New property";
+         // Assuming \`title\` is a required frontmatter property
+         ctx.data.astro.frontmatter.computedProperty = \`${ctx.data.astro.frontmatter.title} | My Site Name\`;
+       }
+     },
+   });
+   ```
 2. Add this plugin to your Markdown config:
-	- [Sätteri](#tab-panel-10-0)
-	- [Unified](#tab-panel-10-1)
-	```js
-	import { defineConfig } from "astro/config";
-	import { satteri } from "@astrojs/markdown-satteri";
-	import { exampleMdastPlugin } from "./example-mdast-plugin";
-	export default defineConfig({
-	  markdown: {
-	    processor: satteri({ mdastPlugins: [exampleMdastPlugin()] }),
-	  },
-	});
-	```
+   - [Sätteri](#tab-panel-10-0)
+   - [Unified](#tab-panel-10-1)
+   ```js
+   import { defineConfig } from "astro/config";
+   import { satteri } from "@astrojs/markdown-satteri";
+   import { exampleMdastPlugin } from "./example-mdast-plugin";
+   export default defineConfig({
+     markdown: {
+       processor: satteri({ mdastPlugins: [exampleMdastPlugin()] }),
+     },
+   });
+   ```
 
 Now, every Markdown or MDX file will have `newProperty` and `computedProperty` in its frontmatter, making them available via an [imported Markdown file](#importing-markdown), the [`Astro.props.frontmatter` property when using layouts](#frontmatter-layout-property), or [`remarkPluginFrontmatter` when rendering content collections](https://docs.astro.build/en/reference/modules/astro-content/#render).
 
@@ -421,6 +429,7 @@ title: Hello, World
 This Markdown file creates a page at \`your-domain.com/page-1/\`
 
 It probably isn't styled much, but Markdown does support:
+
 - **bold** and _italics._
 - lists
 - [links](https://astro.build)
@@ -440,6 +449,7 @@ layout: ../../layouts/BlogPostLayout.astro
 title: Astro in brief
 description: Find out what makes Astro awesome!
 ---
+
 This is a post written in Markdown.
 ```
 

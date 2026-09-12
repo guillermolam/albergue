@@ -8,6 +8,7 @@ description: "Learn about how Astro's islands architecture helps keep sites fast
 tags:
   - "clippings"
 ---
+
 Astro helped pioneer and popularize a new frontend architecture pattern called **Islands Architecture.** Islands architecture works by rendering the majority of your page to fast, static HTML with smaller “islands” of JavaScript added when interactivity or personalization is needed on the page (an image carousel, for example). This avoids the monolithic JavaScript payloads that slow down the responsiveness of many other, modern JavaScript web frameworks.
 
 ## A brief history

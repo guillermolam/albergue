@@ -3,15 +3,15 @@ name: GitHub Actions Security
 on:
   pull_request:
     paths:
-      - '.github/workflows/**'
-      - '.github/actions/**'
-      - '.github/scripts/**'
+      - ".github/workflows/**"
+      - ".github/actions/**"
+      - ".github/scripts/**"
   push:
     branches: [main, develop]
     paths:
-      - '.github/workflows/**'
-      - '.github/actions/**'
-      - '.github/scripts/**'
+      - ".github/workflows/**"
+      - ".github/actions/**"
+      - ".github/scripts/**"
   workflow_dispatch:
 
 permissions:
@@ -33,14 +33,10 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install zizmor
-        run: ./.github/scripts/install-zizmor.sh
+      - name: Setup Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: "1.25"
 
-      - name: Run zizmor
-        run: ./.github/scripts/run-zizmor.sh
-
-      - name: Install actionlint
-        run: ./.github/scripts/install-actionlint.sh
-
-      - name: Run actionlint
-        run: ./.github/scripts/run-actionlint.sh
+      - name: Validate workflows, actions, and scripts
+        run: ./.github/scripts/validate-workflows.sh

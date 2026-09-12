@@ -8,6 +8,7 @@ description: "Learn how to create endpoints that serve any kind of data"
 tags:
   - "clippings"
 ---
+
 Astro lets you create custom endpoints to serve any kind of data. You can use this to generate images, expose an RSS document, or use them as API Routes to build a full API for your site.
 
 In statically-generated sites, your custom endpoints are called at build time to produce static files. If you opt in to [SSR](https://docs.astro.build/en/guides/on-demand-rendering/) mode, custom endpoints turn into live server endpoints that are called on request. Static and SSR endpoints are defined similarly, but SSR endpoints support additional features.
@@ -47,7 +48,9 @@ You can also get type safety in your endpoint functions using the `APIRoute` typ
 ```ts
 import type { APIRoute } from "astro";
 
-export const GET = (async ({ params, request }) => { /* ... */ }) satisfies APIRoute;
+export const GET = (async ({ params, request }) => {
+  /* ... */
+}) satisfies APIRoute;
 ```
 
 Note that endpoints whose URLs include a file extension (e.g. `src/pages/sitemap.xml.ts`) can only be accessed without a trailing slash (e.g. `/sitemap.xml`), regardless of your [`build.trailingSlash`](https://docs.astro.build/en/reference/configuration-reference/#trailingslash) configuration.

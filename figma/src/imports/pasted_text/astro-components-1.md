@@ -8,6 +8,7 @@ description: "An introduction to Astro components."
 tags:
   - "clippings"
 ---
+
 **Astro components** are the basic building blocks of any Astro project. They are HTML-only templating components with no client-side runtime and use the `.astro` file extension.
 
 Astro components are extremely flexible. An Astro component can be as small as a snippet of HTML, like a collection of common `<meta>` tags that make SEO easy to work with. Components can be reusable UI elements, like a header or a profile card. Astro components can even contain an entire page layout or, when located in the special `src/pages/` folder, be an entire page itself.
@@ -31,7 +32,7 @@ An Astro component is made up of two main parts: the **Component Script** and th
 
 ### The Component Script
 
-Astro uses a code fence (`---`) to identify the component script in your Astro component. If you’ve ever written Markdown before, you may already be familiar with a similar concept called *frontmatter.* Astro’s idea of a component script was directly inspired by this concept.
+Astro uses a code fence (`---`) to identify the component script in your Astro component. If you’ve ever written Markdown before, you may already be familiar with a similar concept called _frontmatter._ Astro’s idea of a component script was directly inspired by this concept.
 
 You can use the component script to write any JavaScript code that you need to render your template. This can include:
 

@@ -97,20 +97,20 @@ This migration will not:
 
 The following are hard constraints.
 
-| ID | Invariant |
-| --- | --- |
+| ID      | Invariant                                                                                       |
+| ------- | ----------------------------------------------------------------------------------------------- |
 | INV-001 | Production frontend remains React-free unless a future ADR demonstrates a concrete requirement. |
-| INV-002 | PAN/CVV never traverse Astro, Hono, logs, telemetry or application persistence. |
-| INV-003 | PII is never persisted in `localStorage`, `sessionStorage` or persistent Nanostores. |
-| INV-004 | Browser price, availability, entitlement and authorization data are advisory only. |
-| INV-005 | Backend revalidates privileged and financial operations. |
-| INV-006 | `/admin/**` is on-demand and server-authorized. |
-| INV-007 | Redis credentials and server secrets never enter the browser bundle. |
-| INV-008 | `domain_model/schema.ts` remains schema authority until an ADR changes ownership. |
-| INV-009 | Cloudflare compatibility is tested for every server-side frontend feature. |
-| INV-010 | Static routes remain prerendered unless runtime data/auth requires on-demand rendering. |
-| INV-011 | Client JS must justify itself through interaction requirements. |
-| INV-012 | Decorative RoughJS output must not damage semantic HTML or accessibility. |
+| INV-002 | PAN/CVV never traverse Astro, Hono, logs, telemetry or application persistence.                 |
+| INV-003 | PII is never persisted in `localStorage`, `sessionStorage` or persistent Nanostores.            |
+| INV-004 | Browser price, availability, entitlement and authorization data are advisory only.              |
+| INV-005 | Backend revalidates privileged and financial operations.                                        |
+| INV-006 | `/admin/**` is on-demand and server-authorized.                                                 |
+| INV-007 | Redis credentials and server secrets never enter the browser bundle.                            |
+| INV-008 | `domain_model/schema.ts` remains schema authority until an ADR changes ownership.               |
+| INV-009 | Cloudflare compatibility is tested for every server-side frontend feature.                      |
+| INV-010 | Static routes remain prerendered unless runtime data/auth requires on-demand rendering.         |
+| INV-011 | Client JS must justify itself through interaction requirements.                                 |
+| INV-012 | Decorative RoughJS output must not damage semantic HTML or accessibility.                       |
 
 ---
 
@@ -133,14 +133,14 @@ The repository is a pnpm monorepo.
 └── tree.md
 ```
 
-| Package | Responsibility | Runtime status |
-| --- | --- | --- |
-| `frontend/` | Astro web application/BFF | Production |
-| `backend/` | Hono domain API | Production architecture |
-| `domain_model/` | Drizzle schema and SQL migrations | Authoritative schema |
-| `domain_model/rust/` | SeaORM/Seaography/libSQL/Turso path | Parallel/experimental pending ADR |
-| `figma/` | Visual/design reference | Non-production |
-| `packages/astro-roughjs/` | RoughJS abstraction experiment | Incomplete pending ADR |
+| Package                   | Responsibility                      | Runtime status                    |
+| ------------------------- | ----------------------------------- | --------------------------------- |
+| `frontend/`               | Astro web application/BFF           | Production                        |
+| `backend/`                | Hono domain API                     | Production architecture           |
+| `domain_model/`           | Drizzle schema and SQL migrations   | Authoritative schema              |
+| `domain_model/rust/`      | SeaORM/Seaography/libSQL/Turso path | Parallel/experimental pending ADR |
+| `figma/`                  | Visual/design reference             | Non-production                    |
+| `packages/astro-roughjs/` | RoughJS abstraction experiment      | Incomplete pending ADR            |
 
 ## A.2 Frontend runtime
 
@@ -212,14 +212,14 @@ The Rust subtree represents a second persistence/application direction and must 
 
 The UI was designed in Figma and exported as a runnable prototype under `figma/`.
 
-| Artifact | Path | Role |
-| --- | --- | --- |
-| Figma design file | [Albergue Carrascalejo Prototype (Copy)](https://www.figma.com/design/nhtyfIO6mEsebEyAJtfjVB/Albergue-Carrascalejo-Prototype--Copy-) | Canonical visual design |
-| Prototype runtime | [`figma/package.json`](../../package.json) | React/Vite reference (Tailwind 4, Motion, Radix, MUI) |
-| Route map | [`figma/src/app/App.tsx`](App.tsx) | Complete application routes and shell |
-| Doodle system | [`DOODLE_DESIGN_SYSTEM.md`](DOODLE_DESIGN_SYSTEM.md) | Component API, colors, typography |
-| Dev guidelines | [`figma/guidelines/Guidelines.md`](../../guidelines/Guidelines.md) | Constraints (fonts, palette, motion) |
-| This runbook | `MIGRATION_PLAN.md` | Figma → Astro migration + architecture convergence |
+| Artifact          | Path                                                                                                                                 | Role                                                  |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
+| Figma design file | [Albergue Carrascalejo Prototype (Copy)](https://www.figma.com/design/nhtyfIO6mEsebEyAJtfjVB/Albergue-Carrascalejo-Prototype--Copy-) | Canonical visual design                               |
+| Prototype runtime | [`figma/package.json`](../../package.json)                                                                                           | React/Vite reference (Tailwind 4, Motion, Radix, MUI) |
+| Route map         | [`figma/src/app/App.tsx`](App.tsx)                                                                                                   | Complete application routes and shell                 |
+| Doodle system     | [`DOODLE_DESIGN_SYSTEM.md`](DOODLE_DESIGN_SYSTEM.md)                                                                                 | Component API, colors, typography                     |
+| Dev guidelines    | [`figma/guidelines/Guidelines.md`](../../guidelines/Guidelines.md)                                                                   | Constraints (fonts, palette, motion)                  |
+| This runbook      | `MIGRATION_PLAN.md`                                                                                                                  | Figma → Astro migration + architecture convergence    |
 
 ### Design authority chain
 
@@ -235,63 +235,63 @@ frontend/ Astro production      ← authoritative runtime
 
 - Do **not** import React, Tailwind, Radix, MUI, or Motion from `figma/` into `frontend/`.
 - Do **not** merge `figma/` into the pnpm workspace production build.
-- Extract: design tokens, page structure, booking step order, admin IA, legal content, i18n strings, motion *intent*.
+- Extract: design tokens, page structure, booking step order, admin IA, legal content, i18n strings, motion _intent_.
 - Re-implement with: Astro components, plain CSS/UnoCSS, RoughJS, WebCoreUI where justified, Astro Actions/sessions.
 
 ### Implementation gap (current)
 
-| Area | Figma (`figma/src/app/`) | Frontend (`frontend/src/`) |
-| --- | --- | --- |
-| Components | ~101 TSX files | ~9 doodle `.astro` + scattered stubs |
-| Booking | 6-step `NewBookingFlow` with OCR, beds, payment | Static form mock on `book.astro` |
-| Admin | Dashboard, bookings table, bed management | Mock prerendered pages; missing sub-routes |
-| Legal | Privacy, terms, cookies, legal notice (ES+EN) | Not implemented |
-| i18n | `I18nContext` + `LanguageSelector` | Broken `i18nStore`; hardcoded strings |
-| Auth | `AuthContext` + `LoginModal` | Client JWT store; no `/auth` page |
-| Info/tourism | Tourism, restaurants, emergencies, visits pages | Not implemented |
+| Area         | Figma (`figma/src/app/`)                        | Frontend (`frontend/src/`)                 |
+| ------------ | ----------------------------------------------- | ------------------------------------------ |
+| Components   | ~101 TSX files                                  | ~9 doodle `.astro` + scattered stubs       |
+| Booking      | 6-step `NewBookingFlow` with OCR, beds, payment | Static form mock on `book.astro`           |
+| Admin        | Dashboard, bookings table, bed management       | Mock prerendered pages; missing sub-routes |
+| Legal        | Privacy, terms, cookies, legal notice (ES+EN)   | Not implemented                            |
+| i18n         | `I18nContext` + `LanguageSelector`              | Broken `i18nStore`; hardcoded strings      |
+| Auth         | `AuthContext` + `LoginModal`                    | Client JWT store; no `/auth` page          |
+| Info/tourism | Tourism, restaurants, emergencies, visits pages | Not implemented                            |
 
 ### Route migration matrix (from `App.tsx`)
 
-| Figma route | Figma component | Frontend status | Astro target |
-| --- | --- | --- | --- |
-| `/` | `HomePage` | `index.astro` partial | Prerender |
-| `/book` | `NewBookingFlow` | mock `book.astro` | On-demand + Actions |
-| `/dashboard` | `GuestDashboard` | static `dashboard.astro` | On-demand + auth |
-| `/admin` | `AdminLayout` + `Dashboard` | mock, public | On-demand + RBAC |
-| `/admin/bookings` | `BookingsTable` | missing | create |
-| `/admin/beds` | `BedManagement` | missing | create |
-| `/privacidad`, `/privacy` | `PrivacyPolicy` | missing | Content Collection |
-| `/terminos`, `/terms` | `TermsAndConditions` | missing | Content Collection |
-| `/cookies` | `CookiePolicy` | missing | Content Collection |
-| `/aviso-legal`, `/legal-notice` | `LegalNotice` | missing | Content Collection |
-| nav `/auth` | `LoginModal` | missing page | Action + session |
+| Figma route                     | Figma component             | Frontend status          | Astro target        |
+| ------------------------------- | --------------------------- | ------------------------ | ------------------- |
+| `/`                             | `HomePage`                  | `index.astro` partial    | Prerender           |
+| `/book`                         | `NewBookingFlow`            | mock `book.astro`        | On-demand + Actions |
+| `/dashboard`                    | `GuestDashboard`            | static `dashboard.astro` | On-demand + auth    |
+| `/admin`                        | `AdminLayout` + `Dashboard` | mock, public             | On-demand + RBAC    |
+| `/admin/bookings`               | `BookingsTable`             | missing                  | create              |
+| `/admin/beds`                   | `BedManagement`             | missing                  | create              |
+| `/privacidad`, `/privacy`       | `PrivacyPolicy`             | missing                  | Content Collection  |
+| `/terminos`, `/terms`           | `TermsAndConditions`        | missing                  | Content Collection  |
+| `/cookies`                      | `CookiePolicy`              | missing                  | Content Collection  |
+| `/aviso-legal`, `/legal-notice` | `LegalNotice`               | missing                  | Content Collection  |
+| nav `/auth`                     | `LoginModal`                | missing page             | Action + session    |
 
 Additional Figma pages not in `App.tsx` routes but linked from `HomePage`: `TourismPage`, `RestaurantsPage`, `EmergenciesPage`, `VisitsPage`, `VisualAreaShowcase`, `LocalAreaShowcase`, `MeridaShowcase` — plan as `/info/*` or dedicated routes in Phase 7.
 
 ### Booking step mapping (Figma → Astro)
 
-| Step | Figma | Astro target | Server authority |
-| ---: | --- | --- | --- |
-| 1 | `DatePickerStep` / `HandDrawnCalendar` | `components/booking/DateStep.astro` | availability API |
-| 2 | `IDUploadStep` | `components/booking/IdUpload.astro` | OCR Action; no client PII store |
-| 3 | `PilgrimFormStep` | `components/booking/PilgrimForm.astro` | session + validation |
-| 4 | `BedSelectionStep` / `DoodleBed` | `components/booking/BedGrid.astro` | bed lock transaction |
-| 5 | `PaymentStep` | `components/booking/Payment.astro` | PSP hosted fields only |
-| 6 | `PriceSummaryModal` | `booking-confirmed.astro` | backend commit |
+| Step | Figma                                  | Astro target                           | Server authority                |
+| ---: | -------------------------------------- | -------------------------------------- | ------------------------------- |
+|    1 | `DatePickerStep` / `HandDrawnCalendar` | `components/booking/DateStep.astro`    | availability API                |
+|    2 | `IDUploadStep`                         | `components/booking/IdUpload.astro`    | OCR Action; no client PII store |
+|    3 | `PilgrimFormStep`                      | `components/booking/PilgrimForm.astro` | session + validation            |
+|    4 | `BedSelectionStep` / `DoodleBed`       | `components/booking/BedGrid.astro`     | bed lock transaction            |
+|    5 | `PaymentStep`                          | `components/booking/Payment.astro`     | PSP hosted fields only          |
+|    6 | `PriceSummaryModal`                    | `booking-confirmed.astro`              | backend commit                  |
 
 Replace Figma `useState` booking machine and hardcoded `pricePerNight = 10` with Astro session + backend pricing.
 
 ### Component extraction priorities
 
-| Figma doodle component | Astro status | Action |
-| --- | --- | --- |
-| `DoodleCard.tsx` | `DoodleCard.astro` exists | Align API |
-| `WiredButton.tsx` | `DoodleButton.astro` exists | Align variants |
-| `HandDrawnCalendar.tsx` | missing | **FIGMA-004** |
-| `IDUpload.tsx` | missing | **FIGMA-004** |
-| `DoodleBed.tsx` | missing | **FIGMA-004** |
-| `PhoneInput.tsx` | missing | **FIGMA-004** |
-| `AnimatedBackground.tsx` | partial pattern | CSS/RoughJS; respect reduced motion |
+| Figma doodle component   | Astro status                | Action                              |
+| ------------------------ | --------------------------- | ----------------------------------- |
+| `DoodleCard.tsx`         | `DoodleCard.astro` exists   | Align API                           |
+| `WiredButton.tsx`        | `DoodleButton.astro` exists | Align variants                      |
+| `HandDrawnCalendar.tsx`  | missing                     | **FIGMA-004**                       |
+| `IDUpload.tsx`           | missing                     | **FIGMA-004**                       |
+| `DoodleBed.tsx`          | missing                     | **FIGMA-004**                       |
+| `PhoneInput.tsx`         | missing                     | **FIGMA-004**                       |
+| `AnimatedBackground.tsx` | partial pattern             | CSS/RoughJS; respect reduced motion |
 
 ### Token reconciliation ADR
 
@@ -382,24 +382,24 @@ The target is an Astro-native server-first architecture with progressive enhance
 
 ## B.1 P0 — Security and correctness blockers
 
-| ID | Problem | Cause -> Impact -> Remediation |
-| --- | --- | --- |
+| ID      | Problem                             | Cause -> Impact -> Remediation                                                                                                    |
+| ------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | SEC-001 | Payment data in browser persistence | Raw payment fields in booking state -> XSS/shared-device/PCI exposure -> delete raw fields and use PSP tokenization/hosted fields |
-| SEC-002 | PII persisted client-side | Persistent booking/pilgrim stores -> GDPR/privacy exposure -> server workflow state with minimum necessary data |
-| SEC-003 | Public admin | Prerendered admin routes without server gate -> unauthorized UI/data exposure -> on-demand rendering + middleware + backend RBAC |
-| SEC-004 | Booking writes not atomic | create booking and bed update outside one transaction -> double booking/ghost state -> transaction + lock/revalidation |
-| SEC-005 | Invalid multi-ID predicates | equality predicates combined for multiple IDs -> silent command failure -> `inArray()` + tests |
-| SEC-006 | Redis located in frontend | server TCP client in frontend package -> runtime incompatibility/secret risk -> move capability behind backend/server boundary |
+| SEC-002 | PII persisted client-side           | Persistent booking/pilgrim stores -> GDPR/privacy exposure -> server workflow state with minimum necessary data                   |
+| SEC-003 | Public admin                        | Prerendered admin routes without server gate -> unauthorized UI/data exposure -> on-demand rendering + middleware + backend RBAC  |
+| SEC-004 | Booking writes not atomic           | create booking and bed update outside one transaction -> double booking/ghost state -> transaction + lock/revalidation            |
+| SEC-005 | Invalid multi-ID predicates         | equality predicates combined for multiple IDs -> silent command failure -> `inArray()` + tests                                    |
+| SEC-006 | Redis located in frontend           | server TCP client in frontend package -> runtime incompatibility/secret risk -> move capability behind backend/server boundary    |
 
 ## B.2 P1 — Architectural blockers
 
-| ID | Cause -> Impact -> Remediation |
-| --- | --- |
-| ARCH-004 | No canonical API contract -> frontend/backend drift -> shared DTO/OpenAPI boundary |
+| ID       | Cause -> Impact -> Remediation                                                                             |
+| -------- | ---------------------------------------------------------------------------------------------------------- |
+| ARCH-004 | No canonical API contract -> frontend/backend drift -> shared DTO/OpenAPI boundary                         |
 | ARCH-005 | Write commands not exposed -> UI cannot use authoritative domain logic -> expose controlled Hono mutations |
-| ARCH-006 | Duplicate dead domain commands -> implementation drift -> archive/remove |
-| ARCH-007 | Parallel Rust persistence path undefined -> dual authority risk -> ADR |
-| ARCH-008 | Phantom auth types/providers -> ambiguous security model -> choose/remove |
+| ARCH-006 | Duplicate dead domain commands -> implementation drift -> archive/remove                                   |
+| ARCH-007 | Parallel Rust persistence path undefined -> dual authority risk -> ADR                                     |
+| ARCH-008 | Phantom auth types/providers -> ambiguous security model -> choose/remove                                  |
 
 ## B.3 P2 — Maintainability/performance
 
@@ -478,33 +478,33 @@ flowchart TB
 
 ## C.2 Ownership matrix
 
-| Capability | Browser | Astro | Hono backend | PostgreSQL/external |
-| --- | --- | --- | --- | --- |
-| Render UI | ✓ | ✓ | | |
-| Form UX | ✓ | | | |
-| Booking draft | opaque/local transient only | session coordinator | validate | durable booking when committed |
-| Price | display only | relay | authoritative | pricing tables |
-| Availability | display only | relay | authoritative | beds/bookings |
-| Bed lock | request only | coordinate | authoritative | transaction/lease state |
-| Auth identity | display only | verified session | verify privileged action | auth persistence |
-| RBAC | never authoritative | route gate | authoritative operation gate | role data |
-| Payment | PSP SDK/redirect | intent coordination | verify/capture workflow | PSP |
-| PAN/CVV | PSP only | forbidden | forbidden | forbidden in app DB |
+| Capability    | Browser                     | Astro               | Hono backend                 | PostgreSQL/external            |
+| ------------- | --------------------------- | ------------------- | ---------------------------- | ------------------------------ |
+| Render UI     | ✓                           | ✓                   |                              |                                |
+| Form UX       | ✓                           |                     |                              |                                |
+| Booking draft | opaque/local transient only | session coordinator | validate                     | durable booking when committed |
+| Price         | display only                | relay               | authoritative                | pricing tables                 |
+| Availability  | display only                | relay               | authoritative                | beds/bookings                  |
+| Bed lock      | request only                | coordinate          | authoritative                | transaction/lease state        |
+| Auth identity | display only                | verified session    | verify privileged action     | auth persistence               |
+| RBAC          | never authoritative         | route gate          | authoritative operation gate | role data                      |
+| Payment       | PSP SDK/redirect            | intent coordination | verify/capture workflow      | PSP                            |
+| PAN/CVV       | PSP only                    | forbidden           | forbidden                    | forbidden in app DB            |
 
 ## C.3 Actions vs endpoints vs backend
 
-| Need | Mechanism |
-| --- | --- |
-| Astro form mutation | Astro Action |
-| Login/logout form | Astro Action |
-| Booking step submission | Astro Action |
-| Admin form mutation | Astro Action calling authorized backend operation |
-| Webhook | Astro/Hono HTTP endpoint |
-| Health check | HTTP endpoint |
-| SSE/stream | HTTP endpoint |
-| Third-party callback | HTTP endpoint |
-| Domain command | Hono backend |
-| Domain query | Hono backend |
+| Need                           | Mechanism                                                             |
+| ------------------------------ | --------------------------------------------------------------------- |
+| Astro form mutation            | Astro Action                                                          |
+| Login/logout form              | Astro Action                                                          |
+| Booking step submission        | Astro Action                                                          |
+| Admin form mutation            | Astro Action calling authorized backend operation                     |
+| Webhook                        | Astro/Hono HTTP endpoint                                              |
+| Health check                   | HTTP endpoint                                                         |
+| SSE/stream                     | HTTP endpoint                                                         |
+| Third-party callback           | HTTP endpoint                                                         |
+| Domain command                 | Hono backend                                                          |
+| Domain query                   | Hono backend                                                          |
 | Same-process Node optimization | direct service call only when architectural boundary remains explicit |
 
 ---
@@ -548,13 +548,13 @@ Hard rules:
 
 ## D.2 PII rules
 
-| Class | Examples | Browser persistence | Astro session | Durable DB |
-| --- | --- | ---: | ---: | ---: |
-| Public | locale, theme | allowed | allowed | optional |
-| Operational | booking step, anonymous draft ID | avoid unless needed | allowed | optional |
-| PII | name, passport/DNI, contact | forbidden persistent | minimum necessary | encrypted/controlled |
-| Sensitive | health/accessibility notes | forbidden | minimum necessary with retention policy | controlled/encrypted if required |
-| Payment secrets | PAN/CVV | forbidden | forbidden | forbidden |
+| Class           | Examples                         |  Browser persistence |                           Astro session |                       Durable DB |
+| --------------- | -------------------------------- | -------------------: | --------------------------------------: | -------------------------------: |
+| Public          | locale, theme                    |              allowed |                                 allowed |                         optional |
+| Operational     | booking step, anonymous draft ID |  avoid unless needed |                                 allowed |                         optional |
+| PII             | name, passport/DNI, contact      | forbidden persistent |                       minimum necessary |             encrypted/controlled |
+| Sensitive       | health/accessibility notes       |            forbidden | minimum necessary with retention policy | controlled/encrypted if required |
+| Payment secrets | PAN/CVV                          |            forbidden |                               forbidden |                        forbidden |
 
 ## D.3 Authentication model
 
@@ -586,22 +586,22 @@ Required controls:
 
 # E. Rendering Matrix
 
-| Route | Current | Target | Auth | Server authority | Client JS |
-| --- | --- | --- | --- | --- | --- |
-| `/` | prerender | prerender | no | none | RoughJS/minimal |
-| `/info` | prerender | prerender | no | content | minimal |
-| `/404` | prerender | prerender | no | none | none |
-| `/book` | prerender/mock | on-demand | guest session | booking/pricing/availability | form UX |
-| `/booking` | duplicate/placeholder | redirect or merge | varies | booking | none |
-| `/booking-confirmed` | mixed | on-demand | booking capability/reference | booking result | none/minimal |
-| `/camino` | prerender | prerender shell or on-demand if personalized | optional | progress API | selective |
-| `/dashboard` | inconsistent | on-demand when personalized | pilgrim | user data | minimal |
-| `/camino-dashboard` | demo | `/demo/camino-dashboard` | no | mock | selective |
-| `/auth` | missing/incomplete | on-demand | no | auth service | form only |
-| `/admin` | unsafe prerender | on-demand | admin | backend + session | minimal |
-| `/admin/**` | unsafe prerender | on-demand | admin | backend + session | minimal |
-| `/demo-*` | production namespace | `/demo/**` + environment gate | no | mock | varies |
-| legal pages | future | prerender | no | Content Layer | none |
+| Route                | Current               | Target                                       | Auth                         | Server authority             | Client JS       |
+| -------------------- | --------------------- | -------------------------------------------- | ---------------------------- | ---------------------------- | --------------- |
+| `/`                  | prerender             | prerender                                    | no                           | none                         | RoughJS/minimal |
+| `/info`              | prerender             | prerender                                    | no                           | content                      | minimal         |
+| `/404`               | prerender             | prerender                                    | no                           | none                         | none            |
+| `/book`              | prerender/mock        | on-demand                                    | guest session                | booking/pricing/availability | form UX         |
+| `/booking`           | duplicate/placeholder | redirect or merge                            | varies                       | booking                      | none            |
+| `/booking-confirmed` | mixed                 | on-demand                                    | booking capability/reference | booking result               | none/minimal    |
+| `/camino`            | prerender             | prerender shell or on-demand if personalized | optional                     | progress API                 | selective       |
+| `/dashboard`         | inconsistent          | on-demand when personalized                  | pilgrim                      | user data                    | minimal         |
+| `/camino-dashboard`  | demo                  | `/demo/camino-dashboard`                     | no                           | mock                         | selective       |
+| `/auth`              | missing/incomplete    | on-demand                                    | no                           | auth service                 | form only       |
+| `/admin`             | unsafe prerender      | on-demand                                    | admin                        | backend + session            | minimal         |
+| `/admin/**`          | unsafe prerender      | on-demand                                    | admin                        | backend + session            | minimal         |
+| `/demo-*`            | production namespace  | `/demo/**` + environment gate                | no                           | mock                         | varies          |
+| legal pages          | future                | prerender                                    | no                           | Content Layer                | none            |
 
 Route migration checklist:
 
@@ -616,33 +616,33 @@ Route migration checklist:
 
 # F. Dependency Decision Matrix
 
-| Package | Version | Decision | Target role |
-| --- | --- | --- | --- |
-| `astro` | `^7.3.2` | KEEP | framework |
-| `@astrojs/cloudflare` | `^14.3.1` | KEEP | primary adapter |
-| `@astrojs/netlify` | `^8.2.5` | KEEP | secondary adapter |
-| `@astrojs/node` | `^11.1.5` | KEEP | Node/Stormkit adapter |
-| `@swup/astro` | `^1.8.0` | ADR | remove if native navigation meets requirements |
-| `@unocss/vite` | `^66.10.1` | KEEP | utility CSS build integration |
-| `unocss` | `^66.10.1` | KEEP | utility CSS |
-| `webcoreui` | `^1.5.0` | KEEP constrained | generic primitives |
-| `roughjs` | `^4.6.6` | KEEP | doodle identity |
-| `animejs` | `^4.5.0` | INVESTIGATE | complex animation only |
-| `three` | `^0.186.0` | INVESTIGATE/REMOVE | dedicated 3D only |
-| `nanostores` | `^1.5.3` | KEEP constrained | transient UI state |
-| `@nanostores/persistent` | `^1.3.5` | REMOVE from sensitive workflows | no PII persistence |
-| `@supabase/supabase-js` | `^2.116.0` | REMOVE unless ADR establishes requirement | currently unused |
-| `jwt-decode` | `^4.0.0` | REMOVE from auth decisions | parsing is not verification |
-| `redis` | `^6.2.1` | REMOVE from frontend | backend/server capability only |
-| `clsx` | `^2.1.1` | REMOVE if grep confirms unused | unnecessary |
-| `@astrojs/markdown-satteri` | `^0.4.1` | INVESTIGATE | only if Content Layer requirement exists |
-| `astro-icon` | `^1.2.0` | KEEP | icons |
-| `sass` | `1.100.0` | KEEP constrained | WebCore/config SCSS only |
-| `typescript` | `6.0.3` | KEEP | compiler |
-| `@typescript/typescript6` | `^6.0.2` | KEEP pending toolchain ADR | `tsc6` workflow |
-| `vitest` | `^5.0.0` | KEEP | unit/integration tests |
-| `@playwright/test` | `^1.63.0` | KEEP | browser journeys |
-| `wrangler` | `^4.131.0` | KEEP | Cloudflare build/deploy |
+| Package                     | Version    | Decision                                  | Target role                                    |
+| --------------------------- | ---------- | ----------------------------------------- | ---------------------------------------------- |
+| `astro`                     | `^7.3.2`   | KEEP                                      | framework                                      |
+| `@astrojs/cloudflare`       | `^14.3.1`  | KEEP                                      | primary adapter                                |
+| `@astrojs/netlify`          | `^8.2.5`   | KEEP                                      | secondary adapter                              |
+| `@astrojs/node`             | `^11.1.5`  | KEEP                                      | Node/Stormkit adapter                          |
+| `@swup/astro`               | `^1.8.0`   | ADR                                       | remove if native navigation meets requirements |
+| `@unocss/vite`              | `^66.10.1` | KEEP                                      | utility CSS build integration                  |
+| `unocss`                    | `^66.10.1` | KEEP                                      | utility CSS                                    |
+| `webcoreui`                 | `^1.5.0`   | KEEP constrained                          | generic primitives                             |
+| `roughjs`                   | `^4.6.6`   | KEEP                                      | doodle identity                                |
+| `animejs`                   | `^4.5.0`   | INVESTIGATE                               | complex animation only                         |
+| `three`                     | `^0.186.0` | INVESTIGATE/REMOVE                        | dedicated 3D only                              |
+| `nanostores`                | `^1.5.3`   | KEEP constrained                          | transient UI state                             |
+| `@nanostores/persistent`    | `^1.3.5`   | REMOVE from sensitive workflows           | no PII persistence                             |
+| `@supabase/supabase-js`     | `^2.116.0` | REMOVE unless ADR establishes requirement | currently unused                               |
+| `jwt-decode`                | `^4.0.0`   | REMOVE from auth decisions                | parsing is not verification                    |
+| `redis`                     | `^6.2.1`   | REMOVE from frontend                      | backend/server capability only                 |
+| `clsx`                      | `^2.1.1`   | REMOVE if grep confirms unused            | unnecessary                                    |
+| `@astrojs/markdown-satteri` | `^0.4.1`   | INVESTIGATE                               | only if Content Layer requirement exists       |
+| `astro-icon`                | `^1.2.0`   | KEEP                                      | icons                                          |
+| `sass`                      | `1.100.0`  | KEEP constrained                          | WebCore/config SCSS only                       |
+| `typescript`                | `6.0.3`    | KEEP                                      | compiler                                       |
+| `@typescript/typescript6`   | `^6.0.2`   | KEEP pending toolchain ADR                | `tsc6` workflow                                |
+| `vitest`                    | `^5.0.0`   | KEEP                                      | unit/integration tests                         |
+| `@playwright/test`          | `^1.63.0`  | KEEP                                      | browser journeys                               |
+| `wrangler`                  | `^4.131.0` | KEEP                                      | Cloudflare build/deploy                        |
 
 ---
 
@@ -650,24 +650,24 @@ Route migration checklist:
 
 ## G.1 Consolidation map
 
-| Current | Target | Action |
-| --- | --- | --- |
-| `frontend/src/components/doodle/*` | same | canonical |
-| root `Button/Card/Hero` | doodle/core | remove after import trace |
-| `components/core/*` | same | retain primitives |
-| `components/ui/*` | core/domain | consolidate |
-| `components/layout/*` | layouts/partials | consolidate |
-| root `DoodleCard.astro` | doodle version | remove duplicate |
-| `src/islands/*` | none unless proven | remove/investigate |
-| `stores/redis.ts` | backend server module | move/remove |
-| `bookingStore.ts` | Actions + session | replace |
-| `pilgrim*.ts` | session/backend | replace |
-| `i18nStore.ts` | Astro i18n/catalog | replace |
-| PO + Wuchale + JSON loaders | one catalog pipeline | consolidate |
-| `packages/astro-roughjs` | package or frontend library | ADR |
-| `domain_model/src/commands | queries` | backend | archive/remove |
-| React-era tests | Astro/domain tests | replace |
-| `figma/` | documented design reference | isolate |
+| Current                            | Target                      | Action                    |
+| ---------------------------------- | --------------------------- | ------------------------- |
+| `frontend/src/components/doodle/*` | same                        | canonical                 |
+| root `Button/Card/Hero`            | doodle/core                 | remove after import trace |
+| `components/core/*`                | same                        | retain primitives         |
+| `components/ui/*`                  | core/domain                 | consolidate               |
+| `components/layout/*`              | layouts/partials            | consolidate               |
+| root `DoodleCard.astro`            | doodle version              | remove duplicate          |
+| `src/islands/*`                    | none unless proven          | remove/investigate        |
+| `stores/redis.ts`                  | backend server module       | move/remove               |
+| `bookingStore.ts`                  | Actions + session           | replace                   |
+| `pilgrim*.ts`                      | session/backend             | replace                   |
+| `i18nStore.ts`                     | Astro i18n/catalog          | replace                   |
+| PO + Wuchale + JSON loaders        | one catalog pipeline        | consolidate               |
+| `packages/astro-roughjs`           | package or frontend library | ADR                       |
+| `domain_model/src/commands         | queries`                    | backend                   | archive/remove |
+| React-era tests                    | Astro/domain tests          | replace                   |
+| `figma/`                           | documented design reference | isolate                   |
 
 ## G.2 Target frontend structure
 
@@ -706,11 +706,11 @@ frontend/src/
 `src/middleware.ts` remains the Astro middleware entry point.
 
 ```ts
-import { sequence } from 'astro:middleware';
-import { authMiddleware } from './middleware/auth';
-import { localeMiddleware } from './middleware/locale';
-import { requestIdMiddleware } from './middleware/request-id';
-import { securityMiddleware } from './middleware/security';
+import { sequence } from "astro:middleware";
+import { authMiddleware } from "./middleware/auth";
+import { localeMiddleware } from "./middleware/locale";
+import { requestIdMiddleware } from "./middleware/request-id";
+import { securityMiddleware } from "./middleware/security";
 
 export const onRequest = sequence(
   requestIdMiddleware,
@@ -724,42 +724,42 @@ export const onRequest = sequence(
 
 # H. Migration Issue Index
 
-| ID | Phase | Priority | Owner | Depends on | Validation artifact |
-| --- | ---: | --- | --- | --- | --- |
-| ARCH-001 | 0 | P0 | Architecture | — | baseline doc |
-| ARCH-002 | 0 | P0 | Platform | — | green CI |
-| TEST-001 | 0 | P0 | QA/Frontend | ARCH-002 | smoke report |
-| ARCH-003 | 0 | P0 | Frontend | — | typecheck coverage |
-| SEC-001 | 1 | P0 | Frontend/Security | Phase 0 | storage audit |
-| SEC-002 | 1 | P0 | Frontend/Security | SEC-001 | PII storage test |
-| SEC-003 | 1 | P0 | Frontend/Security | Phase 0 | admin denial E2E |
-| SEC-004 | 1 | P0 | Backend | Phase 0 | concurrency test |
-| SEC-005 | 1 | P0 | Backend | Phase 0 | bulk command tests |
-| SEC-006 | 1 | P0 | Platform/Frontend | Phase 0 | dependency audit |
-| ARCH-004 | 2 | P1 | Architecture | Phase 1 | API contract |
-| ARCH-005 | 2 | P1 | Backend | ARCH-004 | write integration test |
-| ARCH-006 | 2 | P1 | Backend | ARCH-004 | dead-code report |
-| ARCH-007 | 2 | P1 | Architecture | Phase 1 | ADR |
-| ARCH-008 | 2 | P1 | Security | Phase 1 | auth dependency audit |
-| ASTRO-001 | 3 | P1 | Frontend/Platform | Phase 2 | env build test |
-| ASTRO-002 | 3 | P1 | Platform | ASTRO-001 | adapter session test |
-| ASTRO-003 | 3 | P1 | Frontend | ARCH-005, ASTRO-002 | Action integration tests |
-| ASTRO-004 | 3 | P1 | Security/Frontend | ASTRO-002 | header/auth tests |
-| ASTRO-005 | 3 | P1 | Frontend | ARCH-004 | endpoint contract tests |
-| ASTRO-006 | 3 | P2 | Frontend | Phase 0 | navigation ADR |
-| BOOK-001..006 | 4 | P1 | Full-stack | Phase 3 | booking journey suite |
-| AUTH-001..005 | 5 | P1 | Security/Full-stack | Phase 3 | auth suite |
-| STATE-001..006 | 6 | P2 | Frontend | Phases 4–5 | storage/state audit |
-| FIGMA-001..008 | 7 | P1 | Design/Frontend | Phase 1, Phase 3 | Figma route checklist + visual regression |
-| UI-001..005 | 7 | P2 | Frontend/Design | FIGMA-001 | visual/a11y tests |
-| I18N-001..006 | 8 | P2 | Frontend/Content | Phase 3 | locale matrix |
-| PERF-001..005 | 9 | P2 | Frontend | Phase 7 | bundle/perf report |
-| TEST-002..005 | 10 | P1 | QA/Engineering | Phases 4–5 | CI test reports |
-| PERF-006..007 | 11 | P2 | SRE/Frontend | Phase 10 | Web Vitals budget |
-| A11Y-001 | 11 | P1 | Frontend/QA | Phase 7 | accessibility report |
-| SEO-001 | 11 | P2 | Frontend | Phase 8 | SEO validation |
-| CLEAN-001..005 | 12 | P3 | Engineering | Phase 7 | cleanup report |
-| DEPLOY-001..005 | 13 | P1 | Platform/SRE | Phases 3,10 | deployment matrix |
+| ID              | Phase | Priority | Owner               | Depends on          | Validation artifact                       |
+| --------------- | ----: | -------- | ------------------- | ------------------- | ----------------------------------------- |
+| ARCH-001        |     0 | P0       | Architecture        | —                   | baseline doc                              |
+| ARCH-002        |     0 | P0       | Platform            | —                   | green CI                                  |
+| TEST-001        |     0 | P0       | QA/Frontend         | ARCH-002            | smoke report                              |
+| ARCH-003        |     0 | P0       | Frontend            | —                   | typecheck coverage                        |
+| SEC-001         |     1 | P0       | Frontend/Security   | Phase 0             | storage audit                             |
+| SEC-002         |     1 | P0       | Frontend/Security   | SEC-001             | PII storage test                          |
+| SEC-003         |     1 | P0       | Frontend/Security   | Phase 0             | admin denial E2E                          |
+| SEC-004         |     1 | P0       | Backend             | Phase 0             | concurrency test                          |
+| SEC-005         |     1 | P0       | Backend             | Phase 0             | bulk command tests                        |
+| SEC-006         |     1 | P0       | Platform/Frontend   | Phase 0             | dependency audit                          |
+| ARCH-004        |     2 | P1       | Architecture        | Phase 1             | API contract                              |
+| ARCH-005        |     2 | P1       | Backend             | ARCH-004            | write integration test                    |
+| ARCH-006        |     2 | P1       | Backend             | ARCH-004            | dead-code report                          |
+| ARCH-007        |     2 | P1       | Architecture        | Phase 1             | ADR                                       |
+| ARCH-008        |     2 | P1       | Security            | Phase 1             | auth dependency audit                     |
+| ASTRO-001       |     3 | P1       | Frontend/Platform   | Phase 2             | env build test                            |
+| ASTRO-002       |     3 | P1       | Platform            | ASTRO-001           | adapter session test                      |
+| ASTRO-003       |     3 | P1       | Frontend            | ARCH-005, ASTRO-002 | Action integration tests                  |
+| ASTRO-004       |     3 | P1       | Security/Frontend   | ASTRO-002           | header/auth tests                         |
+| ASTRO-005       |     3 | P1       | Frontend            | ARCH-004            | endpoint contract tests                   |
+| ASTRO-006       |     3 | P2       | Frontend            | Phase 0             | navigation ADR                            |
+| BOOK-001..006   |     4 | P1       | Full-stack          | Phase 3             | booking journey suite                     |
+| AUTH-001..005   |     5 | P1       | Security/Full-stack | Phase 3             | auth suite                                |
+| STATE-001..006  |     6 | P2       | Frontend            | Phases 4–5          | storage/state audit                       |
+| FIGMA-001..008  |     7 | P1       | Design/Frontend     | Phase 1, Phase 3    | Figma route checklist + visual regression |
+| UI-001..005     |     7 | P2       | Frontend/Design     | FIGMA-001           | visual/a11y tests                         |
+| I18N-001..006   |     8 | P2       | Frontend/Content    | Phase 3             | locale matrix                             |
+| PERF-001..005   |     9 | P2       | Frontend            | Phase 7             | bundle/perf report                        |
+| TEST-002..005   |    10 | P1       | QA/Engineering      | Phases 4–5          | CI test reports                           |
+| PERF-006..007   |    11 | P2       | SRE/Frontend        | Phase 10            | Web Vitals budget                         |
+| A11Y-001        |    11 | P1       | Frontend/QA         | Phase 7             | accessibility report                      |
+| SEO-001         |    11 | P2       | Frontend            | Phase 8             | SEO validation                            |
+| CLEAN-001..005  |    12 | P3       | Engineering         | Phase 7             | cleanup report                            |
+| DEPLOY-001..005 |    13 | P1       | Platform/SRE        | Phases 3,10         | deployment matrix                         |
 
 ---
 
@@ -832,9 +832,9 @@ Target state:
 
 ```ts
 export interface PaymentSelection {
-  provider: 'psp';
+  provider: "psp";
   paymentIntentId?: string;
-  status?: 'pending' | 'authorized' | 'failed';
+  status?: "pending" | "authorized" | "failed";
 }
 ```
 
@@ -915,9 +915,9 @@ export interface CreateBookingRequest {
 export interface BookingSummary {
   id: string;
   reference: string;
-  status: 'pending' | 'confirmed' | 'cancelled';
+  status: "pending" | "confirmed" | "cancelled";
   totalAmountMinor: number;
-  currency: 'EUR';
+  currency: "EUR";
 }
 ```
 
@@ -955,18 +955,18 @@ Remove phantom Clerk/Supabase assumptions unless deliberately selected.
 ### ASTRO-001 — `astro:env`
 
 ```js
-import { defineConfig, envField } from 'astro/config';
+import { defineConfig, envField } from "astro/config";
 
 export default defineConfig({
   env: {
     schema: {
       PUBLIC_APP_URL: envField.string({
-        context: 'client',
-        access: 'public',
+        context: "client",
+        access: "public",
       }),
       BACKEND_API_URL: envField.string({
-        context: 'server',
-        access: 'secret',
+        context: "server",
+        access: "secret",
       }),
     },
   },
@@ -976,7 +976,7 @@ export default defineConfig({
 Server:
 
 ```ts
-import { BACKEND_API_URL } from 'astro:env/server';
+import { BACKEND_API_URL } from "astro:env/server";
 ```
 
 ### ASTRO-002 — Sessions
@@ -987,7 +987,7 @@ Booking draft:
 export interface BookingDraft {
   version: 1;
   draftId: string;
-  step: 'dates' | 'guests' | 'beds' | 'contact' | 'payment';
+  step: "dates" | "guests" | "beds" | "contact" | "payment";
   arrivalDate?: string;
   departureDate?: string;
   guestCount?: number;
@@ -1005,8 +1005,8 @@ Rules:
 ### ASTRO-003 — Actions
 
 ```ts
-import { defineAction } from 'astro:actions';
-import { z } from 'astro:schema';
+import { defineAction } from "astro:actions";
+import { z } from "astro:schema";
 
 export const server = {
   booking: {
@@ -1017,13 +1017,13 @@ export const server = {
       }),
 
       handler: async (input, context) => {
-        const current = await context.session?.get('bookingDraft');
+        const current = await context.session?.get("bookingDraft");
         const next = updateBookingDates(current, input);
 
-        await context.session?.set('bookingDraft', next);
+        await context.session?.set("bookingDraft", next);
 
         return {
-          step: 'guests' as const,
+          step: "guests" as const,
         };
       },
     }),
@@ -1034,11 +1034,11 @@ export const server = {
 ### ASTRO-004 — Middleware
 
 ```ts
-import { sequence } from 'astro:middleware';
-import { authMiddleware } from './middleware/auth';
-import { localeMiddleware } from './middleware/locale';
-import { requestIdMiddleware } from './middleware/request-id';
-import { securityMiddleware } from './middleware/security';
+import { sequence } from "astro:middleware";
+import { authMiddleware } from "./middleware/auth";
+import { localeMiddleware } from "./middleware/locale";
+import { requestIdMiddleware } from "./middleware/request-id";
+import { securityMiddleware } from "./middleware/security";
 
 export const onRequest = sequence(
   requestIdMiddleware,
@@ -1051,7 +1051,7 @@ export const onRequest = sequence(
 Example auth gate:
 
 ```ts
-import { defineMiddleware } from 'astro:middleware';
+import { defineMiddleware } from "astro:middleware";
 
 export const authMiddleware = defineMiddleware(async (context, next) => {
   const sessionUser = await resolveUserFromSession(context);
@@ -1059,13 +1059,13 @@ export const authMiddleware = defineMiddleware(async (context, next) => {
   context.locals.user = sessionUser ?? null;
   context.locals.role = sessionUser?.role ?? null;
 
-  if (context.url.pathname.startsWith('/admin')) {
+  if (context.url.pathname.startsWith("/admin")) {
     if (!sessionUser) {
-      return context.redirect('/auth');
+      return context.redirect("/auth");
     }
 
-    if (sessionUser.role !== 'admin') {
-      return new Response('Forbidden', { status: 403 });
+    if (sessionUser.role !== "admin") {
+      return new Response("Forbidden", { status: 403 });
     }
   }
 
@@ -1245,7 +1245,7 @@ Typed locals:
 ```ts
 interface UserIdentity {
   id: string;
-  role: 'pilgrim' | 'admin';
+  role: "pilgrim" | "admin";
 }
 ```
 
@@ -1265,17 +1265,17 @@ Implement and test the selected cookie-authenticated CSRF strategy.
 
 ## Phase 6 — State Simplification
 
-| State | Authority | Persistence |
-| --- | --- | --- |
-| menu/dialog | browser | none |
-| visual preference | browser/cookie | optional |
-| locale | URL + cookie | cookie |
-| booking workflow | Astro/backend | server |
-| identity | server | session |
-| pilgrim profile | backend | DB |
-| price | backend | DB/query |
-| availability | backend | DB/query |
-| payment | PSP/backend | PSP + metadata |
+| State             | Authority      | Persistence    |
+| ----------------- | -------------- | -------------- |
+| menu/dialog       | browser        | none           |
+| visual preference | browser/cookie | optional       |
+| locale            | URL + cookie   | cookie         |
+| booking workflow  | Astro/backend  | server         |
+| identity          | server         | session        |
+| pilgrim profile   | backend        | DB             |
+| price             | backend        | DB/query       |
+| availability      | backend        | DB/query       |
+| payment           | PSP/backend    | PSP + metadata |
 
 Tasks:
 
@@ -1546,22 +1546,22 @@ reduced-motion smoke
 Example:
 
 ```ts
-import { expect, test } from '@playwright/test';
+import { expect, test } from "@playwright/test";
 
-test('anonymous user cannot access admin', async ({ page }) => {
-  await page.goto('/admin');
+test("anonymous user cannot access admin", async ({ page }) => {
+  await page.goto("/admin");
   await expect(page).toHaveURL(/\/auth/);
 });
 
-test('booking does not persist sensitive data', async ({ page }) => {
-  await page.goto('/book');
+test("booking does not persist sensitive data", async ({ page }) => {
+  await page.goto("/book");
 
   const storage = await page.evaluate(() => ({ ...localStorage }));
   const serialized = JSON.stringify(storage).toLowerCase();
 
-  expect(serialized).not.toContain('cvv');
-  expect(serialized).not.toContain('cardnumber');
-  expect(serialized).not.toContain('passport');
+  expect(serialized).not.toContain("cvv");
+  expect(serialized).not.toContain("cardnumber");
+  expect(serialized).not.toContain("passport");
 });
 ```
 
@@ -1575,13 +1575,13 @@ Validate schema and migrations in CI.
 
 ### PERF-006
 
-| Metric | Target |
-| --- | ---: |
-| LCP p75 | < 2.5 s |
-| INP p75 | < 200 ms |
-| CLS p75 | < 0.1 |
-| Marketing JS | < 150 KB gzip |
-| Three.js outside 3D routes | 0 bytes |
+| Metric                     |        Target |
+| -------------------------- | ------------: |
+| LCP p75                    |       < 2.5 s |
+| INP p75                    |      < 200 ms |
+| CLS p75                    |         < 0.1 |
+| Marketing JS               | < 150 KB gzip |
+| Three.js outside 3D routes |       0 bytes |
 
 ### PERF-007
 
@@ -1673,15 +1673,15 @@ Update README with:
 
 ## Phase 13 — Deployment Convergence
 
-| Capability | Cloudflare | Netlify | Node/Stormkit |
-| --- | --- | --- | --- |
-| Astro SSR | supported | supported | supported |
-| Actions | supported | supported | supported |
-| Sessions | adapter-backed | adapter-backed | adapter-backed/configurable |
-| Middleware | supported | supported | supported |
-| prerender | supported | supported | supported |
-| frontend Redis | forbidden | forbidden | forbidden |
-| PostgreSQL | backend boundary | backend boundary | backend boundary |
+| Capability     | Cloudflare       | Netlify          | Node/Stormkit               |
+| -------------- | ---------------- | ---------------- | --------------------------- |
+| Astro SSR      | supported        | supported        | supported                   |
+| Actions        | supported        | supported        | supported                   |
+| Sessions       | adapter-backed   | adapter-backed   | adapter-backed/configurable |
+| Middleware     | supported        | supported        | supported                   |
+| prerender      | supported        | supported        | supported                   |
+| frontend Redis | forbidden        | forbidden        | forbidden                   |
+| PostgreSQL     | backend boundary | backend boundary | backend boundary            |
 
 ### DEPLOY-001
 
@@ -1734,14 +1734,14 @@ frontend/src/content/legal/*.md
 Example:
 
 ```ts
-import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
-import { z } from 'astro/zod';
+import { defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "astro/zod";
 
 const legal = defineCollection({
   loader: glob({
-    pattern: '**/*.{md,mdx}',
-    base: './src/content/legal',
+    pattern: "**/*.{md,mdx}",
+    base: "./src/content/legal",
   }),
 
   schema: z.object({
@@ -1932,39 +1932,39 @@ Parallelizable after Phase 1:
 
 # O. Risk Register
 
-| Risk | Probability | Impact | Mitigation |
-| --- | --- | --- | --- |
-| adapter session differences | high | medium | adapter integration tests |
-| distributed session consistency | medium | high | DB remains booking authority |
-| booking migration loses drafts | medium | high | versioned session schema |
-| Swup removal regression | medium | medium | ADR + E2E |
-| write routes expose backend bugs | medium | high | domain tests |
-| auth migration regression | medium | high | auth telemetry/tests |
-| i18n URL changes | medium | medium | redirects/hreflang |
-| UI cleanup regression | medium | low | visual tests |
-| asset cleanup breakage | low | medium | dry-run reference trace |
-| typecheck exposes debt | high | low | incremental remediation |
-| Rust architecture drift | medium | medium | ADR |
-| portability over-abstraction | medium | medium | Cloudflare-first boundary design |
+| Risk                             | Probability | Impact | Mitigation                       |
+| -------------------------------- | ----------- | ------ | -------------------------------- |
+| adapter session differences      | high        | medium | adapter integration tests        |
+| distributed session consistency  | medium      | high   | DB remains booking authority     |
+| booking migration loses drafts   | medium      | high   | versioned session schema         |
+| Swup removal regression          | medium      | medium | ADR + E2E                        |
+| write routes expose backend bugs | medium      | high   | domain tests                     |
+| auth migration regression        | medium      | high   | auth telemetry/tests             |
+| i18n URL changes                 | medium      | medium | redirects/hreflang               |
+| UI cleanup regression            | medium      | low    | visual tests                     |
+| asset cleanup breakage           | low         | medium | dry-run reference trace          |
+| typecheck exposes debt           | high        | low    | incremental remediation          |
+| Rust architecture drift          | medium      | medium | ADR                              |
+| portability over-abstraction     | medium      | medium | Cloudflare-first boundary design |
 
 ---
 
 # P. ADRs Required
 
-| ADR | Decision |
-| --- | --- |
-| ADR-AUTH | Backend session vs external auth |
-| ADR-NAV | Swup vs native navigation |
-| ADR-RUST | Rust/Turso status |
-| ADR-CONTENT | Content Layer scope |
-| ADR-SESSION | session storage per adapter |
-| ADR-PSP | payment provider |
-| ADR-3D | Three.js retention |
-| ADR-ROUGH | package vs frontend RoughJS implementation |
-| ADR-CONTRACT | DTO/OpenAPI contract |
-| ADR-I18N | catalog/routing architecture |
+| ADR              | Decision                                                    |
+| ---------------- | ----------------------------------------------------------- |
+| ADR-AUTH         | Backend session vs external auth                            |
+| ADR-NAV          | Swup vs native navigation                                   |
+| ADR-RUST         | Rust/Turso status                                           |
+| ADR-CONTENT      | Content Layer scope                                         |
+| ADR-SESSION      | session storage per adapter                                 |
+| ADR-PSP          | payment provider                                            |
+| ADR-3D           | Three.js retention                                          |
+| ADR-ROUGH        | package vs frontend RoughJS implementation                  |
+| ADR-CONTRACT     | DTO/OpenAPI contract                                        |
+| ADR-I18N         | catalog/routing architecture                                |
 | ADR-FIGMA-TOKENS | palette reconciliation (Guidelines vs DOODLE_DESIGN_SYSTEM) |
-| ADR-FIGMA-3D | HomePage 3D/visual retention vs performance |
+| ADR-FIGMA-3D     | HomePage 3D/visual retention vs performance                 |
 
 ADR format:
 
@@ -1983,32 +1983,32 @@ Reversal cost
 
 # Q. Historical Pattern Replacements
 
-| Historical/current | Target |
-| --- | --- |
-| React SPA migration | Astro server-first convergence |
-| React islands | Astro HTML + selective TS |
-| microfrontends | routes/components |
-| `output: hybrid` | server + route prerender |
-| Tailwind | CSS + UnoCSS |
-| localStorage booking | session/backend |
-| persistent PII | server state |
-| `jwtDecode` auth | verified session |
-| client price | backend |
-| client availability | backend transaction |
-| raw cards | PSP |
-| Swup mandatory | ADR |
-| manual locale paths | Astro i18n |
-| multiple i18n systems | one catalog |
-| `src/content/config.ts` | `src/content.config.ts` |
-| old content collections | Content Layer loaders |
-| internal loopback fetches | Action/server client |
-| mock middleware | production middleware chain |
-| frontend Redis | backend |
-| phantom Supabase | remove/ADR |
-| TSX tests | Astro/domain/Playwright |
-| FID | INP |
-| Lighthouse 100 promise | measurable budgets |
-| force-push rollback | revert/feature rollback |
+| Historical/current        | Target                         |
+| ------------------------- | ------------------------------ |
+| React SPA migration       | Astro server-first convergence |
+| React islands             | Astro HTML + selective TS      |
+| microfrontends            | routes/components              |
+| `output: hybrid`          | server + route prerender       |
+| Tailwind                  | CSS + UnoCSS                   |
+| localStorage booking      | session/backend                |
+| persistent PII            | server state                   |
+| `jwtDecode` auth          | verified session               |
+| client price              | backend                        |
+| client availability       | backend transaction            |
+| raw cards                 | PSP                            |
+| Swup mandatory            | ADR                            |
+| manual locale paths       | Astro i18n                     |
+| multiple i18n systems     | one catalog                    |
+| `src/content/config.ts`   | `src/content.config.ts`        |
+| old content collections   | Content Layer loaders          |
+| internal loopback fetches | Action/server client           |
+| mock middleware           | production middleware chain    |
+| frontend Redis            | backend                        |
+| phantom Supabase          | remove/ADR                     |
+| TSX tests                 | Astro/domain/Playwright        |
+| FID                       | INP                            |
+| Lighthouse 100 promise    | measurable budgets             |
+| force-push rollback       | revert/feature rollback        |
 
 ---
 
@@ -2176,22 +2176,22 @@ This section records the exhaustive Figma → Astro → Hono reconciliation. Whe
 
 ## V.1 Verified inventory
 
-| Surface | Verified count | Notes |
-| --- | ---: | --- |
-| Figma registered routes | 17 | 10 top-level routes, one admin layout route, six nested admin routes |
-| Figma unregistered user-visible screens/flows | 12+ | Four information pages, alternate booking flow, orphan showcases and placeholders |
-| Figma TSX files | 102 | 18 page-level, 14 doodle, 45 shadcn/Radix primitives, layouts/domain/state/utilities |
-| Figma contexts | 2 | Mock auth and two-locale i18n |
-| Astro routes | 17 | 15 explicit prerender, one explicit SSR, two default SSR |
-| Astro components | 36 | Plus four layouts and one unmounted island |
-| Astro hydrated framework islands | 0 | No `client:*` directives |
-| Frontend stores | 8 modules | Persistent PII/payment/auth exists |
-| Frontend public assets | 933 | 457 PNG, 457 SVG, two GLB, videos/logos/Figma source |
-| Hono route handlers | 76 | 61 GET, 6 POST, 2 PUT, 4 PATCH, 3 DELETE |
-| Backend command exports | 102 | About 15 routed |
-| Backend query exports | 112 | About 68 wired to routes |
-| Domain tables | 9 | users, pilgrims, beds, bookings, payments, pricing, government submissions, notifications, audit log |
-| Active backend route tests | 0 | One resiliency utility test file only |
+| Surface                                       | Verified count | Notes                                                                                                |
+| --------------------------------------------- | -------------: | ---------------------------------------------------------------------------------------------------- |
+| Figma registered routes                       |             17 | 10 top-level routes, one admin layout route, six nested admin routes                                 |
+| Figma unregistered user-visible screens/flows |            12+ | Four information pages, alternate booking flow, orphan showcases and placeholders                    |
+| Figma TSX files                               |            102 | 18 page-level, 14 doodle, 45 shadcn/Radix primitives, layouts/domain/state/utilities                 |
+| Figma contexts                                |              2 | Mock auth and two-locale i18n                                                                        |
+| Astro routes                                  |             17 | 15 explicit prerender, one explicit SSR, two default SSR                                             |
+| Astro components                              |             36 | Plus four layouts and one unmounted island                                                           |
+| Astro hydrated framework islands              |              0 | No `client:*` directives                                                                             |
+| Frontend stores                               |      8 modules | Persistent PII/payment/auth exists                                                                   |
+| Frontend public assets                        |            933 | 457 PNG, 457 SVG, two GLB, videos/logos/Figma source                                                 |
+| Hono route handlers                           |             76 | 61 GET, 6 POST, 2 PUT, 4 PATCH, 3 DELETE                                                             |
+| Backend command exports                       |            102 | About 15 routed                                                                                      |
+| Backend query exports                         |            112 | About 68 wired to routes                                                                             |
+| Domain tables                                 |              9 | users, pilgrims, beds, bookings, payments, pricing, government submissions, notifications, audit log |
+| Active backend route tests                    |              0 | One resiliency utility test file only                                                                |
 
 ## V.2 Authority and traceability model
 
@@ -2219,39 +2219,39 @@ Figma controls visual and UX intent. The React export explains that intent. This
 
 Every registered Figma route and every discovered user-visible unregistered screen has a disposition.
 
-| Figma screen | React reference | Astro current | Astro target | Backend capability | Task | Disposition | Implementation | Visual | E2E |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Home | `HomePage.tsx` | `/` partial | Prerendered home matching Figma composition | None required; optional public stats query | FIGMA-009 | IMPLEMENT | Astro components + scoped CSS; lazy optional effects | desktop/mobile/es/en/reduced motion | CTA and navigation |
-| Booking | `NewBookingFlow.tsx` | `/book` static marketing; `/booking` stub | On-demand server-authoritative wizard | Availability, booking writes, pilgrim, pricing, payment | FIGMA-005, BOOK-001..006 | IMPLEMENT | Actions + session + Hono; no React state machine | each step/errors/mobile | full journey/failures |
-| Guest dashboard | `GuestDashboard.tsx` | `/dashboard` static mock | Protected on-demand dashboard | booking by user/reference; pilgrim profile | FIGMA-010, AUTH-003 | IMPLEMENT | SSR + small section controllers | populated/empty/error/mobile | auth/booking state |
-| Privacy ES/EN | `PrivacyPolicy.tsx` | missing | `/privacidad`, `/privacy` or locale-prefixed canonical route | None | FIGMA-006 | IMPLEMENT | Content Layer + i18n | both locales | route/metadata |
-| Terms ES/EN | `TermsAndConditions.tsx` | missing | `/terminos`, `/terms` or locale-prefixed canonical route | None | FIGMA-006 | IMPLEMENT | Content Layer + i18n | both locales | route/metadata |
-| Cookies | `CookiePolicy.tsx` | missing | Localized cookie policy | None | FIGMA-006 | IMPLEMENT | Content Layer | locale variants | route |
-| Legal notice ES/EN | `LegalNotice.tsx` | missing | Localized legal notice | None | FIGMA-006 | IMPLEMENT | Content Layer | both locales | route |
-| Admin dashboard | `admin/Dashboard.tsx` | `/admin` public mock | Protected on-demand dashboard | Authorized stats queries | FIGMA-011, AUTH-004 | IMPLEMENT | SSR + server-verified RBAC | data/empty/error/mobile | denial + success |
-| Admin bookings | `admin/BookingsTable.tsx` | missing; link exists | `/admin/bookings` | Booking list/search/detail/update | FIGMA-012, ARCH-005 | IMPLEMENT | SSR filters + Actions | list/empty/error/dialog | RBAC CRUD |
-| Admin beds | `admin/BedManagement.tsx` | missing; link exists | `/admin/beds` | Bed list/date availability/authorized mutation | FIGMA-013, SEC-004 | IMPLEMENT | SSR + Actions; transactional writes | status/date/mobile | race/RBAC |
-| Admin guests | inline placeholder | missing | `/admin/guests` only when capability is specified | Pilgrim queries with strict PII scope | FIGMA-014 | REFERENCE-ONLY pending product/PII ADR | No placeholder production route | n/a | n/a |
-| Admin analytics | inline placeholder | missing | Deferred | Aggregated non-PII queries absent | FIGMA-015 | REFERENCE-ONLY | No fake data | n/a | n/a |
-| Admin settings | inline placeholder | missing | Deferred | Settings schema/capability absent | FIGMA-016 | REFERENCE-ONLY | No fake data | n/a | n/a |
-| Restaurants | `RestaurantsPage.tsx` | missing | Public localized content route | None unless content becomes managed | FIGMA-017 | IMPLEMENT | Astro/content data | responsive/locales | route |
-| Visits | `VisitsPage.tsx` | missing | Public localized content route | None | FIGMA-018 | IMPLEMENT | Astro details/tabs with semantic HTML | tab states/mobile | keyboard/route |
-| Tourism | `TourismPage.tsx` | missing | Public localized content route | None | FIGMA-019 | IMPLEMENT | Astro details/accordion | open states/mobile | keyboard/route |
-| Emergencies | `EmergenciesPage.tsx` | missing | Public localized route, offline-friendly | None | FIGMA-020 | IMPLEMENT | Prerendered semantic contacts and `tel:` links | mobile/locales | links |
-| Global auth overlay | `LoginModal`, `UserProfileMenu`, `AuthContext` | `/auth` missing; unsafe stores | `/auth` on-demand + server session; profile menu partial | **Authentication capability absent** | AUTH-001..005, FIGMA-003 | IMPLEMENT | Actions + HttpOnly cookie; modal optional enhancement | signed-out/in/error | login/logout/RBAC |
-| Global language selector | `LanguageSelector`, `I18nContext` | unmounted island; broken stores | Server-rendered selector + Astro i18n URL | Optional persisted pilgrim preference | I18N-001..006, FIGMA-003 | IMPLEMENT | URL locale + cookie | all supported locales | switch/fallback |
-| Global navigation/footer | `Navigation`, `Footer` | layout partial; broken links | Shared Astro shell | None | FIGMA-003 | MERGE | Semantic partials | mobile/desktop | link audit |
-| Alternate booking page | `BookingPage` | no direct equivalent | Superseded by canonical wizard | Same booking capabilities | FIGMA-002 | DEPRECATED | Preserve unique UX requirements only | n/a | n/a |
-| Legacy booking form | `BookingForm`, `AvailabilityGrid` | stale TSX tests | Superseded by canonical wizard | Same booking capabilities | FIGMA-002 | DEPRECATED | Extract validation/content, not component code | n/a | n/a |
-| Visual area showcase | `VisualAreaShowcase` | home partial | Home composite | None | FIGMA-009 | MERGE | Astro + CSS/WAAPI | deterministic carousel | keyboard |
-| Local area showcase | `LocalAreaShowcase` | none | Merge into home/info content | None | FIGMA-017 | MERGE | Astro/content | representative slides | navigation |
-| Mérida showcase | `MeridaShowcase` | none | Merge into tourism content | None | FIGMA-019 | MERGE | Astro; bounded motion | reduced motion | route |
-| Orphan hero | `Hero.tsx` | three unused Astro Hero variants | Merge visual intent into canonical home hero | None | FIGMA-009, UI-002 | MERGE | One Astro Hero | viewports | CTA |
-| Floating cost summary | `FloatingCostSummary` | none | Booking summary region | Authoritative pricing query | FIGMA-005, BOOK-001 | MERGE | Server values + sticky CSS | step totals/mobile | price tamper |
-| Camino progress | dashboard sections | `/camino`, `/camino-dashboard` implemented | Preserve as separate product feature pending ownership | Only mock `/api/progress`; no backend capability | FIGMA-021 | REFERENCE-ONLY pending product ADR | Do not merge into booking state | current states | existing smoke |
-| Ops services board | no Figma equivalent | `/admin/services*` | Protected ops-only surface or remove | Health endpoints exist; simulated polling today | FIGMA-022, AUTH-004 | REFERENCE-ONLY pending ops ADR | Never expose sensitive health publicly | healthy/degraded | admin denial |
-| WebCore smoke/demo routes | no Figma equivalent | `/webcore-smoke`, `/demo-*`, `/_app` | Development-only | None | CLEAN-002 | DEPRECATED | Environment gate/remove from production route map | n/a | build-only |
-| 404 | no Figma equivalent | `/404` | Canonical localized 404 | None | SEO-001 | IMPLEMENT | Prerendered Astro | locales/mobile | unknown route |
+| Figma screen              | React reference                                | Astro current                              | Astro target                                                 | Backend capability                                      | Task                     | Disposition                            | Implementation                                        | Visual                              | E2E                   |
+| ------------------------- | ---------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------- | ------------------------ | -------------------------------------- | ----------------------------------------------------- | ----------------------------------- | --------------------- |
+| Home                      | `HomePage.tsx`                                 | `/` partial                                | Prerendered home matching Figma composition                  | None required; optional public stats query              | FIGMA-009                | IMPLEMENT                              | Astro components + scoped CSS; lazy optional effects  | desktop/mobile/es/en/reduced motion | CTA and navigation    |
+| Booking                   | `NewBookingFlow.tsx`                           | `/book` static marketing; `/booking` stub  | On-demand server-authoritative wizard                        | Availability, booking writes, pilgrim, pricing, payment | FIGMA-005, BOOK-001..006 | IMPLEMENT                              | Actions + session + Hono; no React state machine      | each step/errors/mobile             | full journey/failures |
+| Guest dashboard           | `GuestDashboard.tsx`                           | `/dashboard` static mock                   | Protected on-demand dashboard                                | booking by user/reference; pilgrim profile              | FIGMA-010, AUTH-003      | IMPLEMENT                              | SSR + small section controllers                       | populated/empty/error/mobile        | auth/booking state    |
+| Privacy ES/EN             | `PrivacyPolicy.tsx`                            | missing                                    | `/privacidad`, `/privacy` or locale-prefixed canonical route | None                                                    | FIGMA-006                | IMPLEMENT                              | Content Layer + i18n                                  | both locales                        | route/metadata        |
+| Terms ES/EN               | `TermsAndConditions.tsx`                       | missing                                    | `/terminos`, `/terms` or locale-prefixed canonical route     | None                                                    | FIGMA-006                | IMPLEMENT                              | Content Layer + i18n                                  | both locales                        | route/metadata        |
+| Cookies                   | `CookiePolicy.tsx`                             | missing                                    | Localized cookie policy                                      | None                                                    | FIGMA-006                | IMPLEMENT                              | Content Layer                                         | locale variants                     | route                 |
+| Legal notice ES/EN        | `LegalNotice.tsx`                              | missing                                    | Localized legal notice                                       | None                                                    | FIGMA-006                | IMPLEMENT                              | Content Layer                                         | both locales                        | route                 |
+| Admin dashboard           | `admin/Dashboard.tsx`                          | `/admin` public mock                       | Protected on-demand dashboard                                | Authorized stats queries                                | FIGMA-011, AUTH-004      | IMPLEMENT                              | SSR + server-verified RBAC                            | data/empty/error/mobile             | denial + success      |
+| Admin bookings            | `admin/BookingsTable.tsx`                      | missing; link exists                       | `/admin/bookings`                                            | Booking list/search/detail/update                       | FIGMA-012, ARCH-005      | IMPLEMENT                              | SSR filters + Actions                                 | list/empty/error/dialog             | RBAC CRUD             |
+| Admin beds                | `admin/BedManagement.tsx`                      | missing; link exists                       | `/admin/beds`                                                | Bed list/date availability/authorized mutation          | FIGMA-013, SEC-004       | IMPLEMENT                              | SSR + Actions; transactional writes                   | status/date/mobile                  | race/RBAC             |
+| Admin guests              | inline placeholder                             | missing                                    | `/admin/guests` only when capability is specified            | Pilgrim queries with strict PII scope                   | FIGMA-014                | REFERENCE-ONLY pending product/PII ADR | No placeholder production route                       | n/a                                 | n/a                   |
+| Admin analytics           | inline placeholder                             | missing                                    | Deferred                                                     | Aggregated non-PII queries absent                       | FIGMA-015                | REFERENCE-ONLY                         | No fake data                                          | n/a                                 | n/a                   |
+| Admin settings            | inline placeholder                             | missing                                    | Deferred                                                     | Settings schema/capability absent                       | FIGMA-016                | REFERENCE-ONLY                         | No fake data                                          | n/a                                 | n/a                   |
+| Restaurants               | `RestaurantsPage.tsx`                          | missing                                    | Public localized content route                               | None unless content becomes managed                     | FIGMA-017                | IMPLEMENT                              | Astro/content data                                    | responsive/locales                  | route                 |
+| Visits                    | `VisitsPage.tsx`                               | missing                                    | Public localized content route                               | None                                                    | FIGMA-018                | IMPLEMENT                              | Astro details/tabs with semantic HTML                 | tab states/mobile                   | keyboard/route        |
+| Tourism                   | `TourismPage.tsx`                              | missing                                    | Public localized content route                               | None                                                    | FIGMA-019                | IMPLEMENT                              | Astro details/accordion                               | open states/mobile                  | keyboard/route        |
+| Emergencies               | `EmergenciesPage.tsx`                          | missing                                    | Public localized route, offline-friendly                     | None                                                    | FIGMA-020                | IMPLEMENT                              | Prerendered semantic contacts and `tel:` links        | mobile/locales                      | links                 |
+| Global auth overlay       | `LoginModal`, `UserProfileMenu`, `AuthContext` | `/auth` missing; unsafe stores             | `/auth` on-demand + server session; profile menu partial     | **Authentication capability absent**                    | AUTH-001..005, FIGMA-003 | IMPLEMENT                              | Actions + HttpOnly cookie; modal optional enhancement | signed-out/in/error                 | login/logout/RBAC     |
+| Global language selector  | `LanguageSelector`, `I18nContext`              | unmounted island; broken stores            | Server-rendered selector + Astro i18n URL                    | Optional persisted pilgrim preference                   | I18N-001..006, FIGMA-003 | IMPLEMENT                              | URL locale + cookie                                   | all supported locales               | switch/fallback       |
+| Global navigation/footer  | `Navigation`, `Footer`                         | layout partial; broken links               | Shared Astro shell                                           | None                                                    | FIGMA-003                | MERGE                                  | Semantic partials                                     | mobile/desktop                      | link audit            |
+| Alternate booking page    | `BookingPage`                                  | no direct equivalent                       | Superseded by canonical wizard                               | Same booking capabilities                               | FIGMA-002                | DEPRECATED                             | Preserve unique UX requirements only                  | n/a                                 | n/a                   |
+| Legacy booking form       | `BookingForm`, `AvailabilityGrid`              | stale TSX tests                            | Superseded by canonical wizard                               | Same booking capabilities                               | FIGMA-002                | DEPRECATED                             | Extract validation/content, not component code        | n/a                                 | n/a                   |
+| Visual area showcase      | `VisualAreaShowcase`                           | home partial                               | Home composite                                               | None                                                    | FIGMA-009                | MERGE                                  | Astro + CSS/WAAPI                                     | deterministic carousel              | keyboard              |
+| Local area showcase       | `LocalAreaShowcase`                            | none                                       | Merge into home/info content                                 | None                                                    | FIGMA-017                | MERGE                                  | Astro/content                                         | representative slides               | navigation            |
+| Mérida showcase           | `MeridaShowcase`                               | none                                       | Merge into tourism content                                   | None                                                    | FIGMA-019                | MERGE                                  | Astro; bounded motion                                 | reduced motion                      | route                 |
+| Orphan hero               | `Hero.tsx`                                     | three unused Astro Hero variants           | Merge visual intent into canonical home hero                 | None                                                    | FIGMA-009, UI-002        | MERGE                                  | One Astro Hero                                        | viewports                           | CTA                   |
+| Floating cost summary     | `FloatingCostSummary`                          | none                                       | Booking summary region                                       | Authoritative pricing query                             | FIGMA-005, BOOK-001      | MERGE                                  | Server values + sticky CSS                            | step totals/mobile                  | price tamper          |
+| Camino progress           | dashboard sections                             | `/camino`, `/camino-dashboard` implemented | Preserve as separate product feature pending ownership       | Only mock `/api/progress`; no backend capability        | FIGMA-021                | REFERENCE-ONLY pending product ADR     | Do not merge into booking state                       | current states                      | existing smoke        |
+| Ops services board        | no Figma equivalent                            | `/admin/services*`                         | Protected ops-only surface or remove                         | Health endpoints exist; simulated polling today         | FIGMA-022, AUTH-004      | REFERENCE-ONLY pending ops ADR         | Never expose sensitive health publicly                | healthy/degraded                    | admin denial          |
+| WebCore smoke/demo routes | no Figma equivalent                            | `/webcore-smoke`, `/demo-*`, `/_app`       | Development-only                                             | None                                                    | CLEAN-002                | DEPRECATED                             | Environment gate/remove from production route map     | n/a                                 | build-only            |
+| 404                       | no Figma equivalent                            | `/404`                                     | Canonical localized 404                                      | None                                                    | SEO-001                  | IMPLEMENT                              | Prerendered Astro                                     | locales/mobile                      | unknown route         |
 
 ### Traceability completion invariant
 
@@ -2299,18 +2299,18 @@ Phase 7 cannot complete until each row above is either:
 
 ## V.5 API dependency reconciliation
 
-| Frontend caller/need | Current call | Exists? | Backend equivalent | Required disposition |
-| --- | --- | --- | --- | --- |
-| Camino sync | `POST /api/progress` | Astro mock only | None | Product ADR or keep local-only |
-| Health | `GET /api/health` | Astro mock only | `GET /health` | Normalize through explicit endpoint |
-| Current user | `GET /api/user/current` | No | Partial `/api/users/:id` | Replace with session identity endpoint |
-| Logout | `POST /api/user/logout` | No | No | Auth Action/session invalidation |
-| Languages | `/api/gateway/camino-languages` | No | No | Static typed locale registry |
-| Change language | `/api/auth/change-language` | No | `PATCH /api/pilgrims/:id/language` partial | Locale cookie first; authenticated preference optional |
-| Create booking | `POST /api/bookings` | No route | `createBooking` command exists | Guarded Hono mutation + Action |
-| OCR | `POST /api/ocr/scan` | No | No | Server-only OCR adapter/service binding |
-| Bed hold | planned endpoint | No | reserve commands partial | Transactional bounded hold |
-| Payment intent/webhook | planned endpoints | No | commands unrouted | PSP integration + idempotency |
+| Frontend caller/need   | Current call                    | Exists?         | Backend equivalent                         | Required disposition                                   |
+| ---------------------- | ------------------------------- | --------------- | ------------------------------------------ | ------------------------------------------------------ |
+| Camino sync            | `POST /api/progress`            | Astro mock only | None                                       | Product ADR or keep local-only                         |
+| Health                 | `GET /api/health`               | Astro mock only | `GET /health`                              | Normalize through explicit endpoint                    |
+| Current user           | `GET /api/user/current`         | No              | Partial `/api/users/:id`                   | Replace with session identity endpoint                 |
+| Logout                 | `POST /api/user/logout`         | No              | No                                         | Auth Action/session invalidation                       |
+| Languages              | `/api/gateway/camino-languages` | No              | No                                         | Static typed locale registry                           |
+| Change language        | `/api/auth/change-language`     | No              | `PATCH /api/pilgrims/:id/language` partial | Locale cookie first; authenticated preference optional |
+| Create booking         | `POST /api/bookings`            | No route        | `createBooking` command exists             | Guarded Hono mutation + Action                         |
+| OCR                    | `POST /api/ocr/scan`            | No              | No                                         | Server-only OCR adapter/service binding                |
+| Bed hold               | planned endpoint                | No              | reserve commands partial                   | Transactional bounded hold                             |
+| Payment intent/webhook | planned endpoints               | No              | commands unrouted                          | PSP integration + idempotency                          |
 
 ## V.6 Booking state machine
 
@@ -2346,15 +2346,15 @@ stateDiagram-v2
 
 ### State ownership
 
-| State | Browser | Astro session | Hono/PostgreSQL | PSP |
-| --- | --- | --- | --- | --- |
-| Current UI step | advisory | authoritative workflow cursor | | |
-| Dates/guest count | form input | draft | revalidated | |
-| Price | display | cached quote ID only | authoritative | |
-| Bed selection | advisory IDs | hold reference only | authoritative lock/TTL | |
-| Identity/PII | ephemeral form/file | minimum temporary state; avoid document blobs | encrypted durable record + retention | |
-| Payment | hosted UI | opaque intent reference | verified transition metadata | authoritative instrument/status |
-| Confirmation | display | cleared after commit | authoritative booking reference | verified payment result |
+| State             | Browser             | Astro session                                 | Hono/PostgreSQL                      | PSP                             |
+| ----------------- | ------------------- | --------------------------------------------- | ------------------------------------ | ------------------------------- |
+| Current UI step   | advisory            | authoritative workflow cursor                 |                                      |                                 |
+| Dates/guest count | form input          | draft                                         | revalidated                          |                                 |
+| Price             | display             | cached quote ID only                          | authoritative                        |                                 |
+| Bed selection     | advisory IDs        | hold reference only                           | authoritative lock/TTL               |                                 |
+| Identity/PII      | ephemeral form/file | minimum temporary state; avoid document blobs | encrypted durable record + retention |                                 |
+| Payment           | hosted UI           | opaque intent reference                       | verified transition metadata         | authoritative instrument/status |
+| Confirmation      | display             | cleared after commit                          | authoritative booking reference      | verified payment result         |
 
 ## V.7 Security reconciliation
 
@@ -2377,13 +2377,13 @@ stateDiagram-v2
 
 ### PII field classes
 
-| Class | Examples found | Collection | Temporary state | Durable state | Required controls |
-| --- | --- | --- | --- | --- | --- |
-| Identity | DNI/passport number/type/support, ID images, birth date, gender, nationality | Booking identity step | Ephemeral upload; server processing | Pilgrim record only when required | TLS, encryption, retention, RBAC, access audit |
-| Contact | name, email, phone, address, emergency contact | Pilgrim form | Server draft | Pilgrim/booking as legally required | field minimization, encryption, redaction |
-| Health/accessibility | special needs, health/safety store | Optional form | Avoid session unless essential | Separate restricted field/domain | explicit purpose/consent, restricted roles |
-| OCR | image, extracted text/confidence | ID step | Server-only temporary object | Store only validated necessary fields | purge source image on schedule, no logs |
-| Authentication | access/refresh tokens, role | Login | HttpOnly cookie/session | hashed/revocable session record | Secure, HttpOnly, SameSite, rotation |
+| Class                | Examples found                                                               | Collection            | Temporary state                     | Durable state                         | Required controls                              |
+| -------------------- | ---------------------------------------------------------------------------- | --------------------- | ----------------------------------- | ------------------------------------- | ---------------------------------------------- |
+| Identity             | DNI/passport number/type/support, ID images, birth date, gender, nationality | Booking identity step | Ephemeral upload; server processing | Pilgrim record only when required     | TLS, encryption, retention, RBAC, access audit |
+| Contact              | name, email, phone, address, emergency contact                               | Pilgrim form          | Server draft                        | Pilgrim/booking as legally required   | field minimization, encryption, redaction      |
+| Health/accessibility | special needs, health/safety store                                           | Optional form         | Avoid session unless essential      | Separate restricted field/domain      | explicit purpose/consent, restricted roles     |
+| OCR                  | image, extracted text/confidence                                             | ID step               | Server-only temporary object        | Store only validated necessary fields | purge source image on schedule, no logs        |
+| Authentication       | access/refresh tokens, role                                                  | Login                 | HttpOnly cookie/session             | hashed/revocable session record       | Secure, HttpOnly, SameSite, rotation           |
 
 No raw identity document, OCR payload, PAN or CVV may enter logs, analytics, error monitoring, localStorage, Nanostores or ordinary Astro session serialization.
 
@@ -2412,22 +2412,22 @@ Decision: green/neutral colors define brand surfaces. Blue/yellow/red are semant
 
 The 14 Figma doodle components map as follows:
 
-| Figma primitive | Astro status | Disposition |
-| --- | --- | --- |
-| DoodleCard | two Astro variants | MERGE |
-| WiredButton | DoodleButton + two SketchyButton variants | MERGE |
-| DoodleBadge | exists, unused | MERGE/validate |
-| DoodleIcons | exists with incompatible API | MERGE conceptually |
-| DoodlePattern | exists, unused | KEEP if required by ID flow |
-| DoodleBed | missing | IMPLEMENT |
-| HandDrawnCalendar | missing | IMPLEMENT |
-| WiredCalendar | missing | IMPLEMENT as semantic calendar enhancement |
-| DateTimePicker | missing | IMPLEMENT with native controls first |
-| IDUpload | missing | IMPLEMENT within secure workflow |
-| PhoneInput | missing | IMPLEMENT with native `tel` semantics |
-| AddressAutocomplete | missing | IMPLEMENT only after provider/privacy ADR |
-| AnimatedBackground | missing | REFERENCE-ONLY until perf/a11y validation |
-| WritingEffect | missing | REFERENCE-ONLY |
+| Figma primitive     | Astro status                              | Disposition                                |
+| ------------------- | ----------------------------------------- | ------------------------------------------ |
+| DoodleCard          | two Astro variants                        | MERGE                                      |
+| WiredButton         | DoodleButton + two SketchyButton variants | MERGE                                      |
+| DoodleBadge         | exists, unused                            | MERGE/validate                             |
+| DoodleIcons         | exists with incompatible API              | MERGE conceptually                         |
+| DoodlePattern       | exists, unused                            | KEEP if required by ID flow                |
+| DoodleBed           | missing                                   | IMPLEMENT                                  |
+| HandDrawnCalendar   | missing                                   | IMPLEMENT                                  |
+| WiredCalendar       | missing                                   | IMPLEMENT as semantic calendar enhancement |
+| DateTimePicker      | missing                                   | IMPLEMENT with native controls first       |
+| IDUpload            | missing                                   | IMPLEMENT within secure workflow           |
+| PhoneInput          | missing                                   | IMPLEMENT with native `tel` semantics      |
+| AddressAutocomplete | missing                                   | IMPLEMENT only after provider/privacy ADR  |
+| AnimatedBackground  | missing                                   | REFERENCE-ONLY until perf/a11y validation  |
+| WritingEffect       | missing                                   | REFERENCE-ONLY                             |
 
 ## V.9 i18n reconciliation
 
@@ -2452,16 +2452,16 @@ Decision for implementation: PO files may seed content, but no current system is
 
 ### Deterministic visual matrix
 
-| Dimension | Required states |
-| --- | --- |
-| Viewports | 375×812, 768×1024, 1440×900 |
-| Locales | `es`, `en`; one long-string locale after registry decision |
-| Home | default, carousel alternatives, image fallback |
-| Booking | each state-machine step, validation errors, availability changed, hold expiry, payment failure, confirmation |
-| Auth | signed-out, invalid login, pilgrim, admin |
-| Dashboard | loading, populated, empty, server error |
-| Admin | unauthorized, list, empty, filtered, detail dialog, mutation error |
-| Preferences | normal motion, `prefers-reduced-motion: reduce`, high zoom, keyboard focus |
+| Dimension   | Required states                                                                                              |
+| ----------- | ------------------------------------------------------------------------------------------------------------ |
+| Viewports   | 375×812, 768×1024, 1440×900                                                                                  |
+| Locales     | `es`, `en`; one long-string locale after registry decision                                                   |
+| Home        | default, carousel alternatives, image fallback                                                               |
+| Booking     | each state-machine step, validation errors, availability changed, hold expiry, payment failure, confirmation |
+| Auth        | signed-out, invalid login, pilgrim, admin                                                                    |
+| Dashboard   | loading, populated, empty, server error                                                                      |
+| Admin       | unauthorized, list, empty, filtered, detail dialog, mutation error                                           |
+| Preferences | normal motion, `prefers-reduced-motion: reduce`, high zoom, keyboard focus                                   |
 
 Rules:
 
@@ -2486,14 +2486,14 @@ Phase 0 must:
 
 Deployment facts:
 
-| Concern | Cloudflare | Netlify | Node/Stormkit |
-| --- | --- | --- | --- |
-| Astro SSR/Actions/middleware | Supported | Supported | Supported |
-| Sessions | Requires explicit durable binding/driver | Requires explicit durable driver | External durable driver for multi-instance |
-| Node TCP Redis | Not supported in Worker frontend | Possible but wrong boundary | Supported but remains backend-only |
-| Hono backend today | Separate Node service | Separate Node service | Separate Node service/direct service layer only by ADR |
-| Runtime image transforms | Verify adapter service | Verify | Sharp supported |
-| CI coverage today | Cloudflare build partial | none | none |
+| Concern                      | Cloudflare                               | Netlify                          | Node/Stormkit                                          |
+| ---------------------------- | ---------------------------------------- | -------------------------------- | ------------------------------------------------------ |
+| Astro SSR/Actions/middleware | Supported                                | Supported                        | Supported                                              |
+| Sessions                     | Requires explicit durable binding/driver | Requires explicit durable driver | External durable driver for multi-instance             |
+| Node TCP Redis               | Not supported in Worker frontend         | Possible but wrong boundary      | Supported but remains backend-only                     |
+| Hono backend today           | Separate Node service                    | Separate Node service            | Separate Node service/direct service layer only by ADR |
+| Runtime image transforms     | Verify adapter service                   | Verify                           | Sharp supported                                        |
+| CI coverage today            | Cloudflare build partial                 | none                             | none                                                   |
 
 ## V.12 Expanded Phase 7 tasks
 

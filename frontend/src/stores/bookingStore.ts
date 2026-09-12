@@ -1,4 +1,4 @@
-import { map } from 'nanostores';
+import { map } from "nanostores";
 
 // Booking state types
 export interface BookingState {
@@ -11,7 +11,7 @@ export interface BookingState {
   currency: string;
   currentStep: number;
   bookingId: string | null;
-  status: 'draft' | 'confirmed' | 'cancelled';
+  status: "draft" | "confirmed" | "cancelled";
   contactInfo: ContactInfo;
   payment: PaymentSelection;
 }
@@ -23,11 +23,11 @@ export interface Pilgrim {
   email: string;
   phone: string;
   nationality: string;
-  idType: 'dni' | 'passport' | 'nie';
+  idType: "dni" | "passport" | "nie";
   idNumber: string;
   idFile?: File;
   dateOfBirth: string;
-  gender: 'male' | 'female' | 'other';
+  gender: "male" | "female" | "other";
   specialNeeds?: string;
 }
 
@@ -44,9 +44,9 @@ export interface ContactInfo {
 }
 
 export interface PaymentSelection {
-  provider: 'psp';
+  provider: "psp";
   paymentIntentId?: string;
-  status?: 'pending' | 'authorized' | 'failed';
+  status?: "pending" | "authorized" | "failed";
 }
 
 // Initial state
@@ -57,23 +57,23 @@ const initialBookingState: BookingState = {
   pilgrims: [],
   selectedBedIds: [],
   totalPrice: 0,
-  currency: 'EUR',
+  currency: "EUR",
   currentStep: 1,
   bookingId: null,
-  status: 'draft',
+  status: "draft",
   contactInfo: {
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
     emergencyContact: {
-      name: '',
-      phone: '',
-      relationship: '',
+      name: "",
+      phone: "",
+      relationship: "",
     },
   },
   payment: {
-    provider: 'psp',
+    provider: "psp",
   },
 };
 
@@ -84,103 +84,103 @@ export const bookingStore = map<BookingState>(initialBookingState);
 export const bookingActions = {
   // Date management
   setCheckInDate: (date: string) => {
-    bookingStore.setKey('checkInDate', date);
+    bookingStore.setKey("checkInDate", date);
   },
 
   setCheckOutDate: (date: string) => {
-    bookingStore.setKey('checkOutDate', date);
+    bookingStore.setKey("checkOutDate", date);
   },
 
   // Guest management
   setNumberOfGuests: (count: number) => {
-    bookingStore.setKey('numberOfGuests', count);
+    bookingStore.setKey("numberOfGuests", count);
   },
 
-  addPilgrim: (pilgrim: Omit<Pilgrim, 'id'>) => {
+  addPilgrim: (pilgrim: Omit<Pilgrim, "id">) => {
     const newPilgrim: Pilgrim = {
       ...pilgrim,
       id: `pilgrim_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
     };
 
-    bookingStore.setKey('pilgrims', [...bookingStore.get().pilgrims, newPilgrim]);
+    bookingStore.setKey("pilgrims", [...bookingStore.get().pilgrims, newPilgrim]);
   },
 
   updatePilgrim: (id: string, updates: Partial<Pilgrim>) => {
     const pilgrims = bookingStore
       .get()
       .pilgrims.map((pilgrim) => (pilgrim.id === id ? { ...pilgrim, ...updates } : pilgrim));
-    bookingStore.setKey('pilgrims', pilgrims);
+    bookingStore.setKey("pilgrims", pilgrims);
   },
 
   removePilgrim: (id: string) => {
     const pilgrims = bookingStore.get().pilgrims.filter((pilgrim) => pilgrim.id !== id);
-    bookingStore.setKey('pilgrims', pilgrims);
+    bookingStore.setKey("pilgrims", pilgrims);
   },
 
   // Bed selection
   selectBed: (bedId: string) => {
     const currentBeds = bookingStore.get().selectedBedIds;
     if (!currentBeds.includes(bedId)) {
-      bookingStore.setKey('selectedBedIds', [...currentBeds, bedId]);
+      bookingStore.setKey("selectedBedIds", [...currentBeds, bedId]);
     }
   },
 
   deselectBed: (bedId: string) => {
     const currentBeds = bookingStore.get().selectedBedIds;
     bookingStore.setKey(
-      'selectedBedIds',
-      currentBeds.filter((id) => id !== bedId)
+      "selectedBedIds",
+      currentBeds.filter((id) => id !== bedId),
     );
   },
 
   clearBedSelection: () => {
-    bookingStore.setKey('selectedBedIds', []);
+    bookingStore.setKey("selectedBedIds", []);
   },
 
   // Pricing
   setTotalPrice: (price: number) => {
-    bookingStore.setKey('totalPrice', price);
+    bookingStore.setKey("totalPrice", price);
   },
 
   setCurrency: (currency: string) => {
-    bookingStore.setKey('currency', currency);
+    bookingStore.setKey("currency", currency);
   },
 
   // Booking flow
   setCurrentStep: (step: number) => {
-    bookingStore.setKey('currentStep', step);
+    bookingStore.setKey("currentStep", step);
   },
 
   nextStep: () => {
     const currentStep = bookingStore.get().currentStep;
-    bookingStore.setKey('currentStep', currentStep + 1);
+    bookingStore.setKey("currentStep", currentStep + 1);
   },
 
   previousStep: () => {
     const currentStep = bookingStore.get().currentStep;
     if (currentStep > 1) {
-      bookingStore.setKey('currentStep', currentStep - 1);
+      bookingStore.setKey("currentStep", currentStep - 1);
     }
   },
 
   // Contact info
   setContactInfo: (info: Partial<ContactInfo>) => {
     const current = bookingStore.get().contactInfo;
-    bookingStore.setKey('contactInfo', { ...current, ...info });
+    bookingStore.setKey("contactInfo", { ...current, ...info });
   },
 
   // Opaque PSP metadata only. Card data must go directly to hosted PSP fields.
   setPayment: (payment: PaymentSelection) => {
-    bookingStore.setKey('payment', payment);
+    bookingStore.setKey("payment", payment);
   },
 
   // Booking completion
   setBookingId: (id: string) => {
-    bookingStore.setKey('bookingId', id);
+    bookingStore.setKey("bookingId", id);
   },
 
-  setStatus: (status: BookingState['status']) => {
-    bookingStore.setKey('status', status);
+  setStatus: (status: BookingState["status"]) => {
+    bookingStore.setKey("status", status);
   },
 
   // Reset booking
@@ -240,7 +240,7 @@ export const bookingSelectors = {
           !!state.contactInfo.email && !!state.contactInfo.firstName && !!state.contactInfo.lastName
         );
       case 5: // Payment
-        return state.payment.provider === 'psp';
+        return state.payment.provider === "psp";
       default:
         return false;
     }
@@ -257,11 +257,11 @@ export const loadPersistedBooking = () => {
 };
 
 function cleanupLegacyBookingStorage() {
-  if (typeof window === 'undefined') return;
-  localStorage.removeItem('albergue-booking');
-  sessionStorage.removeItem('albergue-booking');
+  if (typeof window === "undefined") return;
+  localStorage.removeItem("albergue-booking");
+  sessionStorage.removeItem("albergue-booking");
 }
 
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   cleanupLegacyBookingStorage();
 }

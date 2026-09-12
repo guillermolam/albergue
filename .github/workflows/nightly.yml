@@ -2,7 +2,7 @@ name: Nightly Release Pipeline
 
 on:
   schedule:
-    - cron: '0 3 * * *'
+    - cron: "0 3 * * *"
   workflow_dispatch:
 
 # Set minimal permissions globally
@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      
+
       - name: Count Dependabot PRs
         id: count
         env:
@@ -42,7 +42,7 @@ jobs:
     if: ${{ needs.check-dependabot.outputs.pr_count != '0' }}
     uses: $/.github/workflows/_reusable-frontend-setup.yml
     with:
-      command: ./.github/scripts/run-nightly-validation.sh
+      script: run-nightly-validation.sh
 
   auto-merge:
     name: Auto-Merge Dependabot PRs
@@ -57,7 +57,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      
+
       - name: Auto-merge Dependabot PRs
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -101,15 +101,15 @@ jobs:
       - name: Setup Node.js and pnpm
         uses: $/.github/actions/setup-node-pnpm
         with:
-          node-version: '24'
-          pnpm-version: '10.29.3'
+          node-version: "24"
+          pnpm-version: "10.29.3"
 
       - name: Build frontend for Cloudflare
-        run: pnpm --filter albergue-carrascalejo-frontend build:cloudflare
+        run: ./.github/scripts/build-frontend-target.sh cloudflare
 
       - name: Deploy to Cloudflare
         working-directory: frontend
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID || '798e36259a38e6217cc9987ce0bf1316' }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: ../.github/scripts/deploy-cloudflare.sh

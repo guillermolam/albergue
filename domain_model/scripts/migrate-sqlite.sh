@@ -7,19 +7,19 @@ echo " SQLite Migration Script for Spin/Fermyon"
 SQLITE_DB=${SQLITE_DATABASE:-"./albergue.db"}
 MIGRATIONS_DIR="database/migrations"
 
-echo " Database: $SQLITE_DB"
+echo " Database: ${SQLITE_DB}"
 
 # Create database directory
-mkdir -p "$(dirname "$SQLITE_DB")"
+mkdir -p "$(dirname "${SQLITE_DB}")"
 
 # Remove existing database for fresh start (development only)
-if [ "$1" = "--fresh" ]; then
+if [[ $1 == "--fresh" ]]; then
 	echo "  Removing existing database..."
-	rm -f "$SQLITE_DB"
+	rm -f "${SQLITE_DB}"
 fi
 
 # Create migrations table
-sqlite3 "$SQLITE_DB" "
+sqlite3 "${SQLITE_DB}" "
 CREATE TABLE IF NOT EXISTS schema_migrations (
     version TEXT PRIMARY KEY,
     executed_at TEXT DEFAULT (datetime('now'))
@@ -27,16 +27,16 @@ CREATE TABLE IF NOT EXISTS schema_migrations (
 
 # Convert and run PostgreSQL migrations for SQLite
 echo " Converting and running migrations..."
-for migration_file in "$MIGRATIONS_DIR"/*.sql; do
-	if [ -f "$migration_file" ]; then
-		filename=$(basename "$migration_file")
+for migration_file in "${MIGRATIONS_DIR}"/*.sql; do
+	if [[ -f ${migration_file} ]]; then
+		filename=$(basename "${migration_file}")
 		version="${filename%%.sql}"
 
 		# Check if migration already executed
-		if sqlite3 "$SQLITE_DB" "SELECT 1 FROM schema_migrations WHERE version = '$version';" | grep -q 1; then
-			echo "     $filename (already executed)"
+		if sqlite3 "${SQLITE_DB}" "SELECT 1 FROM schema_migrations WHERE version = '${version}';" | grep -q 1; then
+			echo "     ${filename} (already executed)"
 		else
-			echo "    Converting $filename for SQLite..."
+			echo "    Converting ${filename} for SQLite..."
 
 			# Convert PostgreSQL to SQLite syntax
 			temp_file=$(mktemp)
@@ -56,13 +56,13 @@ for migration_file in "$MIGRATIONS_DIR"/*.sql; do
 				-e '/EXCLUDE USING gist/,/WHERE/d' \
 				-e '/CREATE OR REPLACE FUNCTION/,/\$\$ language/d' \
 				-e '/CREATE TRIGGER.*BEFORE UPDATE/,/FUNCTION/d' \
-				"$migration_file" >"$temp_file"
+				"${migration_file}" >"${temp_file}"
 
-			echo "     Executing $filename"
-			sqlite3 "$SQLITE_DB" <"$temp_file"
-			sqlite3 "$SQLITE_DB" "INSERT INTO schema_migrations (version) VALUES ('$version');"
-			rm "$temp_file"
-			echo "    $filename completed"
+			echo "     Executing ${filename}"
+			sqlite3 "${SQLITE_DB}" <"${temp_file}"
+			sqlite3 "${SQLITE_DB}" "INSERT INTO schema_migrations (version) VALUES ('${version}');"
+			rm "${temp_file}"
+			echo "    ${filename} completed"
 		fi
 	fi
 done
@@ -72,11 +72,11 @@ echo " SQLite migrations completed!"
 # Show migration status
 echo ""
 echo " Migration History:"
-sqlite3 "$SQLITE_DB" "SELECT version, executed_at FROM schema_migrations ORDER BY executed_at;"
+sqlite3 "${SQLITE_DB}" "SELECT version, executed_at FROM schema_migrations ORDER BY executed_at;"
 
 echo ""
 echo " Database Info:"
-sqlite3 "$SQLITE_DB" "
+sqlite3 "${SQLITE_DB}" "
 SELECT name as table_name, 
        (SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=outer_table.name) as exists
 FROM (

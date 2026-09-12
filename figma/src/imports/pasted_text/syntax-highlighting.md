@@ -8,6 +8,7 @@ description: "Learn how to highlight your code blocks in Astro."
 tags:
   - "clippings"
 ---
+
 Astro comes with built-in support for [Shiki](https://shiki.style/) and [Prism](https://prismjs.com/). This provides syntax highlighting for:
 
 - all [code fences (\`\`\`)](#markdown-code-blocks) used in a Markdown or MDX file.
@@ -24,8 +25,8 @@ A Markdown code block is indicated by a block with three backticks \`\`\` at the
 \`\`\`js
 // JavaScript code with syntax highlighting.
 var fun = function lang(l) {
-  dateformat.i18n = require('./lang/' + l);
-  return true;
+dateformat.i18n = require('./lang/' + l);
+return true;
 };
 \`\`\`
 ```
@@ -41,12 +42,12 @@ See the full [`markdown.shikiConfig` reference](https://docs.astro.build/en/refe
 You can configure any [built-in Shiki theme](https://shiki.style/themes) for your Markdown code blocks in your Astro config:
 
 ```js
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
   markdown: {
     shikiConfig: {
-      theme: 'dracula',
+      theme: "dracula",
     },
   },
 });
@@ -59,14 +60,14 @@ See the full [Shiki config reference](https://docs.astro.build/en/reference/conf
 You can specify dual Shiki themes for light and dark mode in your Astro config:
 
 ```js
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
   markdown: {
     shikiConfig: {
       themes: {
-        light: 'github-light',
-        dark: 'github-dark',
+        light: "github-light",
+        dark: "github-dark",
       },
     },
   },
@@ -98,8 +99,8 @@ See the full [Shiki config reference](https://docs.astro.build/en/reference/conf
 Instead of using one of Shiki’s predefined themes, you can import a custom Shiki theme from a local file.
 
 ```js
-import { defineConfig } from 'astro/config';
-import customTheme from './my-shiki-theme.json';
+import { defineConfig } from "astro/config";
+import customTheme from "./my-shiki-theme.json";
 
 export default defineConfig({
   markdown: {

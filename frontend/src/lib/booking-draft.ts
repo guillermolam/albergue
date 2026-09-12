@@ -10,12 +10,12 @@
  *   production driver and must be provisioned before Phase 4.
  */
 
-export const BOOKING_DRAFT_SESSION_KEY = 'bookingDraft' as const;
+export const BOOKING_DRAFT_SESSION_KEY = "bookingDraft" as const;
 export const BOOKING_DRAFT_VERSION = 1 as const;
 /** Drafts are abandoned-cart state; 30 minutes matches the reservation window. */
 export const BOOKING_DRAFT_TTL_MS = 30 * 60 * 1000;
 
-export type BookingStep = 'dates' | 'guests' | 'beds' | 'contact' | 'payment';
+export type BookingStep = "dates" | "guests" | "beds" | "contact" | "payment";
 
 export interface BookingDraft {
   version: typeof BOOKING_DRAFT_VERSION;
@@ -35,7 +35,7 @@ export function createBookingDraft(now: Date = new Date()): BookingDraft {
   return {
     version: BOOKING_DRAFT_VERSION,
     draftId: crypto.randomUUID(),
-    step: 'dates',
+    step: "dates",
     expiresAt: new Date(now.getTime() + BOOKING_DRAFT_TTL_MS).toISOString(),
   };
 }
@@ -52,33 +52,33 @@ function baseDraft(current: BookingDraft | undefined, now: Date): BookingDraft {
 export function updateBookingDates(
   current: BookingDraft | undefined,
   input: { arrivalDate: string; departureDate: string },
-  now: Date = new Date()
+  now: Date = new Date(),
 ): BookingDraft {
   const draft = baseDraft(current, now);
   draft.arrivalDate = input.arrivalDate;
   draft.departureDate = input.departureDate;
-  draft.step = 'guests';
+  draft.step = "guests";
   return draft;
 }
 
 export function updateBookingGuests(
   current: BookingDraft | undefined,
   input: { guestCount: number },
-  now: Date = new Date()
+  now: Date = new Date(),
 ): BookingDraft {
   const draft = baseDraft(current, now);
   draft.guestCount = input.guestCount;
-  draft.step = 'beds';
+  draft.step = "beds";
   return draft;
 }
 
 export function updateBookingBeds(
   current: BookingDraft | undefined,
   input: { selectedBedIds: string[] },
-  now: Date = new Date()
+  now: Date = new Date(),
 ): BookingDraft {
   const draft = baseDraft(current, now);
   draft.selectedBedIds = input.selectedBedIds;
-  draft.step = 'contact';
+  draft.step = "contact";
   return draft;
 }

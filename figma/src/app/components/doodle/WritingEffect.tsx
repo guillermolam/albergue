@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 interface WritingEffectProps {
   text: string;
@@ -7,15 +7,20 @@ interface WritingEffectProps {
   onComplete?: () => void;
 }
 
-export function WritingEffect({ text, speed = 50, className = '', onComplete }: WritingEffectProps) {
-  const [displayedText, setDisplayedText] = useState('');
+export function WritingEffect({
+  text,
+  speed = 50,
+  className = "",
+  onComplete,
+}: WritingEffectProps) {
+  const [displayedText, setDisplayedText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     if (currentIndex < text.length) {
       const timeout = setTimeout(() => {
-        setDisplayedText(prev => prev + text[currentIndex]);
-        setCurrentIndex(prev => prev + 1);
+        setDisplayedText((prev) => prev + text[currentIndex]);
+        setCurrentIndex((prev) => prev + 1);
       }, speed);
 
       return () => clearTimeout(timeout);
@@ -27,9 +32,7 @@ export function WritingEffect({ text, speed = 50, className = '', onComplete }: 
   return (
     <span className={className}>
       {displayedText}
-      {currentIndex < text.length && (
-        <span className="animate-pulse">|</span>
-      )}
+      {currentIndex < text.length && <span className="animate-pulse">|</span>}
     </span>
   );
 }

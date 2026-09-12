@@ -1,20 +1,20 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Toaster } from './components/ui/sonner';
-import { I18nProvider } from './contexts/I18nContext';
-import { AuthProvider } from './contexts/AuthContext';
-import { LanguageSelector } from './components/LanguageSelector';
-import { UserProfileMenu } from './components/UserProfileMenu';
-import { HomePage } from './components/HomePage';
-import { NewBookingFlow } from './components/NewBookingFlow';
-import { GuestDashboard } from './components/GuestDashboard';
-import { AdminLayout } from './components/admin/AdminLayout';
-import { Dashboard } from './components/admin/Dashboard';
-import { BookingsTable } from './components/admin/BookingsTable';
-import { BedManagement } from './components/admin/BedManagement';
-import { PrivacyPolicy } from './components/PrivacyPolicy';
-import { TermsAndConditions } from './components/TermsAndConditions';
-import { CookiePolicy } from './components/CookiePolicy';
-import { LegalNotice } from './components/LegalNotice';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Toaster } from "./components/ui/sonner";
+import { I18nProvider } from "./contexts/I18nContext";
+import { AuthProvider } from "./contexts/AuthContext";
+import { LanguageSelector } from "./components/LanguageSelector";
+import { UserProfileMenu } from "./components/UserProfileMenu";
+import { HomePage } from "./components/HomePage";
+import { NewBookingFlow } from "./components/NewBookingFlow";
+import { GuestDashboard } from "./components/GuestDashboard";
+import { AdminLayout } from "./components/admin/AdminLayout";
+import { Dashboard } from "./components/admin/Dashboard";
+import { BookingsTable } from "./components/admin/BookingsTable";
+import { BedManagement } from "./components/admin/BedManagement";
+import { PrivacyPolicy } from "./components/PrivacyPolicy";
+import { TermsAndConditions } from "./components/TermsAndConditions";
+import { CookiePolicy } from "./components/CookiePolicy";
+import { LegalNotice } from "./components/LegalNotice";
 
 function App() {
   return (
@@ -31,10 +31,10 @@ function App() {
             <Routes>
               {/* Home Page with 3D Map */}
               <Route path="/" element={<HomePage />} />
-              
+
               {/* Booking Flow */}
               <Route path="/book" element={<NewBookingFlow />} />
-              
+
               {/* Guest Dashboard - Shows after booking complete */}
               <Route path="/dashboard" element={<GuestDashboard />} />
 

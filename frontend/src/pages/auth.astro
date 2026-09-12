@@ -24,17 +24,13 @@ if (result?.data?.ok) {
         <h1 class="text-2xl font-bold text-charcoal mb-2 font-sketch text-center">
           Acceso al panel
         </h1>
-        <p class="text-dark-grey font-handwritten text-center mb-6">
-          Solo personal del albergue
-        </p>
+        <p class="text-dark-grey font-handwritten text-center mb-6">Solo personal del albergue</p>
 
-        {
-          result?.error && (
-            <p role="alert" class="mb-4 text-red-700 text-sm text-center">
-              Credenciales no válidas
-            </p>
-          )
-        }
+        {result?.error && (
+          <p role="alert" class="mb-4 text-red-700 text-sm text-center">
+            Credenciales no válidas
+          </p>
+        )}
 
         <form method="post" action={actions.auth.login} class="flex flex-col gap-4">
           <label class="flex flex-col gap-1">

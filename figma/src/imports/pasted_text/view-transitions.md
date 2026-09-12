@@ -8,6 +8,7 @@ description: "Enable seamless navigation between pages in Astro with view transi
 tags:
   - "clippings"
 ---
+
 [View transitions](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API) are animated transitions between different website views. They are a popular design choice for preserving visual continuity as visitors move between states or views of an application.
 
 Astro’s view transitions and client-side routing support is powered by the [View Transitions browser API](https://developer.chrome.com/docs/web-platform/view-transitions/) and also includes:
@@ -495,21 +496,19 @@ import { ClientRouter } from "astro:transitions";
 When using the `<ClientRouter />` router, the following steps occur to produce Astro’s client-side navigation:
 
 1. A visitor to your site triggers navigation by any of the following actions:
-	- Clicking an `<a>` tag linking internally to another page on your site.
-		- Clicking the back button.
-		- Clicking the forward button.
+   - Clicking an `<a>` tag linking internally to another page on your site.
+     - Clicking the back button.
+     - Clicking the forward button.
 2. The router starts fetching the next page.
 3. The router adds the `data-astro-transition` attribute to the HTML element with a value of `"forward"` or `"back"` as appropriate.
 4. The router calls `document.startViewTransition`. This triggers the browser’s own [view transition process](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API/Using#the_view_transition_process). Importantly, the browser screenshots the current state of the page.
 5. Inside the `startViewTransition` callback, the router performs a **swap**, which consists of the following sequence of events:
-	- The contents of the `<head>` are swapped out, with some elements kept:
-		- Stylesheet DOM nodes are left in if they exist on the new page, to prevent FOUC.
-				- Scripts are left in if they exist on the new page.
-				- Any other head elements with `transition:persist` are left in if there is a corresponding element in the new page.
-		- The `<body>` is completely replaced with the new page’s body.
-		- Elements marked `transition:persist` are moved over to the new DOM if they exist on the new page.
-		- Scroll position is restored if necessary.
-		- The `astro:after-swap` event is triggered on the `document`. This is the end of the **swap** process.
+   - The contents of the `<head>` are swapped out, with some elements kept:
+     - Stylesheet DOM nodes are left in if they exist on the new page, to prevent FOUC. - Scripts are left in if they exist on the new page. - Any other head elements with `transition:persist` are left in if there is a corresponding element in the new page.
+     - The `<body>` is completely replaced with the new page’s body.
+     - Elements marked `transition:persist` are moved over to the new DOM if they exist on the new page.
+     - Scroll position is restored if necessary.
+     - The `astro:after-swap` event is triggered on the `document`. This is the end of the **swap** process.
 6. The router waits for any new stylesheets to load before resolving the transition.
 7. The router executes any new scripts added to the page.
 8. The `astro:page-load` event fires. This is the end of the navigation process.
@@ -659,7 +658,7 @@ This event can be used to make changes before the swap occurs. The `newDocument`
 </script>
 ```
 
-The `astro:before-swap` event can also be used to change the *implementation* of the swap. The default swap implementation diffs head content, moves **persistent** elements from the old document to the `newDocument`, and then replaces the entire `body` with the body of the new document.
+The `astro:before-swap` event can also be used to change the _implementation_ of the swap. The default swap implementation diffs head content, moves **persistent** elements from the old document to the `newDocument`, and then replaces the entire `body` with the body of the new document.
 
 At this point of the lifecycle, you could choose to define your own swap implementation, for example to diff the entire contents of the existing document (which some other routers do):
 
@@ -762,4 +761,4 @@ We strongly recommend you always include a `<title>` in each page for accessibil
 
 ### prefers-reduced-motion
 
-Astro’s `<ClientRouter />` component includes a CSS media query that disables *all* view transition animations, including fallback animation, whenever the [`prefers-reduced-motion`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion) setting is detected. Instead, the browser will simply swap the DOM elements without an animation.
+Astro’s `<ClientRouter />` component includes a CSS media query that disables _all_ view transition animations, including fallback animation, whenever the [`prefers-reduced-motion`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion) setting is detected. Instead, the browser will simply swap the DOM elements without an animation.

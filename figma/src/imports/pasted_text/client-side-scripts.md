@@ -8,6 +8,7 @@ description: "How to add client-side interactivity to Astro components using nat
 tags:
   - "clippings"
 ---
+
 You can send JavaScript to the browser and add functionality to your Astro components using `<script>` tags in the component template.
 
 Scripts add interactivity to your site, such as handling events or updating content dynamically, without the need for a [UI framework](https://docs.astro.build/en/guides/framework-components/) like React, Svelte, or Vue. This avoids the overhead of shipping framework JavaScript and doesn’t require you to know any additional framework to create a full-featured website or application.

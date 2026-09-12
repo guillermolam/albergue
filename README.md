@@ -31,7 +31,7 @@ The application combines a lightweight, hand-drawn design system for pilgrims wi
 - **Bed Booking & Reservation**: Real-time bed availability tracking (€10/night across 24 beds), automated expiration timers for pending reservations, and multi-language support (ES, EN, EU, KO, ID, PT, AR).
 - **Pilgrim Identity Protection**: End-to-end PII data protection with encrypted personal storage (passport/national ID numbers, birth dates, phone numbers, and addresses) in compliance with GDPR data retention policies.
 - **Hospitalero Management Dashboard**: Real-time room assignment, bed status monitoring, maintenance notes, and payment status verification.
-- **Automated Law Enforcement Compliance**: Automatic XML document generation and transmission for Spanish police traveller logs (*partes de hospederías* / Guardia Civil).
+- **Automated Law Enforcement Compliance**: Automatic XML document generation and transmission for Spanish police traveller logs (_partes de hospederías_ / Guardia Civil).
 - **CQRS Backend Architecture**: Built with Hono and Drizzle ORM using strict Command/Query separation, rate limiting (100 req/min per IP), circuit breakers, and health diagnostics.
 - **Multi-Cloud Target Support**: Front-end deployment configured for Cloudflare Workers/Pages (default via Wrangler), Netlify, or Stormkit.
 
@@ -51,12 +51,12 @@ This project is structured as a **pnpm workspace monorepo**:
 
 ### Technology Stack
 
-| Layer | Technologies |
-| :--- | :--- |
-| **Frontend** | Astro 7.3, RoughJS, webcoreui, UnoCSS, Swup, Nanostores, Playwright, Vitest |
-| **Backend** | Hono 4.13, Node.js (`@hono/node-server`), Drizzle ORM, Zod, Vitest |
+| Layer             | Technologies                                                                   |
+| :---------------- | :----------------------------------------------------------------------------- |
+| **Frontend**      | Astro 7.3, RoughJS, webcoreui, UnoCSS, Swup, Nanostores, Playwright, Vitest    |
+| **Backend**       | Hono 4.13, Node.js (`@hono/node-server`), Drizzle ORM, Zod, Vitest             |
 | **Domain & Data** | PostgreSQL, Drizzle ORM schemas, Drizzle-Zod validation models, SQL migrations |
-| **Deployment** | Cloudflare Workers / Pages, Netlify, Stormkit |
+| **Deployment**    | Cloudflare Workers / Pages, Netlify, Stormkit                                  |
 
 ---
 
@@ -126,15 +126,15 @@ Ensure you have the following installed on your local development machine:
 
 All scripts are defined at the root workspace level and can be executed via `pnpm`:
 
-| Command | Description |
-| :--- | :--- |
-| `pnpm dev` | Starts the Astro frontend dev server (`localhost:4321`) |
-| `pnpm dev:backend` | Starts the Hono backend API dev server (`localhost:3001`) |
-| `pnpm dev:all` | Runs frontend and backend dev servers in parallel |
-| `pnpm build` | Builds the frontend for Cloudflare Pages (default) |
-| `pnpm build:all` | Builds all packages (`domain_model`, `backend`, `frontend`) |
-| `pnpm type-check` | Runs TypeScript type checking across all workspace packages |
-| `pnpm test` | Runs unit tests for the backend package via Vitest |
+| Command            | Description                                                 |
+| :----------------- | :---------------------------------------------------------- |
+| `pnpm dev`         | Starts the Astro frontend dev server (`localhost:4321`)     |
+| `pnpm dev:backend` | Starts the Hono backend API dev server (`localhost:3001`)   |
+| `pnpm dev:all`     | Runs frontend and backend dev servers in parallel           |
+| `pnpm build`       | Builds the frontend for Cloudflare Pages (default)          |
+| `pnpm build:all`   | Builds all packages (`domain_model`, `backend`, `frontend`) |
+| `pnpm type-check`  | Runs TypeScript type checking across all workspace packages |
+| `pnpm test`        | Runs unit tests for the backend package via Vitest          |
 
 ### Frontend-specific commands
 

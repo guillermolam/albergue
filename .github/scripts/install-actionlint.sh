@@ -1,43 +1,48 @@
 #!/usr/bin/env bash
+# Build actionlint from the pinned commit that parses GitHub $/ uses syntax.
+# Release v1.7.12 (2026-03-30) predates $/ (2026-07-30). Pin stays until
+# rhysd/actionlint#732 ships in a release. No -ignore flags in the runner.
 set -euo pipefail
 
-version="${ACTIONLINT_VERSION:-1.7.12}"
+# refs/pull/732/head on rhysd/actionlint -- re-verify before bumping
+ACTIONLINT_COMMIT="${ACTIONLINT_COMMIT:-b02c24b743cc88a26b280339814eb4ece91c32cb}"
+ACTIONLINT_REPO="${ACTIONLINT_REPO:-https://github.com/rhysd/actionlint.git}"
+bindir="${ACTIONLINT_BIN_DIR:-${HOME}/.local/bin}"
+stamp="${bindir}/.actionlint-commit"
 
-# Skip only when the installed version already matches
-if command -v actionlint >/dev/null 2>&1; then
-  installed="$(actionlint --version 2>/dev/null | head -n1 | awk '{print $2}')"
-  if [[ "$installed" == "${version#v}" ]]; then
-    exit 0
-  fi
-  echo "actionlint $installed installed; upgrading to ${version#v}" >&2
+if [[ -x "${bindir}/actionlint" && -f ${stamp} && "$(cat "${stamp}")" == "${ACTIONLINT_COMMIT}" ]]; then
+	exit 0
 fi
 
-case "$(uname -s)" in
-  Linux) os="linux" ;;
-  Darwin) os="darwin" ;;
-  *)
-    echo "unsupported OS for actionlint installer: $(uname -s)" >&2
-    exit 1
-    ;;
-esac
+if ! command -v go >/dev/null 2>&1; then
+	echo "go is required to build actionlint@${ACTIONLINT_COMMIT}" >&2
+	exit 1
+fi
 
-case "$(uname -m)" in
-  x86_64|amd64) arch="amd64" ;;
-  arm64|aarch64) arch="arm64" ;;
-  *)
-    echo "unsupported architecture for actionlint installer: $(uname -m)" >&2
-    exit 1
-    ;;
-esac
-
-archive="actionlint_${version#v}_${os}_${arch}.tar.gz"
-url="https://github.com/rhysd/actionlint/releases/download/v${version#v}/${archive}"
-bindir="${ACTIONLINT_BIN_DIR:-$HOME/.local/bin}"
+if ! command -v git >/dev/null 2>&1; then
+	echo "git is required to fetch actionlint@${ACTIONLINT_COMMIT}" >&2
+	exit 1
+fi
 
 tmpdir="$(mktemp -d)"
-trap 'rm -rf "$tmpdir"' EXIT
+trap 'rm -rf "${tmpdir}"' EXIT
 
-curl -fsSL "$url" -o "$tmpdir/$archive"
-tar -xzf "$tmpdir/$archive" -C "$tmpdir"
-mkdir -p "$bindir"
-install -m 0755 "$tmpdir/actionlint" "$bindir/actionlint"
+git -C "${tmpdir}" clone --filter=blob:none --no-checkout "${ACTIONLINT_REPO}" src
+git -C "${tmpdir}/src" fetch --depth 1 origin "${ACTIONLINT_COMMIT}"
+git -C "${tmpdir}/src" checkout --detach FETCH_HEAD
+
+actual="$(git -C "${tmpdir}/src" rev-parse HEAD)"
+if [[ ${actual} != "${ACTIONLINT_COMMIT}" ]]; then
+	echo "actionlint commit mismatch: fetched ${actual}, expected ${ACTIONLINT_COMMIT}" >&2
+	exit 1
+fi
+
+(
+	cd "${tmpdir}/src"
+	go build -o actionlint ./cmd/actionlint
+)
+
+mkdir -p "${bindir}"
+install -m 0755 "${tmpdir}/src/actionlint" "${bindir}/actionlint"
+printf '%s\n' "${ACTIONLINT_COMMIT}" >"${stamp}"
+echo "installed actionlint ${ACTIONLINT_COMMIT} -> ${bindir}/actionlint" >&2

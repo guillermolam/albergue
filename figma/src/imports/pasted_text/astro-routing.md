@@ -8,6 +8,7 @@ description: "An intro to routing with Astro."
 tags:
   - "clippings"
 ---
+
 Astro uses **file-based routing** to generate your build URLs based on the file layout of your project `src/pages/` directory.
 
 ## Navigating between pages
@@ -36,7 +37,7 @@ src/pages/posts/1.md         -> mysite.com/posts/1
 
 ## Dynamic routes
 
-An Astro page file can specify dynamic route parameters in its filename to generate multiple, matching pages. For example, `src/pages/authors/[author].astro` generates a bio page for every author on your blog. `author` becomes a *parameter* that you can access from inside the page.
+An Astro page file can specify dynamic route parameters in its filename to generate multiple, matching pages. For example, `src/pages/authors/[author].astro` generates a bio page for every author on your blog. `author` becomes a _parameter_ that you can access from inside the page.
 
 In Astro’s default static output mode, these pages are generated at build time, and so you must predetermine the list of `author` s that get a corresponding file. In SSR mode, a page will be generated on request for any route that matches.
 
@@ -255,8 +256,8 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
   redirects: {
     "/old-page": "/new-page",
-    "/blog": "https://example.com/blog"
-  }
+    "/blog": "https://example.com/blog",
+  },
 });
 ```
 
@@ -279,13 +280,13 @@ export default defineConfig({
   redirects: {
     "/old-page": {
       status: 302,
-      destination: "/new-page"
+      destination: "/new-page",
     },
     "/news": {
       status: 302,
-      destination: "https://example.com/news"
-    }
-  }
+      destination: "https://example.com/news",
+    },
+  },
 });
 ```
 
@@ -363,7 +364,7 @@ export const onRequest = async (context, next) => {
     return context.rewrite("/");
   }
   return response;
-}
+};
 ```
 
 Before displaying the content from the specified rewrite path, the function `Astro.rewrite()` will trigger a new, complete rendering phase. This re-executes any middleware for the new route/request.
@@ -373,12 +374,12 @@ Before displaying the content from the specified rewrite path, the function `Ast
 It’s possible for multiple defined routes to attempt to build the same URL path. For example, all of these routes could build `/posts/create`:
 
 - src/pages/
-	- \[…slug\].astro
-	- posts/
-		- create.astro
-		- \[page\].astro
-		- \[pid\].ts
-		- \[…slug\].astro
+  - \[…slug\].astro
+  - posts/
+    - create.astro
+    - \[page\].astro
+    - \[pid\].ts
+    - \[…slug\].astro
 
 Astro needs to know which route should be used to build the page. To do so, it sorts them according to the following rules in order:
 
@@ -557,19 +558,19 @@ You can use this to temporarily disable pages, and also to put tests, utilities,
 In this example, only `src/pages/index.astro` and `src/pages/projects/project1.md` will be built as page routes and HTML files.
 
 - src/pages/
-	- \_hidden-directory/
-		- page1.md
-		- page2.md
-	- \_hidden-page.astro
-	- ```
-		index.astro
-		```
-	- projects/
-		- \_SomeComponent.astro
-		- \_utils.js
-		- ```
-			project1.md
-			```
+  - \_hidden-directory/
+    - page1.md
+    - page2.md
+  - \_hidden-page.astro
+  - ```
+      index.astro
+    ```
+  - projects/
+    - \_SomeComponent.astro
+    - \_utils.js
+    - ```
+        project1.md
+      ```
 
 ## Advanced routing
 
@@ -584,13 +585,13 @@ Astro’s advanced routing allows you to replace this pipeline with your own. Yo
 When the default pipeline does not fit your needs, you can override it by creating a `src/fetch.ts` file that default-exports an object with a `fetch()` method. This method receives a standard [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request) and must return a [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response).
 
 ```ts
-import type { Fetchable } from 'astro';
+import type { Fetchable } from "astro";
 
 export default {
   async fetch(request) {
     // Your custom request handling logic here
     return new Response("Hello from advanced routing!");
-  }
+  },
 } satisfies Fetchable;
 ```
 
@@ -603,17 +604,17 @@ By default, Astro looks for `src/fetch.ts` as the advanced routing entrypoint. Y
 The following example tells Astro to look for `src/handler.ts` instead of `src/fetch.ts`:
 
 ```js
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
-  fetchFile: 'handler',
+  fetchFile: "handler",
 });
 ```
 
 Set `fetchFile` to `null` to disable the entrypoint entirely. This is useful if you already have a `src/fetch.ts` file used for other purposes:
 
 ```js
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
   fetchFile: null,
@@ -690,9 +691,9 @@ export default {
 Astro also provides Hono-compatible wrappers for all handler functions via [`astro/hono`](https://docs.astro.build/en/reference/modules/astro-hono/). If you prefer to use [Hono](https://hono.dev/) as your routing framework, you can export a Hono app from `src/fetch.ts`:
 
 ```ts
-import { Hono } from 'hono';
-import { logger } from 'hono/logger';
-import { actions, middleware, pages, i18n } from 'astro/hono';
+import { Hono } from "hono";
+import { logger } from "hono/logger";
+import { actions, middleware, pages, i18n } from "astro/hono";
 
 const app = new Hono();
 
@@ -711,15 +712,15 @@ export default app;
 You can also guard protected routes by registering an authorization check on the Hono routes you want to protect:
 
 ```ts
-import { Hono } from 'hono';
-import { actions, middleware, pages, i18n } from 'astro/hono';
-import { isLoggedIn } from './lib/auth';
+import { Hono } from "hono";
+import { actions, middleware, pages, i18n } from "astro/hono";
+import { isLoggedIn } from "./lib/auth";
 
 const app = new Hono();
 
 // Guard every route under /dashboard.
-app.use('/dashboard', requireAuth);
-app.use('/dashboard/*', requireAuth);
+app.use("/dashboard", requireAuth);
+app.use("/dashboard/*", requireAuth);
 
 app.use(actions());
 app.use(middleware());
@@ -730,7 +731,7 @@ export default app;
 
 async function requireAuth(c, next) {
   if (!(await isLoggedIn(c.req.raw))) {
-    return c.redirect('/login');
+    return c.redirect("/login");
   }
   return next();
 }

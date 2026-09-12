@@ -8,6 +8,7 @@ description: "Manage your content with type safety."
 tags:
   - "clippings"
 ---
+
 **Added in:** `astro@2.0.0`
 
 **Content collections** are the best way to manage sets of content in any Astro project: blog posts, product descriptions, character profiles, recipes, or any structured content. Collections help to organize and query your documents, enable Intellisense and type checking in your editor, and provide automatic TypeScript type-safety for all of your content.
@@ -19,17 +20,17 @@ Astro provides performant, scalable APIs to load, query, and render content from
 A content collection is a set of related, structurally identical data. This data can be stored in one or several files locally (e.g. a folder of individual Markdown files of blog posts, a single JSON file of product descriptions) or fetched from remote sources such as a database, CMS, or API endpoint. Each member of the collection is called an entry.
 
 - src/
-	- …
+  - …
 - ```
-	newsletter/
-	```
-	- week-1.md a collection entry
-	- week-2.md a collection entry
-	- week-3.md a collection entry
+    newsletter/
+  ```
+  - week-1.md a collection entry
+  - week-2.md a collection entry
+  - week-3.md a collection entry
 - ```
-	authors/
-	```
-	- authors.json a single file containing all collection entries
+    authors/
+  ```
+  - authors.json a single file containing all collection entries
 
 Collections are defined by the location and shape of its entries and provide a convenient way to query and render your content and associated metadata. You can create a collection any time you have a group of related data or content, stored in the same location, that shares a common structure.
 
@@ -128,17 +129,17 @@ Each individual collection configures:
 
 ```ts
 // 1. Import utilities from \`astro:content\`
-import { defineCollection } from 'astro:content';
+import { defineCollection } from "astro:content";
 
 // 2. Import loader(s)
-import { glob, file } from 'astro/loaders';
+import { glob, file } from "astro/loaders";
 
 // 3. Import Zod
-import { z } from 'astro/zod';
+import { z } from "astro/zod";
 
 // 4. Define a \`loader\` and \`schema\` for each collection
 const blog = defineCollection({
-  loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
+  loader: glob({ base: "./src/content/blog", pattern: "**/*.{md,mdx}" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -168,8 +169,8 @@ The [`glob()` loader](https://docs.astro.build/en/reference/content-loader-refer
 This loader requires a `pattern` of entry files to match using glob patterns supported by [micromatch](https://github.com/micromatch/micromatch#matching-features), and a `base` file path of where your files are located. A unique `id` for each entry will be automatically generated from its file name, but you can [define custom IDs](#defining-custom-ids) if needed.
 
 ```ts
-import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
 
 const blog = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/data/blog" }),
@@ -189,6 +190,7 @@ You can override a single entry’s generated `id` by adding your own `slug` pro
 title: My Blog Post
 slug: my-custom-id/supports/slashes
 ---
+
 Your blog post content here.
 ```
 
@@ -274,7 +276,7 @@ const cats = defineCollection({
 The `parser()` argument can be used to load a single collection from a nested JSON document. For example, this JSON file contains multiple collections:
 
 ```json
-{"dogs": [{}], "cats": [{}]}
+{ "dogs": [{}], "cats": [{}] }
 ```
 
 You can separate these collections by passing a custom `parser()` function to the `file()` loader for each collection, using Astro’s built-in JSON parsing:
@@ -284,10 +286,14 @@ import { file } from "astro/loaders";
 import { defineCollection } from "astro:content";
 
 const dogs = defineCollection({
-  loader: file("src/data/pets.json", { parser: (text) => JSON.parse(text).dogs })
+  loader: file("src/data/pets.json", {
+    parser: (text) => JSON.parse(text).dogs,
+  }),
 });
 const cats = defineCollection({
-  loader: file("src/data/pets.json", { parser: (text) => JSON.parse(text).cats })
+  loader: file("src/data/pets.json", {
+    parser: (text) => JSON.parse(text).cats,
+  }),
 });
 ```
 
@@ -351,7 +357,7 @@ export const collections = { blog, dogs };
 
 ### Defining datatypes with Zod
 
-Astro uses [Zod](https://github.com/colinhacks/zod) to power its content schemas. With Zod, Astro is able to validate every file’s data within a collection *and* provide automatic TypeScript types when you query content from inside your project.
+Astro uses [Zod](https://github.com/colinhacks/zod) to power its content schemas. With Zod, Astro is able to validate every file’s data within a collection _and_ provide automatic TypeScript types when you query content from inside your project.
 
 To use Zod in Astro, import the `z` utility from `"astro/zod"`. This is a re-export of the Zod library, and it supports all of the features of Zod 4.
 
@@ -398,8 +404,8 @@ This example blog post specifies the `id` s of related posts and the `id` of the
 ---
 title: "Welcome to my blog"
 relatedPosts:
-- about-me # references \`src/content/blog/about-me.md\`
-- my-year-in-review # references \`src/content/blog/my-year-in-review.md\`
+  - about-me # references \`src/content/blog/about-me.md\`
+  - my-year-in-review # references \`src/content/blog/my-year-in-review.md\`
 ---
 ```
 
@@ -674,13 +680,13 @@ You can optionally [include type safety in your live loaders](https://docs.astro
 
 ```ts
 // Define live collections for accessing real-time data
-import { defineLiveCollection } from 'astro:content';
-import { storeLoader } from '@mystore/astro-loader';
+import { defineLiveCollection } from "astro:content";
+import { storeLoader } from "@mystore/astro-loader";
 
 const products = defineLiveCollection({
   loader: storeLoader({
     apiKey: process.env.STORE_API_KEY,
-    endpoint: 'https://api.mystore.com/v1',
+    endpoint: "https://api.mystore.com/v1",
   }),
 });
 
@@ -942,10 +948,10 @@ You can invalidate cached entries by passing a `LiveDataEntry` to [`cache.invali
 The following example invalidates the cached response for a specific product entry:
 
 ```ts
-import { getLiveEntry } from 'astro:content';
+import { getLiveEntry } from "astro:content";
 
 export async function POST(context) {
-  const { entry } = await getLiveEntry('products', 'featured');
+  const { entry } = await getLiveEntry("products", "featured");
   if (entry) {
     await context.cache.invalidate(entry);
   }

@@ -8,6 +8,7 @@ description: "An introduction to the basic file structure of an Astro project."
 tags:
   - "clippings"
 ---
+
 Your new Astro project generated from the `create astro` CLI wizard already includes some files and folders. Others, you will create yourself and add to Astro’s existing file structure.
 
 Here’s how an Astro project is organized, and some files you will find in your new project.
@@ -27,34 +28,34 @@ Astro leverages an opinionated folder layout for your project. Every Astro proje
 A common Astro project directory might look like this:
 
 - public/
-	- robots.txt
-	- favicon.svg
-	- my-cv.pdf
+  - robots.txt
+  - favicon.svg
+  - my-cv.pdf
 - src/
-	- blog/
-		- post1.md
-		- post2.md
-		- post3.md
-	- components/
-		- Header.astro
-		- Button.jsx
-	- images/
-		- image1.jpg
-		- image2.jpg
-		- image3.jpg
-	- layouts/
-		- PostLayout.astro
-	- pages/
-		- posts/
-			- \[post\].astro
-		- about.astro
-		- ```
-			index.astro
-			```
-		- rss.xml.js
-	- styles/
-		- global.css
-	- content.config.ts
+  - blog/
+    - post1.md
+    - post2.md
+    - post3.md
+  - components/
+    - Header.astro
+    - Button.jsx
+  - images/
+    - image1.jpg
+    - image2.jpg
+    - image3.jpg
+  - layouts/
+    - PostLayout.astro
+  - pages/
+    - posts/
+      - \[post\].astro
+    - about.astro
+    - ```
+        index.astro
+      ```
+    - rss.xml.js
+  - styles/
+    - global.css
+  - content.config.ts
 - astro.config.mjs
 - package.json
 - tsconfig.json

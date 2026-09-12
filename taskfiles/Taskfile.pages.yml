@@ -90,15 +90,15 @@ tasks:
           exit 1
         fi
         echo "   Testing: $FERMYON_URL"
-        
+
         # Test root
         STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$FERMYON_URL" 2>/dev/null || echo "000")
         echo "   Root: HTTP $STATUS"
-        
+
         # Test API
         STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$FERMYON_URL/api/" 2>/dev/null || echo "000")
         echo "   API:  HTTP $STATUS"
-        
+
         if [ "$STATUS" = "200" ] || [ "$STATUS" = "404" ]; then
           echo "✅ Fermyon Cloud is responding"
         else
@@ -126,14 +126,14 @@ tasks:
         echo "📊 Deployment Status"
         echo "===================="
         echo ""
-        
+
         echo "Fermyon Cloud:"
         if spin cloud apps info $FERMYON_APP_NAME 2>/dev/null | grep "URL:" > /dev/null; then
           spin cloud apps info $FERMYON_APP_NAME 2>/dev/null
         else
           echo "   ❌ Not found"
         fi
-        
+
         echo ""
         echo "Cloudflare Worker Deployments:"
         cd frontend && CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN pnpm exec wrangler deployments list || echo "   ❌ Not found"

@@ -6,6 +6,11 @@ vars:
   FERMYON_APP_NAME: "albergue-carrascalejo"
 
 tasks:
+  validate:
+    desc: Lint GitHub Actions (zizmor, actionlint, shellcheck, SHA pins)
+    cmds:
+      - ./.github/scripts/validate-workflows.sh
+
   status:
     desc: Show deployment status
     cmds:
@@ -13,11 +18,11 @@ tasks:
         echo "📊 Deployment Status"
         echo "===================="
         echo ""
-        
+
         echo "Cloudflare:"
         echo "   Worker: $CLOUDFLARE_WORKER_NAME"
         echo "   Status: Check at https://github.com/$GITHUB_REPO/actions"
-        
+
         echo ""
         echo "Fermyon Cloud:"
         spin cloud apps info $FERMYON_APP_NAME 2>/dev/null || echo "   ❌ Not found"
@@ -42,7 +47,7 @@ tasks:
     desc: Test all deployments
     cmds:
       - task test:github
-      
+
       - echo ""
       - echo "Fermyon Cloud:"
       - echo "Fermyon Cloud:"

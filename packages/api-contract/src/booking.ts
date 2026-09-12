@@ -7,22 +7,22 @@
 
 /** Booking lifecycle — mirrors `bookings.status`. */
 export type BookingStatus =
-  | 'reserved'
-  | 'checked_in'
-  | 'checked_out'
-  | 'completed'
-  | 'cancelled'
-  | 'expired'
-  | 'deleted';
+  | "reserved"
+  | "checked_in"
+  | "checked_out"
+  | "completed"
+  | "cancelled"
+  | "expired"
+  | "deleted";
 
 export const BOOKING_STATUSES: readonly BookingStatus[] = [
-  'reserved',
-  'checked_in',
-  'checked_out',
-  'completed',
-  'cancelled',
-  'expired',
-  'deleted',
+  "reserved",
+  "checked_in",
+  "checked_out",
+  "completed",
+  "cancelled",
+  "expired",
+  "deleted",
 ];
 
 export interface CreateBookingRequest {
@@ -84,7 +84,7 @@ export interface BookingSummary {
   checkOutDate: string;
   /** Decimal string. */
   totalAmount: string;
-  currency: 'EUR';
+  currency: "EUR";
 }
 
 export interface CreateBedReservationRequest {

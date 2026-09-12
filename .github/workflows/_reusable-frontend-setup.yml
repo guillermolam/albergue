@@ -1,24 +1,29 @@
-name: 'Reusable Frontend Setup'
+name: "Reusable Frontend Setup"
 
 on:
   workflow_call:
     inputs:
       node-version:
-        description: 'Node.js version to use'
+        description: "Node.js version to use"
         type: string
-        default: '24'
+        default: "24"
       pnpm-version:
-        description: 'pnpm version to use'
+        description: "pnpm version to use"
         type: string
-        default: '10.29.3'
+        default: "10.29.3"
       install-playwright:
-        description: 'Install Playwright Chromium browser'
+        description: "Install Playwright Chromium browser"
         type: boolean
         default: false
-      command:
-        description: 'Command to run after setup'
+      script:
+        description: "Basename of a script under .github/scripts/"
         type: string
         required: true
+      script-args:
+        description: "Optional single argument forwarded to the script"
+        type: string
+        required: false
+        default: ""
 
 permissions: {}
 
@@ -33,7 +38,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      
+
       - name: Setup Node.js and pnpm
         uses: $/.github/actions/setup-node-pnpm
         with:
@@ -42,9 +47,10 @@ jobs:
 
       - name: Install Playwright browsers
         if: ${{ inputs.install-playwright }}
-        run: pnpm --filter albergue-carrascalejo-frontend exec playwright install --with-deps chromium
+        run: ./.github/scripts/install-playwright.sh
 
-      - name: Run command
+      - name: Run requested script
         env:
-          COMMAND: ${{ inputs.command }}
-        run: $COMMAND
+          CALLED_SCRIPT: ${{ inputs.script }}
+          CALLED_ARGS: ${{ inputs.script-args }}
+        run: ./.github/scripts/run-called-script.sh

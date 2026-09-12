@@ -1,33 +1,33 @@
-name: 'Setup Node.js and pnpm'
-description: 'Sets up Node.js with specified version and pnpm with caching'
+name: "Setup Node.js and pnpm"
+description: "Sets up Node.js with specified version and pnpm with caching"
 inputs:
   node-version:
-    description: 'Node.js version to use'
+    description: "Node.js version to use"
     required: false
-    default: '24'
+    default: "24"
   pnpm-version:
-    description: 'pnpm version to use'
+    description: "pnpm version to use"
     required: false
-    default: '10.29.3'
+    default: "10.29.3"
   cache-dependency-path:
-    description: 'Path to package-lock.json or equivalent for cache key'
+    description: "Path to package-lock.json or equivalent for cache key"
     required: false
-    default: 'pnpm-lock.yaml'
+    default: "pnpm-lock.yaml"
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Setup pnpm
-      uses: pnpm/action-setup@d9184bf108216479bc5a137cc391f4d7b14c870b # v6.1.0
+      uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       with:
         version: ${{ inputs.pnpm-version }}
-    
+
     - name: Setup Node.js
       uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
         node-version: ${{ inputs.node-version }}
         cache: pnpm
         cache-dependency-path: ${{ inputs.cache-dependency-path }}
-    
+
     - name: Install dependencies
       shell: bash
-      run: pnpm install --frozen-lockfile
+      run: ./.github/scripts/install-workspace-deps.sh

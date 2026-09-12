@@ -26,7 +26,7 @@ jobs:
       contents: read
     uses: $/.github/workflows/_reusable-frontend-setup.yml
     with:
-      command: ./.github/scripts/run-frontend-quality.sh
+      script: run-frontend-quality.sh
       install-playwright: true
 
   frontend-builds:
@@ -39,7 +39,8 @@ jobs:
         target: [cloudflare, netlify, stormkit]
     uses: $/.github/workflows/_reusable-frontend-setup.yml
     with:
-      command: ./.github/scripts/build-frontend-target.sh "${{ matrix.target }}"
+      script: build-frontend-target.sh
+      script-args: ${{ matrix.target }}
 
   backend:
     name: Hono backend
@@ -51,13 +52,13 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      
+
       - name: Setup Node.js and pnpm
         uses: $/.github/actions/setup-node-pnpm
         with:
-          node-version: '24'
-          pnpm-version: '10.29.3'
-      
+          node-version: "24"
+          pnpm-version: "10.29.3"
+
       - name: Run backend pipeline
         run: ./.github/scripts/run-backend-checks.sh
 
@@ -91,18 +92,18 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      
+
       - name: Setup Node.js and pnpm
         uses: $/.github/actions/setup-node-pnpm
         with:
-          node-version: '24'
-          pnpm-version: '10.29.3'
-      
+          node-version: "24"
+          pnpm-version: "10.29.3"
+
       - name: Check migration files
-        run: pnpm --filter @albergue/domain-model migration:check
-      
+        run: ./.github/scripts/check-migrations.sh
+
       - name: Apply journaled Drizzle migrations
         run: ./.github/scripts/apply-migrations.sh
-      
+
       - name: Verify authoritative database schema
         run: ./.github/scripts/verify-database-schema.sh

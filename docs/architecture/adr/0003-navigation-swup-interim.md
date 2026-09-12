@@ -13,12 +13,12 @@ alternatives that did not exist (stable) when Swup was adopted.
 
 Options compared:
 
-| Option | JS cost | a11y (focus/announce) | History/scroll | Notes |
-| --- | --- | --- | --- | --- |
-| Swup (current) | ~10 kB + plugins | plugin-managed | plugin-managed | global instance; script re-execution via `reloadScripts` is a known fragility |
-| Plain MPA + `prefetch` | 0 kB | browser-native | browser-native | loses cross-page transitions; prefetch already enabled |
-| Cross-document View Transitions | ~0 kB (native) | browser-native | browser-native | Chrome/Edge/Safari 18+; Firefox pending — acceptable as progressive enhancement |
-| `ClientRouter` | ~3 kB | built-in | built-in | Astro-native; per-page opt-in; closest maintained analogue to Swup |
+| Option                          | JS cost          | a11y (focus/announce) | History/scroll | Notes                                                                           |
+| ------------------------------- | ---------------- | --------------------- | -------------- | ------------------------------------------------------------------------------- |
+| Swup (current)                  | ~10 kB + plugins | plugin-managed        | plugin-managed | global instance; script re-execution via `reloadScripts` is a known fragility   |
+| Plain MPA + `prefetch`          | 0 kB             | browser-native        | browser-native | loses cross-page transitions; prefetch already enabled                          |
+| Cross-document View Transitions | ~0 kB (native)   | browser-native        | browser-native | Chrome/Edge/Safari 18+; Firefox pending — acceptable as progressive enhancement |
+| `ClientRouter`                  | ~3 kB            | built-in              | built-in       | Astro-native; per-page opt-in; closest maintained analogue to Swup              |
 
 ## Decision
 

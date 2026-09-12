@@ -1,118 +1,92 @@
 # GitHub Actions Security Remediation
 
-This document outlines the comprehensive security remediation performed on the CI/CD pipeline using zizmor analysis and security best practices.
+Security remediation of the CI/CD pipeline using zizmor (pedantic, `--no-ignores`), actionlint (no `-ignore`), and shellcheck. Final state: **zero findings** from all three tools. No stage is skipped. No warning is suppressed.
 
-## 🔒 Security Issues Fixed
+## Issues Fixed
 
-### Critical (High) Issues
-- ✅ **Unpinned Actions**: All actions now pinned to SHA commits with version comments
-- ✅ **Excessive Permissions**: Minimal permissions set per job (contents: read, etc.)
-- ✅ **Credential Persistence**: All checkout actions use `persist-credentials: false`
+### High
 
-### Medium Issues  
-- ✅ **Template Injection**: Environment variables used instead of direct template expansion
-- ✅ **Self-Repository Syntax**: Updated to use `$/...` syntax for local actions
+- **Unpinned service image**: `postgres:15` in the CI database job is pinned to a SHA256 digest (`postgres:15@sha256:9b1d34ad…`).
 
-## 📦 Actions Pinned with Latest Versions
+### Medium
 
-| Action | Version | SHA | 
-|--------|---------|-----|
-| actions/checkout | v7.0.1 | 3d3c42e5aac5ba805825da76410c181273ba90b1 |
-| actions/setup-node | v7.0.0 | 820762786026740c76f36085b0efc47a31fe5020 |
-| pnpm/action-setup | v6.0.10 | ff378ebe6b225b0680b81c1ad4498ae0d1d3a5e3 |
-| softprops/action-gh-release | v3.0.2 | fe965f7af51af5f2602596916f38a38df2e33de0 |
+- **Excessive permissions**: the reusable workflow declares `permissions: {}` at workflow level; every caller job declares its own minimal permissions.
 
-## 🏗️ Architectural Improvements
+### Low / hygiene
 
-### Composite Actions Created
-- **setup-node-pnpm**: Reusable action for Node.js and pnpm setup with caching
-- **Location**: `.github/actions/setup-node-pnpm/action.yml`
+- **Missing concurrency limits**: `ci.yml`, `nightly.yml`, `github-actions-security.yml` declare `concurrency` groups (cancel-in-progress for CI, serialized for nightly).
+- **Undocumented permissions**: every non-trivial permission carries a trailing explanatory comment (zizmor requires trailing comments).
+- **Self-repository references**: all same-repo action/workflow references use GitHub `$/` syntax (recommended since 2026-07-30; resolves at the running commit).
 
-### Scripts Externalized
-| Original Location | New Script | Purpose |
-|------------------|------------|---------|
-| CI workflow inline | `.github/scripts/apply-migrations.sh` | Database migration application |
-| CI workflow inline | `.github/scripts/verify-database-schema.sh` | Schema validation |
-| Nightly workflow inline | `.github/scripts/count-dependabot-prs.sh` | Count dependency PRs |
-| Nightly workflow inline | `.github/scripts/auto-merge-dependabot-prs.sh` | Auto-merge approved PRs |
-| Nightly workflow inline | `.github/scripts/generate-nightly-version.sh` | Generate nightly version tags |
+### Script correctness bugs found by local green-run verification
 
-### Reusable Workflows
-- **Frontend Setup**: `_reusable-frontend-setup.yml` for common setup patterns
+- **`set -e` + `((count++))`**: post-increment returns 0 on first iteration, so `set -e` killed the script after the first migration. Replaced with `count=$((count + 1))`.
+- **`while read` + process substitution feeding `psql`**: the loop body shares stdin with the tag stream. Replaced with a `for` loop over a pre-collected list.
+- **SC2001**: `sed`-based SQL IN-list replaced with pure-bash `printf` expansion.
 
-## 🔐 Permission Model
+## Actions Pinned (SHA verified against tags)
 
-Each job now uses minimal required permissions:
+| Action             | Version         | SHA (dereferenced commit)                | Status   |
+| ------------------ | --------------- | ---------------------------------------- | -------- |
+| actions/checkout   | v7.0.1 (latest) | 3d3c42e5aac5ba805825da76410c181273ba90b1 | verified |
+| actions/setup-node | v7.0.0 (latest) | 820762786026740c76f36085b0efc47a31fe5020 | verified |
+| actions/setup-go   | v7.0.0 (latest) | b7ad1dad31e06c5925ef5d2fc7ad053ef454303e | verified |
+| pnpm/action-setup  | v6.1.0 (latest) | ea17c68df8912ef543352723c149a84f56e3d413 | verified |
+
+Pins use the dereferenced commit SHA (annotated tag objects are resolved through `git/tags`). `check-action-sha-updates.sh` re-verifies latest-tag + SHA + version comment on every validation run and fails on drift.
+
+Releases are created with the `gh` CLI (`create-nightly-release.sh`). No third-party release action.
+
+## Architecture
+
+### Composite action
+
+- `.github/actions/setup-node-pnpm` — pnpm + Node + cache + frozen-lockfile install.
+
+### Reusable workflow
+
+- `_reusable-frontend-setup.yml` — checkout → setup → optional Playwright → allowlisted script under `.github/scripts/`. Used by `frontend-quality`, `frontend-builds` (matrix), and nightly `validate`.
+
+### Externalized scripts (`.github/scripts/`)
+
+All multi-line logic lives in shellchecked, executable scripts. Workflows only invoke those scripts.
+
+| Script                                                      | Purpose                                                             |
+| ----------------------------------------------------------- | ------------------------------------------------------------------- |
+| `run-frontend-quality.sh`                                   | format, type-check, astro check, e2e                                |
+| `build-frontend-target.sh`                                  | per-target build (cloudflare/netlify/stormkit)                      |
+| `run-backend-checks.sh`                                     | domain-model + api-contract build, backend type-check, tests        |
+| `apply-migrations.sh`                                       | journaled Drizzle migrations, in order                              |
+| `verify-database-schema.sh`                                 | authoritative tables/columns assertions                             |
+| `run-nightly-validation.sh`                                 | nightly dependency validation build                                 |
+| `count-dependabot-prs.sh` / `auto-merge-dependabot-prs.sh`  | dependency PR automation                                            |
+| `generate-nightly-version.sh` / `create-nightly-release.sh` | nightly tag + `gh release create`                                   |
+| `deploy-cloudflare.sh`                                      | `wrangler deploy`                                                   |
+| `install-playwright.sh`                                     | Chromium + OS deps for e2e                                          |
+| `run-called-script.sh`                                      | allowlist gate for reusable-workflow script dispatch                |
+| `install-zizmor.sh` / `install-actionlint.sh`               | pinned-version tool installers                                      |
+| `run-zizmor.sh` / `run-actionlint.sh`                       | linter entrypoints (no ignore flags)                                |
+| `check-action-sha-updates.sh`                               | fails on pin drift: latest tag, dereferenced SHA, version comment   |
+| `validate-workflows.sh`                                     | zizmor + actionlint + shellcheck + pin check + executability + YAML |
+
+## Permission model
 
 ```yaml
 permissions:
-  contents: read           # Default for checkout
-  pull-requests: read     # For PR operations (dependabot check)
-  pull-requests: write    # For PR merging (auto-merge)
-  contents: write         # For release creation only
+  contents: read # default everywhere
+  pull-requests: read # dependabot counting only
+  pull-requests: write # auto-merge only
+  contents: write # nightly release creation only
 ```
 
-## 📋 Validation Tools
+All checkouts use `persist-credentials: false`.
 
-### Scripts Added
-- **validate-workflows.sh**: Comprehensive validation script that:
-  - Runs zizmor security analysis
-  - Checks script permissions  
-  - Validates YAML syntax
-  - Verifies composite actions
+## actionlint and `$/`
 
-### Usage
-```bash
-./.github/scripts/validate-workflows.sh
-```
+Released actionlint v1.7.12 cannot parse `$/`. Rather than `-ignore` those diagnostics, `install-actionlint.sh` builds rhysd/actionlint#732 at pinned commit `b02c24b743cc88a26b280339814eb4ece91c32cb` (verified via `refs/pull/732/head`). `run-actionlint.sh` passes no ignore flags. Switch to a released tag when 1.7.13+ ships that commit.
 
-## 🚀 CI/CD Pipeline Structure
+zizmor is pinned to 1.30.0 (`cargo install --locked --version 1.30.0`).
 
-### CI Workflow (`ci.yml`)
-1. **frontend-quality**: Format, type-check, Astro check, E2E tests
-2. **frontend-builds**: Multi-target builds (Cloudflare, Netlify, Stormkit)  
-3. **backend**: Domain model build, type-check, tests
-4. **database**: Migration check, application, schema validation
+## Verification
 
-### Nightly Workflow (`nightly.yml`)
-1. **check-dependabot**: Count open dependency PRs
-2. **validate**: Validate dependency updates
-3. **auto-merge**: Automatically merge approved PRs
-4. **nightly-release**: Create nightly release tags
-5. **deploy-cloudflare**: Deploy to Cloudflare Pages
-
-## ✅ Security Analysis Results
-
-Final zizmor analysis: **No findings to report. Good job!**
-
-- All high and medium security issues resolved
-- Only low-confidence informational findings remain (suppressed)
-- Zero vulnerabilities in production configuration
-
-## 🎯 Best Practices Implemented
-
-1. **SHA Pinning**: All external actions pinned to commit SHAs
-2. **Minimal Permissions**: Least privilege principle applied
-3. **No Credential Persistence**: Checkout doesn't persist GitHub tokens
-4. **Script Externalization**: No inline bash/Python in workflows
-5. **Reusable Components**: DRY principle with composite actions
-6. **Input Sanitization**: Template injection prevention
-7. **Proper Error Handling**: Scripts use `set -euo pipefail`
-8. **Validation Scripts**: Automated security and syntax checking
-
-## 🔄 Maintenance
-
-To keep the pipeline secure:
-
-1. **Monthly**: Check for action updates using `validate-workflows.sh`
-2. **Before releases**: Run zizmor analysis
-3. **Dependency updates**: Validate with nightly workflow
-4. **New actions**: Always pin to SHA and verify permissions
-
-## 📊 Impact
-
-- **Security**: Eliminated all high/medium zizmor findings
-- **Maintainability**: Externalized scripts, reusable components  
-- **Reliability**: Comprehensive validation and error handling
-- **Performance**: Efficient caching and parallel builds
-- **Auditability**: Clear permission model and SHA pinning
+`./.github/scripts/validate-workflows.sh` — zizmor pedantic `--no-ignores`: no findings; actionlint: clean, no ignores; shellcheck: clean; pin check: latest SHAs; all scripts executable; all YAML valid.
