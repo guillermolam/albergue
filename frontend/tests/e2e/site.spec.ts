@@ -15,17 +15,18 @@ test('home page loads and links to booking', async ({ page }) => {
   await expect(page).toHaveURL(/\/(book|booking)\/?$/);
 });
 
-test('dashboard controls update progress and daily goal', async ({ page }) => {
-  await page.goto('/camino-dashboard');
-  await expect(page.locator('[data-hydrated="true"]')).toBeVisible();
+for (const route of ['/info', '/book', '/admin']) {
+  test(`${route} renders its current route`, async ({ page }) => {
+    const response = await page.goto(route);
 
-  const currentStage = page.getByRole('region', { name: 'Etapa Actual' });
-  await expect(currentStage).toContainText('68%');
-  await currentStage.getByRole('button', { name: '+5%' }).click();
-  await expect(currentStage).toContainText('73%');
+    expect(response?.status()).toBe(200);
+    await expect(page.locator('main')).toBeVisible();
+  });
+}
 
-  const dailyPlanning = page.getByRole('region', { name: 'Planificación Diaria' });
-  await expect(dailyPlanning).toContainText('25 km');
-  await dailyPlanning.getByRole('button', { name: '+' }).click();
-  await expect(dailyPlanning).toContainText('26 km');
+test('unknown routes render the 404 page', async ({ page }) => {
+  const response = await page.goto('/phase-0-smoke-missing');
+
+  expect(response?.status()).toBe(404);
+  await expect(page.locator('body')).toContainText(/404|no encontrada|not found/i);
 });

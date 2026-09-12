@@ -1,0 +1,204 @@
+/* Prevent horizontal overflow globally */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-size: var(--font-size);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Patrick Hand', 'Indie Flower', cursive;
+  }
+}
+
+@layer base {
+  :where(:not(:has([class*=' text-']), :not(:has([class^='text-'])))) {
+    h1 {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      font-family: 'Cabin Sketch', 'Patrick Hand', cursive;
+    }
+
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      font-family: 'Cabin Sketch', 'Patrick Hand', cursive;
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      font-family: 'Cabin Sketch', 'Patrick Hand', cursive;
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      font-family: 'Patrick Hand', cursive;
+    }
+
+    label {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      font-family: 'Patrick Hand', cursive;
+    }
+
+    button {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+      font-family: 'Patrick Hand', cursive;
+    }
+
+    input {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+      font-family: 'Patrick Hand', cursive;
+    }
+  }
+}
+
+/* ── Doodle / Sketch utilities ── */
+@layer utilities {
+  .doodle-border {
+    position: relative;
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  }
+
+  .doodle-shadow {
+    box-shadow:
+      2px 2px 0px rgba(0, 0, 0, 0.2),
+      4px 4px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  .sketch-underline {
+    position: relative;
+  }
+
+  .sketch-underline::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='3' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,2 Q5,0 10,2 T20,2 T30,2 T40,2 T50,2 T60,2 T70,2 T80,2 T90,2 T100,2' stroke='%2300AB39' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-size: 100px 3px;
+  }
+
+  .sketchy-bg {
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(0, 0, 0, 0.02) 10px,
+        rgba(0, 0, 0, 0.02) 11px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 10px,
+        rgba(0, 0, 0, 0.02) 10px,
+        rgba(0, 0, 0, 0.02) 11px
+      );
+  }
+
+  .paper-texture {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  .wobble {
+    animation: wobble 3s ease-in-out infinite;
+  }
+
+  @keyframes wobble {
+    0%, 100% { transform: rotate(0deg); }
+    25%       { transform: rotate(0.5deg); }
+    75%       { transform: rotate(-0.5deg); }
+  }
+
+  .hand-drawn {
+    font-family: 'Shadows Into Light', cursive;
+  }
+
+  .sketch-title {
+    font-family: 'Cabin Sketch', cursive;
+    font-weight: 700;
+  }
+
+  .wired-border {
+    position: relative;
+    background: white;
+  }
+
+  .wired-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border: 2px solid currentColor;
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    opacity: 0.8;
+  }
+
+  .wired-border::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border: 2px solid currentColor;
+    border-radius: 15px 255px 15px 225px/225px 15px 255px 15px;
+    opacity: 0.5;
+  }
+
+  .squiggle-top::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 10%;
+    right: 10%;
+    height: 5px;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,2.5 Q5,0 10,2.5 T20,2.5 T30,2.5 T40,2.5 T50,2.5 T60,2.5 T70,2.5 T80,2.5 T90,2.5 T100,2.5' stroke='currentColor' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    opacity: 0.6;
+  }
+
+  .arrow-doodle {
+    position: relative;
+  }
+
+  .arrow-doodle::after {
+    content: '→';
+    font-size: 1.5em;
+    margin-left: 0.3em;
+    display: inline-block;
+    transform: rotate(-5deg);
+  }
+
+  .highlight-doodle {
+    background: linear-gradient(180deg, transparent 60%, #EAC102 60%);
+    padding: 0 0.2em;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}

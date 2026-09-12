@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "allowArbitraryExtensions": true
+  },
+  "include": [
+    ".astro/types.d.ts",
+    "src/**/*.astro",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.d.ts",
+    "worker-configuration.d.ts"
+  ],
+  "exclude": ["node_modules", "dist", "tests", "src/**/*.test.tsx"]
+}

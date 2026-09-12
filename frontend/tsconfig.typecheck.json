@@ -12,10 +12,17 @@
   "include": [
     ".astro/types.d.ts",
     "src/env.d.ts",
+    "src/ambient-modules.d.ts",
+    "src/types/**/*.ts",
     "src/components/core/statsUtils.ts",
+    "src/components/ui/statsUtils.ts",
+    "src/config/swup.config.ts",
     "src/stores/i18nStore.ts",
     "src/stores/user.ts",
-    "src/lib/healthchecks.ts"
+    "src/lib/healthchecks.ts",
+    "src/scripts/runtime.ts",
+    "src/scripts/runtime_rough.ts",
+    "src/scripts/runtime_stores_bridge.ts"
   ],
   "exclude": ["node_modules", "dist"]
 }
