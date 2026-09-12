@@ -5,81 +5,90 @@
 
 import { db } from '../lib/db.js';
 import { bookings, beds } from '@albergue/domain-model';
-import { eq, and, or, isNull, lte } from 'drizzle-orm';
+import { eq, and, lte, inArray } from 'drizzle-orm';
 import type { InsertBooking, UpdateBookingInput, Booking } from '../types/index.js';
 
 /**
  * Create a new booking
  */
 export async function createBooking(input: InsertBooking): Promise<Booking> {
-  const [result] = await db
-    .insert(bookings)
-    .values({
-      ...input,
-      status: input.status || 'reserved',
-      numberOfPersons: input.numberOfPersons || 1,
-      numberOfRooms: input.numberOfRooms || 1,
-      hasInternet: input.hasInternet || false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    })
-    .returning();
-  
-  if (!result) {
-    throw new Error('Failed to create booking');
-  }
-  
-  // If bedAssignmentId is provided, reserve the bed
-  if (result.bedAssignmentId) {
-    await db
-      .update(beds)
-      .set({
-        isAvailable: false,
-        status: 'reserved',
-        reservedUntil: result.reservationExpiresAt,
-        updatedAt: new Date(),
+  return db.transaction(async (tx) => {
+    const now = new Date();
+    if (input.bedAssignmentId) {
+      const [claimedBed] = await tx
+        .update(beds)
+        .set({
+          isAvailable: false,
+          status: 'reserved',
+          reservedUntil: input.reservationExpiresAt,
+          updatedAt: now,
+        })
+        .where(and(eq(beds.id, input.bedAssignmentId), eq(beds.isAvailable, true)))
+        .returning({ id: beds.id });
+
+      if (!claimedBed) {
+        throw new Error(`Bed ${input.bedAssignmentId} is unavailable`);
+      }
+    }
+
+    const [result] = await tx
+      .insert(bookings)
+      .values({
+        ...input,
+        status: input.status || 'reserved',
+        numberOfPersons: input.numberOfPersons || 1,
+        numberOfRooms: input.numberOfRooms || 1,
+        hasInternet: input.hasInternet || false,
+        createdAt: now,
+        updatedAt: now,
       })
-      .where(eq(beds.id, result.bedAssignmentId));
-  }
-  
-  return result;
+      .returning();
+
+    if (!result) throw new Error('Failed to create booking');
+    return result;
+  });
 }
 
 /**
  * Create multiple bookings (batch)
  */
 export async function createBookingsBatch(inputs: InsertBooking[]): Promise<Booking[]> {
-  const results = await db
-    .insert(bookings)
-    .values(
-      inputs.map(input => ({
+  const bedIds = inputs.flatMap((input) => input.bedAssignmentId ? [input.bedAssignmentId] : []);
+  if (new Set(bedIds).size !== bedIds.length) {
+    throw new Error('A bed cannot be assigned to more than one booking in a batch');
+  }
+  if (inputs.length === 0) return [];
+
+  return db.transaction(async (tx) => {
+    const now = new Date();
+    for (const input of inputs) {
+      if (!input.bedAssignmentId) continue;
+      const [claimedBed] = await tx
+        .update(beds)
+        .set({
+          isAvailable: false,
+          status: 'reserved',
+          reservedUntil: input.reservationExpiresAt,
+          updatedAt: now,
+        })
+        .where(and(eq(beds.id, input.bedAssignmentId), eq(beds.isAvailable, true)))
+        .returning({ id: beds.id });
+      if (!claimedBed) throw new Error(`Bed ${input.bedAssignmentId} is unavailable`);
+    }
+
+    return tx
+      .insert(bookings)
+      .values(inputs.map((input) => ({
         ...input,
         status: input.status || 'reserved',
         numberOfPersons: input.numberOfPersons || 1,
         numberOfRooms: input.numberOfRooms || 1,
         hasInternet: input.hasInternet || false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }))
-    )
-    .returning();
-  
-  // Reserve beds for all bookings
-  for (const result of results) {
-    if (result.bedAssignmentId) {
-      await db
-        .update(beds)
-        .set({
-          isAvailable: false,
-          status: 'reserved',
-          reservedUntil: result.reservationExpiresAt,
-          updatedAt: new Date(),
-        })
-        .where(eq(beds.id, result.bedAssignmentId));
-    }
-  }
-  
-  return results;
+        createdAt: now,
+        updatedAt: now,
+      })))
+      .returning();
+  });
 }
 
 /**
@@ -166,49 +175,46 @@ export async function assignBedToBooking(
   bookingId: number,
   bedId: number
 ): Promise<boolean> {
-  // First, release any previously assigned bed
-  const [booking] = await db
-    .select({ bedAssignmentId: bookings.bedAssignmentId })
-    .from(bookings)
-    .where(eq(bookings.id, bookingId))
-    .limit(1);
-  
-  if (booking?.bedAssignmentId) {
-    await db
-      .update(beds)
-      .set({
-        isAvailable: true,
-        status: 'available',
-        reservedUntil: null,
-        updatedAt: new Date(),
+  return db.transaction(async (tx) => {
+    const [booking] = await tx
+      .select({
+        bedAssignmentId: bookings.bedAssignmentId,
+        reservationExpiresAt: bookings.reservationExpiresAt,
       })
-      .where(eq(beds.id, booking.bedAssignmentId));
-  }
-  
-  // Assign new bed
-  const [result] = await db
-    .update(bookings)
-    .set({
-      bedAssignmentId: bedId,
-      updatedAt: new Date(),
-    })
-    .where(eq(bookings.id, bookingId))
-    .returning();
-  
-  if (result) {
-    await db
+      .from(bookings)
+      .where(eq(bookings.id, bookingId))
+      .limit(1);
+    if (!booking) return false;
+    if (booking.bedAssignmentId === bedId) return true;
+
+    const now = new Date();
+    const [claimedBed] = await tx
       .update(beds)
       .set({
         isAvailable: false,
         status: 'reserved',
-        // @ts-ignore
-        reservedUntil: bookings.reservationExpiresAt,
-        updatedAt: new Date(),
+        reservedUntil: booking.reservationExpiresAt,
+        updatedAt: now,
       })
-      .where(eq(beds.id, bedId));
-  }
-  
-  return !!result;
+      .where(and(eq(beds.id, bedId), eq(beds.isAvailable, true)))
+      .returning({ id: beds.id });
+    if (!claimedBed) return false;
+
+    const [result] = await tx
+      .update(bookings)
+      .set({ bedAssignmentId: bedId, updatedAt: now })
+      .where(eq(bookings.id, bookingId))
+      .returning();
+    if (!result) throw new Error(`Booking ${bookingId} disappeared during bed assignment`);
+
+    if (booking.bedAssignmentId) {
+      await tx
+        .update(beds)
+        .set({ isAvailable: true, status: 'available', reservedUntil: null, updatedAt: now })
+        .where(eq(beds.id, booking.bedAssignmentId));
+    }
+    return true;
+  });
 }
 
 /**
@@ -468,6 +474,7 @@ export async function bulkUpdateBookings(
   ids: number[],
   updates: Partial<UpdateBookingInput>
 ): Promise<number> {
+  if (ids.length === 0) return 0;
   const {
     id: _id,
     totalAmount,
@@ -485,7 +492,7 @@ export async function bulkUpdateBookings(
       ...(reservationExpiresAt !== undefined ? { reservationExpiresAt: new Date(reservationExpiresAt) } : {}),
       updatedAt: new Date(),
     })
-    .where(or(...ids.map(id => eq(bookings.id, id))))
+    .where(inArray(bookings.id, ids))
     .returning();
   
   return results.length;

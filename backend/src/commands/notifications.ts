@@ -5,7 +5,7 @@
 
 import { db } from '../lib/db.js';
 import { notifications } from '@albergue/domain-model';
-import { eq, and, or, isNull, lt } from 'drizzle-orm';
+import { eq, and, or, isNull, lt, inArray } from 'drizzle-orm';
 import type { InsertNotification, Notification } from '../types/index.js';
 
 /**
@@ -197,9 +197,10 @@ export async function deleteNotification(id: number): Promise<boolean> {
  * Bulk delete notifications
  */
 export async function bulkDeleteNotifications(ids: number[]): Promise<number> {
+  if (ids.length === 0) return 0;
   const results = await db
     .delete(notifications)
-    .where(and(...ids.map(id => eq(notifications.id, id))))
+    .where(inArray(notifications.id, ids))
     .returning();
   
   return results.length;

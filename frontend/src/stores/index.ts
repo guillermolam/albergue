@@ -35,34 +35,3 @@ export {
   userPreferences,
 } from './user';
 
-// Pilgrim stores
-export { authActions, authStore, permissionsStore, sessionStore } from './pilgrim-auth';
-export {
-  bookingsStore,
-  currentPilgrimageStore,
-  currentProfile,
-  healthSafetyStore,
-  isAuthenticated,
-  isPilgrimageActive,
-  isSessionValid,
-  pilgrimageActions,
-  pilgrimageProgress,
-  pilgrimActions,
-  pilgrimProfileStore,
-  socialProfileStore,
-  uiStateStore,
-  upcomingBookings,
-  userAuthStore,
-} from './pilgrim';
-
-// Infrastructure
-export {
-  closeRedisConnection,
-  deleteRedisKey,
-  getRedisClient,
-  getRedisKey,
-  setRedisKey,
-} from './redis';
-
-// Re-export nanostores utilities actually used in this project
-export { persistentMap } from '@nanostores/persistent';

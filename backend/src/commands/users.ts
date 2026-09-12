@@ -5,43 +5,23 @@
 
 import { db } from '../lib/db.js';
 import { users } from '@albergue/domain-model';
-import { eq, and } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import type { InsertUser, User } from '../types/index.js';
 
 /**
  * Create a new user
  */
 export async function createUser(input: InsertUser): Promise<User> {
-  const [result] = await db
-    .insert(users)
-    .values({
-      ...input,
-      createdAt: new Date(),
-    })
-    .returning();
-  
-  if (!result) {
-    throw new Error('Failed to create user');
-  }
-  
-  return result;
+  void input;
+  throw new Error('User creation is disabled until secure password hashing is implemented');
 }
 
 /**
  * Create multiple users (batch)
  */
 export async function createUsersBatch(inputs: InsertUser[]): Promise<User[]> {
-  const results = await db
-    .insert(users)
-    .values(
-      inputs.map(input => ({
-        ...input,
-        createdAt: new Date(),
-      }))
-    )
-    .returning();
-  
-  return results;
+  void inputs;
+  throw new Error('User creation is disabled until secure password hashing is implemented');
 }
 
 /**
@@ -51,15 +31,9 @@ export async function updateUserPassword(
   id: number,
   password: string
 ): Promise<boolean> {
-  const [result] = await db
-    .update(users)
-    .set({
-      password,
-    })
-    .where(eq(users.id, id))
-    .returning();
-  
-  return !!result;
+  void id;
+  void password;
+  throw new Error('Password updates are disabled until secure password hashing is implemented');
 }
 
 /**
@@ -98,9 +72,10 @@ export async function deleteUser(id: number): Promise<boolean> {
  * WARNING: Only use when absolutely necessary
  */
 export async function bulkDeleteUsers(ids: number[]): Promise<number> {
+  if (ids.length === 0) return 0;
   const results = await db
     .delete(users)
-    .where(and(...ids.map(id => eq(users.id, id))))
+    .where(inArray(users.id, ids))
     .returning();
   
   return results.length;

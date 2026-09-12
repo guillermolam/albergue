@@ -13,7 +13,7 @@ export interface BookingState {
   bookingId: string | null;
   status: 'draft' | 'confirmed' | 'cancelled';
   contactInfo: ContactInfo;
-  paymentInfo: PaymentInfo;
+  payment: PaymentSelection;
 }
 
 export interface Pilgrim {
@@ -43,18 +43,10 @@ export interface ContactInfo {
   };
 }
 
-export interface PaymentInfo {
-  method: 'card' | 'paypal' | 'bank_transfer' | 'cash';
-  cardNumber?: string;
-  cardHolder?: string;
-  expiryDate?: string;
-  cvv?: string;
-  billingAddress?: {
-    street: string;
-    city: string;
-    postalCode: string;
-    country: string;
-  };
+export interface PaymentSelection {
+  provider: 'psp';
+  paymentIntentId?: string;
+  status?: 'pending' | 'authorized' | 'failed';
 }
 
 // Initial state
@@ -80,8 +72,8 @@ const initialBookingState: BookingState = {
       relationship: '',
     },
   },
-  paymentInfo: {
-    method: 'card',
+  payment: {
+    provider: 'psp',
   },
 };
 
@@ -177,10 +169,9 @@ export const bookingActions = {
     bookingStore.setKey('contactInfo', { ...current, ...info });
   },
 
-  // Payment info
-  setPaymentInfo: (info: Partial<PaymentInfo>) => {
-    const current = bookingStore.get().paymentInfo;
-    bookingStore.setKey('paymentInfo', { ...current, ...info });
+  // Opaque PSP metadata only. Card data must go directly to hosted PSP fields.
+  setPayment: (payment: PaymentSelection) => {
+    bookingStore.setKey('payment', payment);
   },
 
   // Booking completion
@@ -249,35 +240,28 @@ export const bookingSelectors = {
           !!state.contactInfo.email && !!state.contactInfo.firstName && !!state.contactInfo.lastName
         );
       case 5: // Payment
-        return !!state.paymentInfo.method;
+        return state.payment.provider === 'psp';
       default:
         return false;
     }
   },
 };
 
-// Persistence
+// Sensitive workflow state is intentionally memory-only.
 export const persistBooking = () => {
-  const state = bookingStore.get();
-  localStorage.setItem('albergue-booking', JSON.stringify(state));
+  cleanupLegacyBookingStorage();
 };
 
 export const loadPersistedBooking = () => {
-  const stored = localStorage.getItem('albergue-booking');
-  if (stored) {
-    try {
-      const bookingData = JSON.parse(stored);
-      bookingActions.loadBooking(bookingData);
-    } catch (error) {
-      console.error('Error loading persisted booking:', error);
-    }
-  }
+  cleanupLegacyBookingStorage();
 };
 
-// Auto-persist on changes
-bookingStore.subscribe(persistBooking);
+function cleanupLegacyBookingStorage() {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem('albergue-booking');
+  sessionStorage.removeItem('albergue-booking');
+}
 
-// Load persisted booking on initialization
 if (typeof window !== 'undefined') {
-  loadPersistedBooking();
+  cleanupLegacyBookingStorage();
 }

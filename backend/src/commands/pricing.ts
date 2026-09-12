@@ -5,7 +5,7 @@
 
 import { db } from '../lib/db.js';
 import { pricing } from '@albergue/domain-model';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, inArray } from 'drizzle-orm';
 import type { InsertPricing, UpdatePricingInput, Pricing } from '../types/index.js';
 
 /**
@@ -168,13 +168,14 @@ export async function bulkUpdatePricing(
   ids: number[],
   updates: Partial<UpdatePricingInput>
 ): Promise<number> {
+  if (ids.length === 0) return 0;
   const results = await db
     .update(pricing)
     .set({
       ...updates,
       updatedAt: new Date(),
     })
-    .where(and(...ids.map(id => eq(pricing.id, id))))
+    .where(inArray(pricing.id, ids))
     .returning();
   
   return results.length;

@@ -5,7 +5,7 @@
 
 import { db } from '../lib/db.js';
 import { auditLog } from '@albergue/domain-model';
-import { eq, and, or, lt } from 'drizzle-orm';
+import { eq, and, or, lt, inArray } from 'drizzle-orm';
 import type { InsertAuditLog, AuditLog } from '../types/index.js';
 
 /**
@@ -134,9 +134,10 @@ export async function deleteAuditLogEntry(id: number): Promise<boolean> {
  * WARNING: Only use when absolutely necessary
  */
 export async function bulkDeleteAuditLogEntries(ids: number[]): Promise<number> {
+  if (ids.length === 0) return 0;
   const results = await db
     .delete(auditLog)
-    .where(and(...ids.map(id => eq(auditLog.id, id))))
+    .where(inArray(auditLog.id, ids))
     .returning();
   
   return results.length;

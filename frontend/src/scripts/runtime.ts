@@ -1,6 +1,7 @@
 import { initRough } from './runtime_rough';
 import { initStoresBridge } from './runtime_stores_bridge';
 import { initializeSwupPlugins } from './swup-plugins';
+import { cleanupSensitiveBrowserStorage } from './cleanup-sensitive-storage';
 
 function onIdle(cb: () => void) {
   const w = window as unknown as { requestIdleCallback?: (fn: () => void) => number };
@@ -9,6 +10,7 @@ function onIdle(cb: () => void) {
 }
 
 function bootstrap() {
+  cleanupSensitiveBrowserStorage();
   queueMicrotask(() => initStoresBridge());
   requestAnimationFrame(() => initRough());
   void initializeSwupPlugins();

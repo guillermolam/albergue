@@ -13,6 +13,16 @@ const MOCK_RESPONSES = {
 
 export const onRequest: MiddlewareHandler = async (context, next) => {
   const { url, request } = context;
+  if (url.pathname === '/admin' || url.pathname.startsWith('/admin/')) {
+    return new Response('Admin access is disabled until server-verified authentication is available.', {
+      status: 403,
+      headers: {
+        'Cache-Control': 'no-store',
+        'Content-Type': 'text/plain; charset=utf-8',
+      },
+    });
+  }
+
   const isMockMode = import.meta.env.PUBLIC_API_MODE === 'mock';
 
   if (!isMockMode) {

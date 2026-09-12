@@ -32,6 +32,7 @@ import {
   rateLimiterMiddleware,
   loggingMiddleware,
   correlationIdMiddleware,
+  authMiddleware,
 } from './lib/middleware.js';
 import { CircuitBreaker } from './lib/errors.js';
 import {
@@ -151,6 +152,12 @@ app.get('/health/stats', (c) => {
 
 // API version prefix
 const api = new Hono();
+
+// Transitional fail-closed gate. No identity provider is wired yet, so these
+// privileged capabilities remain unreachable until Phase 5 supplies verified users.
+api.use('/users/*', authMiddleware({ roles: ['admin'] }));
+api.use('/audit-log/*', authMiddleware({ roles: ['admin'] }));
+api.use('/government-submissions/*', authMiddleware({ roles: ['admin'] }));
 
 // Mount all routes
 api.route('/pilgrims', pilgrims);

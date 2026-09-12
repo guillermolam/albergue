@@ -5,7 +5,7 @@
 
 import { db } from '../lib/db.js';
 import { governmentSubmissions } from '@albergue/domain-model';
-import { eq, and, sql } from 'drizzle-orm';
+import { eq, and, sql, inArray } from 'drizzle-orm';
 import type { InsertGovernmentSubmission, GovernmentSubmission } from '../types/index.js';
 
 /**
@@ -218,9 +218,10 @@ export async function deleteGovernmentSubmission(id: number): Promise<boolean> {
  * Bulk delete government submissions
  */
 export async function bulkDeleteGovernmentSubmissions(ids: number[]): Promise<number> {
+  if (ids.length === 0) return 0;
   const results = await db
     .delete(governmentSubmissions)
-    .where(and(...ids.map(id => eq(governmentSubmissions.id, id))))
+    .where(inArray(governmentSubmissions.id, ids))
     .returning();
   
   return results.length;

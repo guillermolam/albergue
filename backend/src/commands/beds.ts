@@ -5,7 +5,7 @@
 
 import { db } from '../lib/db.js';
 import { beds } from '@albergue/domain-model';
-import { eq, and, or, isNull, lte } from 'drizzle-orm';
+import { eq, and, or, isNull, lte, inArray } from 'drizzle-orm';
 import type { InsertBed, UpdateBedInput, Bed } from '../types/index.js';
 
 /**
@@ -232,13 +232,14 @@ export async function bulkUpdateBeds(
   ids: number[],
   updates: Partial<UpdateBedInput>
 ): Promise<number> {
+  if (ids.length === 0) return 0;
   const results = await db
     .update(beds)
     .set({
       ...updates,
       updatedAt: new Date(),
     })
-    .where(or(...ids.map(id => eq(beds.id, id))))
+    .where(inArray(beds.id, ids))
     .returning();
   
   return results.length;
