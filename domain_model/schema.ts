@@ -136,6 +136,7 @@ export const governmentSubmissions = pgTable("government_submissions", {
   attempts: integer("attempts").default(0),
   lastAttempt: timestamp("last_attempt"),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const notifications = pgTable("notifications", {
@@ -262,6 +263,7 @@ export const insertGovernmentSubmissionSchema = createInsertSchema(
 ).omit({
   id: true,
   createdAt: true,
+  updatedAt: true,
 });
 
 export const insertPricingSchema = createInsertSchema(pricing).omit({

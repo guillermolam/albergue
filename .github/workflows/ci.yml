@@ -102,9 +102,15 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @albergue/domain-model migration:check
-      - name: Apply canonical Drizzle baseline
-        run: psql -h localhost -U postgres -d albergue_test -v ON_ERROR_STOP=1 -f domain_model/migrations/0000_flaky_norrin_radd.sql
+      - name: Apply journaled Drizzle migrations
+        run: |
+          for tag in $(node -e "JSON.parse(require('fs').readFileSync('domain_model/migrations/meta/_journal.json','utf8')).entries.forEach(e=>console.log(e.tag))"); do
+            echo "Applying $tag"
+            psql -h localhost -U postgres -d albergue_test -v ON_ERROR_STOP=1 -f "domain_model/migrations/${tag}.sql"
+          done
       - name: Verify authoritative tables
         run: |
           test "$(psql -h localhost -U postgres -d albergue_test -Atc \
             "select count(*) from information_schema.tables where table_schema='public' and table_name in ('users','pilgrims','beds','bookings','payments','pricing','government_submissions','notifications','audit_log')")" = "9"
+          test "$(psql -h localhost -U postgres -d albergue_test -Atc \
+            "select count(*) from information_schema.columns where table_schema='public' and table_name='government_submissions' and column_name='updated_at'")" = "1"

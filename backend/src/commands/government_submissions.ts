@@ -21,13 +21,14 @@ export async function createGovernmentSubmission(
       submissionStatus: input.submissionStatus || 'pending',
       attempts: input.attempts || 0,
       createdAt: new Date(),
+      updatedAt: new Date(),
     })
     .returning();
-  
+
   if (!result) {
     throw new Error('Failed to create government submission');
   }
-  
+
   return result;
 }
 
@@ -45,10 +46,11 @@ export async function createGovernmentSubmissionsBatch(
         submissionStatus: input.submissionStatus || 'pending',
         attempts: input.attempts || 0,
         createdAt: new Date(),
+        updatedAt: new Date(),
       }))
     )
     .returning();
-  
+
   return results;
 }
 
@@ -64,19 +66,20 @@ export async function updateGovernmentSubmission(
     .from(governmentSubmissions)
     .where(eq(governmentSubmissions.id, id))
     .limit(1);
-  
+
   if (!existing) {
     return null;
   }
-  
+
   const [result] = await db
     .update(governmentSubmissions)
     .set({
       ...updates,
+      updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
-  
+
   return result || null;
 }
 
@@ -93,10 +96,11 @@ export async function markSubmissionAsSuccessful(
       submissionStatus: 'success',
       responseData,
       lastAttempt: new Date(),
+      updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -112,11 +116,11 @@ export async function markSubmissionAsFailed(
     .from(governmentSubmissions)
     .where(eq(governmentSubmissions.id, id))
     .limit(1);
-  
+
   if (!existing) {
     return false;
   }
-  
+
   const [result] = await db
     .update(governmentSubmissions)
     .set({
@@ -124,10 +128,11 @@ export async function markSubmissionAsFailed(
       attempts: (existing.attempts ?? 0) + 1,
       lastAttempt: new Date(),
       responseData: { error: errorMessage },
+      updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -140,10 +145,11 @@ export async function incrementSubmissionAttempts(id: number): Promise<boolean> 
     .set({
       attempts: sql`${governmentSubmissions.attempts} + 1`,
       lastAttempt: new Date(),
+      updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -155,10 +161,11 @@ export async function markSubmissionAsPendingRetry(id: number): Promise<boolean>
     .update(governmentSubmissions)
     .set({
       submissionStatus: 'pending_retry',
+      updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -177,10 +184,11 @@ export async function updateSubmissionXmlContent(
       attempts: 0,
       lastAttempt: null,
       responseData: null,
+      updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -194,10 +202,11 @@ export async function softDeleteGovernmentSubmission(id: number): Promise<boolea
       submissionStatus: 'deleted',
       xmlContent: '(DELETED)',
       responseData: null,
+      updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -210,7 +219,7 @@ export async function deleteGovernmentSubmission(id: number): Promise<boolean> {
     .delete(governmentSubmissions)
     .where(eq(governmentSubmissions.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -223,7 +232,7 @@ export async function bulkDeleteGovernmentSubmissions(ids: number[]): Promise<nu
     .delete(governmentSubmissions)
     .where(inArray(governmentSubmissions.id, ids))
     .returning();
-  
+
   return results.length;
 }
 
@@ -235,6 +244,7 @@ export async function retryFailedSubmissions(bookingId: number): Promise<number>
     .update(governmentSubmissions)
     .set({
       submissionStatus: 'pending_retry',
+      updatedAt: new Date(),
     })
     .where(
       and(
@@ -243,6 +253,6 @@ export async function retryFailedSubmissions(bookingId: number): Promise<number>
       )
     )
     .returning();
-  
+
   return results.length;
 }
