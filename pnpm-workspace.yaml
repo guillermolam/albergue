@@ -2,6 +2,10 @@ packages:
   - 'frontend'
   - 'backend'
   - 'domain_model'
+  # NOTE: packages/astro-roughjs is intentionally excluded — orphan package,
+  # broken build, unused by frontend (which consumes roughjs directly).
+  # Candidate for removal under the CLEAN-* phase.
+  - 'packages/api-contract'
 
 allowBuilds:
   '@parcel/watcher': true

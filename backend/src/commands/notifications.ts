@@ -162,7 +162,10 @@ export async function retryFailedNotifications(): Promise<number> {
     .where(
       and(
         eq(notifications.status, 'failed'),
-        lt(notifications.attempts, MAX_NOTIFICATION_ATTEMPTS)
+        or(
+          isNull(notifications.attempts),
+          lt(notifications.attempts, MAX_NOTIFICATION_ATTEMPTS)
+        )
       )
     )
     .returning();

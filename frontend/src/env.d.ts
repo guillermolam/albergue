@@ -1,6 +1,5 @@
 /// <reference types="astro/client" />
 /// <reference types="vite/client" />
-/// <reference types="@clerk/astro/types" />
 /// <reference path="../worker-configuration.d.ts" />
 
 // ── CSS side-effect imports ────────────────────────────────────────────────
@@ -59,14 +58,16 @@ interface Window {
 type Runtime = import('@astrojs/cloudflare').Runtime;
 
 declare namespace App {
-  // Merged with Runtime and Clerk's locals so all bindings are typed correctly.
+  // Merged with Runtime so all bindings are typed correctly.
   interface Locals extends Runtime {
-    /** Authenticated user — null when role is 'guest'. */
+    /** Authenticated user — null when role is 'guest'. Populated in Phase 5. */
     user: { id: string; email: string; name: string } | null;
-    /** Coarse-grained role: 'admin' set via Clerk publicMetadata.role. */
+    /** Coarse-grained role for server-side RBAC. */
     role: 'admin' | 'pilgrim' | 'guest';
     locale: string;
-    /** Always null — session is managed by Clerk cookies. */
+    /** HttpOnly session token — always null until Phase 5 session auth. */
     sessionToken: string | null;
+    /** Correlation ID for the current request (ASTRO-004). */
+    requestId: string;
   }
 }

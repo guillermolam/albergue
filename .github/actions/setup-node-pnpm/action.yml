@@ -1,0 +1,33 @@
+name: 'Setup Node.js and pnpm'
+description: 'Sets up Node.js with specified version and pnpm with caching'
+inputs:
+  node-version:
+    description: 'Node.js version to use'
+    required: false
+    default: '24'
+  pnpm-version:
+    description: 'pnpm version to use'
+    required: false
+    default: '10.29.3'
+  cache-dependency-path:
+    description: 'Path to package-lock.json or equivalent for cache key'
+    required: false
+    default: 'pnpm-lock.yaml'
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup pnpm
+      uses: pnpm/action-setup@ff378ebe6b225b0680b81c1ad4498ae0d1d3a5e3 # v6.0.10
+      with:
+        version: ${{ inputs.pnpm-version }}
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: pnpm
+        cache-dependency-path: ${{ inputs.cache-dependency-path }}
+    
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile

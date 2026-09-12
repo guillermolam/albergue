@@ -115,6 +115,7 @@ export async function reserveBed(
   reservedUntil: Date,
   status: string = 'reserved'
 ): Promise<boolean> {
+  // Atomic claim: only an available bed can be reserved.
   const [result] = await db
     .update(beds)
     .set({
@@ -123,7 +124,7 @@ export async function reserveBed(
       reservedUntil,
       updatedAt: new Date(),
     })
-    .where(eq(beds.id, id))
+    .where(and(eq(beds.id, id), eq(beds.isAvailable, true)))
     .returning();
   
   return !!result;

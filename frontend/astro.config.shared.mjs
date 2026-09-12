@@ -2,6 +2,7 @@ import unocss from '@unocss/vite';
 import swup from '@swup/astro';
 import icon from 'astro-icon';
 import { webcore } from 'webcoreui/integration';
+import { envField } from 'astro/config';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -10,6 +11,28 @@ const __dirname = dirname(__filename);
 
 export const sharedConfig = {
   output: 'server',
+  // ASTRO-001: validated env schema. Client vars are inlined at build time;
+  // server secrets are read via `astro:env/server` and never shipped.
+  env: {
+    schema: {
+      PUBLIC_APP_URL: envField.string({
+        context: 'client',
+        access: 'public',
+        optional: true,
+      }),
+      PUBLIC_API_MODE: envField.enum({
+        context: 'client',
+        access: 'public',
+        values: ['local', 'mock'],
+        default: 'local',
+      }),
+      BACKEND_API_URL: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true,
+      }),
+    },
+  },
   prefetch: {
     prefetchAll: true,
     defaultStrategy: 'hover',

@@ -76,10 +76,6 @@ declare global {
       GOOGLE_API_KEY?: string;
       MAPS_API_KEY?: string;
 
-      // External services
-      SUPABASE_URL?: string;
-      SUPABASE_ANON_KEY?: string;
-
       // Environment-specific
       VERCEL?: string;
       NETLIFY?: string;

@@ -37,8 +37,7 @@
     "astro": "^5.0.0",
     "roughjs": "^4.6.6",
     "typescript": "^5.0.0",
-    "vitest": "^1.0.0",
-    "@astrojs/renderer": "^1.0.0"
+    "vitest": "^1.0.0"
   },
   "scripts": {
     "build": "tsc && vite build",

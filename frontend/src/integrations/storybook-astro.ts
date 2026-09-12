@@ -22,14 +22,6 @@ export default function storybookAstroIntegration(): AstroIntegration {
               STORYBOOK: true,
               ASTRO_VERSION: '${config.version || '6.1.5'}'
             };
-            
-            // Mock Cloudflare environment for Storybook
-            window.Cloudflare = {
-              env: {
-                PUBLIC_CLERK_PUBLISHABLE_KEY: 'mock-key',
-                CLERK_SECRET_KEY: 'mock-secret'
-              }
-            };
           </script>
         `
         );

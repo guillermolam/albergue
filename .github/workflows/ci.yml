@@ -7,6 +7,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Set minimal permissions globally
+permissions:
+  contents: read
+
 env:
   NODE_ENV: test
   PUBLIC_API_MODE: local
@@ -15,66 +19,98 @@ jobs:
   frontend-quality:
     name: Frontend quality and smoke
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          version: 10.29.3
-      - uses: actions/setup-node@v6
+          persist-credentials: false
+      
+      - name: Setup Node.js and pnpm
+        uses: $/.github/actions/setup-node-pnpm
         with:
           node-version: '24'
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter albergue-carrascalejo-frontend format:check
-      - run: pnpm --filter albergue-carrascalejo-frontend type-check
-      - run: pnpm --filter albergue-carrascalejo-frontend check:astro
+          pnpm-version: '10.29.3'
+      
+      - name: Format check
+        run: pnpm --filter albergue-carrascalejo-frontend format:check
+      
+      - name: Type check
+        run: pnpm --filter albergue-carrascalejo-frontend type-check
+      
+      - name: Astro check
+        run: pnpm --filter albergue-carrascalejo-frontend check:astro
+      
       - name: Full TypeScript debt report
         continue-on-error: true
         run: pnpm --filter albergue-carrascalejo-frontend type-check:full
-      - name: Full Astro debt report
+      
+      - name: Full Astro debt report  
         continue-on-error: true
         run: pnpm --filter albergue-carrascalejo-frontend check:astro:full
-      - run: pnpm --filter albergue-carrascalejo-frontend exec playwright install --with-deps chromium
-      - run: pnpm --filter albergue-carrascalejo-frontend e2e
+      
+      - name: Install Playwright browsers
+        run: pnpm --filter albergue-carrascalejo-frontend exec playwright install --with-deps chromium
+      
+      - name: Run E2E tests
+        run: pnpm --filter albergue-carrascalejo-frontend e2e
 
   frontend-builds:
     name: Frontend build (${{ matrix.target }})
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
         target: [cloudflare, netlify, stormkit]
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          version: 10.29.3
-      - uses: actions/setup-node@v6
+          persist-credentials: false
+      
+      - name: Setup Node.js and pnpm
+        uses: $/.github/actions/setup-node-pnpm
         with:
           node-version: '24'
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter albergue-carrascalejo-frontend build:${{ matrix.target }}
+          pnpm-version: '10.29.3'
+      
+      - name: Build frontend
+        run: pnpm --filter albergue-carrascalejo-frontend build:${{ matrix.target }}
 
   backend:
     name: Hono backend
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          version: 10.29.3
-      - uses: actions/setup-node@v6
+          persist-credentials: false
+      
+      - name: Setup Node.js and pnpm
+        uses: $/.github/actions/setup-node-pnpm
         with:
           node-version: '24'
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter albergue-backend type-check
-      - run: pnpm --filter albergue-backend test
+          pnpm-version: '10.29.3'
+      
+      - name: Build domain model and API contract
+        run: pnpm --filter @albergue/domain-model --filter @albergue/api-contract build
+      
+      - name: Type check backend
+        run: pnpm --filter albergue-backend type-check
+      
+      - name: Run backend tests
+        run: pnpm --filter albergue-backend test
 
   database:
     name: PostgreSQL migration baseline
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     services:
       postgres:
         image: postgres:15
@@ -91,28 +127,26 @@ jobs:
           - 5432:5432
     env:
       PGPASSWORD: postgres
+      DATABASE_HOST: localhost
+      DATABASE_USER: postgres
+      DATABASE_NAME: albergue_test
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          version: 10.29.3
-      - uses: actions/setup-node@v6
+          persist-credentials: false
+      
+      - name: Setup Node.js and pnpm
+        uses: $/.github/actions/setup-node-pnpm
         with:
           node-version: '24'
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @albergue/domain-model migration:check
+          pnpm-version: '10.29.3'
+      
+      - name: Check migration files
+        run: pnpm --filter @albergue/domain-model migration:check
+      
       - name: Apply journaled Drizzle migrations
-        run: |
-          for tag in $(node -e "JSON.parse(require('fs').readFileSync('domain_model/migrations/meta/_journal.json','utf8')).entries.forEach(e=>console.log(e.tag))"); do
-            echo "Applying $tag"
-            psql -h localhost -U postgres -d albergue_test -v ON_ERROR_STOP=1 -f "domain_model/migrations/${tag}.sql"
-          done
-      - name: Verify authoritative tables
-        run: |
-          test "$(psql -h localhost -U postgres -d albergue_test -Atc \
-            "select count(*) from information_schema.tables where table_schema='public' and table_name in ('users','pilgrims','beds','bookings','payments','pricing','government_submissions','notifications','audit_log')")" = "9"
-          test "$(psql -h localhost -U postgres -d albergue_test -Atc \
-            "select count(*) from information_schema.columns where table_schema='public' and table_name='government_submissions' and column_name='updated_at'")" = "1"
-          test "$(psql -h localhost -U postgres -d albergue_test -Atc \
-            "select count(*) from information_schema.columns where table_schema='public' and table_name='notifications' and column_name='attempts'")" = "1"
+        run: ./.github/scripts/apply-migrations.sh
+      
+      - name: Verify authoritative database schema
+        run: ./.github/scripts/verify-database-schema.sh

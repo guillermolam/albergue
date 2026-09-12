@@ -15,7 +15,7 @@ test('home page loads and links to booking', async ({ page }) => {
   await expect(page).toHaveURL(/\/(book|booking)\/?$/);
 });
 
-for (const route of ['/info', '/book', '/admin']) {
+for (const route of ['/info', '/book']) {
   test(`${route} renders its current route`, async ({ page }) => {
     const response = await page.goto(route);
 
@@ -23,6 +23,13 @@ for (const route of ['/info', '/book', '/admin']) {
     await expect(page.locator('main').first()).toBeVisible();
   });
 }
+
+// Phase 1 security posture: /admin is closed until Phase 5 session auth (AUTH-*).
+test('/admin is forbidden until server-verified auth lands', async ({ page }) => {
+  const response = await page.goto('/admin');
+
+  expect(response?.status()).toBe(403);
+});
 
 test('unknown routes render the 404 page', async ({ page }) => {
   const response = await page.goto('/phase-0-smoke-missing');

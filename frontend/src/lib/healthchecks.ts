@@ -65,19 +65,6 @@ export const mockHealthChecks: ServiceHealth[] = [
     },
   },
   {
-    name: 'Supabase',
-    status: 'healthy',
-    lastCheck: '3 seconds ago',
-    responseTime: '67ms',
-    uptime: '99.7%',
-    description: 'Backend services',
-    message: 'API functioning normally',
-    details: {
-      api_calls: 4521,
-      storage_usage: '1.2GB',
-    },
-  },
-  {
     name: 'Fermyon Spin',
     status: 'healthy',
     lastCheck: '10 seconds ago',
@@ -180,24 +167,6 @@ export const healthCheckEndpoints = {
       details: {
         memory_usage: '78%',
         hit_ratio: 0.94,
-      },
-    };
-  },
-
-  async checkSupabase(): Promise<HealthCheckResponse> {
-    const start = Date.now();
-    // Mock Supabase check
-    const responseTime = Date.now() - start;
-
-    return {
-      service: 'Supabase',
-      status: 'healthy',
-      timestamp: new Date().toISOString(),
-      responseTime,
-      uptime: 99.7,
-      details: {
-        api_calls: 4521,
-        storage_usage: '1.2GB',
       },
     };
   },

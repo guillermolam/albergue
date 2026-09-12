@@ -4,10 +4,54 @@
  */
 
 import { db } from '../lib/db.js';
-import { pricing } from '@albergue/domain-model';
+import { beds, pricing } from '@albergue/domain-model';
 import { eq, and, or, like, count, desc, asc, sql } from 'drizzle-orm';
 import type { Pricing } from '../types/index.js';
 import type { PaginatedResponse, PaginationParams } from '../types/index.js';
+
+export interface BookingQuote {
+  bedId: number;
+  numberOfNights: number;
+  pricePerNight: string;
+  totalAmount: string;
+  currency: string;
+}
+
+/**
+ * BOOK-001: authoritative server-side quote.
+ * Price source is the bed row itself (`beds.pricePerNight`); the browser's
+ * posted total is never trusted. Returns null when the bed does not exist.
+ */
+export async function computeBookingQuote(
+  bedId: number,
+  checkInDate: string,
+  checkOutDate: string
+): Promise<BookingQuote | null> {
+  const [bed] = await db
+    .select({
+      id: beds.id,
+      pricePerNight: beds.pricePerNight,
+      currency: beds.currency,
+    })
+    .from(beds)
+    .where(eq(beds.id, bedId))
+    .limit(1);
+
+  if (!bed) return null;
+
+  const numberOfNights = Math.round(
+    (new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) / (24 * 60 * 60 * 1000)
+  );
+  if (numberOfNights < 1) return null;
+
+  return {
+    bedId,
+    numberOfNights,
+    pricePerNight: bed.pricePerNight,
+    totalAmount: (Number(bed.pricePerNight) * numberOfNights).toFixed(2),
+    currency: bed.currency ?? 'EUR',
+  };
+}
 
 /**
  * Get all pricing entries with pagination
