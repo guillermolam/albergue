@@ -74,6 +74,18 @@ describe('redsys crypto', () => {
     expect(request.orderNumber).not.toBe('9999abcdef00');
   });
 
+  it('embeds the booking reference on UrlOK', () => {
+    const request = buildPaymentRequest(config, {
+      bookingId: 42,
+      amount: '45.00',
+      bookingReference: 'ALB-AABBCCDDEEFF',
+    });
+    const params = JSON.parse(Buffer.from(request.paramsBase64, 'base64').toString('utf8'));
+    expect(params.Ds_Merchant_UrlOK).toBe(
+      'https://example.com/booking-confirmed?ref=ALB-AABBCCDDEEFF',
+    );
+  });
+
   it('bounds approval to Ds_Response 0-99', () => {
     expect(isApproved('0000')).toBe(true);
     expect(isApproved('0099')).toBe(true);

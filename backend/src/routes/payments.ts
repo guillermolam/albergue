@@ -157,6 +157,7 @@ payments.post('/intent', async (c: Context) => {
   const request = buildPaymentRequest(config, {
     bookingId: booking.id,
     amount: booking.totalAmount,
+    bookingReference: booking.referenceNumber,
   });
 
   await createPayment({

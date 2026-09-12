@@ -1,15 +1,8 @@
 // Stores Index - Centralized state management
 // Export all stores and utilities from a single entry point
 
-// Booking and localization stores
-export {
-  bookingActions,
-  bookingSelectors,
-  bookingStore,
-  loadPersistedBooking,
-  persistBooking,
-} from "./bookingStore";
-export { i18nActions, i18nStore, loadPersistedLocale, t } from "./i18nStore";
+// Localization store (booking workflow is server-session, not a nanostore)
+export { i18nActions, i18nStore, loadPersistedLocale, t } from './i18nStore';
 
 // Camino progress stores
 export {
@@ -21,7 +14,7 @@ export {
   setDailyGoal,
   setStageProgress,
   syncProgressToServer,
-} from "./app";
+} from './app';
 
 // User stores
 export {
@@ -33,4 +26,4 @@ export {
   updateBookingCart,
   updateUserPreferences,
   userPreferences,
-} from "./user";
+} from './user';

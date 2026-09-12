@@ -91,7 +91,13 @@ export interface RedsysPaymentRequest {
 
 export function buildPaymentRequest(
   config: RedsysConfig,
-  input: { bookingId: number; /** decimal string, e.g. "45.00" */ amount: string; locale?: string }
+  input: {
+    bookingId: number;
+    /** decimal string, e.g. "45.00" */
+    amount: string;
+    locale?: string;
+    bookingReference?: string;
+  }
 ): RedsysPaymentRequest {
   const orderNumber = buildOrderNumber(input.bookingId);
   const amountCents = String(Math.round(Number(input.amount) * 100));
@@ -104,7 +110,9 @@ export function buildPaymentRequest(
     Ds_Merchant_TransactionType: '0', // authorization
     Ds_Merchant_Terminal: config.terminal,
     Ds_Merchant_MerchantURL: config.merchantUrl,
-    Ds_Merchant_UrlOK: config.urlOk,
+    Ds_Merchant_UrlOK: input.bookingReference
+      ? `${config.urlOk}?ref=${encodeURIComponent(input.bookingReference)}`
+      : config.urlOk,
     Ds_Merchant_UrlKO: config.urlKo,
     Ds_Merchant_ConsumerLanguage: input.locale === 'en' ? '002' : '001',
   };

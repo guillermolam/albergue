@@ -10,12 +10,40 @@
  *   production driver and must be provisioned before Phase 4.
  */
 
-export const BOOKING_DRAFT_SESSION_KEY = "bookingDraft" as const;
+export const BOOKING_DRAFT_SESSION_KEY = 'bookingDraft' as const;
 export const BOOKING_DRAFT_VERSION = 1 as const;
 /** Drafts are abandoned-cart state; 30 minutes matches the reservation window. */
 export const BOOKING_DRAFT_TTL_MS = 30 * 60 * 1000;
 
-export type BookingStep = "dates" | "guests" | "beds" | "contact" | "payment";
+export type BookingStep = 'dates' | 'guests' | 'beds' | 'contact' | 'payment';
+
+/** Contact collected for pilgrim creation. Price/availability stay on the server. */
+export interface BookingContact {
+  firstName: string;
+  lastName1: string;
+  lastName2?: string;
+  email?: string;
+  phone: string;
+  documentType: string;
+  documentNumber: string;
+  /** YYYY-MM-DD */
+  birthDate: string;
+  gender: string;
+  nationality?: string;
+  addressCountry: string;
+  addressStreet: string;
+  addressCity: string;
+  addressPostalCode: string;
+}
+
+/** Server quote snapshot for display only — never trusted at commit. */
+export interface BookingQuoteSnapshot {
+  bedId: number;
+  numberOfNights: number;
+  pricePerNight: string;
+  totalAmount: string;
+  currency: string;
+}
 
 export interface BookingDraft {
   version: typeof BOOKING_DRAFT_VERSION;
@@ -27,6 +55,10 @@ export interface BookingDraft {
   departureDate?: string;
   guestCount?: number;
   selectedBedIds?: string[];
+  contact?: BookingContact;
+  quote?: BookingQuoteSnapshot;
+  bookingReference?: string;
+  bookingId?: number;
   /** ISO 8601 datetime after which the draft is discarded. */
   expiresAt: string;
 }
@@ -35,7 +67,7 @@ export function createBookingDraft(now: Date = new Date()): BookingDraft {
   return {
     version: BOOKING_DRAFT_VERSION,
     draftId: crypto.randomUUID(),
-    step: "dates",
+    step: 'dates',
     expiresAt: new Date(now.getTime() + BOOKING_DRAFT_TTL_MS).toISOString(),
   };
 }
@@ -52,33 +84,70 @@ function baseDraft(current: BookingDraft | undefined, now: Date): BookingDraft {
 export function updateBookingDates(
   current: BookingDraft | undefined,
   input: { arrivalDate: string; departureDate: string },
-  now: Date = new Date(),
+  now: Date = new Date()
 ): BookingDraft {
   const draft = baseDraft(current, now);
   draft.arrivalDate = input.arrivalDate;
   draft.departureDate = input.departureDate;
-  draft.step = "guests";
+  draft.step = 'guests';
   return draft;
 }
 
 export function updateBookingGuests(
   current: BookingDraft | undefined,
   input: { guestCount: number },
-  now: Date = new Date(),
+  now: Date = new Date()
 ): BookingDraft {
   const draft = baseDraft(current, now);
   draft.guestCount = input.guestCount;
-  draft.step = "beds";
+  draft.step = 'beds';
   return draft;
 }
 
 export function updateBookingBeds(
   current: BookingDraft | undefined,
   input: { selectedBedIds: string[] },
-  now: Date = new Date(),
+  now: Date = new Date()
 ): BookingDraft {
   const draft = baseDraft(current, now);
   draft.selectedBedIds = input.selectedBedIds;
-  draft.step = "contact";
+  draft.quote = undefined;
+  draft.step = 'contact';
   return draft;
+}
+
+export function updateBookingContact(
+  current: BookingDraft | undefined,
+  input: BookingContact,
+  now: Date = new Date()
+): BookingDraft {
+  const draft = baseDraft(current, now);
+  draft.contact = input;
+  draft.step = 'payment';
+  return draft;
+}
+
+export function attachQuote(current: BookingDraft, quote: BookingQuoteSnapshot): BookingDraft {
+  return { ...current, quote };
+}
+
+export function attachBooking(
+  current: BookingDraft,
+  input: { bookingId: number; bookingReference: string }
+): BookingDraft {
+  return {
+    ...current,
+    bookingId: input.bookingId,
+    bookingReference: input.bookingReference,
+  };
+}
+
+export function isDraftReadyToSubmit(draft: BookingDraft): boolean {
+  return Boolean(
+    draft.arrivalDate &&
+    draft.departureDate &&
+    draft.guestCount &&
+    draft.selectedBedIds?.[0] &&
+    draft.contact
+  );
 }
