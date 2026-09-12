@@ -9,13 +9,17 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: nightly-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   check-dependabot:
     name: Check Dependabot PRs
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: read
+      pull-requests: read # required for `gh pr list` to query dependency PRs
     outputs:
       pr_count: ${{ steps.count.outputs.count }}
     steps:
@@ -45,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
+      pull-requests: write # required for `gh pr merge --auto`
     needs: [validate]
     if: ${{ needs.validate.result == 'success' }}
     steps:
@@ -63,7 +67,7 @@ jobs:
     name: Create Nightly Release
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write # required for `gh release create`
     needs: [check-dependabot, auto-merge]
     if: ${{ needs.check-dependabot.outputs.pr_count != '0' && needs.auto-merge.result == 'success' }}
     steps:

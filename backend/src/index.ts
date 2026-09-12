@@ -45,6 +45,7 @@ import {
   notifications,
   auditLog,
   users,
+  auth,
 } from './routes/index.js';
 
 // Create main Hono app

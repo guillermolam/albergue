@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { createBookingsBatch } from '../commands/bookings.js';
 import { bulkUpdateBookings } from '../commands/bookings.js';
 import { bulkUpdateBeds } from '../commands/beds.js';
-import { bulkDeleteUsers, createUser, updateUserPassword } from '../commands/users.js';
+import { bulkDeleteUsers } from '../commands/users.js';
 
 describe('Phase 1 security and correctness guards', () => {
   it('rejects duplicate bed claims before starting batch writes', async () => {
@@ -20,10 +20,18 @@ describe('Phase 1 security and correctness guards', () => {
     await expect(bulkDeleteUsers([])).resolves.toBe(0);
   });
 
-  it('fails closed instead of persisting plaintext passwords', async () => {
-    await expect(createUser({ username: 'admin', password: 'plaintext' } as never)).rejects.toThrow(
-      'secure password hashing'
+  it('hashes passwords with scrypt and verifies them timing-safe', async () => {
+    const { hashPassword, verifyPassword, verifyPasswordOrDummy } = await import(
+      '../lib/passwords.js'
     );
-    await expect(updateUserPassword(1, 'plaintext')).rejects.toThrow('secure password hashing');
+
+    const stored = await hashPassword('correct horse battery staple');
+    expect(stored).toMatch(/^scrypt\$16384\$8\$1\$/);
+    expect(stored).not.toContain('correct horse');
+
+    await expect(verifyPassword('correct horse battery staple', stored)).resolves.toBe(true);
+    await expect(verifyPassword('wrong', stored)).resolves.toBe(false);
+    // Unknown-user path: same scrypt cost, always false
+    await expect(verifyPasswordOrDummy('anything', null)).resolves.toBe(false);
   });
 });

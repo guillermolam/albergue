@@ -7,6 +7,8 @@
  */
 import { defineAction, ActionError } from 'astro:actions';
 import { z } from 'astro:schema';
+import { BACKEND_API_URL } from 'astro:env/server';
+import { AUTH_SESSION_KEY, type LoginResponse } from '@albergue/api-contract';
 import {
   BOOKING_DRAFT_SESSION_KEY,
   updateBookingDates,
@@ -34,6 +36,58 @@ async function persistDraft(
 }
 
 export const server = {
+  auth: {
+    /**
+     * AUTH-002 login: browser → Action → backend verifies → server session.
+     * The password crosses only this one POST; the session stores identity.
+     */
+    login: defineAction({
+      input: z.object({
+        username: z.string().min(1),
+        password: z.string().min(1),
+      }),
+      handler: async (input, context) => {
+        if (!context.session) {
+          throw new ActionError({
+            code: 'SERVICE_UNAVAILABLE',
+            message: 'Sessions are not available on this deployment yet.',
+          });
+        }
+        if (!BACKEND_API_URL) {
+          throw new ActionError({
+            code: 'SERVICE_UNAVAILABLE',
+            message: 'Backend API is not configured (BACKEND_API_URL).',
+          });
+        }
+
+        const response = await fetch(`${BACKEND_API_URL}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(input),
+        });
+        if (!response.ok) {
+          throw new ActionError({ code: 'UNAUTHORIZED', message: 'Invalid credentials' });
+        }
+
+        const envelope = (await response.json()) as { data?: LoginResponse };
+        if (!envelope.data) {
+          throw new ActionError({ code: 'BAD_GATEWAY', message: 'Malformed backend response' });
+        }
+
+        await context.session.set(AUTH_SESSION_KEY, envelope.data);
+        return { ok: true as const };
+      },
+    }),
+
+    /** AUTH-002 logout: invalidate the server session. */
+    logout: defineAction({
+      handler: async (_input, context) => {
+        context.session?.destroy();
+        return { ok: true as const };
+      },
+    }),
+  },
+
   booking: {
     setDates: defineAction({
       input: z

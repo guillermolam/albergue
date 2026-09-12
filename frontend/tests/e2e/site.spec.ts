@@ -24,11 +24,11 @@ for (const route of ['/info', '/book']) {
   });
 }
 
-// Phase 1 security posture: /admin is closed until Phase 5 session auth (AUTH-*).
-test('/admin is forbidden until server-verified auth lands', async ({ page }) => {
-  const response = await page.goto('/admin');
+// AUTH-004: /admin requires an authenticated admin; guests redirect to /auth.
+test('/admin redirects unauthenticated visitors to /auth', async ({ page }) => {
+  await page.goto('/admin');
 
-  expect(response?.status()).toBe(403);
+  await expect(page).toHaveURL(/\/auth\/?$/);
 });
 
 test('unknown routes render the 404 page', async ({ page }) => {

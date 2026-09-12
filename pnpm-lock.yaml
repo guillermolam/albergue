@@ -77,6 +77,9 @@ importers:
 
   frontend:
     dependencies:
+      '@albergue/api-contract':
+        specifier: workspace:*
+        version: link:../packages/api-contract
       '@astrojs/markdown-satteri':
         specifier: ^0.4.1
         version: 0.4.1

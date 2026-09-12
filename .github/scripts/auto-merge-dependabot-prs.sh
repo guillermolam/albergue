@@ -4,9 +4,9 @@ set -euo pipefail
 
 echo "🤖 Auto-merging Dependabot PRs..."
 
-# Requires GITHUB_TOKEN environment variable
-if [[ -z "${GITHUB_TOKEN:-}" ]]; then
-    echo "❌ GITHUB_TOKEN environment variable is required" 
+# Requires GH_TOKEN or GITHUB_TOKEN environment variable
+if [[ -z "${GH_TOKEN:-}" && -z "${GITHUB_TOKEN:-}" ]]; then
+    echo "❌ GH_TOKEN or GITHUB_TOKEN environment variable is required"
     exit 1
 fi
 
