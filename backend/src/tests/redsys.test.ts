@@ -1,3 +1,6 @@
+/// <reference types="node" />
+
+import { Buffer } from 'node:buffer';
 import { describe, expect, it } from 'vitest';
 import {
   buildOrderNumber,
@@ -20,7 +23,11 @@ const config: RedsysConfig = {
   urlKo: 'https://example.com/booking?payment=failed',
 };
 
-function simulateNotification(orderNumber: string, responseCode: string, amountCents: string) {
+function simulateNotification(
+  orderNumber: string,
+  responseCode: string,
+  amountCents: string
+): { paramsBase64: string; signatureUrlSafe: string } {
   const params = {
     Ds_Merchant_Order: orderNumber,
     Ds_Response: responseCode,
