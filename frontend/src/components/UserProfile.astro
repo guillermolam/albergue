@@ -97,7 +97,7 @@ try {
     const rect = card.getBoundingClientRect();
     canvas.width = Math.ceil(rect.width);
     canvas.height = Math.ceil(rect.height);
-    const { default: rough } = await import('roughjs/bundled/rough.esm.js');
+    const { default: rough } = await import('https://esm.sh/roughjs@4.6.6/bundled/rough.esm.js');
     const rc = rough.canvas(canvas);
     rc.rectangle(6, 6, canvas.width - 12, canvas.height - 12, {
       roughness: 2.2,
