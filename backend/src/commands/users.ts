@@ -6,22 +6,39 @@
 import { db } from '../lib/db.js';
 import { users } from '@albergue/domain-model';
 import { eq, inArray } from 'drizzle-orm';
+import { hashPassword } from '../lib/passwords.js';
 import type { InsertUser, User } from '../types/index.js';
 
 /**
- * Create a new user
+ * Create a new user (password hashed with scrypt — AUTH-001)
  */
 export async function createUser(input: InsertUser): Promise<User> {
-  void input;
-  throw new Error('User creation is disabled until secure password hashing is implemented');
+  const [result] = await db
+    .insert(users)
+    .values({
+      username: input.username,
+      password: await hashPassword(input.password),
+      createdAt: new Date(),
+    })
+    .returning();
+
+  if (!result) throw new Error('Failed to create user');
+  return result;
 }
 
 /**
  * Create multiple users (batch)
  */
 export async function createUsersBatch(inputs: InsertUser[]): Promise<User[]> {
-  void inputs;
-  throw new Error('User creation is disabled until secure password hashing is implemented');
+  if (inputs.length === 0) return [];
+  const values = await Promise.all(
+    inputs.map(async (input) => ({
+      username: input.username,
+      password: await hashPassword(input.password),
+      createdAt: new Date(),
+    }))
+  );
+  return db.insert(users).values(values).returning();
 }
 
 /**
@@ -31,9 +48,13 @@ export async function updateUserPassword(
   id: number,
   password: string
 ): Promise<boolean> {
-  void id;
-  void password;
-  throw new Error('Password updates are disabled until secure password hashing is implemented');
+  const [result] = await db
+    .update(users)
+    .set({ password: await hashPassword(password) })
+    .where(eq(users.id, id))
+    .returning();
+
+  return !!result;
 }
 
 /**

@@ -18,67 +18,24 @@ env:
 jobs:
   frontend-quality:
     name: Frontend quality and smoke
-    runs-on: ubuntu-latest
     permissions:
       contents: read
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      
-      - name: Setup Node.js and pnpm
-        uses: $/.github/actions/setup-node-pnpm
-        with:
-          node-version: '24'
-          pnpm-version: '10.29.3'
-      
-      - name: Format check
-        run: pnpm --filter albergue-carrascalejo-frontend format:check
-      
-      - name: Type check
-        run: pnpm --filter albergue-carrascalejo-frontend type-check
-      
-      - name: Astro check
-        run: pnpm --filter albergue-carrascalejo-frontend check:astro
-      
-      - name: Full TypeScript debt report
-        continue-on-error: true
-        run: pnpm --filter albergue-carrascalejo-frontend type-check:full
-      
-      - name: Full Astro debt report  
-        continue-on-error: true
-        run: pnpm --filter albergue-carrascalejo-frontend check:astro:full
-      
-      - name: Install Playwright browsers
-        run: pnpm --filter albergue-carrascalejo-frontend exec playwright install --with-deps chromium
-      
-      - name: Run E2E tests
-        run: pnpm --filter albergue-carrascalejo-frontend e2e
+    uses: ./.github/workflows/_reusable-frontend-setup.yml
+    with:
+      command: ./.github/scripts/run-frontend-quality.sh
+      install-playwright: true
 
   frontend-builds:
     name: Frontend build (${{ matrix.target }})
-    runs-on: ubuntu-latest
     permissions:
       contents: read
     strategy:
       fail-fast: false
       matrix:
         target: [cloudflare, netlify, stormkit]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      
-      - name: Setup Node.js and pnpm
-        uses: $/.github/actions/setup-node-pnpm
-        with:
-          node-version: '24'
-          pnpm-version: '10.29.3'
-      
-      - name: Build frontend
-        run: pnpm --filter albergue-carrascalejo-frontend build:${{ matrix.target }}
+    uses: ./.github/workflows/_reusable-frontend-setup.yml
+    with:
+      command: ./.github/scripts/build-frontend-target.sh "${{ matrix.target }}"
 
   backend:
     name: Hono backend
@@ -92,19 +49,13 @@ jobs:
           persist-credentials: false
       
       - name: Setup Node.js and pnpm
-        uses: $/.github/actions/setup-node-pnpm
+        uses: ./.github/actions/setup-node-pnpm
         with:
           node-version: '24'
           pnpm-version: '10.29.3'
       
-      - name: Build domain model and API contract
-        run: pnpm --filter @albergue/domain-model --filter @albergue/api-contract build
-      
-      - name: Type check backend
-        run: pnpm --filter albergue-backend type-check
-      
-      - name: Run backend tests
-        run: pnpm --filter albergue-backend test
+      - name: Run backend pipeline
+        run: ./.github/scripts/run-backend-checks.sh
 
   database:
     name: PostgreSQL migration baseline
@@ -137,7 +88,7 @@ jobs:
           persist-credentials: false
       
       - name: Setup Node.js and pnpm
-        uses: $/.github/actions/setup-node-pnpm
+        uses: ./.github/actions/setup-node-pnpm
         with:
           node-version: '24'
           pnpm-version: '10.29.3'

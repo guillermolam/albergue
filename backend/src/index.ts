@@ -161,6 +161,7 @@ api.use('/audit-log/*', authMiddleware({ roles: ['admin'] }));
 api.use('/government-submissions/*', authMiddleware({ roles: ['admin'] }));
 
 // Mount all routes
+api.route('/auth', auth); // public: credential verification only
 api.route('/pilgrims', pilgrims);
 api.route('/bookings', bookings);
 api.route('/beds', beds);

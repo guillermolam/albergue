@@ -32,28 +32,13 @@ jobs:
 
   validate:
     name: Validate Dependencies
-    runs-on: ubuntu-latest
     permissions:
       contents: read
     needs: check-dependabot
-    if: needs.check-dependabot.outputs.pr_count > 0
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Setup Node.js and pnpm
-        uses: $/.github/actions/setup-node-pnpm
-        with:
-          node-version: '24'
-          pnpm-version: '10.29.3'
-
-      - name: Build frontend
-        run: pnpm --filter albergue-carrascalejo-frontend build
-
-      - name: Type check
-        run: pnpm --filter albergue-carrascalejo-frontend type-check
+    if: ${{ needs.check-dependabot.outputs.pr_count != '0' }}
+    uses: ./.github/workflows/_reusable-frontend-setup.yml
+    with:
+      command: ./.github/scripts/run-nightly-validation.sh
 
   auto-merge:
     name: Auto-Merge Dependabot PRs
@@ -62,7 +47,7 @@ jobs:
       contents: read
       pull-requests: write
     needs: [validate]
-    if: needs.validate.outputs.conclusion == 'success'
+    if: ${{ needs.validate.result == 'success' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -71,7 +56,7 @@ jobs:
       
       - name: Auto-merge Dependabot PRs
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./.github/scripts/auto-merge-dependabot-prs.sh
 
   nightly-release:
@@ -80,7 +65,7 @@ jobs:
     permissions:
       contents: write
     needs: [check-dependabot, auto-merge]
-    if: needs.check-dependabot.outputs.pr_count > 0 && needs.auto-merge.outputs.result == 'success'
+    if: ${{ needs.check-dependabot.outputs.pr_count != '0' && needs.auto-merge.result == 'success' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -93,15 +78,9 @@ jobs:
 
       - name: Create Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION_TAG: ${{ steps.version.outputs.version }}
-        run: |
-          gh release create "$VERSION_TAG" \
-            --title "Nightly Release $VERSION_TAG" \
-            --notes "## Nightly Release
-
-          Built from latest main branch including dependency updates." \
-            --prerelease
+        run: ./.github/scripts/create-nightly-release.sh
 
   deploy-cloudflare:
     name: Deploy to Cloudflare
@@ -116,7 +95,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node.js and pnpm
-        uses: $/.github/actions/setup-node-pnpm
+        uses: ./.github/actions/setup-node-pnpm
         with:
           node-version: '24'
           pnpm-version: '10.29.3'
@@ -129,4 +108,4 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID || '798e36259a38e6217cc9987ce0bf1316' }}
-        run: pnpm exec wrangler deploy
+        run: ../.github/scripts/deploy-cloudflare.sh
