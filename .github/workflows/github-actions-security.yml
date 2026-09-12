@@ -1,0 +1,42 @@
+name: GitHub Actions Security
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - '.github/actions/**'
+      - '.github/scripts/**'
+  push:
+    branches: [main, develop]
+    paths:
+      - '.github/workflows/**'
+      - '.github/actions/**'
+      - '.github/scripts/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint-actions:
+    name: Lint workflows and actions
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install zizmor
+        run: ./.github/scripts/install-zizmor.sh
+
+      - name: Run zizmor
+        run: ./.github/scripts/run-zizmor.sh
+
+      - name: Install actionlint
+        run: ./.github/scripts/install-actionlint.sh
+
+      - name: Run actionlint
+        run: ./.github/scripts/run-actionlint.sh

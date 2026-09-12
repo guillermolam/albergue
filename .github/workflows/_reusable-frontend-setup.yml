@@ -11,10 +11,6 @@ on:
         description: 'pnpm version to use'
         type: string
         default: '10.29.3'
-      skip-install:
-        description: 'Skip dependency installation'
-        type: boolean
-        default: false
       install-playwright:
         description: 'Install Playwright Chromium browser'
         type: boolean
@@ -35,7 +31,7 @@ jobs:
           persist-credentials: false
       
       - name: Setup Node.js and pnpm
-        uses: ./.github/actions/setup-node-pnpm
+        uses: $/.github/actions/setup-node-pnpm
         with:
           node-version: ${{ inputs.node-version }}
           pnpm-version: ${{ inputs.pnpm-version }}
@@ -45,4 +41,6 @@ jobs:
         run: pnpm --filter albergue-carrascalejo-frontend exec playwright install --with-deps chromium
 
       - name: Run command
-        run: ${{ inputs.command }}
+        env:
+          COMMAND: ${{ inputs.command }}
+        run: $COMMAND
