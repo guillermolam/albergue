@@ -6,7 +6,21 @@
 import { db } from '../lib/db.js';
 import { payments } from '@albergue/domain-model';
 import { eq, inArray } from 'drizzle-orm';
+import { ValidationError } from '../lib/errors.js';
 import type { InsertPayment, UpdatePaymentInput, Payment } from '../types/index.js';
+
+/**
+ * payment_deadline is a timestamp column — Drizzle expects a Date on write.
+ * JSON bodies deliver ISO strings, so convert and reject unparseable input
+ * with a 400 instead of letting an Invalid Date reach Postgres as a 500.
+ */
+function parsePaymentDeadline(value: string | Date): Date {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    throw new ValidationError(`Invalid paymentDeadline: ${String(value)}`);
+  }
+  return date;
+}
 
 /**
  * Create a new payment
@@ -22,11 +36,11 @@ export async function createPayment(input: InsertPayment): Promise<Payment> {
       updatedAt: new Date(),
     })
     .returning();
-  
+
   if (!result) {
     throw new Error('Failed to create payment');
   }
-  
+
   return result;
 }
 
@@ -46,7 +60,7 @@ export async function createPaymentsBatch(inputs: InsertPayment[]): Promise<Paym
       }))
     )
     .returning();
-  
+
   return results;
 }
 
@@ -59,11 +73,11 @@ export async function updatePayment(id: number, input: UpdatePaymentInput): Prom
     .from(payments)
     .where(eq(payments.id, id))
     .limit(1);
-  
+
   if (!existing) {
     return null;
   }
-  
+
   const [result] = await db
     .update(payments)
     .set({
@@ -71,13 +85,13 @@ export async function updatePayment(id: number, input: UpdatePaymentInput): Prom
       ...(input.amount !== undefined ? { amount: String(input.amount) } : {}),
       ...(input.paymentType !== undefined ? { paymentType: input.paymentType } : {}),
       ...(input.currency !== undefined ? { currency: input.currency } : {}),
-      ...(input.paymentDeadline !== undefined ? { paymentDeadline: new Date(input.paymentDeadline) } : {}),
+      ...(input.paymentDeadline !== undefined ? { paymentDeadline: parsePaymentDeadline(input.paymentDeadline) } : {}),
       ...(input.transactionId !== undefined ? { transactionId: input.transactionId } : {}),
       updatedAt: new Date(),
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return result || null;
 }
 
@@ -102,7 +116,7 @@ export async function markPaymentAsPaid(
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -122,7 +136,7 @@ export async function markPaymentAsFailed(
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -138,7 +152,7 @@ export async function markPaymentAsCancelled(id: number): Promise<boolean> {
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -158,7 +172,7 @@ export async function markPaymentAsRefunded(
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -177,7 +191,7 @@ export async function updatePaymentDeadline(
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -198,7 +212,7 @@ export async function updatePaymentAmount(
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -217,7 +231,7 @@ export async function softDeletePayment(id: number): Promise<boolean> {
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -230,7 +244,7 @@ export async function deletePayment(id: number): Promise<boolean> {
     .delete(payments)
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -249,13 +263,13 @@ export async function bulkUpdatePayments(
       ...(updates.amount !== undefined ? { amount: String(updates.amount) } : {}),
       ...(updates.paymentType !== undefined ? { paymentType: updates.paymentType } : {}),
       ...(updates.currency !== undefined ? { currency: updates.currency } : {}),
-      ...(updates.paymentDeadline !== undefined ? { paymentDeadline: new Date(updates.paymentDeadline) } : {}),
+      ...(updates.paymentDeadline !== undefined ? { paymentDeadline: parsePaymentDeadline(updates.paymentDeadline) } : {}),
       ...(updates.transactionId !== undefined ? { transactionId: updates.transactionId } : {}),
       updatedAt: new Date(),
     })
     .where(inArray(payments.id, ids))
     .returning();
-  
+
   return results.length;
 }
 
@@ -274,6 +288,6 @@ export async function recordGatewayResponse(
     })
     .where(eq(payments.id, id))
     .returning();
-  
+
   return !!result;
 }
