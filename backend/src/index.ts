@@ -170,6 +170,14 @@ api.use("/users/*", authMiddleware({ roles: ["admin"] }));
 api.use("/audit-log/*", authMiddleware({ roles: ["admin"] }));
 api.use("/government-submissions/*", authMiddleware({ roles: ["admin"] }));
 
+// Customer data routers require authentication to prevent unauthorized
+// enumeration and cross-customer disclosure (pilgrims, bookings, payments).
+// Beds and pricing remain public for availability/quote flows.
+api.use("/pilgrims/*", authMiddleware({ roles: ["admin"] }));
+api.use("/bookings/*", authMiddleware({ roles: ["admin"] }));
+api.use("/payments/*", authMiddleware({ roles: ["admin"] }));
+api.use("/notifications/*", authMiddleware({ roles: ["admin"] }));
+
 // Mount all routes
 api.route("/auth", auth); // public: credential verification only
 api.route("/pilgrims", pilgrims);
