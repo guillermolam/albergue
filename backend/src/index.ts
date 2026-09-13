@@ -170,6 +170,14 @@ api.use("/users/*", authMiddleware({ roles: ["admin"] }));
 api.use("/audit-log/*", authMiddleware({ roles: ["admin"] }));
 api.use("/government-submissions/*", authMiddleware({ roles: ["admin"] }));
 
+// Protect pilgrim write operations (create, update, delete) from unauthenticated access
+// Read operations remain public for guest booking flows
+api.post("/pilgrims", authMiddleware({ roles: ["admin"] }));
+api.post("/pilgrims/*", authMiddleware({ roles: ["admin"] }));
+api.put("/pilgrims/*", authMiddleware({ roles: ["admin"] }));
+api.patch("/pilgrims/*", authMiddleware({ roles: ["admin"] }));
+api.delete("/pilgrims/*", authMiddleware({ roles: ["admin"] }));
+
 // Mount all routes
 api.route("/auth", auth); // public: credential verification only
 api.route("/pilgrims", pilgrims);
