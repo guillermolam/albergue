@@ -29,10 +29,21 @@ import {
   verifyNotification,
   isApproved,
 } from '../lib/redsys.js';
+import { authMiddleware } from '../lib/middleware.js';
 import type { CreatePaymentIntentRequest, CreatePaymentIntentResponse } from '@albergue/api-contract';
 import type { Payment, ApiResponse, PaginatedResponse } from '../types/index.js';
 
 const payments = new Hono();
+
+// All payment read endpoints require admin authentication to prevent disclosure
+// of payment records across bookings. The payment-intent and webhook endpoints
+// remain public as they have their own validation logic.
+payments.use('/', authMiddleware({ roles: ['admin'] }));
+payments.use('/:id', authMiddleware({ roles: ['admin'] }));
+payments.use('/booking/:bookingId', authMiddleware({ roles: ['admin'] }));
+payments.use('/pending', authMiddleware({ roles: ['admin'] }));
+payments.use('/overdue', authMiddleware({ roles: ['admin'] }));
+payments.use('/stats', authMiddleware({ roles: ['admin'] }));
 
 payments.get('/', async (c: Context) => {
   try {
