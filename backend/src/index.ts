@@ -170,6 +170,17 @@ api.use("/users/*", authMiddleware({ roles: ["admin"] }));
 api.use("/audit-log/*", authMiddleware({ roles: ["admin"] }));
 api.use("/government-submissions/*", authMiddleware({ roles: ["admin"] }));
 
+// Payment endpoints expose sensitive financial data and must be authenticated.
+// The Redsys webhook at /payments/redsys/notification is excluded (external gateway callback).
+api.use("/payments/*", async (c, next) => {
+  // Allow unauthenticated access to Redsys webhook
+  if (c.req.path === "/api/payments/redsys/notification" && c.req.method === "POST") {
+    return next();
+  }
+  // All other payment endpoints require admin authentication
+  return authMiddleware({ roles: ["admin"] })(c, next);
+});
+
 // Mount all routes
 api.route("/auth", auth); // public: credential verification only
 api.route("/pilgrims", pilgrims);
