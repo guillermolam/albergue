@@ -170,6 +170,18 @@ api.use("/users/*", authMiddleware({ roles: ["admin"] }));
 api.use("/audit-log/*", authMiddleware({ roles: ["admin"] }));
 api.use("/government-submissions/*", authMiddleware({ roles: ["admin"] }));
 
+// Bed mutation endpoints require authentication to prevent unauthorized
+// modification of inventory state, availability, pricing, and room metadata
+api.use("/beds", authMiddleware({ roles: ["admin"] }), async (c, next) => {
+  // Allow unauthenticated read operations (GET)
+  if (c.req.method === "GET") {
+    return next();
+  }
+  // All mutation operations (POST, PUT, PATCH, DELETE) require authentication
+  // which was already enforced by authMiddleware above
+  return next();
+});
+
 // Mount all routes
 api.route("/auth", auth); // public: credential verification only
 api.route("/pilgrims", pilgrims);

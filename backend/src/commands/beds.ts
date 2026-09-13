@@ -74,10 +74,33 @@ export async function updateBed(id: number, input: UpdateBedInput): Promise<Bed 
     return null;
   }
   
+  // Allowlist of fields that can be updated to prevent unauthorized modification
+  // of critical operational state. The primary key 'id' is explicitly excluded.
+  const allowedFields: (keyof UpdateBedInput)[] = [
+    'bedNumber',
+    'roomNumber',
+    'roomName',
+    'roomType',
+    'pricePerNight',
+    'currency',
+    'isAvailable',
+    'status',
+    'maintenanceNotes',
+    'lastCleanedAt',
+    'reservedUntil'
+  ];
+  
+  const sanitizedInput: Partial<UpdateBedInput> = {};
+  for (const field of allowedFields) {
+    if (field in input && input[field] !== undefined) {
+      sanitizedInput[field] = input[field];
+    }
+  }
+  
   const [result] = await db
     .update(beds)
     .set({
-      ...input,
+      ...sanitizedInput,
       updatedAt: new Date(),
     })
     .where(eq(beds.id, id))
@@ -234,10 +257,34 @@ export async function bulkUpdateBeds(
   updates: Partial<UpdateBedInput>
 ): Promise<number> {
   if (ids.length === 0) return 0;
+  
+  // Allowlist of fields that can be updated to prevent unauthorized modification
+  // of critical operational state. The primary key 'id' is explicitly excluded.
+  const allowedFields: (keyof UpdateBedInput)[] = [
+    'bedNumber',
+    'roomNumber',
+    'roomName',
+    'roomType',
+    'pricePerNight',
+    'currency',
+    'isAvailable',
+    'status',
+    'maintenanceNotes',
+    'lastCleanedAt',
+    'reservedUntil'
+  ];
+  
+  const sanitizedUpdates: Partial<UpdateBedInput> = {};
+  for (const field of allowedFields) {
+    if (field in updates && updates[field] !== undefined) {
+      sanitizedUpdates[field] = updates[field];
+    }
+  }
+  
   const results = await db
     .update(beds)
     .set({
-      ...updates,
+      ...sanitizedUpdates,
       updatedAt: new Date(),
     })
     .where(inArray(beds.id, ids))
