@@ -14,10 +14,31 @@ import { Pool, type PoolClient, type PoolConfig } from 'pg';
 import * as schema from '@albergue/domain-model';
 import { withRetry, DatabaseError, dbCircuitBreaker, CircuitBreaker } from './errors.js';
 
+// Build SSL configuration with proper certificate validation
+function buildSslConfig() {
+  // Non-production: disable SSL entirely
+  if (process.env.NODE_ENV !== 'production') {
+    return false;
+  }
+
+  // Production: enable SSL with certificate validation by default
+  const sslConfig: { rejectUnauthorized: boolean; ca?: string } = {
+    // Validate server certificate by default to prevent MITM attacks
+    rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== 'false',
+  };
+
+  // Support custom CA certificate if provided
+  if (process.env.DATABASE_SSL_CA) {
+    sslConfig.ca = process.env.DATABASE_SSL_CA;
+  }
+
+  return sslConfig;
+}
+
 // Connection configuration
 const poolConfig: PoolConfig = {
   connectionString: process.env.DATABASE_URL || process.env.NEON_DATABASE_URL || 'postgresql://localhost:5432/albergue',
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl: buildSslConfig(),
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
