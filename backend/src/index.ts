@@ -166,9 +166,19 @@ const api = new Hono();
 // Privileged capabilities require a verified identity. Until Phase 5 wires
 // session auth, authMiddleware accepts an ADMIN_API_TOKEN bearer credential
 // and fails closed when it is unset or wrong.
+//
+// All operational routes require authentication to prevent unauthenticated
+// access to sensitive data and destructive mutations. Only /auth remains
+// public for credential verification.
 api.use("/users/*", authMiddleware({ roles: ["admin"] }));
 api.use("/audit-log/*", authMiddleware({ roles: ["admin"] }));
 api.use("/government-submissions/*", authMiddleware({ roles: ["admin"] }));
+api.use("/pilgrims/*", authMiddleware({ roles: ["admin"] }));
+api.use("/bookings/*", authMiddleware({ roles: ["admin"] }));
+api.use("/beds/*", authMiddleware({ roles: ["admin"] }));
+api.use("/payments/*", authMiddleware({ roles: ["admin"] }));
+api.use("/pricing/*", authMiddleware({ roles: ["admin"] }));
+api.use("/notifications/*", authMiddleware({ roles: ["admin"] }));
 
 // Mount all routes
 api.route("/auth", auth); // public: credential verification only
