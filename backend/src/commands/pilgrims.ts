@@ -80,6 +80,7 @@ export async function updatePilgrim(id: number, input: UpdatePilgrimInput): Prom
 /**
  * Delete a pilgrim (soft delete - mark as inactive)
  * Note: We don't hard delete to preserve data integrity
+ * Clears all PII fields and marks the record as deleted
  */
 export async function softDeletePilgrim(id: number): Promise<boolean> {
   const [result] = await db
@@ -88,8 +89,22 @@ export async function softDeletePilgrim(id: number): Promise<boolean> {
       // Mark fields that indicate deletion
       firstName: '(DELETED)',
       lastName1: '(DELETED)',
+      lastName2: null,
       email: null, // nullable column — null marks erased data
       phone: '(DELETED)', // NOT NULL column — tombstone marker, not ''
+      birthDate: '(DELETED)',
+      documentNumber: '(DELETED)',
+      documentSupport: null,
+      addressStreet: '(DELETED)',
+      addressStreet2: null,
+      addressCity: '(DELETED)',
+      addressPostalCode: '00000',
+      addressProvince: null,
+      addressMunicipalityCode: null,
+      idPhotoUrl: null,
+      consentGiven: false,
+      consentDate: null,
+      dataRetentionUntil: new Date(), // Expire data immediately
       updatedAt: new Date(),
     })
     .where(eq(pilgrims.id, id))
