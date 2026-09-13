@@ -5,9 +5,31 @@
 
 import { db } from '../lib/db.js';
 import { pilgrims, bookings } from '@albergue/domain-model';
-import { eq, and, like, or, isNull, isNotNull, count, desc, asc, gt, gte, lte } from 'drizzle-orm';
+import { eq, and, like, or, isNull, isNotNull, count, desc, asc, gt, gte, lte, ne } from 'drizzle-orm';
 import type { Pilgrim, Booking } from '../types/index.js';
 import type { PaginatedResponse, PaginationParams, PilgrimFilter } from '../types/index.js';
+
+/**
+ * Lifecycle predicate: exclude soft-deleted, consent-withdrawn, or retention-expired records
+ * A pilgrim is considered active if:
+ * - firstName is not '(DELETED)' (soft delete marker)
+ * - consentGiven is true OR null (not explicitly withdrawn)
+ * - dataRetentionUntil is null OR in the future (not expired)
+ */
+function getLifecyclePredicate() {
+  const now = new Date();
+  return and(
+    ne(pilgrims.firstName, '(DELETED)'),
+    or(
+      eq(pilgrims.consentGiven, true),
+      isNull(pilgrims.consentGiven)
+    ),
+    or(
+      isNull(pilgrims.dataRetentionUntil),
+      gt(pilgrims.dataRetentionUntil, now)
+    )
+  );
+}
 
 /**
  * Get all pilgrims with pagination
@@ -29,8 +51,8 @@ export async function getAllPilgrims(
   const offset = (page - 1) * pageSize;
   const orderFn = orderDirection === 'asc' ? asc : desc;
 
-  // Build where conditions
-  const whereConditions = [];
+  // Build where conditions - always include lifecycle predicate
+  const whereConditions = [getLifecyclePredicate()];
   
   if (language) {
     whereConditions.push(eq(pilgrims.language, language));
@@ -108,7 +130,10 @@ export async function getPilgrimById(id: number): Promise<Pilgrim | null> {
   const [result] = await db
     .select()
     .from(pilgrims)
-    .where(eq(pilgrims.id, id))
+    .where(and(
+      eq(pilgrims.id, id),
+      getLifecyclePredicate()
+    ))
     .limit(1);
   
   return result || null;
@@ -121,7 +146,10 @@ export async function getPilgrimByEmail(email: string): Promise<Pilgrim | null> 
   const [result] = await db
     .select()
     .from(pilgrims)
-    .where(eq(pilgrims.email, email))
+    .where(and(
+      eq(pilgrims.email, email),
+      getLifecyclePredicate()
+    ))
     .limit(1);
   
   return result || null;
@@ -140,7 +168,8 @@ export async function getPilgrimByDocumentNumber(
     .where(
       and(
         eq(pilgrims.documentType, documentType),
-        eq(pilgrims.documentNumber, documentNumber)
+        eq(pilgrims.documentNumber, documentNumber),
+        getLifecyclePredicate()
       )
     )
     .limit(1);
@@ -156,10 +185,13 @@ export async function searchPilgrims(query: string, limit: number = 10): Promise
     .select()
     .from(pilgrims)
     .where(
-      or(
-        like(pilgrims.firstName, `%${query}%`),
-        like(pilgrims.lastName1, `%${query}%`),
-        like(pilgrims.lastName2, `%${query}%`)
+      and(
+        or(
+          like(pilgrims.firstName, `%${query}%`),
+          like(pilgrims.lastName1, `%${query}%`),
+          like(pilgrims.lastName2, `%${query}%`)
+        ),
+        getLifecyclePredicate()
       )
     )
     .orderBy(asc(pilgrims.lastName1))
@@ -182,7 +214,8 @@ export async function getPilgrimsWithActiveBookings(): Promise<Pilgrim[]> {
         or(
           isNull(bookings.reservationExpiresAt),
           gt(bookings.reservationExpiresAt, new Date())
-        )
+        ),
+        getLifecyclePredicate()
       )
     )
     .groupBy(pilgrims.id);
@@ -194,9 +227,12 @@ export async function getPilgrimsWithActiveBookings(): Promise<Pilgrim[]> {
  * Get pilgrim statistics
  */
 export async function getPilgrimStats() {
+  const lifecyclePredicate = getLifecyclePredicate();
+  
   const [total] = await db
     .select({ count: count() })
-    .from(pilgrims);
+    .from(pilgrims)
+    .where(lifecyclePredicate);
   
   const nationalityStats = await db
     .select({
@@ -204,7 +240,10 @@ export async function getPilgrimStats() {
       count: count(),
     })
     .from(pilgrims)
-    .where(isNotNull(pilgrims.nationality))
+    .where(and(
+      isNotNull(pilgrims.nationality),
+      lifecyclePredicate
+    ))
     .groupBy(pilgrims.nationality)
     .orderBy(desc(count()));
   
@@ -214,6 +253,7 @@ export async function getPilgrimStats() {
       count: count(),
     })
     .from(pilgrims)
+    .where(lifecyclePredicate)
     .groupBy(pilgrims.language)
     .orderBy(desc(count()));
   
@@ -223,6 +263,7 @@ export async function getPilgrimStats() {
       count: count(),
     })
     .from(pilgrims)
+    .where(lifecyclePredicate)
     .groupBy(pilgrims.gender);
   
   return {
@@ -240,6 +281,7 @@ export async function getRecentPilgrims(limit: number = 5): Promise<Pilgrim[]> {
   const results = await db
     .select()
     .from(pilgrims)
+    .where(getLifecyclePredicate())
     .orderBy(desc(pilgrims.createdAt))
     .limit(limit);
   
