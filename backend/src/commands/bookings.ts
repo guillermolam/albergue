@@ -130,42 +130,47 @@ export async function updateBooking(id: number, input: UpdateBookingInput): Prom
 
 /**
  * Update booking status
+ * Wraps booking update and bed release in a transaction for atomicity
  */
 export async function updateBookingStatus(
   id: number,
   status: string
 ): Promise<boolean> {
-  const [result] = await db
-    .update(bookings)
-    .set({
-      status,
-      updatedAt: new Date(),
-    })
-    .where(eq(bookings.id, id))
-    .returning();
-  
-  // If status is cancelled or completed, release the bed
-  if (['cancelled', 'completed', 'checked_out'].includes(status)) {
-    const [booking] = await db
-      .select({ bedAssignmentId: bookings.bedAssignmentId })
-      .from(bookings)
+  return db.transaction(async (tx) => {
+    const [result] = await tx
+      .update(bookings)
+      .set({
+        status,
+        updatedAt: new Date(),
+      })
       .where(eq(bookings.id, id))
-      .limit(1);
+      .returning();
     
-    if (booking?.bedAssignmentId) {
-      await db
-        .update(beds)
-        .set({
-          isAvailable: true,
-          status: 'available',
-          reservedUntil: null,
-          updatedAt: new Date(),
-        })
-        .where(eq(beds.id, booking.bedAssignmentId));
+    if (!result) return false;
+
+    // If status is terminal (cancelled, completed, checked_out, or expired), release the bed
+    if (['cancelled', 'completed', 'checked_out', 'expired'].includes(status)) {
+      const [booking] = await tx
+        .select({ bedAssignmentId: bookings.bedAssignmentId })
+        .from(bookings)
+        .where(eq(bookings.id, id))
+        .limit(1);
+      
+      if (booking?.bedAssignmentId) {
+        await tx
+          .update(beds)
+          .set({
+            isAvailable: true,
+            status: 'available',
+            reservedUntil: null,
+            updatedAt: new Date(),
+          })
+          .where(eq(beds.id, booking.bedAssignmentId));
+      }
     }
-  }
-  
-  return !!result;
+    
+    return true;
+  });
 }
 
 /**
