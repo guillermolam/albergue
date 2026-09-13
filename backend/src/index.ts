@@ -163,15 +163,15 @@ app.get("/health/stats", (c) => {
 // API version prefix
 const api = new Hono();
 
-// Privileged capabilities require a verified identity. Until Phase 5 wires
-// session auth, authMiddleware accepts an ADMIN_API_TOKEN bearer credential
-// and fails closed when it is unset or wrong.
-api.use("/users/*", authMiddleware({ roles: ["admin"] }));
-api.use("/audit-log/*", authMiddleware({ roles: ["admin"] }));
-api.use("/government-submissions/*", authMiddleware({ roles: ["admin"] }));
-
-// Mount all routes
+// Mount public routes first (no authentication required)
 api.route("/auth", auth); // public: credential verification only
+
+// All other routes require authentication. Privileged capabilities require a
+// verified identity. Until Phase 5 wires session auth, authMiddleware accepts
+// an ADMIN_API_TOKEN bearer credential and fails closed when it is unset or wrong.
+api.use("/*", authMiddleware({ roles: ["admin"] }));
+
+// Mount protected routes (all require admin authentication)
 api.route("/pilgrims", pilgrims);
 api.route("/bookings", bookings);
 api.route("/beds", beds);
