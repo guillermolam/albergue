@@ -169,6 +169,8 @@ const api = new Hono();
 api.use("/users/*", authMiddleware({ roles: ["admin"] }));
 api.use("/audit-log/*", authMiddleware({ roles: ["admin"] }));
 api.use("/government-submissions/*", authMiddleware({ roles: ["admin"] }));
+api.use("/pilgrims/*", authMiddleware({ roles: ["admin"] }));
+api.use("/bookings/*", authMiddleware({ roles: ["admin"] }));
 
 // Mount all routes
 api.route("/auth", auth); // public: credential verification only
