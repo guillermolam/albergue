@@ -34,24 +34,6 @@ auditLog.get('/', async (c: Context) => {
   }
 });
 
-auditLog.get('/:id', async (c: Context) => {
-  try {
-    const id = Number(c.req.param('id'));
-    if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid audit log ID' });
-    const log = await getAuditLogById(id);
-    if (!log) throw new HTTPException(404, { message: 'Audit log not found' });
-    return c.json<ApiResponse<AuditLog>>({
-      success: true,
-      data: log,
-      message: 'Audit log retrieved successfully',
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    if (error instanceof HTTPException) throw error;
-    throw new HTTPException(500, { message: `Failed to get audit log: ${String(error)}` });
-  }
-});
-
 auditLog.get('/table/:tableName', async (c: Context) => {
   try {
     const tableName = c.req.param('tableName');
@@ -99,6 +81,30 @@ auditLog.get('/stats', async (c: Context) => {
     });
   } catch (error) {
     throw new HTTPException(500, { message: `Failed to get audit log statistics: ${String(error)}` });
+  }
+});
+
+/**
+ * GET /audit-log/:id - Get audit log entry by ID
+ * Registered after every static-segment GET route above: Hono matches
+ * routes in registration order, and this single-segment wildcard would
+ * otherwise shadow static paths like /stats.
+ */
+auditLog.get('/:id', async (c: Context) => {
+  try {
+    const id = Number(c.req.param('id'));
+    if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid audit log ID' });
+    const log = await getAuditLogById(id);
+    if (!log) throw new HTTPException(404, { message: 'Audit log not found' });
+    return c.json<ApiResponse<AuditLog>>({
+      success: true,
+      data: log,
+      message: 'Audit log retrieved successfully',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    if (error instanceof HTTPException) throw error;
+    throw new HTTPException(500, { message: `Failed to get audit log: ${String(error)}` });
   }
 });
 

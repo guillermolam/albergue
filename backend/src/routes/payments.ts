@@ -4,6 +4,7 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import type { Context } from 'hono';
+import { authMiddleware } from '../lib/middleware.js';
 import {
   getAllPayments,
   getPaymentById,
@@ -34,7 +35,10 @@ import type { Payment, ApiResponse, PaginatedResponse } from '../types/index.js'
 
 const payments = new Hono();
 
-payments.get('/', async (c: Context) => {
+// Payment read endpoints expose sensitive financial data and require admin
+// auth. /intent and /redsys/notification stay public (guest payment-creation
+// step and the external gateway webhook respectively) — see below.
+payments.get('/', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const { page, pageSize, orderBy, orderDirection } = c.req.query();
     const result = await getAllPayments({
@@ -54,25 +58,7 @@ payments.get('/', async (c: Context) => {
   }
 });
 
-payments.get('/:id', async (c: Context) => {
-  try {
-    const id = Number(c.req.param('id'));
-    if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid payment ID' });
-    const payment = await getPaymentById(id);
-    if (!payment) throw new HTTPException(404, { message: 'Payment not found' });
-    return c.json<ApiResponse<Payment>>({
-      success: true,
-      data: payment,
-      message: 'Payment retrieved successfully',
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    if (error instanceof HTTPException) throw error;
-    throw new HTTPException(500, { message: `Failed to get payment: ${String(error)}` });
-  }
-});
-
-payments.get('/booking/:bookingId', async (c: Context) => {
+payments.get('/booking/:bookingId', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const bookingId = Number(c.req.param('bookingId'));
     if (isNaN(bookingId)) throw new HTTPException(400, { message: 'Invalid booking ID' });
@@ -89,7 +75,7 @@ payments.get('/booking/:bookingId', async (c: Context) => {
   }
 });
 
-payments.get('/pending', async (c: Context) => {
+payments.get('/pending', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const payments = await getPendingPayments();
     return c.json<ApiResponse<Payment[]>>({
@@ -103,7 +89,7 @@ payments.get('/pending', async (c: Context) => {
   }
 });
 
-payments.get('/overdue', async (c: Context) => {
+payments.get('/overdue', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const payments = await getOverduePayments();
     return c.json<ApiResponse<Payment[]>>({
@@ -117,7 +103,7 @@ payments.get('/overdue', async (c: Context) => {
   }
 });
 
-payments.get('/stats', async (c: Context) => {
+payments.get('/stats', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const stats = await getPaymentStats();
     return c.json<ApiResponse<any>>({
@@ -128,6 +114,30 @@ payments.get('/stats', async (c: Context) => {
     });
   } catch (error) {
     throw new HTTPException(500, { message: `Failed to get payment statistics: ${String(error)}` });
+  }
+});
+
+/**
+ * GET /payments/:id - Get payment by ID
+ * Registered after every static-segment GET route above: Hono matches
+ * routes in registration order, and this single-segment wildcard would
+ * otherwise shadow static paths like /pending or /stats.
+ */
+payments.get('/:id', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
+  try {
+    const id = Number(c.req.param('id'));
+    if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid payment ID' });
+    const payment = await getPaymentById(id);
+    if (!payment) throw new HTTPException(404, { message: 'Payment not found' });
+    return c.json<ApiResponse<Payment>>({
+      success: true,
+      data: payment,
+      message: 'Payment retrieved successfully',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    if (error instanceof HTTPException) throw error;
+    throw new HTTPException(500, { message: `Failed to get payment: ${String(error)}` });
   }
 });
 

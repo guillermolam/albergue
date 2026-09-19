@@ -34,24 +34,6 @@ governmentSubmissions.get('/', async (c: Context) => {
   }
 });
 
-governmentSubmissions.get('/:id', async (c: Context) => {
-  try {
-    const id = Number(c.req.param('id'));
-    if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid submission ID' });
-    const submission = await getGovernmentSubmissionById(id);
-    if (!submission) throw new HTTPException(404, { message: 'Submission not found' });
-    return c.json<ApiResponse<GovernmentSubmission>>({
-      success: true,
-      data: submission,
-      message: 'Government submission retrieved successfully',
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    if (error instanceof HTTPException) throw error;
-    throw new HTTPException(500, { message: `Failed to get government submission: ${String(error)}` });
-  }
-});
-
 governmentSubmissions.get('/booking/:bookingId', async (c: Context) => {
   try {
     const bookingId = Number(c.req.param('bookingId'));
@@ -94,6 +76,30 @@ governmentSubmissions.get('/stats', async (c: Context) => {
     });
   } catch (error) {
     throw new HTTPException(500, { message: `Failed to get government submission statistics: ${String(error)}` });
+  }
+});
+
+/**
+ * GET /government-submissions/:id - Get submission by ID
+ * Registered after every static-segment GET route above: Hono matches
+ * routes in registration order, and this single-segment wildcard would
+ * otherwise shadow static paths like /pending or /stats.
+ */
+governmentSubmissions.get('/:id', async (c: Context) => {
+  try {
+    const id = Number(c.req.param('id'));
+    if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid submission ID' });
+    const submission = await getGovernmentSubmissionById(id);
+    if (!submission) throw new HTTPException(404, { message: 'Submission not found' });
+    return c.json<ApiResponse<GovernmentSubmission>>({
+      success: true,
+      data: submission,
+      message: 'Government submission retrieved successfully',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    if (error instanceof HTTPException) throw error;
+    throw new HTTPException(500, { message: `Failed to get government submission: ${String(error)}` });
   }
 });
 

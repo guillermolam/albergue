@@ -64,29 +64,6 @@ beds.get('/', async (c: Context) => {
 });
 
 /**
- * GET /beds/:id - Get bed by ID
- */
-beds.get('/:id', async (c: Context) => {
-  try {
-    const id = Number(c.req.param('id'));
-    if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid bed ID' });
-    
-    const bed = await getBedById(id);
-    if (!bed) throw new HTTPException(404, { message: 'Bed not found' });
-    
-    return c.json<ApiResponse<Bed>>({
-      success: true,
-      data: bed,
-      message: 'Bed retrieved successfully',
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    if (error instanceof HTTPException) throw error;
-    throw new HTTPException(500, { message: `Failed to get bed: ${String(error)}` });
-  }
-});
-
-/**
  * GET /beds/available - Get available beds
  */
 beds.get('/available', async (c: Context) => {
@@ -193,6 +170,32 @@ beds.get('/type/:roomType', async (c: Context) => {
     });
   } catch (error) {
     throw new HTTPException(500, { message: `Failed to get beds by type: ${String(error)}` });
+  }
+});
+
+/**
+ * GET /beds/:id - Get bed by ID
+ * Registered after every static-segment GET route above: Hono matches
+ * routes in registration order, and this single-segment wildcard would
+ * otherwise shadow static paths like /available or /stats.
+ */
+beds.get('/:id', async (c: Context) => {
+  try {
+    const id = Number(c.req.param('id'));
+    if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid bed ID' });
+
+    const bed = await getBedById(id);
+    if (!bed) throw new HTTPException(404, { message: 'Bed not found' });
+
+    return c.json<ApiResponse<Bed>>({
+      success: true,
+      data: bed,
+      message: 'Bed retrieved successfully',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    if (error instanceof HTTPException) throw error;
+    throw new HTTPException(500, { message: `Failed to get bed: ${String(error)}` });
   }
 });
 

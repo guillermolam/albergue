@@ -6,6 +6,7 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import type { Context } from 'hono';
+import { authMiddleware } from '../lib/middleware.js';
 import {
   getAllBookings,
   getBookingById,
@@ -44,7 +45,7 @@ const bookings = new Hono();
 /**
  * GET /bookings - Get all bookings with optional filters
  */
-bookings.get('/', async (c: Context) => {
+bookings.get('/', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const { page, pageSize, orderBy, orderDirection, ...filters } = c.req.query();
     
@@ -72,39 +73,10 @@ bookings.get('/', async (c: Context) => {
 });
 
 /**
- * GET /bookings/:id - Get booking by ID
- */
-bookings.get('/:id', async (c: Context) => {
-  try {
-    const id = Number(c.req.param('id'));
-    
-    if (isNaN(id)) {
-      throw new HTTPException(400, { message: 'Invalid booking ID' });
-    }
-
-    const booking = await getBookingById(id);
-    
-    if (!booking) {
-      throw new HTTPException(404, { message: 'Booking not found' });
-    }
-
-    return c.json<ApiResponse<Booking>>({
-      success: true,
-      data: booking,
-      message: 'Booking retrieved successfully',
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    if (error instanceof HTTPException) throw error;
-    throw new HTTPException(500, {
-      message: `Failed to get booking: ${String(error)}`,
-    });
-  }
-});
-
-/**
  * GET /bookings/reference/:reference - Get booking by reference number
  */
+// Public: this is how a guest looks up their own booking confirmation by
+// reference number (the reference itself is the access credential).
 bookings.get('/reference/:reference', async (c: Context) => {
   try {
     const reference = c.req.param('reference');
@@ -134,7 +106,7 @@ bookings.get('/reference/:reference', async (c: Context) => {
 /**
  * GET /bookings/pilgrim/:pilgrimId - Get bookings by pilgrim ID
  */
-bookings.get('/pilgrim/:pilgrimId', async (c: Context) => {
+bookings.get('/pilgrim/:pilgrimId', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const pilgrimId = Number(c.req.param('pilgrimId'));
     
@@ -161,7 +133,7 @@ bookings.get('/pilgrim/:pilgrimId', async (c: Context) => {
 /**
  * GET /bookings/active - Get active bookings
  */
-bookings.get('/active', async (c: Context) => {
+bookings.get('/active', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const bookings = await getActiveBookings();
     
@@ -181,7 +153,7 @@ bookings.get('/active', async (c: Context) => {
 /**
  * GET /bookings/upcoming - Get upcoming check-ins
  */
-bookings.get('/upcoming', async (c: Context) => {
+bookings.get('/upcoming', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const { days } = c.req.query();
     const daysNum = days ? Number(days) : 7;
@@ -204,7 +176,7 @@ bookings.get('/upcoming', async (c: Context) => {
 /**
  * GET /bookings/overdue - Get overdue reservations
  */
-bookings.get('/overdue', async (c: Context) => {
+bookings.get('/overdue', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const bookings = await getOverdueReservations();
     
@@ -224,7 +196,7 @@ bookings.get('/overdue', async (c: Context) => {
 /**
  * GET /bookings/stats - Get booking statistics
  */
-bookings.get('/stats', async (c: Context) => {
+bookings.get('/stats', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const stats = await getBookingStats();
     
@@ -244,7 +216,7 @@ bookings.get('/stats', async (c: Context) => {
 /**
  * GET /bookings/recent - Get recent bookings
  */
-bookings.get('/recent', async (c: Context) => {
+bookings.get('/recent', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const { limit } = c.req.query();
     const limitNum = limit ? Number(limit) : 10;
@@ -267,7 +239,7 @@ bookings.get('/recent', async (c: Context) => {
 /**
  * GET /bookings/search - Search bookings
  */
-bookings.get('/search', async (c: Context) => {
+bookings.get('/search', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const { q, limit } = c.req.query();
     const query = q as string || '';
@@ -291,6 +263,7 @@ bookings.get('/search', async (c: Context) => {
 /**
  * GET /bookings/available-beds - Get available beds for date range
  */
+// Public: guests need to see availability before they can start a booking.
 bookings.get('/available-beds', async (c: Context) => {
   try {
     const { checkInDate, checkOutDate, roomType } = c.req.query();
@@ -322,7 +295,7 @@ bookings.get('/available-beds', async (c: Context) => {
 /**
  * GET /bookings/date-range - Get bookings by date range
  */
-bookings.get('/date-range', async (c: Context) => {
+bookings.get('/date-range', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const { startDate, endDate } = c.req.query();
     
@@ -350,9 +323,43 @@ bookings.get('/date-range', async (c: Context) => {
 });
 
 /**
+ * GET /bookings/:id - Get booking by ID
+ * Registered after every static-segment GET route above: Hono matches
+ * routes in registration order, and this single-segment wildcard would
+ * otherwise shadow static paths like /available-beds or /stats.
+ */
+bookings.get('/:id', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
+  try {
+    const id = Number(c.req.param('id'));
+
+    if (isNaN(id)) {
+      throw new HTTPException(400, { message: 'Invalid booking ID' });
+    }
+
+    const booking = await getBookingById(id);
+
+    if (!booking) {
+      throw new HTTPException(404, { message: 'Booking not found' });
+    }
+
+    return c.json<ApiResponse<Booking>>({
+      success: true,
+      data: booking,
+      message: 'Booking retrieved successfully',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    if (error instanceof HTTPException) throw error;
+    throw new HTTPException(500, {
+      message: `Failed to get booking: ${String(error)}`,
+    });
+  }
+});
+
+/**
  * GET /bookings/:id/details - Get booking with full details
  */
-bookings.get('/:id/details', async (c: Context) => {
+bookings.get('/:id/details', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const id = Number(c.req.param('id'));
     
@@ -391,6 +398,7 @@ function parseIsoDate(value: string, field: string): Date {
 
 /**
  * POST /bookings - Create a booking (transactional; claims bedId atomically)
+ * Public: this is the guest booking-creation step of the booking flow.
  */
 bookings.post('/', async (c: Context) => {
   try {
@@ -469,6 +477,7 @@ bookings.post('/', async (c: Context) => {
 
 /**
  * POST /bookings/quote - Authoritative server-side price quote (BOOK-001)
+ * Public: guests need a quote before they commit to booking.
  */
 bookings.post('/quote', async (c: Context) => {
   try {

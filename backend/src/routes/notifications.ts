@@ -35,24 +35,6 @@ notifications.get('/', async (c: Context) => {
   }
 });
 
-notifications.get('/:id', async (c: Context) => {
-  try {
-    const id = Number(c.req.param('id'));
-    if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid notification ID' });
-    const notification = await getNotificationById(id);
-    if (!notification) throw new HTTPException(404, { message: 'Notification not found' });
-    return c.json<ApiResponse<Notification>>({
-      success: true,
-      data: notification,
-      message: 'Notification retrieved successfully',
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    if (error instanceof HTTPException) throw error;
-    throw new HTTPException(500, { message: `Failed to get notification: ${String(error)}` });
-  }
-});
-
 notifications.get('/pilgrim/:pilgrimId', async (c: Context) => {
   try {
     const pilgrimId = Number(c.req.param('pilgrimId'));
@@ -95,6 +77,30 @@ notifications.get('/stats', async (c: Context) => {
     });
   } catch (error) {
     throw new HTTPException(500, { message: `Failed to get notification statistics: ${String(error)}` });
+  }
+});
+
+/**
+ * GET /notifications/:id - Get notification by ID
+ * Registered after every static-segment GET route above: Hono matches
+ * routes in registration order, and this single-segment wildcard would
+ * otherwise shadow static paths like /pending or /stats.
+ */
+notifications.get('/:id', async (c: Context) => {
+  try {
+    const id = Number(c.req.param('id'));
+    if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid notification ID' });
+    const notification = await getNotificationById(id);
+    if (!notification) throw new HTTPException(404, { message: 'Notification not found' });
+    return c.json<ApiResponse<Notification>>({
+      success: true,
+      data: notification,
+      message: 'Notification retrieved successfully',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    if (error instanceof HTTPException) throw error;
+    throw new HTTPException(500, { message: `Failed to get notification: ${String(error)}` });
   }
 });
 

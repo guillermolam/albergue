@@ -115,6 +115,9 @@ export interface CreateBedInput {
   currency?: string;
   isAvailable?: boolean;
   status?: string;
+  maintenanceNotes?: string | null;
+  lastCleanedAt?: Date | null;
+  reservedUntil?: Date | null;
 }
 
 export interface CreatePricingInput {

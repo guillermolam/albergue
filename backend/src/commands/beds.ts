@@ -8,6 +8,21 @@ import { beds } from '@albergue/domain-model';
 import { eq, and, or, isNull, lte, inArray } from 'drizzle-orm';
 import type { InsertBed, UpdateBedInput, Bed } from '../types/index.js';
 
+// Fields a client may update directly. Excludes id/createdAt/updatedAt so a
+// request body can't overwrite the primary key or audit timestamps.
+const WRITABLE_BED_FIELDS = [
+  'bedNumber', 'roomNumber', 'roomName', 'roomType', 'pricePerNight',
+  'currency', 'isAvailable', 'status', 'maintenanceNotes', 'lastCleanedAt',
+  'reservedUntil',
+] as const satisfies readonly (keyof UpdateBedInput)[];
+
+export function pickWritableBedFields(input: Partial<UpdateBedInput>): Partial<UpdateBedInput> {
+  const entries = WRITABLE_BED_FIELDS
+    .filter((field) => input[field] !== undefined)
+    .map((field) => [field, input[field]] as const);
+  return Object.fromEntries(entries) as Partial<UpdateBedInput>;
+}
+
 /**
  * Create a new bed
  */
@@ -77,12 +92,12 @@ export async function updateBed(id: number, input: UpdateBedInput): Promise<Bed 
   const [result] = await db
     .update(beds)
     .set({
-      ...input,
+      ...pickWritableBedFields(input),
       updatedAt: new Date(),
     })
     .where(eq(beds.id, id))
     .returning();
-  
+
   return result || null;
 }
 
@@ -237,7 +252,7 @@ export async function bulkUpdateBeds(
   const results = await db
     .update(beds)
     .set({
-      ...updates,
+      ...pickWritableBedFields(updates),
       updatedAt: new Date(),
     })
     .where(inArray(beds.id, ids))
@@ -264,7 +279,6 @@ export async function cleanupExpiredReservations(): Promise<number> {
       and(
         eq(beds.isAvailable, false),
         eq(beds.status, 'reserved'),
-        // @ts-ignore
         or(
           isNull(beds.reservedUntil),
           lte(beds.reservedUntil, now)
