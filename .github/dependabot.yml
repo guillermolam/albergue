@@ -25,33 +25,6 @@ updates:
       solid:
         patterns: ["solid-js", "@solidjs/*"]
 
-  # ── Rust workspace (backend + gateway) ─────────────────────────────────────
-  - package-ecosystem: "cargo"
-    directory: "/"
-    schedule:
-      interval: "daily"
-      time: "03:00"
-      timezone: "Europe/Madrid"
-    open-pull-requests-limit: 10
-    labels:
-      - "dependencies"
-      - "rust"
-    commit-message:
-      prefix: "chore(deps)"
-      include: "scope"
-    reviewers:
-      - "guillermolam"
-    versioning-strategy: increase
-    groups:
-      spin-sdk:
-        patterns: ["spin-sdk", "spin-*"]
-      worker:
-        patterns: ["worker", "worker-*"]
-      serde:
-        patterns: ["serde", "serde_*"]
-      tokio:
-        patterns: ["tokio", "tokio-*"]
-
   # ── GitHub Actions ─────────────────────────────────────────────────────────
   - package-ecosystem: "github-actions"
     directory: "/"

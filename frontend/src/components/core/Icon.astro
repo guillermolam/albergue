@@ -1,0 +1,72 @@
+---
+export interface Props {
+  name?: 'shell' | 'star' | 'dot' | 'circle' | 'menu' | 'arrow-down' | string;
+  svgPath?: string | string[];
+  rawSvg?: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'xs';
+  color?: 'primary' | 'secondary' | 'error' | 'white' | 'black' | 'current' | string;
+  animated?: boolean;
+  class?: string;
+}
+
+const {
+  name = 'circle',
+  svgPath,
+  rawSvg,
+  size = 'md',
+  color = 'current',
+  animated = false,
+  class: className = '',
+}: Props = Astro.props;
+
+const px = { xs: 16, sm: 20, md: 28, lg: 36, xl: 48 }[size];
+const colorValue =
+  {
+    primary: '#00AB39',
+    secondary: '#EAC102',
+    error: '#ED1C24',
+    white: '#FFFFFF',
+    black: '#111111',
+    current: 'currentColor',
+  }[color as keyof typeof color] || color;
+
+const paths: Record<string, string> = {
+  star: 'M20 3 L24 14 L36 14 L26 21 L30 33 L20 26 L10 33 L14 21 L4 14 L16 14 Z',
+  circle: 'M20 4 A16 16 0 1 1 20 36 A16 16 0 1 1 20 4',
+  shell: 'M4 27 C8 15 18 8 29 8 C35 8 38 12 37 17 C36 25 26 30 15 30 C10 30 6 29 4 27 Z',
+  'arrow-down': 'M8 14 L20 27 L32 14',
+};
+
+const pathValues = svgPath
+  ? Array.isArray(svgPath)
+    ? svgPath
+    : [svgPath]
+  : paths[name]
+    ? [paths[name]]
+    : [];
+const classes = `inline-block align-middle ${animated ? 'transition-transform duration-300 hover:scale-110' : ''} ${className}`;
+---
+
+<span class={classes} aria-hidden="true">
+  <svg width={px} height={px} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    {rawSvg ? (
+      <Fragment set:html={rawSvg} />
+    ) : (
+      pathValues.map((path) => (
+        <path
+          d={path}
+          stroke={colorValue}
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          fill={name === 'dot' ? colorValue : 'none'}
+        />
+      ))
+    )}
+    {name === 'dot' && <circle cx="20" cy="20" r="7" fill={colorValue} />}
+    {name === 'menu' &&
+      [8, 20, 32].map((y) => (
+        <path d={`M6 ${y} H34`} stroke={colorValue} stroke-width="2.5" stroke-linecap="round" />
+      ))}
+  </svg>
+</span>

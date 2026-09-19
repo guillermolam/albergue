@@ -215,7 +215,9 @@ export function BookingStepper({
                     {step.title}
                   </p>
                   <p
-                    className={`text-sm ${isActive ? "text-gray-600" : "text-gray-400"}`}
+                    className={`text-sm ${
+                      isActive ? "text-gray-600" : "text-gray-400"
+                    }`}
                     style={{ fontFamily: "Patrick Hand, cursive" }}
                   >
                     {step.subtitle}

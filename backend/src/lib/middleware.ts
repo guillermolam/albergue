@@ -3,10 +3,10 @@
  * Request/Response middleware for Hono
  */
 
-import type { Context, Next } from 'hono';
-import type { MiddlewareHandler } from 'hono';
-import { timingSafeEqual } from 'node:crypto';
-import { withRetry, formatError, CircuitBreaker, AppError } from './errors.js';
+import type { Context, Next } from "hono";
+import type { MiddlewareHandler } from "hono";
+import { timingSafeEqual } from "node:crypto";
+import { withRetry, formatError, CircuitBreaker, AppError } from "./errors.js";
 
 /**
  * Request ID generator
@@ -54,12 +54,13 @@ export function requestContextMiddleware(): MiddlewareHandler {
     const requestId = generateRequestId();
     const startTime = Date.now();
 
-    const ip = c.req.header('x-forwarded-for') ||
-      c.req.header('x-real-ip') ||
+    const ip =
+      c.req.header("x-forwarded-for") ||
+      c.req.header("x-real-ip") ||
       c.env?.remoteAddress ||
-      'unknown';
+      "unknown";
 
-    const userAgent = c.req.header('user-agent');
+    const userAgent = c.req.header("user-agent");
 
     const requestContext: RequestContext = {
       requestId,
@@ -68,17 +69,17 @@ export function requestContextMiddleware(): MiddlewareHandler {
       userAgent,
     };
 
-    c.set('requestContext', requestContext);
+    c.set("requestContext", requestContext);
 
     // Add request ID to response headers
-    c.header('x-request-id', requestId);
-    c.header('x-response-time', '0'); // Will be updated later
+    c.header("x-request-id", requestId);
+    c.header("x-response-time", "0"); // Will be updated later
 
     await next();
 
     // Update response time
     const responseTime = Date.now() - startTime;
-    c.header('x-response-time', String(responseTime));
+    c.header("x-response-time", String(responseTime));
     return;
   };
 }
@@ -93,26 +94,31 @@ export function errorHandlerMiddleware(): MiddlewareHandler {
       await next();
       return;
     } catch (error: any) {
-      const requestContext = c.get('requestContext') || { requestId: 'unknown' };
+      const requestContext = c.get("requestContext") || {
+        requestId: "unknown",
+      };
 
       console.error(`
 [${new Date().toISOString()}] 
 [${requestContext.requestId}] 
 [${c.req.method}] ${c.req.path}
 Error: ${error.message || String(error)}
-Stack: ${error.stack || 'No stack'}
+Stack: ${error.stack || "No stack"}
 `);
 
       const formatted = formatError(error);
       const status = formatted.status || 500;
 
-      return c.json({
-        success: false,
-        error: formatted.error,
-        details: formatted.details,
-        requestId: requestContext.requestId,
-        timestamp: new Date().toISOString(),
-      }, status as any);
+      return c.json(
+        {
+          success: false,
+          error: formatted.error,
+          details: formatted.details,
+          requestId: requestContext.requestId,
+          timestamp: new Date().toISOString(),
+        },
+        status as any,
+      );
     }
   };
 }
@@ -121,9 +127,7 @@ Stack: ${error.stack || 'No stack'}
  * Circuit breaker middleware
  * Wraps route handlers with circuit breaker
  */
-export function circuitBreakerMiddleware(
-  circuitBreaker?: CircuitBreaker
-): MiddlewareHandler {
+export function circuitBreakerMiddleware(circuitBreaker?: CircuitBreaker): MiddlewareHandler {
   const breaker = circuitBreaker || new CircuitBreaker();
 
   return async (c: Context, next: Next) => {
@@ -145,7 +149,7 @@ export function retryMiddleware(
     maxDelay?: number;
     retryableStatuses?: number[];
     onRetry?: (attempt: number, error: Error) => void;
-  } = {}
+  } = {},
 ): MiddlewareHandler {
   const {
     maxAttempts = 3,
@@ -169,28 +173,27 @@ export function retryMiddleware(
 
         // Check if retryable
         const status = error.status || error.statusCode || 0;
-        const isRetryable = retryableStatuses.includes(status) ||
-          (error.name === 'TypeError' && error.message?.includes('fetch'));
+        const isRetryable =
+          retryableStatuses.includes(status) ||
+          (error.name === "TypeError" && error.message?.includes("fetch"));
 
         if (!isRetryable || attempt >= maxAttempts) {
           throw error;
         }
 
         // Calculate delay with exponential backoff
-        const delay = Math.min(
-          baseDelay * Math.pow(2, attempt - 1),
-          maxDelay
-        ) * (0.5 + Math.random()); // Add jitter
+        const delay =
+          Math.min(baseDelay * Math.pow(2, attempt - 1), maxDelay) * (0.5 + Math.random()); // Add jitter
 
         if (onRetry) {
           onRetry(attempt, lastError);
         }
 
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
 
-    throw lastError || new Error('Unknown error');
+    throw lastError || new Error("Unknown error");
   };
 }
 
@@ -210,12 +213,12 @@ export function rateLimiterMiddleware(
     maxRequests?: number;
     keyGenerator?: (c: Context) => string;
     onRateLimited?: (c: Context) => void;
-  } = {}
+  } = {},
 ): MiddlewareHandler {
   const {
     windowMs = 60000, // 1 minute
     maxRequests = 100,
-    keyGenerator = (c: Context) => c.env?.remoteAddress || 'global',
+    keyGenerator = (c: Context) => c.env?.remoteAddress || "global",
     onRateLimited,
   } = options;
 
@@ -223,7 +226,10 @@ export function rateLimiterMiddleware(
     const key = keyGenerator(c);
     const now = Date.now();
 
-    const record = rateLimitStore[key] || { count: 0, resetTime: now + windowMs };
+    const record = rateLimitStore[key] || {
+      count: 0,
+      resetTime: now + windowMs,
+    };
 
     // Reset if window has passed
     if (now > record.resetTime) {
@@ -233,18 +239,21 @@ export function rateLimiterMiddleware(
 
     // Check if rate limited
     if (record.count >= maxRequests) {
-      c.header('retry-after', String(Math.ceil((record.resetTime - now) / 1000)));
+      c.header("retry-after", String(Math.ceil((record.resetTime - now) / 1000)));
 
       if (onRateLimited) {
         onRateLimited(c);
       }
 
-      return c.json({
-        success: false,
-        error: 'Rate limit exceeded',
-        retryAfter: record.resetTime - now,
-        timestamp: new Date().toISOString(),
-      }, 429 as any);
+      return c.json(
+        {
+          success: false,
+          error: "Rate limit exceeded",
+          retryAfter: record.resetTime - now,
+          timestamp: new Date().toISOString(),
+        },
+        429 as any,
+      );
     }
 
     // Increment and continue
@@ -287,7 +296,7 @@ export function cachingMiddleware(
     shouldCache?: (c: Context) => boolean;
     onCacheHit?: (c: Context) => void;
     onCacheMiss?: (c: Context) => void;
-  } = {}
+  } = {},
 ): MiddlewareHandler {
   const {
     ttl = 60000, // 1 minute
@@ -298,7 +307,7 @@ export function cachingMiddleware(
   } = options;
 
   return async (c: Context, next: Next) => {
-    if (c.req.method !== 'GET') {
+    if (c.req.method !== "GET") {
       await next();
       return;
     }
@@ -309,7 +318,7 @@ export function cachingMiddleware(
     if (cached && cached.expires > Date.now()) {
       if (onCacheHit) onCacheHit(c);
 
-      c.header('x-cache', 'HIT');
+      c.header("x-cache", "HIT");
       return c.json(cached.data);
     }
 
@@ -319,12 +328,12 @@ export function cachingMiddleware(
 
     // After handler: cache JSON response body when cacheable
     const cacheable = shouldCache(c);
-    c.header('x-cache', cacheable ? 'MISS' : 'BYPASS');
+    c.header("x-cache", cacheable ? "MISS" : "BYPASS");
 
     if (cacheable && c.res) {
       try {
-        const contentType = c.res.headers.get('content-type') || '';
-        if (contentType.includes('application/json')) {
+        const contentType = c.res.headers.get("content-type") || "";
+        if (contentType.includes("application/json")) {
           const cloned = c.res.clone();
           const data = await cloned.json();
           memoryCache.set(key, {
@@ -349,7 +358,7 @@ export function compressionMiddleware(): MiddlewareHandler {
     await next();
 
     // Only process JSON responses
-    if (c.res.headers.get('content-type')?.includes('application/json')) {
+    if (c.res.headers.get("content-type")?.includes("application/json")) {
       try {
         const cloned = c.res.clone();
         const data = await cloned.json();
@@ -372,20 +381,20 @@ export function compressionMiddleware(): MiddlewareHandler {
  */
 export function validateRequest<T>(
   schema: any, // Zod schema
-  source: 'body' | 'query' | 'header' = 'body'
+  source: "body" | "query" | "header" = "body",
 ): MiddlewareHandler {
   return async (c: Context, next: Next) => {
     let data: unknown;
 
     try {
       switch (source) {
-        case 'body':
+        case "body":
           data = await c.req.json();
           break;
-        case 'query':
+        case "query":
           data = c.req.query();
           break;
-        case 'header':
+        case "header":
           data = Object.fromEntries(c.req.raw.headers);
           break;
         default:
@@ -397,20 +406,23 @@ export function validateRequest<T>(
       const validated = schema.parse(data);
 
       // Store validated data on context
-      c.set('validatedData', validated);
+      c.set("validatedData", validated);
 
       await next();
       return;
     } catch (error: any) {
-      return c.json({
-        success: false,
-        error: 'Validation failed',
-        details: error.errors?.map((e: any) => ({
-          path: e.path?.join('.') || 'root',
-          message: e.message,
-        })),
-        timestamp: new Date().toISOString(),
-      }, 400 as any);
+      return c.json(
+        {
+          success: false,
+          error: "Validation failed",
+          details: error.errors?.map((e: any) => ({
+            path: e.path?.join(".") || "root",
+            message: e.message,
+          })),
+          timestamp: new Date().toISOString(),
+        },
+        400 as any,
+      );
     }
   };
 }
@@ -423,18 +435,18 @@ export function validateRequest<T>(
  * Fail-closed: no token configured (or mismatch) means no identity.
  */
 async function resolveIdentity(c: Context): Promise<AuthenticatedUser | null> {
-  const header = c.req.header('authorization');
-  if (!header?.startsWith('Bearer ')) return null;
+  const header = c.req.header("authorization");
+  if (!header?.startsWith("Bearer ")) return null;
 
   const configured = process.env.ADMIN_API_TOKEN;
-  const presented = header.slice('Bearer '.length).trim();
+  const presented = header.slice("Bearer ".length).trim();
   if (!configured || !presented) return null;
 
   const a = Buffer.from(presented);
   const b = Buffer.from(configured);
   if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
 
-  return { id: 'admin-api-token', role: 'admin' };
+  return { id: "admin-api-token", role: "admin" };
 }
 
 /**
@@ -444,34 +456,40 @@ export function authMiddleware(
   options: {
     requireAuth?: boolean;
     roles?: string[];
-  } = {}
+  } = {},
 ): MiddlewareHandler {
   const { requireAuth = true, roles = [] } = options;
 
   return async (c: Context, next: Next) => {
-    let user = c.get('user');
+    let user = c.get("user");
     if (!user) {
       const resolved = await resolveIdentity(c);
       if (resolved) {
-        c.set('user', resolved);
+        c.set("user", resolved);
         user = resolved;
       }
     }
 
     if (requireAuth && !user) {
-      return c.json({
-        success: false,
-        error: 'Authentication required',
-        timestamp: new Date().toISOString(),
-      }, 401 as any);
+      return c.json(
+        {
+          success: false,
+          error: "Authentication required",
+          timestamp: new Date().toISOString(),
+        },
+        401 as any,
+      );
     }
 
     if (roles.length > 0 && user && !roles.includes(user.role)) {
-      return c.json({
-        success: false,
-        error: 'Insufficient permissions',
-        timestamp: new Date().toISOString(),
-      }, 403 as any);
+      return c.json(
+        {
+          success: false,
+          error: "Insufficient permissions",
+          timestamp: new Date().toISOString(),
+        },
+        403 as any,
+      );
     }
 
     await next();
@@ -488,7 +506,7 @@ export function loggingMiddleware(
     logResponses?: boolean;
     logErrors?: boolean;
     logger?: (...args: any[]) => void;
-  } = {}
+  } = {},
 ): MiddlewareHandler {
   const {
     logRequests = true,
@@ -499,16 +517,16 @@ export function loggingMiddleware(
 
   return async (c: Context, next: Next) => {
     const start = Date.now();
-    const requestContext = c.get('requestContext') || {};
+    const requestContext = c.get("requestContext") || {};
 
     // Log request
     if (logRequests) {
       logger(`
 [${new Date().toISOString()}] 
-[${requestContext.requestId || 'unknown'}] 
+[${requestContext.requestId || "unknown"}]
 [${c.req.method}] ${c.req.path}
 IP: ${requestContext.ip}
-UA: ${requestContext.userAgent || 'unknown'}
+UA: ${requestContext.userAgent || "unknown"}
 `);
     }
 
@@ -521,7 +539,7 @@ UA: ${requestContext.userAgent || 'unknown'}
       if (logResponses) {
         logger(`
 [${new Date().toISOString()}] 
-[${requestContext.requestId || 'unknown'}] 
+[${requestContext.requestId || "unknown"}]
 [${c.req.method}] ${c.req.path}
 Status: ${c.res.status}
 Duration: ${duration}ms
@@ -535,7 +553,7 @@ Duration: ${duration}ms
       if (logErrors) {
         logger(`
 [${new Date().toISOString()}] 
-[${requestContext.requestId || 'unknown'}] 
+[${requestContext.requestId || "unknown"}]
 [${c.req.method}] ${c.req.path}
 Status: ${error.status || 500}
 Duration: ${duration}ms
@@ -555,12 +573,10 @@ Error: ${error.message || String(error)}
 export function correlationIdMiddleware(): MiddlewareHandler {
   return async (c: Context, next: Next) => {
     const correlationId =
-      c.req.header('x-correlation-id') ||
-      c.req.header('x-request-id') ||
-      generateRequestId();
+      c.req.header("x-correlation-id") || c.req.header("x-request-id") || generateRequestId();
 
-    c.set('correlationId', correlationId);
-    c.header('x-correlation-id', correlationId);
+    c.set("correlationId", correlationId);
+    c.header("x-correlation-id", correlationId);
 
     await next();
     return;

@@ -2,8 +2,8 @@
    Global Styles (No Tailwind)
    - IBM Plex typography
    - Minimal utility CSS (enough to support current templates)
-   - Doodle Design System classes
-   - RoughJS hooks (data-rough) for sketchy borders (client-side JS optional)
+  - Doodle Design System classes
+  - CSS and UnoCSS surfaces
    ========================================================================== */
 
 /* IBM Plex (Google Fonts) */
@@ -57,7 +57,6 @@
   --font-serif: 'IBM Plex Serif', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
-
 /* Base reset-ish */
 *,
 *::before,
@@ -463,8 +462,7 @@ button {
 
 /* ==========================================================================
    Doodle Design System (CSS-based)
-   NOTE: We now prefer RoughJS for the “wired” effect.
-   These classes provide baseline styling; RoughJS can enhance borders.
+  NOTE: These classes provide the wired effect without a canvas dependency.
    ========================================================================== */
 
 /* Typography helpers - now mapped to IBM Plex.
@@ -522,8 +520,7 @@ button {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
 }
 
-/* CSS-only wired border baseline.
-   RoughJS enhancement: add data-rough="rect" on the element to replace this with sketch SVG. */
+/* CSS-only wired border baseline. */
 .wired-border {
   position: relative;
 }
@@ -627,29 +624,4 @@ button {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* ==========================================================================
-   RoughJS enhancement hooks (optional)
-   - These styles prepare elements to receive an injected RoughJS SVG overlay.
-   - Add: data-rough="rect" (or "rounded") on any element.
-   - Your client script should: import roughjs, then for each [data-rough] element,
-     create an SVG of the same size and absolutely position it inside.
-   ========================================================================== */
-
-[data-rough] {
-  position: relative;
-}
-
-[data-rough] .rough-overlay {
-  position: absolute;
-  inset: -6px;
-  pointer-events: none;
-  z-index: 2;
-  overflow: visible;
-}
-
-[data-rough] > * {
-  position: relative;
-  z-index: 3;
 }

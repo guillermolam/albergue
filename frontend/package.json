@@ -2,14 +2,13 @@
   "name": "albergue-carrascalejo-frontend",
   "type": "module",
   "version": "1.0.0",
-  "description": "Static Astro frontend for Albergue Municipal Carrascalejo - Camino de Santiago (plain CSS, RoughJS, IBM Plex)",
+  "description": "Static Astro frontend for Albergue Municipal Carrascalejo - Camino de Santiago (webcoreui, UnoCSS, IBM Plex)",
   "keywords": [
     "astro",
     "camino-santiago",
     "albergue",
     "static-site",
     "plain-css",
-    "roughjs",
     "ibm-plex"
   ],
   "author": "Albergue Municipal Carrascalejo",
@@ -74,7 +73,6 @@
     "astro": "^7.3.2",
     "clsx": "^2.1.1",
     "nanostores": "^1.5.3",
-    "roughjs": "^4.6.6",
     "three": "^0.186.0",
     "webcoreui": "^1.5.0",
     "@albergue/api-contract": "workspace:*"

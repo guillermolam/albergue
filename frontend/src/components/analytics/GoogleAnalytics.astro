@@ -20,35 +20,12 @@ const gtagUrl = `https://www.googletagmanager.com/gtag/js?id=${id}`;
 
 <script type="module" define:vars={{ selector }}>
   import anime from 'https://esm.sh/animejs@4.5.0';
-  import rough from 'https://esm.sh/roughjs@4.6.6/bundled/rough.esm.js';
 
   function setupConversionTargets(sel) {
     const targets = Array.from(document.querySelectorAll(sel));
     targets.forEach((el) => {
       if (el.__gaBound) return;
       el.__gaBound = true;
-
-      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('width', '0');
-      svg.setAttribute('height', '0');
-      el.appendChild(svg);
-      const rc = rough.svg(svg);
-      const draw = () => {
-        while (svg.firstChild) svg.removeChild(svg.firstChild);
-        const r = el.getBoundingClientRect();
-        const pad = 6;
-        const rect = rc.rectangle(
-          pad,
-          pad,
-          Math.max(12, r.width - pad * 2),
-          Math.max(12, r.height - pad * 2),
-          { stroke: '#111', strokeWidth: 1.8, roughness: 2.4, fill: 'transparent' }
-        );
-        svg.appendChild(rect);
-      };
-      draw();
-      const ro = new ResizeObserver(draw);
-      ro.observe(el);
 
       el.addEventListener('mouseenter', () => {
         anime({ targets: el, scale: [1, 1.03, 1], duration: 350, easing: 'easeOutQuad' });

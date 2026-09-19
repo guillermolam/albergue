@@ -1,27 +1,27 @@
-import { map } from "nanostores";
+import { map } from 'nanostores';
 
 // Supported languages with flags
 export type Locale =
-  | "es"
-  | "en"
-  | "fr"
-  | "de"
-  | "it"
-  | "pt"
-  | "nl"
-  | "pl"
-  | "ko"
-  | "ja"
-  | "zh"
-  | "ru"
-  | "cs"
-  | "sk"
-  | "hu"
-  | "ca"
-  | "eu"
-  | "gl"
-  | "oc"
-  | "Gode";
+  | 'es'
+  | 'en'
+  | 'fr'
+  | 'de'
+  | 'it'
+  | 'pt'
+  | 'nl'
+  | 'pl'
+  | 'ko'
+  | 'ja'
+  | 'zh'
+  | 'ru'
+  | 'cs'
+  | 'sk'
+  | 'hu'
+  | 'ca'
+  | 'eu'
+  | 'gl'
+  | 'oc'
+  | 'Gode';
 
 export interface Language {
   code: Locale;
@@ -31,99 +31,99 @@ export interface Language {
 
 // Language definitions
 export const LANGUAGES: Record<Locale, Language> = {
-  es: { code: "es", name: "Español", flag: "🇪🇸" },
-  en: { code: "en", name: "English", flag: "🇬🇧" },
-  fr: { code: "fr", name: "Français", flag: "🇫🇷" },
-  de: { code: "de", name: "Deutsch", flag: "🇩🇪" },
-  it: { code: "it", name: "Italiano", flag: "🇮🇹" },
-  pt: { code: "pt", name: "Português", flag: "🇵🇹" },
-  nl: { code: "nl", name: "Nederlands", flag: "🇳🇱" },
-  pl: { code: "pl", name: "Polski", flag: "🇵🇱" },
-  ko: { code: "ko", name: "한국어", flag: "🇰🇷" },
-  ja: { code: "ja", name: "日本語", flag: "🇯🇵" },
-  zh: { code: "zh", name: "中文", flag: "🇨🇳" },
-  ru: { code: "ru", name: "Русский", flag: "🇷🇺" },
-  cs: { code: "cs", name: "Čeština", flag: "🇨🇿" },
-  sk: { code: "sk", name: "Slovenčina", flag: "🇸🇰" },
-  hu: { code: "hu", name: "Magyar", flag: "🇭🇺" },
-  ca: { code: "ca", name: "Català", flag: "🏴" },
-  eu: { code: "eu", name: "Euskara", flag: "🏴" },
-  gl: { code: "gl", name: "Galego", flag: "🏴" },
-  oc: { code: "oc", name: "Occitan (Aranés)", flag: "🏴" },
-  Gode: { code: "Gode", name: "Gothic", flag: "🏴" },
+  es: { code: 'es', name: 'Español', flag: '🇪🇸' },
+  en: { code: 'en', name: 'English', flag: '🇬🇧' },
+  fr: { code: 'fr', name: 'Français', flag: '🇫🇷' },
+  de: { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+  it: { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+  pt: { code: 'pt', name: 'Português', flag: '🇵🇹' },
+  nl: { code: 'nl', name: 'Nederlands', flag: '🇳🇱' },
+  pl: { code: 'pl', name: 'Polski', flag: '🇵🇱' },
+  ko: { code: 'ko', name: '한국어', flag: '🇰🇷' },
+  ja: { code: 'ja', name: '日本語', flag: '🇯🇵' },
+  zh: { code: 'zh', name: '中文', flag: '🇨🇳' },
+  ru: { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+  cs: { code: 'cs', name: 'Čeština', flag: '🇨🇿' },
+  sk: { code: 'sk', name: 'Slovenčina', flag: '🇸🇰' },
+  hu: { code: 'hu', name: 'Magyar', flag: '🇭🇺' },
+  ca: { code: 'ca', name: 'Català', flag: '🏴' },
+  eu: { code: 'eu', name: 'Euskara', flag: '🏴' },
+  gl: { code: 'gl', name: 'Galego', flag: '🏴' },
+  oc: { code: 'oc', name: 'Occitan (Aranés)', flag: '🏴' },
+  Gode: { code: 'Gode', name: 'Gothic', flag: '🏴' },
 };
 
 // Translation keys type
 export type TranslationKeys = {
   // Common
-  "common.welcome": string;
-  "common.loading": string;
-  "common.error": string;
-  "common.success": string;
-  "common.cancel": string;
-  "common.save": string;
-  "common.edit": string;
-  "common.delete": string;
-  "common.confirm": string;
-  "common.back": string;
-  "common.next": string;
-  "common.previous": string;
-  "common.finish": string;
+  'common.welcome': string;
+  'common.loading': string;
+  'common.error': string;
+  'common.success': string;
+  'common.cancel': string;
+  'common.save': string;
+  'common.edit': string;
+  'common.delete': string;
+  'common.confirm': string;
+  'common.back': string;
+  'common.next': string;
+  'common.previous': string;
+  'common.finish': string;
 
   // Navigation
-  "nav.home": string;
-  "nav.booking": string;
-  "nav.dashboard": string;
-  "nav.admin": string;
-  "nav.contact": string;
-  "nav.legal": string;
+  'nav.home': string;
+  'nav.booking': string;
+  'nav.dashboard': string;
+  'nav.admin': string;
+  'nav.contact': string;
+  'nav.legal': string;
 
   // Booking
-  "booking.title": string;
-  "booking.step1": string;
-  "booking.step2": string;
-  "booking.step3": string;
-  "booking.step4": string;
-  "booking.step5": string;
-  "booking.checkIn": string;
-  "booking.checkOut": string;
-  "booking.guests": string;
-  "booking.pilgrims": string;
-  "booking.beds": string;
-  "booking.contact": string;
-  "booking.payment": string;
-  "booking.confirmation": string;
-  "booking.selectDates": string;
-  "booking.selectBeds": string;
-  "booking.enterDetails": string;
-  "booking.paymentMethod": string;
-  "booking.totalPrice": string;
-  "booking.currency": string;
+  'booking.title': string;
+  'booking.step1': string;
+  'booking.step2': string;
+  'booking.step3': string;
+  'booking.step4': string;
+  'booking.step5': string;
+  'booking.checkIn': string;
+  'booking.checkOut': string;
+  'booking.guests': string;
+  'booking.pilgrims': string;
+  'booking.beds': string;
+  'booking.contact': string;
+  'booking.payment': string;
+  'booking.confirmation': string;
+  'booking.selectDates': string;
+  'booking.selectBeds': string;
+  'booking.enterDetails': string;
+  'booking.paymentMethod': string;
+  'booking.totalPrice': string;
+  'booking.currency': string;
 
   // Dashboard
-  "dashboard.title": string;
-  "dashboard.welcome": string;
-  "dashboard.myBookings": string;
-  "dashboard.currentBooking": string;
-  "dashboard.bookingHistory": string;
-  "dashboard.profile": string;
-  "dashboard.settings": string;
+  'dashboard.title': string;
+  'dashboard.welcome': string;
+  'dashboard.myBookings': string;
+  'dashboard.currentBooking': string;
+  'dashboard.bookingHistory': string;
+  'dashboard.profile': string;
+  'dashboard.settings': string;
 
   // Admin
-  "admin.title": string;
-  "admin.dashboard": string;
-  "admin.bookings": string;
-  "admin.guests": string;
-  "admin.beds": string;
-  "admin.analytics": string;
-  "admin.settings": string;
+  'admin.title': string;
+  'admin.dashboard': string;
+  'admin.bookings': string;
+  'admin.guests': string;
+  'admin.beds': string;
+  'admin.analytics': string;
+  'admin.settings': string;
 
   // Messages
-  "message.bookingSuccess": string;
-  "message.bookingError": string;
-  "message.validationError": string;
-  "message.networkError": string;
-  "message.sessionExpired": string;
+  'message.bookingSuccess': string;
+  'message.bookingError': string;
+  'message.validationError': string;
+  'message.networkError': string;
+  'message.sessionExpired': string;
 };
 
 // i18n state
@@ -137,8 +137,8 @@ export interface I18nState {
 
 // Create the i18n store
 export const i18nStore = map<I18nState>({
-  locale: "es",
-  fallbackLocale: "es",
+  locale: 'es',
+  fallbackLocale: 'es',
   messages: {} as TranslationKeys,
   isLoading: false,
   error: null,
@@ -181,7 +181,7 @@ export const i18nActions = {
 
       // If no translations found, use fallback
       if (Object.keys(translations).length === 0) {
-        throw new Error("No translations found");
+        throw new Error('No translations found');
       }
 
       return translations as TranslationKeys;
@@ -200,39 +200,39 @@ export const i18nActions = {
       return;
     }
 
-    i18nStore.setKey("isLoading", true);
-    i18nStore.setKey("error", null);
+    i18nStore.setKey('isLoading', true);
+    i18nStore.setKey('error', null);
 
     try {
       const translations = await i18nActions.loadTranslations(locale);
 
       // If no translations loaded, use fallback
       if (Object.keys(translations).length === 0) {
-        throw new Error("No translations available");
+        throw new Error('No translations available');
       }
 
-      i18nStore.setKey("locale", locale);
-      i18nStore.setKey("messages", translations);
+      i18nStore.setKey('locale', locale);
+      i18nStore.setKey('messages', translations);
 
       // Update HTML lang attribute
-      if (typeof document !== "undefined") {
+      if (typeof document !== 'undefined') {
         document.documentElement.lang = locale;
       }
 
       // Store preference
-      if (typeof localStorage !== "undefined") {
-        localStorage.setItem("preferred-language", locale);
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('preferred-language', locale);
       }
     } catch (error) {
-      console.error("Failed to set locale:", error);
-      i18nStore.setKey("error", error instanceof Error ? error.message : "Unknown error");
+      console.error('Failed to set locale:', error);
+      i18nStore.setKey('error', error instanceof Error ? error.message : 'Unknown error');
 
       // Fallback to Spanish
-      if (locale !== "es") {
-        await i18nActions.setLocale("es");
+      if (locale !== 'es') {
+        await i18nActions.setLocale('es');
       }
     } finally {
-      i18nStore.setKey("isLoading", false);
+      i18nStore.setKey('isLoading', false);
     }
   },
 
@@ -259,10 +259,10 @@ export const i18nActions = {
     return new Intl.NumberFormat(locale, options).format(number);
   },
 
-  formatCurrency: (amount: number, currency: string = "EUR"): string => {
+  formatCurrency: (amount: number, currency: string = 'EUR'): string => {
     const locale = i18nStore.get().locale;
     return new Intl.NumberFormat(locale, {
-      style: "currency",
+      style: 'currency',
       currency,
     }).format(amount);
   },
@@ -286,8 +286,8 @@ export const i18nActions = {
 
 // Load persisted locale
 export const loadPersistedLocale = async (): Promise<void> => {
-  if (typeof localStorage !== "undefined") {
-    const persisted = localStorage.getItem("preferred-language");
+  if (typeof localStorage !== 'undefined') {
+    const persisted = localStorage.getItem('preferred-language');
     if (persisted && i18nActions.isSupportedLocale(persisted)) {
       await i18nActions.setLocale(persisted);
       return;
@@ -295,8 +295,8 @@ export const loadPersistedLocale = async (): Promise<void> => {
   }
 
   // Fallback to browser preference
-  if (typeof navigator !== "undefined") {
-    const browserLocale = navigator.language.split("-")[0];
+  if (typeof navigator !== 'undefined') {
+    const browserLocale = navigator.language.split('-')[0];
     if (i18nActions.isSupportedLocale(browserLocale)) {
       await i18nActions.setLocale(browserLocale);
       return;
@@ -304,13 +304,13 @@ export const loadPersistedLocale = async (): Promise<void> => {
   }
 
   // Final fallback to Spanish
-  await i18nActions.setLocale("es");
+  await i18nActions.setLocale('es');
 };
 
 // Initialize with persisted locale or browser preference
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
   // Initialize with Spanish first to avoid empty state
-  i18nActions.setLocale("es").then(() => {
+  i18nActions.setLocale('es').then(() => {
     loadPersistedLocale();
   });
 }

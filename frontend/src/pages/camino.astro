@@ -4,7 +4,7 @@ export const prerender = true;
 import Layout from '../layouts/Layout.astro';
 import DoodleCard from '../components/doodle/DoodleCard.astro';
 import DoodleButton from '../components/doodle/DoodleButton.astro';
-import RoughIcon from '../components/core/RoughIcon.astro';
+import Icon from '../components/core/Icon.astro';
 ---
 
 <Layout title="Mi Camino - Albergue Municipal Carrascalejo">
@@ -225,7 +225,7 @@ import RoughIcon from '../components/core/RoughIcon.astro';
     <section class="py-16 bg-white">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-3xl font-bold text-charcoal mb-8 text-center font-sketch">
-          <RoughIcon name="star" size="xl" color="primary" animated /> Recomendaciones Inteligentes
+          <Icon name="star" size="xl" color="primary" animated /> Recomendaciones Inteligentes
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           <DoodleCard variant="subtle" padding="lg">

@@ -1,7 +1,6 @@
-import { initRough } from "./runtime_rough";
-import { initStoresBridge } from "./runtime_stores_bridge";
-import { initializeSwupPlugins } from "./swup-plugins";
-import { cleanupSensitiveBrowserStorage } from "./cleanup-sensitive-storage";
+import { initStoresBridge } from './runtime_stores_bridge';
+import { initializeSwupPlugins } from './swup-plugins';
+import { cleanupSensitiveBrowserStorage } from './cleanup-sensitive-storage';
 
 function onIdle(cb: () => void) {
   const w = window as unknown as { requestIdleCallback?: (fn: () => void) => number };
@@ -12,15 +11,14 @@ function onIdle(cb: () => void) {
 function bootstrap() {
   cleanupSensitiveBrowserStorage();
   queueMicrotask(() => initStoresBridge());
-  requestAnimationFrame(() => initRough());
   void initializeSwupPlugins();
   onIdle(() => {
-    document.dispatchEvent(new CustomEvent("app:ready"));
+    document.dispatchEvent(new CustomEvent('app:ready'));
   });
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", bootstrap, { once: true });
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bootstrap, { once: true });
 } else {
   bootstrap();
 }

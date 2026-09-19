@@ -1,4 +1,4 @@
-import { atom } from "nanostores";
+import { atom } from 'nanostores';
 
 export interface Pilgrim {
   id: string;
@@ -9,23 +9,23 @@ export interface Pilgrim {
   arrivalDate?: string;
   departureDate?: string;
   nights?: number;
-  roomType?: "shared" | "private";
-  status?: "pending" | "confirmed" | "cancelled";
+  roomType?: 'shared' | 'private';
+  status?: 'pending' | 'confirmed' | 'cancelled';
   createdAt: string;
   updatedAt: string;
 }
 
 export type UserPreferences = {
   language: string;
-  theme: "light" | "dark";
+  theme: 'light' | 'dark';
   notifications: boolean;
 };
 
 export const currentUser = atom<Pilgrim | null>(null);
 
 export const userPreferences = atom<UserPreferences>({
-  language: "es",
-  theme: "light",
+  language: 'es',
+  theme: 'light',
   notifications: true,
 });
 
@@ -59,7 +59,7 @@ export function updateBookingCart(
     roomId: string | null;
     nights: number;
     total: number;
-  }>,
+  }>
 ) {
   bookingCart.set({ ...bookingCart.get(), ...updates });
 }

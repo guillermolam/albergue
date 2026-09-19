@@ -1,20 +1,20 @@
 ---
 export const prerender = true;
 
-import { RoughFrame, SketchyButton } from '../components';
+import { Surface, SketchyButton } from '../components';
 import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Página no encontrada - Albergue Municipal Carrascalejo">
   <main class="container mx-auto px-4 py-8 max-w-2xl min-h-screen flex items-center justify-center">
     <div class="text-center w-full">
-      <RoughFrame padding="lg" texture="cross-hatch" class="mb-8">
+      <Surface padding="lg" class="mb-8">
         <div class="text-8xl mb-4">🚶‍♂️</div>
         <h1 class="text-4xl font-900 text-brand-green mb-4">¡Uy! Parece que te has perdido</h1>
         <p class="text-lg text-stone-600 mb-6">
           La página que buscas no existe. Pero no te preocupes, el Camino continúa.
         </p>
-      </RoughFrame>
+      </Surface>
 
       <div class="space-y-4">
         <p class="text-stone-700">Error 404 - Página no encontrada</p>

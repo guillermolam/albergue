@@ -1,5 +1,5 @@
 ---
-import RoughFrame from './RoughFrame.astro';
+import Surface from './Surface.astro';
 
 export type Variant = 'default' | 'elevated';
 export type Padding = 'sm' | 'md' | 'lg';
@@ -32,12 +32,9 @@ const variants = {
 const hoverClasses = hoverable ? 'transition-transform hover:-translate-y-1' : '';
 ---
 
-<RoughFrame
+<Surface
   padding={padding}
-  texture="hachure"
-  textureOpacity={0.06}
-  hover={hoverable}
   class={`ds-card ${variants[variant]} ${paddingClasses[padding]} ${hoverClasses} ${className}`}
 >
   <slot />
-</RoughFrame>
+</Surface>

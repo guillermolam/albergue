@@ -1,4 +1,4 @@
-import { vi } from "vitest";
+import { vi } from 'vitest';
 
 // Mock window.requestIdleCallback
 global.requestIdleCallback = vi.fn((cb) => {
@@ -17,7 +17,7 @@ global.IntersectionObserver = vi.fn(() => ({
   disconnect: vi.fn(),
   takeRecords: vi.fn(),
   root: null,
-  rootMargin: "",
+  rootMargin: '',
   thresholds: [],
 }));
 

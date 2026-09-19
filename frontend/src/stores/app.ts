@@ -1,12 +1,12 @@
-import { atom, computed } from "nanostores";
-import { persistentAtom } from "@nanostores/persistent";
+import { atom, computed } from 'nanostores';
+import { persistentAtom } from '@nanostores/persistent';
 
-export const dailyGoalKm = persistentAtom<number>("camino:dailyGoalKm", 25, {
+export const dailyGoalKm = persistentAtom<number>('camino:dailyGoalKm', 25, {
   encode: String,
   decode: (v) => Number(v),
 });
 
-export const currentStageProgress = persistentAtom<number>("camino:stageProgress", 68, {
+export const currentStageProgress = persistentAtom<number>('camino:stageProgress', 68, {
   encode: String,
   decode: (v) => Number(v),
 });
@@ -38,15 +38,15 @@ export async function syncProgressToServer() {
       currentStageProgress: currentStageProgress.get(),
       ts: Date.now(),
     };
-    const res = await fetch("/api/progress", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
+    const res = await fetch('/api/progress', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
       body: JSON.stringify(payload),
       keepalive: true,
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
   } catch (e) {
-    lastError.set(e instanceof Error ? e.message : "Unknown error");
+    lastError.set(e instanceof Error ? e.message : 'Unknown error');
   } finally {
     isBusy.set(false);
   }

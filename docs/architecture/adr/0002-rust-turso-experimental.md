@@ -1,30 +1,25 @@
 # ADR-0002: Rust/Turso persistence path is experimental, non-production
 
-Status: accepted
+Status: superseded
 Date: 2026-09-12
 
 ## Context
 
-`domain_model/rust/` contains a parallel persistence stack: SeaORM entities and
-migrations, a Seaography GraphQL service, and a Turso/libSQL sync tool. ADR-0001
-left it "experimental pending ADR-RUST". ARCH-007 requires an explicit choice.
+The former `domain_model/rust/` parallel persistence stack contained SeaORM
+entities and migrations, a Seaography GraphQL service, and a Turso/libSQL sync
+tool. It was never authoritative and duplicated the active Drizzle/PostgreSQL
+model.
 
 ## Decision
 
-The Rust/Turso path is **experimental tooling, not on the production path**.
+The Rust/Turso path is removed from the repository. This ADR records the
+retirement so it is not recreated as a second migration authority.
 
 - The canonical PostgreSQL schema and migration chain are Drizzle
   (`domain_model/schema.ts` + journaled migrations), per ADR-0001.
-- No CI job builds, tests, or deploys the Rust crates. They must not be wired
-  into production deployment.
-- The SeaORM schema copy is allowed to drift; it carries no authority. If it
-  conflicts with `schema.ts`, `schema.ts` wins.
-- `turso-sync` may be used for local/offline experiments only.
+- Drizzle migrations are the only supported migration path.
 
 ## Consequences
 
-- Promoting this path to migration tooling or a production service requires a
-  superseding ADR, a tested upgrade path from the Drizzle chain, and CI
-  coverage — the same bar ADR-0001 sets for any chain change.
-- If no experiment has justified it by the Phase 13 deployment convergence
-  review, delete `domain_model/rust/` rather than let it rot.
+- Any future alternative migration system requires a new ADR and a tested
+  upgrade path from the Drizzle chain.

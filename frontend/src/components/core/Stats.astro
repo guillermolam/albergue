@@ -11,7 +11,7 @@ import {
   getVariantClasses,
 } from './statsUtils';
 
-import RoughIcon from '../core/RoughIcon.astro';
+import Icon from '../core/Icon.astro';
 
 const {
   stats,
@@ -47,19 +47,19 @@ const layoutClasses = getLayoutClasses(layout, columns, gap);
       >
         {/* Decorative background elements */}
         <div class="absolute top-2 right-2 opacity-20 group-hover:opacity-40 transition-opacity">
-          {stat.icon && <RoughIcon name={stat.icon} size="xl" color={iconColor} animated />}
+          {stat.icon && <Icon name={stat.icon} size="xl" color={iconColor} animated />}
         </div>
 
         <div class="absolute inset-0 pointer-events-none">
           <div class="stat-overlay h-full w-full bg-linear-to-r from-transparent via-white/30 to-transparent" />
-          <svg class="stat-hatch absolute inset-0 w-full h-full" />
+          <div class="absolute inset-0 bg-linear-to-br from-white/20 via-transparent to-black/5" />
         </div>
 
         <div class="relative z-10">
           {/* Icon */}
           {stat.icon && (
             <div class="mb-3">
-              <RoughIcon name={stat.icon} size="lg" color={iconColor} animated />
+              <Icon name={stat.icon} size="lg" color={iconColor} animated />
             </div>
           )}
 
@@ -122,7 +122,6 @@ const layoutClasses = getLayoutClasses(layout, columns, gap);
 
 <script type="module">
   import { animate } from 'https://esm.sh/animejs@4.5.0';
-  import rough from 'https://esm.sh/roughjs@4.6.6/bundled/rough.esm.js';
 
   const overlays = document.querySelectorAll('.stat-overlay');
   overlays.forEach((overlay) => {
@@ -136,24 +135,6 @@ const layoutClasses = getLayoutClasses(layout, columns, gap);
         easing: 'easeOutCubic',
       });
     });
-  });
-
-  const svgs = document.querySelectorAll('.stat-hatch');
-  svgs.forEach((svg) => {
-    const w = svg.clientWidth || svg.parentElement?.clientWidth || 0;
-    const h = svg.clientHeight || svg.parentElement?.clientHeight || 0;
-    if (!w || !h) return;
-    const rc = rough.svg(svg);
-    const gap = Math.max(12, Math.floor(h / 6));
-    for (let y = gap; y < h; y += gap) {
-      svg.appendChild(
-        rc.line(0, y, w, y + 6, {
-          stroke: 'rgba(255,255,255,0.25)',
-          strokeWidth: 1.5,
-          roughness: 2.2,
-        })
-      );
-    }
   });
 </script>
 
