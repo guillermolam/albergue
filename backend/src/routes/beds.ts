@@ -6,6 +6,7 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import type { Context } from 'hono';
+import { authMiddleware } from '../lib/middleware.js';
 import {
   getAllBeds,
   getBedById,
@@ -202,7 +203,7 @@ beds.get('/:id', async (c: Context) => {
 /**
  * POST /beds - Create a new bed
  */
-beds.post('/', async (c: Context) => {
+beds.post('/', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const body = await c.req.json();
     const bed = await createBed(body);
@@ -220,7 +221,7 @@ beds.post('/', async (c: Context) => {
 /**
  * POST /beds/batch - Create multiple beds
  */
-beds.post('/batch', async (c: Context) => {
+beds.post('/batch', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const bodies = await c.req.json();
     const beds = await createBedsBatch(bodies);
@@ -238,7 +239,7 @@ beds.post('/batch', async (c: Context) => {
 /**
  * PUT /beds/:id - Update a bed
  */
-beds.put('/:id', async (c: Context) => {
+beds.put('/:id', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const id = Number(c.req.param('id'));
     if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid bed ID' });
@@ -261,14 +262,27 @@ beds.put('/:id', async (c: Context) => {
 
 /**
  * PATCH /beds/:id/reserve - Reserve a bed
+ * Reservation duration is server-controlled (capped at 24h), not
+ * client-supplied — an unbounded client-chosen reservedUntil would let any
+ * caller lock a bed indefinitely (inventory DoS).
  */
-beds.patch('/:id/reserve', async (c: Context) => {
+const MAX_RESERVATION_HOURS = 24;
+
+beds.patch('/:id/reserve', authMiddleware({ requireAuth: true }), async (c: Context) => {
   try {
     const id = Number(c.req.param('id'));
     if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid bed ID' });
 
-    const { reservedUntil, status } = await c.req.json();
-    const success = await reserveBed(id, new Date(reservedUntil), status);
+    const body = await c.req.json().catch(() => ({}));
+    const status = typeof body.status === 'string' ? body.status : 'reserved';
+    const maxReservedUntil = new Date(Date.now() + MAX_RESERVATION_HOURS * 60 * 60 * 1000);
+    const requested = body.reservedUntil ? new Date(body.reservedUntil) : maxReservedUntil;
+    const reservedUntil =
+      Number.isNaN(requested.getTime()) || requested > maxReservedUntil
+        ? maxReservedUntil
+        : requested;
+
+    const success = await reserveBed(id, reservedUntil, status);
     // Atomic claim fails when the bed is taken (409) or missing (404)
     if (!success) throw new HTTPException(409, { message: 'Bed unavailable or not found' });
 
@@ -286,7 +300,7 @@ beds.patch('/:id/reserve', async (c: Context) => {
 /**
  * PATCH /beds/:id/release - Release a bed
  */
-beds.patch('/:id/release', async (c: Context) => {
+beds.patch('/:id/release', authMiddleware({ requireAuth: true }), async (c: Context) => {
   try {
     const id = Number(c.req.param('id'));
     if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid bed ID' });
@@ -308,7 +322,7 @@ beds.patch('/:id/release', async (c: Context) => {
 /**
  * POST /beds/cleanup-expired - Release beds whose reservation TTL has lapsed (BOOK-003)
  */
-beds.post('/cleanup-expired', async (c: Context) => {
+beds.post('/cleanup-expired', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const released = await cleanupExpiredReservations();
     return c.json<ApiResponse<{ released: number }>>({
@@ -326,7 +340,7 @@ beds.post('/cleanup-expired', async (c: Context) => {
 /**
  * DELETE /beds/:id - Soft delete a bed
  */
-beds.delete('/:id', async (c: Context) => {
+beds.delete('/:id', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const id = Number(c.req.param('id'));
     if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid bed ID' });
