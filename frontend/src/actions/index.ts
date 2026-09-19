@@ -44,6 +44,39 @@ async function persistDraft(
   return { step: draft.step };
 }
 
+/**
+ * Shared body for the admin bed actions (ADMIN-001): check the existing
+ * Astro-session role, then attach the shared ADMIN_API_TOKEN the backend's
+ * admin-gated routes require — server-side only, never sent to the client.
+ */
+async function callAdminBedRoute(
+  role: App.Locals['role'],
+  path: string,
+  init: RequestInit = {}
+): Promise<{ id: number; status: string }> {
+  if (role !== 'admin') {
+    throw new ActionError({ code: 'FORBIDDEN', message: 'Admin access required.' });
+  }
+  if (!ADMIN_API_TOKEN) {
+    throw new ActionError({
+      code: 'SERVICE_UNAVAILABLE',
+      message: 'Admin API is not configured (ADMIN_API_TOKEN).',
+    });
+  }
+
+  const result = await backendJson<{ id: number; status: string }>(path, {
+    ...init,
+    headers: { authorization: `Bearer ${ADMIN_API_TOKEN}`, ...init.headers },
+  });
+  if (!result.ok) {
+    throw new ActionError({
+      code: result.status === 409 ? 'CONFLICT' : 'BAD_REQUEST',
+      message: result.message,
+    });
+  }
+  return result.data;
+}
+
 export const server = {
   auth: {
     /**
@@ -107,65 +140,21 @@ export const server = {
       input: z.object({
         bedId: z.coerce.number().int().min(1),
       }),
-      handler: async (input, context) => {
-        if (context.locals.role !== 'admin') {
-          throw new ActionError({ code: 'FORBIDDEN', message: 'Admin access required.' });
-        }
-        if (!ADMIN_API_TOKEN) {
-          throw new ActionError({
-            code: 'SERVICE_UNAVAILABLE',
-            message: 'Admin API is not configured (ADMIN_API_TOKEN).',
-          });
-        }
-
-        const result = await backendJson<{ id: number; status: string }>(
-          `/api/beds/${input.bedId}/reserve`,
-          {
-            method: 'PATCH',
-            headers: { authorization: `Bearer ${ADMIN_API_TOKEN}` },
-            body: JSON.stringify({}),
-          }
-        );
-        if (!result.ok) {
-          throw new ActionError({
-            code: result.status === 409 ? 'CONFLICT' : 'BAD_REQUEST',
-            message: result.message,
-          });
-        }
-        return result.data;
-      },
+      handler: (input, context) =>
+        callAdminBedRoute(context.locals.role, `/api/beds/${input.bedId}/reserve`, {
+          method: 'PATCH',
+          body: JSON.stringify({}),
+        }),
     }),
 
     release: defineAction({
       input: z.object({
         bedId: z.coerce.number().int().min(1),
       }),
-      handler: async (input, context) => {
-        if (context.locals.role !== 'admin') {
-          throw new ActionError({ code: 'FORBIDDEN', message: 'Admin access required.' });
-        }
-        if (!ADMIN_API_TOKEN) {
-          throw new ActionError({
-            code: 'SERVICE_UNAVAILABLE',
-            message: 'Admin API is not configured (ADMIN_API_TOKEN).',
-          });
-        }
-
-        const result = await backendJson<{ id: number; status: string }>(
-          `/api/beds/${input.bedId}/release`,
-          {
-            method: 'PATCH',
-            headers: { authorization: `Bearer ${ADMIN_API_TOKEN}` },
-          }
-        );
-        if (!result.ok) {
-          throw new ActionError({
-            code: result.status === 409 ? 'CONFLICT' : 'BAD_REQUEST',
-            message: result.message,
-          });
-        }
-        return result.data;
-      },
+      handler: (input, context) =>
+        callAdminBedRoute(context.locals.role, `/api/beds/${input.bedId}/release`, {
+          method: 'PATCH',
+        }),
     }),
   },
 
