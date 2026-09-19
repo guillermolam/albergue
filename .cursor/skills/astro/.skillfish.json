@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "astro",
+  "owner": "mit-network",
+  "repo": "antigravity-awesome-skills",
+  "path": "plugins/antigravity-awesome-skills-claude/skills/astro",
+  "branch": "main",
+  "sha": "17476f959501c835c0245077ee14c1f9817cf08c",
+  "source": "manual"
+}
