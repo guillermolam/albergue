@@ -26,12 +26,13 @@ const complexAnimationsPlugin: SwupPlugin = () => {
         out: {
           await: async ({ container }: SwupAnimationContext) => {
             // Find all elements with animation classes
-            const animateOutElements =
-              container.querySelectorAll<HTMLElement>('[data-animate-out]');
+            const animateOutElements = Array.from(
+              container.querySelectorAll<HTMLElement>('[data-animate-out]')
+            );
 
             if (animateOutElements.length === 0) return;
 
-            const delays = Array.from(animateOutElements).map((_, i) => i * 40);
+            const delays = animateOutElements.map((_, i) => i * 40);
 
             await Promise.all(
               animateOutElements.map((el, i) => {
@@ -56,11 +57,13 @@ const complexAnimationsPlugin: SwupPlugin = () => {
         in: {
           await: async ({ container }: SwupAnimationContext) => {
             // Find all elements with animation classes
-            const animateInElements = container.querySelectorAll<HTMLElement>('[data-animate-in]');
+            const animateInElements = Array.from(
+              container.querySelectorAll<HTMLElement>('[data-animate-in]')
+            );
 
             if (animateInElements.length === 0) return;
 
-            const delays = Array.from(animateInElements).map((_, i) => i * 60);
+            const delays = animateInElements.map((_, i) => i * 60);
 
             await Promise.all(
               animateInElements.map((el, i) => {
@@ -354,7 +357,7 @@ const particleExplosionPlugin: SwupPlugin = () => {
     replace: {
       animation: {
         out: {
-          await: async ({ container }: SwupAnimationContext) => {
+          await: async () => {
             const duration = 800;
             const particleCount = 20;
 
