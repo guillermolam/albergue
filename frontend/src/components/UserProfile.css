@@ -9,6 +9,7 @@
   box-shadow:
     0 10px 25px rgba(0, 0, 0, 0.1),
     0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   max-width: 320px;
@@ -77,6 +78,7 @@
   box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.05),
     0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
 }
 

@@ -4,6 +4,9 @@ packages:
   - "domain_model"
   - "packages/api-contract"
 
+overrides:
+  "@netlify/vite-plugin": "3.0.1"
+
 allowBuilds:
   "@parcel/watcher": true
   esbuild: true
