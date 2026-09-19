@@ -20,6 +20,17 @@ const getBunkInfo = (bedNumber: number) => {
 
 function BedInfoCard({ bedNumber, isEs }: { bedNumber: number; isEs: boolean }) {
   const info = getBunkInfo(bedNumber);
+  const bunkPositionLabel = info.isBottom
+    ? isEs
+      ? 'Litera Inferior'
+      : 'Bottom Bunk'
+    : isEs
+      ? 'Litera Superior'
+      : 'Top Bunk';
+  const activeBunkStyle = { opacity: 1, scale: 1, className: 'bg-[#2196F3] border-[#1565C0]' };
+  const inactiveBunkStyle = { opacity: 0.3, scale: 0.9, className: 'bg-gray-200 border-gray-400' };
+  const topBunkStyle = info.isBottom ? inactiveBunkStyle : activeBunkStyle;
+  const bottomBunkStyle = info.isBottom ? activeBunkStyle : inactiveBunkStyle;
 
   return (
     <motion.div
@@ -75,8 +86,8 @@ function BedInfoCard({ bedNumber, isEs }: { bedNumber: number; isEs: boolean }) 
             <motion.div
               initial={{ opacity: 0.3 }}
               animate={{
-                opacity: info.isBottom ? 0.3 : 1,
-                scale: info.isBottom ? 0.9 : 1,
+                opacity: topBunkStyle.opacity,
+                scale: topBunkStyle.scale,
                 y: info.isBottom ? 0 : [0, -2, 0],
               }}
               transition={{
@@ -84,9 +95,7 @@ function BedInfoCard({ bedNumber, isEs }: { bedNumber: number; isEs: boolean }) 
                 scale: { duration: 0.3, delay: 0.3 },
                 y: { duration: 1, repeat: Infinity, ease: 'easeInOut' },
               }}
-              className={`absolute top-0 left-0 w-full h-8 rounded-lg border-3 ${
-                info.isBottom ? 'bg-gray-200 border-gray-400' : 'bg-[#2196F3] border-[#1565C0]'
-              } flex items-center justify-center`}
+              className={`absolute top-0 left-0 w-full h-8 rounded-lg border-3 ${topBunkStyle.className} flex items-center justify-center`}
             >
               {!info.isBottom && (
                 <motion.div
@@ -101,8 +110,8 @@ function BedInfoCard({ bedNumber, isEs }: { bedNumber: number; isEs: boolean }) 
             <motion.div
               initial={{ opacity: 0.3 }}
               animate={{
-                opacity: info.isBottom ? 1 : 0.3,
-                scale: info.isBottom ? 1 : 0.9,
+                opacity: bottomBunkStyle.opacity,
+                scale: bottomBunkStyle.scale,
                 y: info.isBottom ? [0, -2, 0] : 0,
               }}
               transition={{
@@ -110,9 +119,7 @@ function BedInfoCard({ bedNumber, isEs }: { bedNumber: number; isEs: boolean }) 
                 scale: { duration: 0.3, delay: 0.3 },
                 y: { duration: 1, repeat: Infinity, ease: 'easeInOut' },
               }}
-              className={`absolute bottom-0 left-0 w-full h-8 rounded-lg border-3 ${
-                info.isBottom ? 'bg-[#2196F3] border-[#1565C0]' : 'bg-gray-200 border-gray-400'
-              } flex items-center justify-center`}
+              className={`absolute bottom-0 left-0 w-full h-8 rounded-lg border-3 ${bottomBunkStyle.className} flex items-center justify-center`}
             >
               {info.isBottom && (
                 <motion.div
@@ -135,13 +142,7 @@ function BedInfoCard({ bedNumber, isEs }: { bedNumber: number; isEs: boolean }) 
               transition={{ delay: 0.35 }}
               className="text-2xl sketch-title text-[#5D4E37]"
             >
-              {info.isBottom
-                ? isEs
-                  ? 'Litera Inferior'
-                  : 'Bottom Bunk'
-                : isEs
-                  ? 'Litera Superior'
-                  : 'Top Bunk'}
+              {bunkPositionLabel}
             </motion.p>
             <motion.p
               initial={{ opacity: 0 }}
