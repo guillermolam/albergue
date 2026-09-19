@@ -505,7 +505,7 @@ bookings.post('/quote', async (c: Context) => {
 /**
  * PATCH /bookings/:id/status - Transition booking status
  */
-bookings.patch('/:id/status', async (c: Context) => {
+bookings.patch('/:id/status', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const id = Number(c.req.param('id'));
     if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid booking ID' });
