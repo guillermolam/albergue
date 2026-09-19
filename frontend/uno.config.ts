@@ -4,6 +4,15 @@ export default defineConfig({
   content: {
     pipeline: {
       include: ['./src/**/*.{astro,js,jsx,ts,tsx,vue,svelte}'],
+      // Components ported from figma/ are styled with Tailwind v4 + the
+      // shadcn theme (src/styles/shadcn-theme.css), not UnoCSS's presetWind3.
+      // With mode: 'global', UnoCSS scans every matching file regardless of
+      // page-level imports — leaving these in scope meant it generated its
+      // own (different) CSS for the same class names Tailwind emits
+      // (flex, border, rounded-lg, bg-primary, ...), and cascade order
+      // between the two engines' stylesheets decided which one won, which
+      // broke the shadcn design's actual appearance.
+      exclude: ['./src/components/ui/**', './src/components/admin/**'],
     },
   },
   presets: [presetWind3(), presetTypography()],
