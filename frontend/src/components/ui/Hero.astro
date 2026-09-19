@@ -1,60 +1,127 @@
 ---
 /**
- * Hero Component - Matching Figma Design
+ * Hero Component - WebcoreUI Wrapper
  *
  * A responsive hero section with title, subtitle, and CTA buttons.
  *
  * Props:
- * - title: Hero title
+ * - title: Hero title (required)
  * - subtitle: Hero subtitle
  * - variant: Visual variant (default, doodle, minimal)
  */
 
+import { Banner, Button, Flex } from 'webcoreui/astro';
+
 interface Props {
-  title?: string;
+  title: string;
   subtitle?: string;
   variant?: 'default' | 'doodle' | 'minimal';
+  className?: string;
 }
 
-const { title, subtitle, variant = 'default' } = Astro.props;
+const { title, subtitle, variant = 'default', className = '' } = Astro.props;
 
-const variantClasses = {
-  default: 'hero',
-  doodle: 'hero sketchy-bg',
-  minimal: 'hero py-16',
+const variantClassMap = {
+  default: 'w-hero-default',
+  doodle: 'w-hero-doodle',
+  minimal: 'w-hero-minimal',
 };
+
+const variantClass = variantClassMap[variant] || variantClassMap.default;
+const classes = `${variantClass} ${className}`.trim();
 ---
 
-<section class={variantClasses[variant]}>
-  <div class="hero-content">
-    {title && <h1 class="hero-title">{title}</h1>}
+<Banner class={classes}>
+  <Flex direction="column" align="center" class="w-hero-content" gap="default">
+    {title && <h1 class="w-hero-title">{title}</h1>}
 
-    {subtitle && <p class="hero-subtitle">{subtitle}</p>}
+    {subtitle && <p class="w-hero-subtitle">{subtitle}</p>}
 
-    <div class="flex flex-wrap justify-center gap-4">
+    <Flex class="w-hero-actions" wrap gap="sm">
       <slot />
-    </div>
-  </div>
+    </Flex>
 
-  {variant === 'doodle' && (
-    <div class="absolute inset-0 pointer-events-none overflow-hidden">
-      <!-- Decorative sketch lines -->
-      <svg
-        class="absolute top-10 left-10 w-32 h-32 text-green-dark opacity-20"
-        fill="none"
-        viewBox="0 0 100 100"
-      >
-        <path d="M10,50 Q50,10 90,50 T10,50" stroke="currentColor" stroke-width="2" />
-        <path d="M20,80 Q50,20 80,80 T20,80" stroke="currentColor" stroke-width="2" />
-      </svg>
-      <svg
-        class="absolute bottom-10 right-10 w-32 h-32 text-green-dark opacity-20"
-        fill="none"
-        viewBox="0 0 100 100"
-      >
-        <path d="M0,0 Q25,50 0,100 T0,0" stroke="currentColor" stroke-width="2" />
-        <path d="M100,0 Q75,50 100,100 T100,0" stroke="currentColor" stroke-width="2" />
-      </svg>
-    </div>
-  )}
-</section>
+    {variant === 'doodle' && (
+      <div class="w-hero-decorations" aria-hidden="true">
+        <svg class="w-hero-decoration" fill="none" viewBox="0 0 100 100">
+          <path d="M10,50 Q50,10 90,50 T10,50" stroke="currentColor" stroke-width="2" />
+          <path d="M20,80 Q50,20 80,80 T20,80" stroke="currentColor" stroke-width="2" />
+        </svg>
+        <svg class="w-hero-decoration" fill="none" viewBox="0 0 100 100">
+          <path d="M0,0 Q25,50 0,100 T0,0" stroke="currentColor" stroke-width="2" />
+          <path d="M100,0 Q75,50 100,100 T100,0" stroke="currentColor" stroke-width="2" />
+        </svg>
+      </div>
+    )}
+  </Flex>
+</Banner>
+
+<style>
+  /* Hero variants */
+  .w-hero-default {
+    min-height: 60vh;
+  }
+
+  .w-hero-minimal {
+    min-height: auto;
+    padding: var(--w-spacing-4xl, 45px) 0;
+  }
+
+  .w-hero-doodle {
+    min-height: 60vh;
+    position: relative;
+  }
+
+  .w-hero-content {
+    max-width: 800px;
+    padding: 0 var(--w-spacing-default, 20px);
+    text-align: center;
+  }
+
+  .w-hero-title {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: 700;
+    color: var(--w-color-primary-70, #1b5e20);
+    line-height: 1.1;
+    margin-bottom: var(--w-spacing-md, 15px);
+    font-family: var(--w-font-bold);
+  }
+
+  .w-hero-subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    color: var(--w-color-primary-40, #4caf50);
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto var(--w-spacing-3xl, 40px);
+    font-family: var(--w-font-regular);
+  }
+
+  .w-hero-actions {
+    justify-content: center;
+  }
+
+  .w-hero-decorations {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .w-hero-decoration {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    color: var(--w-color-primary-40, #4caf50);
+    opacity: 0.2;
+  }
+
+  .w-hero-decoration:first-of-type {
+    top: var(--w-spacing-xl, 30px);
+    left: var(--w-spacing-xl, 30px);
+  }
+
+  .w-hero-decoration:last-of-type {
+    bottom: var(--w-spacing-xl, 30px);
+    right: var(--w-spacing-xl, 30px);
+  }
+</style>
