@@ -1,5 +1,8 @@
 {
-  "name": "albergue-carrascalejo",
+  // Must match the actually-deployed Worker name, not a display/branding
+  // name — a mismatch here makes `wrangler deploy` create a second, empty
+  // Worker instead of updating the live one at albergue.<subdomain>.workers.dev.
+  "name": "albergue",
   "compatibility_date": "2025-05-21",
 
   // Phase 4 prerequisite (ASTRO-002): Astro sessions use the Cloudflare KV

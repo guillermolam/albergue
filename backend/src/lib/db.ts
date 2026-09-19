@@ -2,6 +2,15 @@
  * Database Connection
  * PostgreSQL with Drizzle ORM
  *
+ * Runs against Neon over plain TCP via `pg`, using Workers' native outbound
+ * TCP socket support (via nodejs_compat) on Cloudflare, and a normal Node
+ * socket locally. This keeps `db.transaction()` support (drizzle-orm's
+ * node-postgres adapter supports interactive transactions; Neon's WebSocket
+ * driver would too, but its Pool/Client explicitly cannot outlive a single
+ * request on Workers per Neon's own docs — plain TCP has no such
+ * restriction and lets the pool persist across requests within an isolate,
+ * same as Node).
+ *
  * Includes:
  * - Connection pooling
  * - Health checks with retries
@@ -25,13 +34,15 @@ const poolConfig: PoolConfig = {
     process.env.DATABASE_URL ||
     process.env.NEON_DATABASE_URL ||
     "postgresql://localhost:5432/albergue",
+  // Validate the server certificate — `false` here accepts any certificate,
+  // which defeats TLS against MITM. See PR #11 (Aikido security-autofix).
   ssl:
     process.env.NODE_ENV === "production"
-      ? { rejectUnauthorized: false }
+      ? { rejectUnauthorized: true }
       : false,
   max: 20,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 5000,
   // Application name for monitoring
   application_name: "albergue-backend",
 };
@@ -41,8 +52,8 @@ const pool = new Pool(poolConfig);
 
 // pg has no connectionInitSql equivalent; run an async warmup query instead.
 // The rejection must be handled — an unhandled one would crash the process.
-pool.on("connect", (client) => {
-  client.query("SELECT NOW()").catch((err) => {
+pool.on("connect", (client: PoolClient) => {
+  client.query("SELECT NOW()").catch((err: unknown) => {
     console.error("Connection warmup query failed:", err);
   });
 });
@@ -190,9 +201,6 @@ export async function reconnectDb() {
     await closeDb();
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Create new pool
-    poolConfig.application_name = `albergue-backend-reconnected-${Date.now()}`;
-
     // Note: We can't reassign const pool, but in practice you'd need to restart
     console.log("Database reconnection requires process restart");
 
@@ -204,8 +212,10 @@ export async function reconnectDb() {
   }
 }
 
-// Monitor connection and auto-reconnect
-let connectionMonitor: NodeJS.Timeout | null = null;
+// Monitor connection and auto-reconnect. Node-only: Workers doesn't run
+// background timers outside a request's lifetime, so worker.ts never calls
+// this — only the traditional Node entry (src/index.ts) does.
+let connectionMonitor: ReturnType<typeof setInterval> | null = null;
 
 export function startConnectionMonitor(interval: number = 60000) {
   if (connectionMonitor) {

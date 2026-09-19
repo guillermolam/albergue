@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import app from "../index.js";
+import app from "../app.js";
 
 describe("Hono route baseline", () => {
   it("serves API metadata without a database connection", async () => {

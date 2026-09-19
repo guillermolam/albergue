@@ -1,6 +1,6 @@
-import { defineMiddleware } from "astro:middleware";
+import { defineMiddleware } from 'astro:middleware';
 
-const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+const MUTATING_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 
 /**
  * Baseline security headers (ASTRO-004) + CSRF origin check (AUTH-005).
@@ -17,24 +17,24 @@ const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 export const securityMiddleware = defineMiddleware(async (context, next) => {
   if (
     MUTATING_METHODS.has(context.request.method) &&
-    context.request.headers.has("cookie") &&
-    context.request.headers.has("origin")
+    context.request.headers.has('cookie') &&
+    context.request.headers.has('origin')
   ) {
-    const origin = context.request.headers.get("origin")!;
+    const origin = context.request.headers.get('origin')!;
     if (new URL(origin).origin !== context.url.origin) {
-      return new Response("Forbidden", {
+      return new Response('Forbidden', {
         status: 403,
-        headers: { "Content-Type": "text/plain; charset=utf-8" },
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
       });
     }
   }
 
   const response = await next();
 
-  response.headers.set("X-Content-Type-Options", "nosniff");
-  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  response.headers.set("X-Frame-Options", "SAMEORIGIN");
-  response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('X-Frame-Options', 'SAMEORIGIN');
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
 
   return response;
 });

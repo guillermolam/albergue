@@ -1,18 +1,18 @@
 const SENSITIVE_EXACT_KEYS = [
-  "access_token",
-  "refresh_token",
-  "albergue-booking",
-  "booking",
-  "bookingStore",
+  'access_token',
+  'refresh_token',
+  'albergue-booking',
+  'booking',
+  'bookingStore',
 ];
 
 const SENSITIVE_KEY_PREFIXES = [
-  "pilgrim:auth:",
-  "pilgrim:profile:",
-  "pilgrim:pilgrimage:",
-  "pilgrim:bookings:",
-  "pilgrim:health:",
-  "pilgrim:social:",
+  'pilgrim:auth:',
+  'pilgrim:profile:',
+  'pilgrim:pilgrimage:',
+  'pilgrim:bookings:',
+  'pilgrim:health:',
+  'pilgrim:social:',
 ];
 
 export function cleanupSensitiveBrowserStorage(): void {

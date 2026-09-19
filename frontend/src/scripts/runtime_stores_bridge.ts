@@ -5,7 +5,7 @@ import {
   setDailyGoal,
   setStageProgress,
   syncProgressToServer,
-} from "../stores/app";
+} from '../stores/app';
 
 type Unsub = () => void;
 const unsubs: Unsub[] = [];
@@ -42,16 +42,16 @@ function scheduleSync() {
 function onActionClick(e: Event) {
   const t = e.target as HTMLElement | null;
   if (!t) return;
-  const el = t.closest<HTMLElement>("[data-action]");
+  const el = t.closest<HTMLElement>('[data-action]');
   if (!el) return;
-  const action = el.getAttribute("data-action");
+  const action = el.getAttribute('data-action');
   if (!action) return;
   schedule(async () => {
-    if (action === "goal:inc") await setDailyGoal(1);
-    if (action === "goal:dec") await setDailyGoal(-1);
-    if (action === "stage:inc") await setStageProgress(5);
-    if (action === "stage:dec") await setStageProgress(-5);
-    if (action === "progress:sync") scheduleSync();
+    if (action === 'goal:inc') await setDailyGoal(1);
+    if (action === 'goal:dec') await setDailyGoal(-1);
+    if (action === 'stage:inc') await setStageProgress(5);
+    if (action === 'stage:dec') await setStageProgress(-5);
+    if (action === 'progress:sync') scheduleSync();
   });
 }
 
@@ -60,5 +60,5 @@ export function initStoresBridge() {
   unsubs.push(dailyGoalKm.listen(() => render()));
   unsubs.push(currentStageProgress.listen(() => render()));
   unsubs.push(remainingDays.listen(() => render()));
-  document.addEventListener("click", onActionClick, { passive: true });
+  document.addEventListener('click', onActionClick, { passive: true });
 }

@@ -4,9 +4,9 @@
  */
 
 export const swupAstroOptions = {
-  theme: "fade" as const,
-  animationClass: "transition-",
-  containers: ["#main-content"],
+  theme: 'fade' as const,
+  animationClass: 'transition-',
+  containers: ['#main-content'],
   cache: true,
   preload: {
     hover: true,
@@ -39,6 +39,6 @@ export async function loadSwupPlugins(): Promise<unknown[]> {
  * Does not load remote CDNs or create a second Swup instance.
  */
 export async function initSwup() {
-  if (typeof window === "undefined") return null;
+  if (typeof window === 'undefined') return null;
   return window.swup ?? null;
 }

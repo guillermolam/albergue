@@ -1,0 +1,14 @@
+{
+  "name": "albergue-backend",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-09-19",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Secrets (DATABASE_URL, ADMIN_API_TOKEN, and optionally the REDSYS_*
+  // vars) are provisioned via `wrangler secret put <NAME>` or the
+  // Cloudflare dashboard — never committed here. NODE_ENV is not secret,
+  // set as a plain var below.
+  "vars": {
+    "NODE_ENV": "production"
+  }
+}

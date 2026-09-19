@@ -13,7 +13,7 @@
  * never rejected at the auth boundary (401/403).
  */
 import { describe, expect, it } from 'vitest';
-import app from '../index.js';
+import app from '../app.js';
 
 async function status(path: string, init?: RequestInit): Promise<number> {
   const res = await app.request(path, init);
