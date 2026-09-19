@@ -14,7 +14,7 @@ updates:
     commit-message:
       prefix: "chore(frontend)"
       include: "scope"
-    versioning-strategy: increase
+    versioning-strategy: auto
     groups:
       astro:
         patterns: ["astro", "@astrojs/*"]
