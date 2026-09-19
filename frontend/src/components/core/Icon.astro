@@ -20,15 +20,15 @@ const {
 }: Props = Astro.props;
 
 const px = { xs: 16, sm: 20, md: 28, lg: 36, xl: 48 }[size];
-const colorValue =
-  {
-    primary: '#00AB39',
-    secondary: '#EAC102',
-    error: '#ED1C24',
-    white: '#FFFFFF',
-    black: '#111111',
-    current: 'currentColor',
-  }[color as keyof typeof color] || color;
+const colorMap = {
+  primary: '#00AB39',
+  secondary: '#EAC102',
+  error: '#ED1C24',
+  white: '#FFFFFF',
+  black: '#111111',
+  current: 'currentColor',
+} as const;
+const colorValue = colorMap[color as keyof typeof colorMap] || color;
 
 const paths: Record<string, string> = {
   star: 'M20 3 L24 14 L36 14 L26 21 L30 33 L20 26 L10 33 L14 21 L4 14 L16 14 Z',

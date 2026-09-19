@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { WiredButton } from '../doodle/WiredButton';
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 
 interface IDUploadStepProps {
   onNext: (data: {
@@ -101,9 +101,9 @@ function DoodleUploadIcon({ className = '' }: { className?: string }) {
 }
 
 // Doodle Checkmark Icon
-function DoodleCheckIcon({ className = '' }: { className?: string }) {
+function DoodleCheckIcon({ className = '', style }: { className?: string; style?: CSSProperties }) {
   return (
-    <svg viewBox="0 0 100 100" className={className} fill="none">
+    <svg viewBox="0 0 100 100" className={className} style={style} fill="none">
       {/* Circle - hand drawn */}
       <motion.circle cx="50" cy="50" r="45" fill="currentColor" opacity="0.15" />
       <motion.path
@@ -246,6 +246,300 @@ function RippleEffect({ color }: { color: string }) {
 }
 
 // Hand-drawn DNI/Passport illustration component
+interface CardFaceProps {
+  colors: { primary: string; light: string; dark: string };
+  isHovered: boolean;
+  isSelected: boolean;
+}
+
+/** Split out of IDCardIllustration's `type === 'dni' ? (...) : (...)`
+ * branch (SonarCloud flagged the parent at complexity 37): each face is
+ * ~150 lines of its own isHovered/isSelected-driven SVG, so keeping them
+ * as one giant ternary inside a single function was most of the budget. */
+function DniCardFace({ colors, isHovered, isSelected }: CardFaceProps) {
+  return (
+    <>
+      {/* Hand-drawn card background - sketchy edges */}
+      <motion.path
+        d="M 45 35 Q 48 32 55 32 L 345 32 Q 352 32 355 35 L 355 205 Q 352 208 345 208 L 55 208 Q 48 208 45 205 Z"
+        fill={colors.light}
+        stroke={colors.primary}
+        strokeWidth={isHovered ? '4' : '3'}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        animate={isHovered ? { fill: [colors.light, '#ffffff', colors.light] } : {}}
+        transition={{ duration: 2, repeat: Infinity }}
+      />
+
+      {/* Double border for sketchy effect */}
+      <motion.path
+        d="M 50 38 Q 52 36 58 36 L 342 36 Q 348 36 350 38 L 350 202 Q 348 204 342 204 L 58 204 Q 52 204 50 202 Z"
+        fill="none"
+        stroke={colors.primary}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeDasharray="3, 2"
+        opacity="0.6"
+      />
+
+      {/* DNI text at top */}
+      <text
+        x="200"
+        y="60"
+        textAnchor="middle"
+        fill={colors.dark}
+        fontSize="28"
+        fontWeight="bold"
+        fontFamily="'Cabin Sketch', cursive"
+      >
+        DNI
+      </text>
+
+      {/* Sketchy photo frame on right */}
+      <motion.path
+        d="M 255 85 Q 257 83 260 83 L 330 83 Q 333 83 335 85 L 335 175 Q 333 177 330 177 L 260 177 Q 257 177 255 175 Z"
+        fill="#FAFAFA"
+        stroke={colors.dark}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        animate={isSelected ? { strokeDasharray: ['0, 0', '4, 4', '0, 0'] } : {}}
+        transition={{ duration: 2, repeat: Infinity }}
+      />
+
+      {/* Doodle person in photo */}
+      <circle cx="295" cy="115" r="18" fill={colors.primary} opacity="0.3" />
+      <motion.path
+        d="M 270 155 Q 282 145 295 145 Q 308 145 320 155"
+        stroke={colors.primary}
+        strokeWidth="3"
+        fill="none"
+        strokeLinecap="round"
+        opacity="0.4"
+      />
+
+      {/* Hand-drawn ID chip */}
+      <motion.path
+        d="M 70 95 Q 72 93 75 93 L 105 93 Q 108 93 110 95 L 110 125 Q 108 127 105 127 L 75 127 Q 72 127 70 125 Z"
+        fill="#FFD700"
+        stroke="#D4A017"
+        strokeWidth="2"
+        strokeLinecap="round"
+        animate={isHovered ? { fill: ['#FFD700', '#FFED4E', '#FFD700'] } : {}}
+        transition={{ duration: 0.5, repeat: Infinity }}
+      />
+      <rect x="77" y="100" width="26" height="20" fill="#D4A017" opacity="0.3" rx="2" />
+
+      {/* Wobbly text lines */}
+      <motion.path
+        d="M 70 145 Q 120 144 170 145"
+        stroke={colors.dark}
+        strokeWidth="3"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.5"
+      />
+      <motion.path
+        d="M 70 160 Q 105 159 140 160"
+        stroke={colors.dark}
+        strokeWidth="3"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.4"
+      />
+      <motion.path
+        d="M 70 175 Q 115 174 160 175"
+        stroke={colors.dark}
+        strokeWidth="3"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.4"
+      />
+
+      {/* Doodle Spain flag */}
+      <motion.path d="M 75 70 L 135 70 L 135 78 L 75 78 Z" fill="#C8102E" />
+      <rect x="75" y="70" width="60" height="3" fill="#C8102E" />
+      <rect x="75" y="73" width="60" height="2" fill="#FFC400" />
+      <rect x="75" y="75" width="60" height="3" fill="#C8102E" />
+
+      {/* Animated sparkles around card */}
+      {(isSelected || isHovered) && (
+        <>
+          <motion.circle
+            cx="60"
+            cy="50"
+            r="2"
+            fill={colors.primary}
+            animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
+            transition={{ duration: 2, repeat: Infinity, delay: 0 }}
+          />
+          <motion.circle
+            cx="340"
+            cy="60"
+            r="2"
+            fill={colors.primary}
+            animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
+            transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+          />
+          <motion.circle
+            cx="200"
+            cy="220"
+            r="2"
+            fill={colors.primary}
+            animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
+            transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+          />
+        </>
+      )}
+    </>
+  );
+}
+
+function PassportCardFace({ colors, isHovered, isSelected }: CardFaceProps) {
+  return (
+    <>
+      {/* Hand-drawn passport book - sketchy */}
+      <motion.path
+        d="M 80 40 Q 83 37 90 37 L 310 37 Q 317 37 320 40 L 320 200 Q 317 203 310 203 L 90 203 Q 83 203 80 200 Z"
+        fill={colors.light}
+        stroke={colors.primary}
+        strokeWidth={isHovered ? '5' : '4'}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        animate={isHovered ? { fill: [colors.light, '#ffffff', colors.light] } : {}}
+        transition={{ duration: 2, repeat: Infinity }}
+      />
+
+      {/* Book spine effect */}
+      <motion.path
+        d="M 80 40 L 80 200"
+        stroke={colors.dark}
+        strokeWidth="8"
+        strokeLinecap="round"
+        opacity="0.3"
+      />
+      <motion.path
+        d="M 85 40 L 85 200"
+        stroke={colors.dark}
+        strokeWidth="2"
+        strokeLinecap="round"
+        opacity="0.2"
+      />
+
+      {/* Double border sketchy effect */}
+      <motion.path
+        d="M 90 45 Q 92 43 95 43 L 305 43 Q 312 43 314 45 L 314 195 Q 312 197 305 197 L 95 197 Q 92 197 90 195 Z"
+        fill="none"
+        stroke={colors.primary}
+        strokeWidth="1.5"
+        strokeDasharray="4, 3"
+        opacity="0.5"
+      />
+
+      {/* Doodle globe/world icon */}
+      <motion.circle
+        cx="200"
+        cy="95"
+        r="35"
+        fill="none"
+        stroke={colors.dark}
+        strokeWidth="3"
+        strokeLinecap="round"
+        opacity="0.4"
+        animate={isHovered ? { rotate: 360 } : {}}
+        transition={{ duration: 2, ease: 'linear' }}
+        style={{ transformOrigin: '200px 95px' }}
+      />
+      <motion.path
+        d="M 165 95 Q 180 80 200 80 Q 220 80 235 95"
+        stroke={colors.dark}
+        strokeWidth="2.5"
+        fill="none"
+        strokeLinecap="round"
+        opacity="0.4"
+      />
+      <motion.path
+        d="M 165 95 Q 180 110 200 110 Q 220 110 235 95"
+        stroke={colors.dark}
+        strokeWidth="2.5"
+        fill="none"
+        strokeLinecap="round"
+        opacity="0.4"
+      />
+      <motion.line
+        x1="200"
+        y1="60"
+        x2="200"
+        y2="130"
+        stroke={colors.dark}
+        strokeWidth="2"
+        strokeLinecap="round"
+        opacity="0.4"
+      />
+
+      {/* PASSPORT text - hand written style */}
+      <text
+        x="200"
+        y="155"
+        textAnchor="middle"
+        fill={colors.dark}
+        fontSize="24"
+        fontFamily="'Cabin Sketch', cursive"
+        fontWeight="bold"
+      >
+        PASSPORT
+      </text>
+
+      {/* Decorative wobbly lines */}
+      <motion.path
+        d="M 110 170 Q 155 169 200 170 Q 245 171 290 170"
+        stroke={colors.dark}
+        strokeWidth="2"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.3"
+      />
+      <motion.path
+        d="M 130 182 Q 165 181 200 182 Q 235 183 270 182"
+        stroke={colors.dark}
+        strokeWidth="2"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.3"
+      />
+
+      {/* Animated sparkles */}
+      {(isSelected || isHovered) && (
+        <>
+          <motion.circle
+            cx="95"
+            cy="60"
+            r="2"
+            fill={colors.primary}
+            animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
+            transition={{ duration: 2, repeat: Infinity, delay: 0 }}
+          />
+          <motion.circle
+            cx="305"
+            cy="70"
+            r="2"
+            fill={colors.primary}
+            animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
+            transition={{ duration: 2, repeat: Infinity, delay: 0.7 }}
+          />
+          <motion.circle
+            cx="200"
+            cy="215"
+            r="2"
+            fill={colors.primary}
+            animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
+            transition={{ duration: 2, repeat: Infinity, delay: 1.3 }}
+          />
+        </>
+      )}
+    </>
+  );
+}
+
 function IDCardIllustration({
   type,
   isSelected,
@@ -362,311 +656,9 @@ function IDCardIllustration({
         }}
       >
         {type === 'dni' ? (
-          <>
-            {/* Hand-drawn card background - sketchy edges */}
-            <motion.path
-              d="M 45 35 Q 48 32 55 32 L 345 32 Q 352 32 355 35 L 355 205 Q 352 208 345 208 L 55 208 Q 48 208 45 205 Z"
-              fill={isHovered ? colors.light : colors.light}
-              stroke={colors.primary}
-              strokeWidth={isHovered ? '4' : '3'}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              animate={
-                isHovered
-                  ? {
-                      fill: [colors.light, '#ffffff', colors.light],
-                    }
-                  : {}
-              }
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-
-            {/* Double border for sketchy effect */}
-            <motion.path
-              d="M 50 38 Q 52 36 58 36 L 342 36 Q 348 36 350 38 L 350 202 Q 348 204 342 204 L 58 204 Q 52 204 50 202 Z"
-              fill="none"
-              stroke={colors.primary}
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeDasharray="3, 2"
-              opacity="0.6"
-            />
-
-            {/* DNI text at top */}
-            <text
-              x="200"
-              y="60"
-              textAnchor="middle"
-              fill={colors.dark}
-              fontSize="28"
-              fontWeight="bold"
-              fontFamily="'Cabin Sketch', cursive"
-            >
-              DNI
-            </text>
-
-            {/* Sketchy photo frame on right */}
-            <motion.path
-              d="M 255 85 Q 257 83 260 83 L 330 83 Q 333 83 335 85 L 335 175 Q 333 177 330 177 L 260 177 Q 257 177 255 175 Z"
-              fill="#FAFAFA"
-              stroke={colors.dark}
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              animate={
-                isSelected
-                  ? {
-                      strokeDasharray: ['0, 0', '4, 4', '0, 0'],
-                    }
-                  : {}
-              }
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-
-            {/* Doodle person in photo */}
-            <circle cx="295" cy="115" r="18" fill={colors.primary} opacity="0.3" />
-            <motion.path
-              d="M 270 155 Q 282 145 295 145 Q 308 145 320 155"
-              stroke={colors.primary}
-              strokeWidth="3"
-              fill="none"
-              strokeLinecap="round"
-              opacity="0.4"
-            />
-
-            {/* Hand-drawn ID chip */}
-            <motion.path
-              d="M 70 95 Q 72 93 75 93 L 105 93 Q 108 93 110 95 L 110 125 Q 108 127 105 127 L 75 127 Q 72 127 70 125 Z"
-              fill="#FFD700"
-              stroke="#D4A017"
-              strokeWidth="2"
-              strokeLinecap="round"
-              animate={
-                isHovered
-                  ? {
-                      fill: ['#FFD700', '#FFED4E', '#FFD700'],
-                    }
-                  : {}
-              }
-              transition={{ duration: 0.5, repeat: Infinity }}
-            />
-            <rect x="77" y="100" width="26" height="20" fill="#D4A017" opacity="0.3" rx="2" />
-
-            {/* Wobbly text lines */}
-            <motion.path
-              d="M 70 145 Q 120 144 170 145"
-              stroke={colors.dark}
-              strokeWidth="3"
-              strokeLinecap="round"
-              fill="none"
-              opacity="0.5"
-            />
-            <motion.path
-              d="M 70 160 Q 105 159 140 160"
-              stroke={colors.dark}
-              strokeWidth="3"
-              strokeLinecap="round"
-              fill="none"
-              opacity="0.4"
-            />
-            <motion.path
-              d="M 70 175 Q 115 174 160 175"
-              stroke={colors.dark}
-              strokeWidth="3"
-              strokeLinecap="round"
-              fill="none"
-              opacity="0.4"
-            />
-
-            {/* Doodle Spain flag */}
-            <motion.path d="M 75 70 L 135 70 L 135 78 L 75 78 Z" fill="#C8102E" />
-            <rect x="75" y="70" width="60" height="3" fill="#C8102E" />
-            <rect x="75" y="73" width="60" height="2" fill="#FFC400" />
-            <rect x="75" y="75" width="60" height="3" fill="#C8102E" />
-
-            {/* Animated sparkles around card */}
-            {(isSelected || isHovered) && (
-              <>
-                <motion.circle
-                  cx="60"
-                  cy="50"
-                  r="2"
-                  fill={colors.primary}
-                  animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 0 }}
-                />
-                <motion.circle
-                  cx="340"
-                  cy="60"
-                  r="2"
-                  fill={colors.primary}
-                  animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                />
-                <motion.circle
-                  cx="200"
-                  cy="220"
-                  r="2"
-                  fill={colors.primary}
-                  animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-                />
-              </>
-            )}
-          </>
+          <DniCardFace colors={colors} isHovered={isHovered} isSelected={isSelected} />
         ) : (
-          <>
-            {/* Hand-drawn passport book - sketchy */}
-            <motion.path
-              d="M 80 40 Q 83 37 90 37 L 310 37 Q 317 37 320 40 L 320 200 Q 317 203 310 203 L 90 203 Q 83 203 80 200 Z"
-              fill={isHovered ? colors.light : colors.light}
-              stroke={colors.primary}
-              strokeWidth={isHovered ? '5' : '4'}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              animate={
-                isHovered
-                  ? {
-                      fill: [colors.light, '#ffffff', colors.light],
-                    }
-                  : {}
-              }
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-
-            {/* Book spine effect */}
-            <motion.path
-              d="M 80 40 L 80 200"
-              stroke={colors.dark}
-              strokeWidth="8"
-              strokeLinecap="round"
-              opacity="0.3"
-            />
-            <motion.path
-              d="M 85 40 L 85 200"
-              stroke={colors.dark}
-              strokeWidth="2"
-              strokeLinecap="round"
-              opacity="0.2"
-            />
-
-            {/* Double border sketchy effect */}
-            <motion.path
-              d="M 90 45 Q 92 43 95 43 L 305 43 Q 312 43 314 45 L 314 195 Q 312 197 305 197 L 95 197 Q 92 197 90 195 Z"
-              fill="none"
-              stroke={colors.primary}
-              strokeWidth="1.5"
-              strokeDasharray="4, 3"
-              opacity="0.5"
-            />
-
-            {/* Doodle globe/world icon */}
-            <motion.circle
-              cx="200"
-              cy="95"
-              r="35"
-              fill="none"
-              stroke={colors.dark}
-              strokeWidth="3"
-              strokeLinecap="round"
-              opacity="0.4"
-              animate={
-                isHovered
-                  ? {
-                      rotate: 360,
-                    }
-                  : {}
-              }
-              transition={{ duration: 2, ease: 'linear' }}
-              style={{ transformOrigin: '200px 95px' }}
-            />
-            <motion.path
-              d="M 165 95 Q 180 80 200 80 Q 220 80 235 95"
-              stroke={colors.dark}
-              strokeWidth="2.5"
-              fill="none"
-              strokeLinecap="round"
-              opacity="0.4"
-            />
-            <motion.path
-              d="M 165 95 Q 180 110 200 110 Q 220 110 235 95"
-              stroke={colors.dark}
-              strokeWidth="2.5"
-              fill="none"
-              strokeLinecap="round"
-              opacity="0.4"
-            />
-            <motion.line
-              x1="200"
-              y1="60"
-              x2="200"
-              y2="130"
-              stroke={colors.dark}
-              strokeWidth="2"
-              strokeLinecap="round"
-              opacity="0.4"
-            />
-
-            {/* PASSPORT text - hand written style */}
-            <text
-              x="200"
-              y="155"
-              textAnchor="middle"
-              fill={colors.dark}
-              fontSize="24"
-              fontFamily="'Cabin Sketch', cursive"
-              fontWeight="bold"
-            >
-              PASSPORT
-            </text>
-
-            {/* Decorative wobbly lines */}
-            <motion.path
-              d="M 110 170 Q 155 169 200 170 Q 245 171 290 170"
-              stroke={colors.dark}
-              strokeWidth="2"
-              strokeLinecap="round"
-              fill="none"
-              opacity="0.3"
-            />
-            <motion.path
-              d="M 130 182 Q 165 181 200 182 Q 235 183 270 182"
-              stroke={colors.dark}
-              strokeWidth="2"
-              strokeLinecap="round"
-              fill="none"
-              opacity="0.3"
-            />
-
-            {/* Animated sparkles */}
-            {(isSelected || isHovered) && (
-              <>
-                <motion.circle
-                  cx="95"
-                  cy="60"
-                  r="2"
-                  fill={colors.primary}
-                  animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 0 }}
-                />
-                <motion.circle
-                  cx="305"
-                  cy="70"
-                  r="2"
-                  fill={colors.primary}
-                  animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 0.7 }}
-                />
-                <motion.circle
-                  cx="200"
-                  cy="215"
-                  r="2"
-                  fill={colors.primary}
-                  animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 1.3 }}
-                />
-              </>
-            )}
-          </>
+          <PassportCardFace colors={colors} isHovered={isHovered} isSelected={isSelected} />
         )}
 
         {/* LASER SCANNER EFFECT - Multiple scanning beams */}
@@ -797,6 +789,127 @@ function IDCardIllustration({
           )}
         </AnimatePresence>
       </svg>
+    </motion.div>
+  );
+}
+
+interface IDTypeOptionCardProps {
+  idType: 'dni' | 'passport';
+  selectedType: IDType;
+  onSelect: (type: IDType) => void;
+  color: string;
+  lightFill: string;
+  rotateYSign: 1 | -1;
+  title: string;
+  subtitle: string;
+  requirement: string;
+}
+
+/** DNI and Passport option cards were near-identical JSX differing only
+ * in color/copy -- extracted both to cut SonarCloud's duplicate-code
+ * flag and IDUploadStep's own cognitive complexity. */
+function IDTypeOptionCard({
+  idType,
+  selectedType,
+  onSelect,
+  color,
+  lightFill,
+  rotateYSign,
+  title,
+  subtitle,
+  requirement,
+}: IDTypeOptionCardProps) {
+  const isSelected = selectedType === idType;
+
+  return (
+    <motion.div
+      className="relative"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: idType === 'dni' ? 0.1 : 0.2 }}
+    >
+      <motion.button
+        whileHover={{ scale: 1.03, y: -8, rotateY: 5 * rotateYSign, rotateX: 5 }}
+        whileTap={{ scale: 0.97 }}
+        onClick={() => onSelect(idType)}
+        className="relative text-left w-full"
+        style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}
+      >
+        {isSelected && <RippleEffect color={color} />}
+
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          style={{
+            filter: isSelected
+              ? `drop-shadow(0 20px 40px ${color}4D)`
+              : 'drop-shadow(3px 4px 6px rgba(0,0,0,0.1))',
+          }}
+        >
+          <rect
+            x="4"
+            y="4"
+            width="calc(100% - 8px)"
+            height="calc(100% - 8px)"
+            fill={isSelected ? lightFill : 'white'}
+            stroke={isSelected ? color : '#D4A574'}
+            strokeWidth={isSelected ? '4' : '3'}
+            rx="24"
+          />
+          {isSelected && (
+            <>
+              <rect
+                x="8"
+                y="8"
+                width="calc(100% - 16px)"
+                height="calc(100% - 16px)"
+                fill="none"
+                stroke={color}
+                strokeWidth="2"
+                rx="20"
+                opacity="0.3"
+                strokeDasharray="8, 8"
+              />
+              <motion.path
+                d="M20,20 L40,20 M20,20 L20,40"
+                stroke={color}
+                strokeWidth="4"
+                strokeLinecap="round"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.5 }}
+              />
+            </>
+          )}
+        </svg>
+
+        <motion.div
+          className="relative z-10 p-4 sm:p-6 md:p-8"
+          animate={isSelected ? { scale: [1, 1.02, 1] } : {}}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <IDCardIllustration type={idType} isSelected={isSelected} />
+
+          <div className="text-center mt-4 sm:mt-6">
+            <h3 className="text-xl sm:text-2xl sketch-title text-[#5D4E37] mb-2">{title}</h3>
+            <p className="text-sm text-gray-600 hand-drawn">{subtitle}</p>
+            <div className="flex items-center justify-center gap-2 mt-3">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
+              <p className="text-xs text-gray-500 hand-drawn">{requirement}</p>
+            </div>
+          </div>
+
+          {isSelected && (
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: 'spring', stiffness: 200 }}
+              className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center"
+            >
+              <DoodleCheckIcon className="w-12 h-12" style={{ color }} />
+            </motion.div>
+          )}
+        </motion.div>
+      </motion.button>
     </motion.div>
   );
 }
@@ -1018,234 +1131,28 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                 className="absolute inset-0 grid grid-cols-1 md:grid-cols-2 gap-8"
                 style={{ transformStyle: 'preserve-3d' }}
               >
-                {/* DNI Option */}
-                <motion.div
-                  className="relative"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <motion.button
-                    whileHover={{
-                      scale: 1.03,
-                      y: -8,
-                      rotateY: 5,
-                      rotateX: 5,
-                    }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => handleTypeSelect('dni')}
-                    className="relative text-left w-full"
-                    style={{
-                      transformStyle: 'preserve-3d',
-                      perspective: '1000px',
-                    }}
-                  >
-                    {/* Ripple effect when selected */}
-                    {selectedType === 'dni' && <RippleEffect color="#00AB39" />}
-
-                    <svg
-                      className="absolute inset-0 w-full h-full pointer-events-none"
-                      style={{
-                        filter:
-                          selectedType === 'dni'
-                            ? 'drop-shadow(0 20px 40px rgba(0, 171, 57, 0.3))'
-                            : 'drop-shadow(3px 4px 6px rgba(0,0,0,0.1))',
-                      }}
-                    >
-                      <rect
-                        x="4"
-                        y="4"
-                        width="calc(100% - 8px)"
-                        height="calc(100% - 8px)"
-                        fill={selectedType === 'dni' ? '#E8F5E9' : 'white'}
-                        stroke={selectedType === 'dni' ? '#00AB39' : '#D4A574'}
-                        strokeWidth={selectedType === 'dni' ? '4' : '3'}
-                        rx="24"
-                      />
-                      {selectedType === 'dni' && (
-                        <>
-                          <rect
-                            x="8"
-                            y="8"
-                            width="calc(100% - 16px)"
-                            height="calc(100% - 16px)"
-                            fill="none"
-                            stroke="#00AB39"
-                            strokeWidth="2"
-                            rx="20"
-                            opacity="0.3"
-                            strokeDasharray="8, 8"
-                          />
-                          {/* Animated corner accents */}
-                          <motion.path
-                            d="M20,20 L40,20 M20,20 L20,40"
-                            stroke="#00AB39"
-                            strokeWidth="4"
-                            strokeLinecap="round"
-                            initial={{ pathLength: 0 }}
-                            animate={{ pathLength: 1 }}
-                            transition={{ duration: 0.5 }}
-                          />
-                        </>
-                      )}
-                    </svg>
-
-                    <motion.div
-                      className="relative z-10 p-4 sm:p-6 md:p-8"
-                      animate={
-                        selectedType === 'dni'
-                          ? {
-                              scale: [1, 1.02, 1],
-                            }
-                          : {}
-                      }
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                    >
-                      {/* 3D Card Illustration */}
-                      <IDCardIllustration type="dni" isSelected={selectedType === 'dni'} />
-
-                      <div className="text-center mt-4 sm:mt-6">
-                        <h3 className="text-xl sm:text-2xl sketch-title text-[#5D4E37] mb-2">
-                          DNI / ID Card
-                        </h3>
-                        <p className="text-sm text-gray-600 hand-drawn">Spanish National ID Card</p>
-                        <div className="flex items-center justify-center gap-2 mt-3">
-                          <div className="w-2 h-2 rounded-full bg-[#00AB39]" />
-                          <p className="text-xs text-gray-500 hand-drawn">
-                            Requires front & back photos
-                          </p>
-                        </div>
-                      </div>
-
-                      {selectedType === 'dni' && (
-                        <motion.div
-                          initial={{ scale: 0, rotate: -180 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          transition={{ type: 'spring', stiffness: 200 }}
-                          className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center"
-                        >
-                          <DoodleCheckIcon className="w-12 h-12 text-[#00AB39]" />
-                        </motion.div>
-                      )}
-                    </motion.div>
-                  </motion.button>
-                </motion.div>
-
-                {/* Passport Option */}
-                <motion.div
-                  className="relative"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <motion.button
-                    whileHover={{
-                      scale: 1.03,
-                      y: -8,
-                      rotateY: -5,
-                      rotateX: 5,
-                    }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => handleTypeSelect('passport')}
-                    className="relative text-left w-full"
-                    style={{
-                      transformStyle: 'preserve-3d',
-                      perspective: '1000px',
-                    }}
-                  >
-                    {/* Ripple effect when selected */}
-                    {selectedType === 'passport' && <RippleEffect color="#0071BC" />}
-
-                    <svg
-                      className="absolute inset-0 w-full h-full pointer-events-none"
-                      style={{
-                        filter:
-                          selectedType === 'passport'
-                            ? 'drop-shadow(0 20px 40px rgba(0, 113, 188, 0.3))'
-                            : 'drop-shadow(3px 4px 6px rgba(0,0,0,0.1))',
-                      }}
-                    >
-                      <rect
-                        x="4"
-                        y="4"
-                        width="calc(100% - 8px)"
-                        height="calc(100% - 8px)"
-                        fill={selectedType === 'passport' ? '#E3F2FD' : 'white'}
-                        stroke={selectedType === 'passport' ? '#0071BC' : '#D4A574'}
-                        strokeWidth={selectedType === 'passport' ? '4' : '3'}
-                        rx="24"
-                      />
-                      {selectedType === 'passport' && (
-                        <>
-                          <rect
-                            x="8"
-                            y="8"
-                            width="calc(100% - 16px)"
-                            height="calc(100% - 16px)"
-                            fill="none"
-                            stroke="#0071BC"
-                            strokeWidth="2"
-                            rx="20"
-                            opacity="0.3"
-                            strokeDasharray="8, 8"
-                          />
-                          {/* Animated corner accents */}
-                          <motion.path
-                            d="M20,20 L40,20 M20,20 L20,40"
-                            stroke="#0071BC"
-                            strokeWidth="4"
-                            strokeLinecap="round"
-                            initial={{ pathLength: 0 }}
-                            animate={{ pathLength: 1 }}
-                            transition={{ duration: 0.5 }}
-                          />
-                        </>
-                      )}
-                    </svg>
-
-                    <motion.div
-                      className="relative z-10 p-4 sm:p-6 md:p-8"
-                      animate={
-                        selectedType === 'passport'
-                          ? {
-                              scale: [1, 1.02, 1],
-                            }
-                          : {}
-                      }
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                    >
-                      {/* 3D Card Illustration */}
-                      <IDCardIllustration
-                        type="passport"
-                        isSelected={selectedType === 'passport'}
-                      />
-
-                      <div className="text-center mt-4 sm:mt-6">
-                        <h3 className="text-xl sm:text-2xl sketch-title text-[#5D4E37] mb-2">
-                          Passport
-                        </h3>
-                        <p className="text-sm text-gray-600 hand-drawn">International Passport</p>
-                        <div className="flex items-center justify-center gap-2 mt-3">
-                          <div className="w-2 h-2 rounded-full bg-[#0071BC]" />
-                          <p className="text-xs text-gray-500 hand-drawn">
-                            Requires photo page only
-                          </p>
-                        </div>
-                      </div>
-
-                      {selectedType === 'passport' && (
-                        <motion.div
-                          initial={{ scale: 0, rotate: -180 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          transition={{ type: 'spring', stiffness: 200 }}
-                          className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center"
-                        >
-                          <DoodleCheckIcon className="w-12 h-12 text-[#0071BC]" />
-                        </motion.div>
-                      )}
-                    </motion.div>
-                  </motion.button>
-                </motion.div>
+                <IDTypeOptionCard
+                  idType="dni"
+                  selectedType={selectedType}
+                  onSelect={handleTypeSelect}
+                  color="#00AB39"
+                  lightFill="#E8F5E9"
+                  rotateYSign={1}
+                  title="DNI / ID Card"
+                  subtitle="Spanish National ID Card"
+                  requirement="Requires front & back photos"
+                />
+                <IDTypeOptionCard
+                  idType="passport"
+                  selectedType={selectedType}
+                  onSelect={handleTypeSelect}
+                  color="#0071BC"
+                  lightFill="#E3F2FD"
+                  rotateYSign={-1}
+                  title="Passport"
+                  subtitle="International Passport"
+                  requirement="Requires photo page only"
+                />
               </motion.div>
             )}
           </AnimatePresence>

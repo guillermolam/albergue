@@ -46,6 +46,37 @@ function DesktopNavLink({ link, isActive }: { link: NavLinkData; isActive: boole
   );
 }
 
+const NAV_COPY = {
+  es: {
+    home: 'Inicio',
+    book: 'Reservar',
+    restaurants: 'Restaurantes',
+    visits: 'Visitas',
+    tourism: 'Turismo',
+    emergencies: 'Emergencias',
+    switchLang: 'Switch to English',
+    langCode: 'ES',
+    login: 'Entrar',
+    adminLogin: 'Acceso Admin',
+    closeMenu: 'Cerrar menú',
+    openMenu: 'Abrir menú',
+  },
+  en: {
+    home: 'Home',
+    book: 'Book Now',
+    restaurants: 'Restaurants',
+    visits: 'Visits',
+    tourism: 'Tourism',
+    emergencies: 'Emergencies',
+    switchLang: 'Cambiar a Español',
+    langCode: 'EN',
+    login: 'Login',
+    adminLogin: 'Admin Login',
+    closeMenu: 'Close menu',
+    openMenu: 'Open menu',
+  },
+} as const;
+
 function MobileNavLink({
   link,
   isActive,
@@ -79,22 +110,17 @@ export function Navigation({ currentPath }: NavigationProps) {
   const { locale, setLocale } = useI18n();
   const isEs = locale !== 'en';
 
+  const t = isEs ? NAV_COPY.es : NAV_COPY.en;
   const isActive = (path: string) => currentPath === path;
-  const mobileMenuLabel = isOpen
-    ? isEs
-      ? 'Cerrar menú'
-      : 'Close menu'
-    : isEs
-      ? 'Abrir menú'
-      : 'Open menu';
+  const mobileMenuLabel = isOpen ? t.closeMenu : t.openMenu;
 
   const navLinks = [
-    { path: '/', label: isEs ? 'Inicio' : 'Home' },
-    { path: '/book', label: isEs ? 'Reservar' : 'Book Now' },
-    { path: '/restaurants', label: isEs ? 'Restaurantes' : 'Restaurants' },
-    { path: '/visits', label: isEs ? 'Visitas' : 'Visits' },
-    { path: '/tourism', label: isEs ? 'Turismo' : 'Tourism' },
-    { path: '/emergencies', label: isEs ? 'Emergencias' : 'Emergencies' },
+    { path: '/', label: t.home },
+    { path: '/book', label: t.book },
+    { path: '/restaurants', label: t.restaurants },
+    { path: '/visits', label: t.visits },
+    { path: '/tourism', label: t.tourism },
+    { path: '/emergencies', label: t.emergencies },
   ];
 
   return (
@@ -174,7 +200,7 @@ export function Navigation({ currentPath }: NavigationProps) {
               whileTap={{ scale: 0.9 }}
               onClick={() => setLocale(isEs ? 'en' : 'es')}
               className="relative"
-              aria-label={isEs ? 'Switch to English' : 'Cambiar a Español'}
+              aria-label={t.switchLang}
             >
               <svg width="48" height="36" className="hover:drop-shadow-lg transition-all">
                 <ellipse
@@ -206,14 +232,14 @@ export function Navigation({ currentPath }: NavigationProps) {
                   fontFamily="Patrick Hand, cursive"
                   fontWeight="bold"
                 >
-                  {isEs ? 'ES' : 'EN'}
+                  {t.langCode}
                 </text>
               </svg>
             </motion.button>
 
             <div className="hidden sm:block">
               <WiredButton href="/admin" variant="outline" size="sm">
-                {isEs ? 'Entrar' : 'Login'}
+                {t.login}
               </WiredButton>
             </div>
 
@@ -285,7 +311,7 @@ export function Navigation({ currentPath }: NavigationProps) {
                   transition={{ delay: navLinks.length * 0.05 }}
                 >
                   <WiredButton href="/admin" variant="primary" className="w-full">
-                    {isEs ? 'Acceso Admin' : 'Admin Login'}
+                    {t.adminLogin}
                   </WiredButton>
                 </motion.div>
               </div>
