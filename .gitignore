@@ -14,11 +14,7 @@ frontend/.wrangler/
 **/.vercel/
 **/.netlify/
 **/.spin/
-**/.trunk/*
-!**/.trunk/.gitignore
-!**/.trunk/trunk.yaml
-!**/.trunk/configs/
-!**/.trunk/configs/**
+**/.trunk/
 **/v10/
 **/v3/
 **/.direnv/
