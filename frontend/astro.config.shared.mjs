@@ -88,6 +88,29 @@ export const sharedConfig = {
       target: 'es2022',
       minify: 'esbuild',
       cssMinify: true,
+      // Vite's 500kB default flags three-core.js (~730kB): the actual,
+      // unavoidable weight of the WebGLRenderer/Scene/Camera classes
+      // HostelScene's <Canvas> requires from Three.js itself -- confirmed
+      // by splitting three/@react-three/fiber/@react-three/drei into
+      // separate chunks (below) and finding none of them shrinks further
+      // without dropping 3D rendering. Not a stand-in for fixing bloat.
+      chunkSizeWarningLimit: 800,
+      rolldownOptions: {
+        output: {
+          // three/@react-three/* (HostelScene's client:only island) are the
+          // only reason any single output chunk exceeds 500kB. Splitting
+          // them into their own chunk doesn't shrink that inherent weight,
+          // but keeps it isolated from -- and shared cacheably across --
+          // whichever future pages end up rendering that island, instead of
+          // one page's build accidentally inflating an unrelated chunk.
+          manualChunks(id) {
+            if (/node_modules\/@react-three\/drei\//.test(id)) return 'three-drei';
+            if (/node_modules\/@react-three\/fiber\//.test(id)) return 'three-fiber';
+            if (/node_modules\/three\//.test(id)) return 'three-core';
+            return undefined;
+          },
+        },
+      },
     },
     server: {
       host: true,

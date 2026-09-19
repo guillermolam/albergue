@@ -5,7 +5,7 @@
  * go through the Hono write API. The browser never posts a trusted total.
  */
 import { defineAction, ActionError } from 'astro:actions';
-import { z } from 'astro:schema';
+import { z } from 'zod';
 import { BACKEND_API_URL, ADMIN_API_TOKEN } from 'astro:env/server';
 import {
   AUTH_SESSION_KEY,
@@ -28,7 +28,7 @@ import {
   type BookingStep,
 } from '../lib/booking-draft';
 
-const isoDate = z.string().date();
+const isoDate = z.iso.date();
 
 async function persistDraft(
   session: ActionAPIContext['session'],
@@ -41,7 +41,7 @@ async function persistDraft(
       message: 'Booking sessions are not available on this deployment yet.',
     });
   }
-  await session.set(BOOKING_DRAFT_SESSION_KEY, draft);
+  session.set(BOOKING_DRAFT_SESSION_KEY, draft);
   return { step: draft.step };
 }
 
@@ -117,7 +117,7 @@ export const server = {
           throw new ActionError({ code: 'BAD_GATEWAY', message: 'Malformed backend response' });
         }
 
-        await context.session.set(AUTH_SESSION_KEY, envelope.data);
+        context.session.set(AUTH_SESSION_KEY, envelope.data);
         return { ok: true as const };
       },
     }),
@@ -239,7 +239,7 @@ export const server = {
         firstName: z.string().min(1).max(80),
         lastName1: z.string().min(1).max(80),
         lastName2: z.string().max(80).optional(),
-        email: z.union([z.string().email(), z.literal('')]).optional(),
+        email: z.union([z.email(), z.literal('')]).optional(),
         phone: z.string().min(6).max(32),
         documentType: z.enum(['dni', 'nie', 'passport']),
         documentNumber: z.string().min(3).max(32),
