@@ -181,16 +181,46 @@ export interface BedStats {
   byRoomType: Record<string, { total: number; available: number }>;
 }
 
+export interface BookingTableRow {
+  id: number;
+  referenceNumber: string;
+  guestName: string;
+  email: string | null;
+  phone: string;
+  nationality: string | null;
+  bedLabel: string | null;
+  checkInDate: string;
+  checkOutDate: string;
+  status: string | null;
+  totalAmount: string | null;
+  paymentType: string | null;
+}
+
+export interface BedWithGuest {
+  id: number;
+  bedNumber: number;
+  roomNumber: number;
+  roomName: string;
+  roomType: string | null;
+  status: string | null;
+  guestName: string | null;
+  checkInDate: string | null;
+  checkOutDate: string | null;
+}
+
 // Dashboard types
 export interface DashboardMetrics {
   bookings: BookingStats;
   pilgrims: PilgrimStats;
   beds: BedStats;
-  recentActivity: Array<{
-    type: string;
+  weeklyStats: Array<{ day: string; bookings: number; revenue: number }>;
+  recentBookings: Array<{
     id: number;
-    timestamp: Date;
-    description: string;
+    referenceNumber: string;
+    guestName: string;
+    bedLabel: string | null;
+    checkInDate: string;
+    status: string | null;
   }>;
 }
 

@@ -1,63 +1,27 @@
 ---
 type Locale = string;
 
-const i18nStore = {
-  get: () => ({
-    locale: typeof window !== 'undefined' ? document.documentElement.lang || 'es' : 'es',
-  }),
-};
-
-interface Language {
-  code: Locale;
-  name: string;
-  flag: string;
+interface Props {
+  className?: string;
+  showFlags?: boolean;
+  compact?: boolean;
 }
 
-const languages: Language[] = await (async () => {
-  try {
-    const res = await fetch('/api/gateway/camino-languages', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      keepalive: true,
-    });
+const { className = '', showFlags = true, compact = false } = Astro.props;
 
-    if (!res.ok) throw new Error(`Gateway error: ${res.status}`);
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.warn('Failed to fetch languages from gateway:', error);
-    return [
-      { code: 'es', name: 'Español', flag: '🇪🇸' },
-      { code: 'en', name: 'English', flag: '🇬🇧' },
-      { code: 'fr', name: 'Français', flag: '🇫🇷' },
-      { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-      { code: 'it', name: 'Italiano', flag: '🇮🇹' },
-      { code: 'pt', name: 'Português', flag: '🇵🇹' },
-      { code: 'nl', name: 'Nederlands', flag: '🇳🇱' },
-      { code: 'pl', name: 'Polski', flag: '🇵🇱' },
-      { code: 'ko', name: '한국어', flag: '🇰🇷' },
-      { code: 'ja', name: '日本語', flag: '🇯🇵' },
-      { code: 'zh', name: '中文', flag: '🇨🇳' },
-      { code: 'ru', name: 'Русский', flag: '🇷🇺' },
-      { code: 'cs', name: 'Čeština', flag: '🇨🇿' },
-      { code: 'sk', name: 'Slovenčina', flag: '🇸🇰' },
-      { code: 'hu', name: 'Magyar', flag: '🇭🇺' },
-      { code: 'ca', name: 'Català', flag: '🏴' },
-      { code: 'eu', name: 'Euskara', flag: '🏴' },
-      { code: 'gl', name: 'Galego', flag: '🏴' },
-      { code: 'oc', name: 'Occitan (Aranés)', flag: '🏴' },
-      { code: 'Gode', name: 'Gothic', flag: '🏴' },
-    ];
+// Import i18n for dynamic language loading
+import { i18nActions, LANGUAGES } from '../../stores/i18nStore';
+
+// Get current locale from store or HTML
+const getLocale = () => {
+  if (typeof document !== 'undefined') {
+    return document.documentElement.lang || 'es';
   }
-})();
+  return 'es';
+};
 
-const currentLocale = i18nStore.get().locale;
-const currentLanguage = languages.find((lang) => lang.code === currentLocale) || languages[0];
-
-const { class: className = '', showFlags = true, compact = false } = Astro.props;
+const locale = getLocale();
+const currentLanguage = LANGUAGES[locale] || LANGUAGES.es;
 
 const initialLanguageCode = currentLanguage.code;
 const initialLanguageName = currentLanguage.name;
@@ -111,7 +75,7 @@ const initialLanguageFlag = currentLanguage.flag;
     tabindex="-1"
   >
     <div class="py-1">
-      {languages.map((language) => (
+      {Object.values(LANGUAGES).map((language) => (
         <button
           type="button"
           class={`w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-colors duration-150 ${initialLanguageCode === language.code ? 'bg-primary-50 text-primary-700' : 'text-gray-700'}`}
@@ -208,12 +172,7 @@ const initialLanguageFlag = currentLanguage.flag;
 
         document.documentElement.lang = code;
 
-        const language = { code: code, name: '', flag: '' };
-        const langData = (selector && selector.languages) || [];
-        const foundLang =
-          langData.find(function (l) {
-            return l.code === code;
-          }) || language;
+        const foundLang = Object.values(LANGUAGES).find((l) => l.code === code) || LANGUAGES.es;
 
         if (toggleBtn) {
           const flagSpan = toggleBtn.querySelector('span[aria-hidden="true"]');

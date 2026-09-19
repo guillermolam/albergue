@@ -21,7 +21,7 @@ import {
   gt,
   sql,
 } from "drizzle-orm";
-import type { Booking, Bed } from "../types/index.js";
+import type { Booking, Bed, BookingTableRow } from "../types/index.js";
 import type {
   PaginatedResponse,
   PaginationParams,
@@ -401,6 +401,133 @@ export async function getBookingStats() {
     monthlyBookings: monthly?.count || 0,
     byRoomType,
   };
+}
+
+/**
+ * Get bookings-per-day and revenue-per-day for the last 7 days (including
+ * today), for the admin dashboard's weekly charts. Days with no bookings
+ * are filled with zero rather than omitted, so the chart's x-axis is stable.
+ */
+export async function getWeeklyBookingStats(): Promise<
+  Array<{ day: string; bookings: number; revenue: number }>
+> {
+  const since = new Date();
+  since.setDate(since.getDate() - 6);
+  since.setHours(0, 0, 0, 0);
+
+  const dayExpr = sql<string>`to_char(${bookings.createdAt}, 'YYYY-MM-DD')`;
+  const rows = await db
+    .select({
+      day: dayExpr,
+      bookingCount: count(),
+      revenue: sum(bookings.totalAmount),
+    })
+    .from(bookings)
+    .where(gte(bookings.createdAt, since))
+    .groupBy(dayExpr);
+
+  const byDay = new Map(rows.map((r) => [r.day, r]));
+  const result: Array<{ day: string; bookings: number; revenue: number }> = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    const row = byDay.get(key);
+    result.push({
+      day: key,
+      bookings: row?.bookingCount ?? 0,
+      revenue: row?.revenue ? parseFloat(String(row.revenue)) : 0,
+    });
+  }
+  return result;
+}
+
+/**
+ * Get recent bookings with guest name and bed label, for the admin
+ * dashboard's recent-bookings table (getRecentBookings() alone only
+ * returns raw booking rows, with no pilgrim/bed identity attached).
+ */
+export async function getRecentBookingsWithDetails(limit: number = 5): Promise<
+  Array<{
+    id: number;
+    referenceNumber: string;
+    guestName: string;
+    bedLabel: string | null;
+    checkInDate: string;
+    status: string | null;
+  }>
+> {
+  const results = await db
+    .select({
+      id: bookings.id,
+      referenceNumber: bookings.referenceNumber,
+      checkInDate: bookings.checkInDate,
+      status: bookings.status,
+      firstName: pilgrims.firstName,
+      lastName1: pilgrims.lastName1,
+      roomName: beds.roomName,
+      bedNumber: beds.bedNumber,
+    })
+    .from(bookings)
+    .innerJoin(pilgrims, eq(pilgrims.id, bookings.pilgrimId))
+    .leftJoin(beds, eq(beds.id, bookings.bedAssignmentId))
+    .orderBy(desc(bookings.createdAt))
+    .limit(limit);
+
+  return results.map((r) => ({
+    id: r.id,
+    referenceNumber: r.referenceNumber,
+    guestName: `${r.firstName} ${r.lastName1}`.trim(),
+    bedLabel: r.roomName ? `${r.roomName}-B${r.bedNumber}` : null,
+    checkInDate: r.checkInDate,
+    status: r.status,
+  }));
+}
+
+/**
+ * Get bookings for the admin bookings table: guest identity, contact, bed,
+ * dates, status and payment, all in one row. A booking has exactly one bed
+ * (bedAssignmentId) in this schema, unlike the figma/ mock's beds array.
+ */
+export async function getBookingsTableRows(limit: number = 200): Promise<BookingTableRow[]> {
+  const results = await db
+    .select({
+      id: bookings.id,
+      referenceNumber: bookings.referenceNumber,
+      checkInDate: bookings.checkInDate,
+      checkOutDate: bookings.checkOutDate,
+      status: bookings.status,
+      totalAmount: bookings.totalAmount,
+      firstName: pilgrims.firstName,
+      lastName1: pilgrims.lastName1,
+      email: pilgrims.email,
+      phone: pilgrims.phone,
+      nationality: pilgrims.nationality,
+      roomName: beds.roomName,
+      bedNumber: beds.bedNumber,
+      paymentType: payments.paymentType,
+    })
+    .from(bookings)
+    .innerJoin(pilgrims, eq(pilgrims.id, bookings.pilgrimId))
+    .leftJoin(beds, eq(beds.id, bookings.bedAssignmentId))
+    .leftJoin(payments, eq(payments.bookingId, bookings.id))
+    .orderBy(desc(bookings.createdAt))
+    .limit(limit);
+
+  return results.map((r) => ({
+    id: r.id,
+    referenceNumber: r.referenceNumber,
+    guestName: `${r.firstName} ${r.lastName1}`.trim(),
+    email: r.email,
+    phone: r.phone,
+    nationality: r.nationality,
+    bedLabel: r.roomName ? `${r.roomName}-B${r.bedNumber}` : null,
+    checkInDate: r.checkInDate,
+    checkOutDate: r.checkOutDate,
+    status: r.status,
+    totalAmount: r.totalAmount,
+    paymentType: r.paymentType,
+  }));
 }
 
 /**

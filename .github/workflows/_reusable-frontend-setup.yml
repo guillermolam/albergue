@@ -50,6 +50,9 @@ jobs:
         if: ${{ inputs.install-playwright }}
         run: ./.github/scripts/install-playwright.sh
 
+      - name: Build workspace packages
+        run: pnpm --filter @albergue/api-contract --filter @albergue/domain-model build
+
       - name: Run requested script
         env:
           CALLED_SCRIPT: ${{ inputs.script }}

@@ -6,6 +6,7 @@
 export { default as pilgrims } from "./pilgrims.js";
 export { default as bookings } from "./bookings.js";
 export { default as beds } from "./beds.js";
+export { default as dashboard } from "./dashboard.js";
 export { default as payments } from "./payments.js";
 export { default as pricing } from "./pricing.js";
 export { default as governmentSubmissions } from "./government_submissions.js";

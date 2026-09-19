@@ -1,6 +1,6 @@
 ---
-import DoodleIcons from '../components/doodle/DoodleIcons.astro';
-import DoodleButton from '../components/doodle/DoodleButton.astro';
+import { Button } from '../components/ui';
+import { Icon } from '../components/core/Icon.astro';
 
 export interface Props {
   title: string;
@@ -264,7 +264,7 @@ const socialLinks = [
           <!-- Logo -->
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 bg-linear-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
-              <DoodleIcons name="shell" size="lg" />
+              <Icon name="shell" size="lg" color="white" />
             </div>
             <div>
               <h1 class="text-xl font-bold bg-linear-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
@@ -277,21 +277,22 @@ const socialLinks = [
           <!-- Navigation -->
           <nav class="hidden md:flex items-center gap-2">
             {navigationItems.map((item) => (
-              <DoodleButton
+              <Button
                 href={item.href}
                 variant={Astro.url.pathname === item.href ? 'primary' : 'ghost'}
                 size="sm"
               >
+                <Icon name={item.icon} size="sm" class="mr-2" />
                 {item.label}
-              </DoodleButton>
+              </Button>
             ))}
           </nav>
 
           <!-- Mobile menu button -->
           <div class="md:hidden">
-            <DoodleButton variant="ghost" size="sm">
-              <DoodleIcons name="menu" size="sm" />
-            </DoodleButton>
+            <Button variant="ghost" size="sm">
+              <Icon name="menu" size="sm" />
+            </Button>
           </div>
         </div>
       </div>
@@ -310,15 +311,7 @@ const socialLinks = [
           <div class="space-y-4">
             <div class="flex items-center gap-3">
               <div class="w-8 h-8 bg-linear-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
-                <!-- Replaced DoodleIcon with a simple inline SVG shell icon -->
-                <svg
-                  class="w-4 h-4 text-white"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M12 2C8 2 5 5 5 9c0 2.5 1.5 4.5 3 6l-2 5h12l-2-5c1.5-1.5 3-3.5 3-6 0-4-3-7-7-7zm0 2c2.8 0 5 2.2 5 5 0 1.8-1 3.5-2.5 4.5L12 18l-2.5-4.5C8 12.5 7 10.8 7 9c0-2.8 2.2-5 5-5z"></path>
-                </svg>
+                <Icon name="shell" size="sm" color="white" />
               </div>
               <h3 class="text-lg font-bold">Albergue Carrascalejo</h3>
             </div>

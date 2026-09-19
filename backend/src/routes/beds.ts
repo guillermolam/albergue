@@ -20,6 +20,7 @@ import {
   getBedStats,
   getRecentBeds,
   getBedsWithBookings,
+  getBedsWithGuestInfo,
 } from '../queries/beds.js';
 import {
   createBed,
@@ -35,7 +36,13 @@ import {
   bulkUpdateBeds,
   cleanupExpiredReservations,
 } from '../commands/beds.js';
-import type { Bed, ApiResponse, PaginatedResponse, BedStats } from '../types/index.js';
+import type {
+  Bed,
+  ApiResponse,
+  PaginatedResponse,
+  BedStats,
+  BedWithGuest,
+} from '../types/index.js';
 
 const beds = new Hono();
 
@@ -129,6 +136,25 @@ beds.get('/stats', async (c: Context) => {
     });
   } catch (error) {
     throw new HTTPException(500, { message: `Failed to get bed statistics: ${String(error)}` });
+  }
+});
+
+/**
+ * GET /beds/dashboard - Get all beds with their current occupant (if any),
+ * for admin bed-management views. Registered before the /:id param route so
+ * it isn't shadowed by it (Hono matches routes in registration order).
+ */
+beds.get('/dashboard', async (c: Context) => {
+  try {
+    const data = await getBedsWithGuestInfo();
+    return c.json<ApiResponse<BedWithGuest[]>>({
+      success: true,
+      data,
+      message: 'Bed dashboard retrieved',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    throw new HTTPException(500, { message: `Failed to get bed dashboard: ${String(error)}` });
   }
 });
 

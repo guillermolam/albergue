@@ -1,0 +1,19 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { BedManagement, type BedDashboardItem } from '../../../react/admin/BedManagement';
+import { backendJson } from '../../lib/backend-api';
+
+const result = await backendJson<BedDashboardItem[]>('/api/beds/dashboard');
+const initialBeds = result.ok ? result.data : [];
+---
+
+<AdminLayout title="Bed Management" activeSection="beds">
+  {!result.ok && (
+    <div class="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 mb-6">
+      Could not load bed data: {result.message}
+    </div>
+  )}
+  <BedManagement client:load initialBeds={initialBeds} />
+</AdminLayout>

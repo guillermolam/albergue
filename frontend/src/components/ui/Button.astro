@@ -24,6 +24,7 @@ interface Props {
   disabled?: boolean;
   loading?: boolean;
   fullWidth?: boolean;
+  href?: string;
 }
 
 const {
@@ -33,6 +34,7 @@ const {
   disabled = false,
   loading = false,
   fullWidth = false,
+  href,
 } = Astro.props;
 
 const baseClasses = `btn ${fullWidth ? 'w-full' : ''}`;
@@ -54,9 +56,17 @@ const sizeClasses = {
 };
 
 const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]}`;
+
+const Component = href ? 'a' : 'button';
 ---
 
-<button type={type} class={classes} disabled={disabled || loading} aria-busy={loading}>
+<Component
+  type={href ? undefined : type}
+  href={href}
+  class={classes}
+  disabled={href ? undefined : disabled || loading}
+  aria-busy={loading}
+>
   {loading && (
     <svg
       class="animate-spin h-5 w-5 mr-2"
@@ -73,4 +83,4 @@ const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]}`
     </svg>
   )}
   <slot />
-</button>
+</Component>

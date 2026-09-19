@@ -35,6 +35,7 @@ import {
   pilgrims,
   bookings,
   beds,
+  dashboard,
   payments,
   pricing,
   governmentSubmissions,
@@ -78,6 +79,7 @@ app.get("/", (c) => {
       pilgrims: "/api/pilgrims",
       bookings: "/api/bookings",
       beds: "/api/beds",
+      dashboard: "/api/dashboard",
       payments: "/api/payments",
       pricing: "/api/pricing",
       governmentSubmissions: "/api/government-submissions",
@@ -175,6 +177,7 @@ api.route("/auth", auth); // public: credential verification only
 api.route("/pilgrims", pilgrims);
 api.route("/bookings", bookings);
 api.route("/beds", beds);
+api.route("/dashboard", dashboard);
 api.route("/payments", payments);
 api.route("/pricing", pricing);
 api.route("/government-submissions", governmentSubmissions);

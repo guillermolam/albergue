@@ -8,9 +8,15 @@ These are some guidelines when using the SonarQube MCP server.
 
 ## Basic usage
 
-- **IMPORTANT**: After you finish generating or modifying any code files at the very end of the task, you MUST call the `analyze_file_list` tool (if it exists) to analyze the files you created or modified.
-- **IMPORTANT**: When starting a new task, you MUST disable automatic analysis with the `toggle_automatic_analysis` tool if it exists.
-- **IMPORTANT**: When you are done generating code at the very end of the task, you MUST re-enable automatic analysis with the `toggle_automatic_analysis` tool if it exists.
+Follow this workflow in order for every code-editing task:
+
+1. At task start: disable automatic analysis with the `toggle_automatic_analysis` tool if it exists.
+2. Immediately after your final code edit in this response, before ending your turn: call the `analyze_file_list` tool (if it exists) to analyze the files you created or modified.
+3. Immediately after that: re-enable automatic analysis with the `toggle_automatic_analysis` tool if it exists.
+
+- If only one of `toggle_automatic_analysis` or `analyze_file_list` exists, proceed with the available tool and skip the missing step without error.
+- If a tool call fails, inform the user and continue without blocking the task.
+- Repeat this disable/analyze/re-enable cycle for each new distinct task, even within the same session.
 
 ## Project Keys
 
@@ -20,7 +26,7 @@ These are some guidelines when using the SonarQube MCP server.
 ## Code Language Detection
 
 - When analyzing code snippets, try to detect the programming language from the code syntax
-- If unclear, ask the user or make an educated guess based on syntax
+- If confidence in language detection is below a reasonable threshold, ask the user; otherwise proceed with the most likely language based on syntax
 
 ## Branch and Pull Request Context
 
