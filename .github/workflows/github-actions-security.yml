@@ -39,4 +39,6 @@ jobs:
           go-version: "1.25"
 
       - name: Validate workflows, actions, and scripts
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: ./.github/scripts/validate-workflows.sh
