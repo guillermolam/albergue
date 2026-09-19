@@ -1,0 +1,92 @@
+---
+import '../styles/landing.css';
+
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'A welcoming rest for pilgrims on the Vía de la Plata in Extremadura.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#00af42" />
+    <title>{title}</title>
+    <link rel="icon" type="image/webp" href="/logos/logo.webp" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&family=Patrick+Hand&family=Shadows+Into+Light&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a class="landing-skip-link" href="#landing-main">
+      Skip to main content
+    </a>
+
+    <header class="landing-header">
+      <div class="landing-header__inner">
+        <a class="landing-brand" href="/" aria-label="Albergue Municipal de El Carrascalejo home">
+          <img src="/logos/logo.webp" alt="" width="48" height="48" />
+          <span>
+            <strong>Albergue Municipal de El Carrascalejo</strong>
+            <small>Camino de Santiago</small>
+          </span>
+        </a>
+
+        <nav class="landing-actions" aria-label="User options">
+          <button class="landing-action" type="button" aria-label="Choose language">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path>
+            </svg>
+            <span>Español</span>
+            <span aria-hidden="true">⌄</span>
+          </button>
+          <a class="landing-action" href="/auth">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="7" r="3"></circle>
+              <path d="M6 21v-4a6 6 0 0 1 12 0v4"></path>
+            </svg>
+            <span>Entrar</span>
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="landing-main">
+      <slot />
+    </main>
+
+    <footer class="landing-footer">
+      <div class="landing-footer__inner">
+        <div class="landing-footer__brand">
+          <img src="/logos/logoalbergue-removebg-preview.png" alt="" width="64" height="64" />
+          <div>
+            <strong>Albergue Municipal</strong>
+            <span>El Carrascalejo</span>
+          </div>
+        </div>
+        <div>
+          <strong>✨ Enlaces Rápidos</strong>
+          <a href="/booking">Reservas</a>
+          <a href="/info">El albergue</a>
+        </div>
+        <div>
+          <strong>✉ Contacto</strong>
+          <a href="mailto:info@carrascalejo.es">info@carrascalejo.es</a>
+          <span>Vía de la Plata · Extremadura</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
