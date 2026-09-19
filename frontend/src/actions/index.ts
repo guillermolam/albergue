@@ -9,6 +9,7 @@ import { z } from 'astro:schema';
 import { BACKEND_API_URL, ADMIN_API_TOKEN } from 'astro:env/server';
 import {
   AUTH_SESSION_KEY,
+  BOOKING_STATUSES,
   type BookingQuote,
   type CreatePaymentIntentResponse,
   type LoginResponse,
@@ -45,15 +46,15 @@ async function persistDraft(
 }
 
 /**
- * Shared body for the admin bed actions (ADMIN-001): check the existing
+ * Shared body for admin-only actions (ADMIN-001): check the existing
  * Astro-session role, then attach the shared ADMIN_API_TOKEN the backend's
  * admin-gated routes require — server-side only, never sent to the client.
  */
-async function callAdminBedRoute(
+async function callAdminBackendRoute<T>(
   role: App.Locals['role'],
   path: string,
   init: RequestInit = {}
-): Promise<{ id: number; status: string }> {
+): Promise<T> {
   if (role !== 'admin') {
     throw new ActionError({ code: 'FORBIDDEN', message: 'Admin access required.' });
   }
@@ -64,7 +65,7 @@ async function callAdminBedRoute(
     });
   }
 
-  const result = await backendJson<{ id: number; status: string }>(path, {
+  const result = await backendJson<T>(path, {
     ...init,
     headers: { authorization: `Bearer ${ADMIN_API_TOKEN}`, ...init.headers },
   });
@@ -141,10 +142,11 @@ export const server = {
         bedId: z.coerce.number().int().min(1),
       }),
       handler: (input, context) =>
-        callAdminBedRoute(context.locals.role, `/api/beds/${input.bedId}/reserve`, {
-          method: 'PATCH',
-          body: JSON.stringify({}),
-        }),
+        callAdminBackendRoute<{ id: number; status: string }>(
+          context.locals.role,
+          `/api/beds/${input.bedId}/reserve`,
+          { method: 'PATCH', body: JSON.stringify({}) }
+        ),
     }),
 
     release: defineAction({
@@ -152,9 +154,29 @@ export const server = {
         bedId: z.coerce.number().int().min(1),
       }),
       handler: (input, context) =>
-        callAdminBedRoute(context.locals.role, `/api/beds/${input.bedId}/release`, {
-          method: 'PATCH',
+        callAdminBackendRoute<{ id: number; status: string }>(
+          context.locals.role,
+          `/api/beds/${input.bedId}/release`,
+          { method: 'PATCH' }
+        ),
+    }),
+  },
+
+  bookings: {
+    /** Admin-only booking status transition (e.g. reserved -> checked_in, or -> cancelled). */
+    updateStatus: defineAction({
+      input: z.object({
+        bookingId: z.coerce.number().int().min(1),
+        status: z.string().refine((v) => (BOOKING_STATUSES as readonly string[]).includes(v), {
+          message: `status must be one of ${BOOKING_STATUSES.join(', ')}`,
         }),
+      }),
+      handler: (input, context) =>
+        callAdminBackendRoute<null>(
+          context.locals.role,
+          `/api/bookings/${input.bookingId}/status`,
+          { method: 'PATCH', body: JSON.stringify({ status: input.status }) }
+        ),
     }),
   },
 

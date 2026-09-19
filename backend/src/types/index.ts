@@ -181,6 +181,21 @@ export interface BedStats {
   byRoomType: Record<string, { total: number; available: number }>;
 }
 
+export interface BookingTableRow {
+  id: number;
+  referenceNumber: string;
+  guestName: string;
+  email: string | null;
+  phone: string;
+  nationality: string | null;
+  bedLabel: string | null;
+  checkInDate: string;
+  checkOutDate: string;
+  status: string | null;
+  totalAmount: string | null;
+  paymentType: string | null;
+}
+
 export interface BedWithGuest {
   id: number;
   bedNumber: number;

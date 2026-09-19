@@ -21,7 +21,7 @@ import {
   gt,
   sql,
 } from "drizzle-orm";
-import type { Booking, Bed } from "../types/index.js";
+import type { Booking, Bed, BookingTableRow } from "../types/index.js";
 import type {
   PaginatedResponse,
   PaginationParams,
@@ -481,6 +481,52 @@ export async function getRecentBookingsWithDetails(limit: number = 5): Promise<
     bedLabel: r.roomName ? `${r.roomName}-B${r.bedNumber}` : null,
     checkInDate: r.checkInDate,
     status: r.status,
+  }));
+}
+
+/**
+ * Get bookings for the admin bookings table: guest identity, contact, bed,
+ * dates, status and payment, all in one row. A booking has exactly one bed
+ * (bedAssignmentId) in this schema, unlike the figma/ mock's beds array.
+ */
+export async function getBookingsTableRows(limit: number = 200): Promise<BookingTableRow[]> {
+  const results = await db
+    .select({
+      id: bookings.id,
+      referenceNumber: bookings.referenceNumber,
+      checkInDate: bookings.checkInDate,
+      checkOutDate: bookings.checkOutDate,
+      status: bookings.status,
+      totalAmount: bookings.totalAmount,
+      firstName: pilgrims.firstName,
+      lastName1: pilgrims.lastName1,
+      email: pilgrims.email,
+      phone: pilgrims.phone,
+      nationality: pilgrims.nationality,
+      roomName: beds.roomName,
+      bedNumber: beds.bedNumber,
+      paymentType: payments.paymentType,
+    })
+    .from(bookings)
+    .innerJoin(pilgrims, eq(pilgrims.id, bookings.pilgrimId))
+    .leftJoin(beds, eq(beds.id, bookings.bedAssignmentId))
+    .leftJoin(payments, eq(payments.bookingId, bookings.id))
+    .orderBy(desc(bookings.createdAt))
+    .limit(limit);
+
+  return results.map((r) => ({
+    id: r.id,
+    referenceNumber: r.referenceNumber,
+    guestName: `${r.firstName} ${r.lastName1}`.trim(),
+    email: r.email,
+    phone: r.phone,
+    nationality: r.nationality,
+    bedLabel: r.roomName ? `${r.roomName}-B${r.bedNumber}` : null,
+    checkInDate: r.checkInDate,
+    checkOutDate: r.checkOutDate,
+    status: r.status,
+    totalAmount: r.totalAmount,
+    paymentType: r.paymentType,
   }));
 }
 
