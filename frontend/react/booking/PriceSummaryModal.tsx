@@ -138,7 +138,7 @@ export function PriceSummaryModal({
                         style={{ fontFamily: 'Patrick Hand, cursive' }}
                       >
                         {nights} {isEs ? 'noche' : 'night'}
-                        {nights > 1 ? (isEs ? 's' : 's') : ''} × €{pricePerNight}
+                        {nights > 1 ? 's' : ''} × €{pricePerNight}
                       </span>
                       <span className="font-medium text-[#5D4E37]">€{nights * pricePerNight}</span>
                     </div>
@@ -155,9 +155,7 @@ export function PriceSummaryModal({
 
                   <div className="mt-4 pt-4 border-t-2 border-[#00AB39]">
                     <div className="flex justify-between items-center">
-                      <span className="text-2xl sketch-title text-[#5D4E37]">
-                        {isEs ? 'Total' : 'Total'}
-                      </span>
+                      <span className="text-2xl sketch-title text-[#5D4E37]">Total</span>
                       <span className="text-3xl sketch-title text-[#00AB39]">€{totalCost}</span>
                     </div>
                   </div>
@@ -298,7 +296,7 @@ export function PriceSummaryModal({
               className="text-xs text-gray-500 hidden md:inline"
               style={{ fontFamily: 'Patrick Hand, cursive' }}
             >
-              {isEs ? 'Total' : 'Total'}
+              Total
             </span>
             <span
               className="text-xl font-bold text-[#00AB39]"
