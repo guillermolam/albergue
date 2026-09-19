@@ -14,6 +14,7 @@ import {
   DialogTrigger,
 } from '../ui/dialog';
 import { Search, Filter } from 'lucide-react';
+import { useI18n } from '../hooks/useI18n';
 
 export type BookingStatus =
   'reserved' | 'checked_in' | 'checked_out' | 'completed' | 'cancelled' | 'expired' | 'deleted';
@@ -65,6 +66,7 @@ function getStatusColor(status: BookingStatus | null) {
 }
 
 export function BookingsTable({ initialBookings }: BookingsTableProps) {
+  const { t } = useI18n();
   const [bookings, setBookings] = useState<BookingRow[]>(initialBookings);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -98,7 +100,7 @@ export function BookingsTable({ initialBookings }: BookingsTableProps) {
   return (
     <div className="space-y-6 max-w-full overflow-x-hidden">
       <div>
-        <h1 className="text-3xl mb-2">Bookings</h1>
+        <h1 className="text-3xl mb-2">{t('admin.bookings', 'Bookings')}</h1>
         <p className="text-gray-500">Manage all pilgrim reservations</p>
       </div>
 

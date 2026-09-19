@@ -11,7 +11,6 @@ const routes = [
   { path: '/booking-confirmed', name: 'Booking Confirmed' },
   { path: '/demo-booking-confirmed', name: 'Demo Booking Confirmed' },
   { path: '/demo-camino', name: 'Demo Camino' },
-  { path: '/webcore-smoke', name: 'Webcore Smoke Test' },
 ];
 
 test.describe('Route rendering tests', () => {
