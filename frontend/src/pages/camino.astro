@@ -156,14 +156,14 @@ import { CaminoStageProgress, DailyKmLogger } from '../islands';
     <!-- Current Stage -->
     <section class="py-16 bg-linear-to-br from-green-50 to-cream">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <CaminoStageProgress client:load />
+        <CaminoStageProgress />
       </div>
     </section>
 
     <!-- Daily Km Logger -->
     <section class="py-16 bg-white">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl">
-        <DailyKmLogger client:load initialKm={18.1} />
+        <DailyKmLogger initialKm={18.1} />
       </div>
     </section>
 

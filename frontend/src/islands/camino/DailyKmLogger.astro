@@ -53,7 +53,7 @@ const { initialKm = 0, onSubmit = '/api/camino/log-km' } = Astro.props;
     const root = document.querySelector('daily-km-logger');
     if (!root) return;
 
-    const endpoint = root.dataset.submit || '/api/camino/log-km';
+    const endpoint = root.dataset.onSubmit || '/api/camino/log-km';
     const form = root.querySelector('#km-logger-form');
     const input = root.querySelector('#km-input');
     const status = root.querySelector('#km-status');
