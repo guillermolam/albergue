@@ -198,11 +198,14 @@ export interface DashboardMetrics {
   bookings: BookingStats;
   pilgrims: PilgrimStats;
   beds: BedStats;
-  recentActivity: Array<{
-    type: string;
+  weeklyStats: Array<{ day: string; bookings: number; revenue: number }>;
+  recentBookings: Array<{
     id: number;
-    timestamp: Date;
-    description: string;
+    referenceNumber: string;
+    guestName: string;
+    bedLabel: string | null;
+    checkInDate: string;
+    status: string | null;
   }>;
 }
 
