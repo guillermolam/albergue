@@ -1,4 +1,6 @@
 import unocss from '@unocss/vite';
+import tailwindcss from '@tailwindcss/vite';
+import react from '@astrojs/react';
 import swup from '@swup/astro';
 import icon from 'astro-icon';
 import { webcore } from 'webcoreui/integration';
@@ -38,6 +40,7 @@ export const sharedConfig = {
     defaultStrategy: 'hover',
   },
   integrations: [
+    react(),
     webcore(),
     swup({
       theme: 'fade',
@@ -110,6 +113,7 @@ export const sharedConfig = {
       noExternal: ['@unocss/vite', 'unocss', 'webcoreui'],
     },
     plugins: [
+      tailwindcss(),
       unocss({
         configFile: fileURLToPath(new URL('./uno.config.ts', import.meta.url)),
         mode: 'global',
