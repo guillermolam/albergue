@@ -548,45 +548,38 @@ function IDCardIllustration({
   isSelected: boolean;
 }) {
   const [isHovered, setIsHovered] = useState(false);
-  const colors =
-    type === 'dni'
-      ? { primary: '#00AB39', light: '#E8F5E9', dark: '#006b24' }
-      : { primary: '#0071BC', light: '#E3F2FD', dark: '#005a94' };
+  const colorsByType = {
+    dni: { primary: '#00AB39', light: '#E8F5E9', dark: '#006b24' },
+    passport: { primary: '#0071BC', light: '#E3F2FD', dark: '#005a94' },
+  } as const;
+  const colors = colorsByType[type];
+
+  let cardAnimate: Record<string, unknown> = {};
+  let cardTransition: Record<string, unknown> = {
+    duration: 3,
+    repeat: 0,
+    repeatDelay: 2,
+    ease: 'easeInOut',
+  };
+  if (isHovered) {
+    cardAnimate = { rotateY: 360, scale: 1.15, z: 100 };
+    cardTransition = {
+      rotateY: { duration: 2, ease: 'easeInOut' },
+      scale: { duration: 0.3 },
+      z: { duration: 0.3 },
+    };
+  } else if (isSelected) {
+    cardAnimate = { rotateY: [0, 3, -3, 0], rotateX: [0, 2, -2, 0], scale: [1, 1.02, 1] };
+    cardTransition = { duration: 3, repeat: Infinity, repeatDelay: 2, ease: 'easeInOut' };
+  }
 
   return (
     <motion.div
       className="relative w-full h-32 sm:h-40 md:h-48 cursor-pointer"
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      animate={
-        isHovered
-          ? {
-              rotateY: 360,
-              scale: 1.15,
-              z: 100,
-            }
-          : isSelected
-            ? {
-                rotateY: [0, 3, -3, 0],
-                rotateX: [0, 2, -2, 0],
-                scale: [1, 1.02, 1],
-              }
-            : {}
-      }
-      transition={
-        isHovered
-          ? {
-              rotateY: { duration: 2, ease: 'easeInOut' },
-              scale: { duration: 0.3 },
-              z: { duration: 0.3 },
-            }
-          : {
-              duration: 3,
-              repeat: isSelected ? Infinity : 0,
-              repeatDelay: 2,
-              ease: 'easeInOut',
-            }
-      }
+      animate={cardAnimate}
+      transition={cardTransition}
       style={{ transformStyle: 'preserve-3d', perspective: 1200 }}
     >
       {/* Holographic glow effect on hover */}
