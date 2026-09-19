@@ -1,13 +1,26 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import Layout from '../../layouts/Layout.astro';
-import { HostelServicesPage } from '../../../react/hostel/HostelServicesPage';
+import {
+  HostelServicesPage,
+  type HostelServiceItem,
+} from '../../../react/hostel/HostelServicesPage';
+import { backendJson } from '../../lib/backend-api';
+import type { HostelAggregate } from '../../lib/hostelTypes';
+
+const result = await backendJson<HostelAggregate>('/api/hostel');
+const services: HostelServiceItem[] = result.ok ? result.data.services : [];
 ---
 
 <Layout
   title="Servicios - Albergue Municipal Carrascalejo"
   description="Normas del albergue y contactos de emergencia para peregrinos en el Camino de Santiago"
 >
-  <HostelServicesPage client:load />
+  {!result.ok && (
+    <div class="container mx-auto mt-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      Could not load hostel services: {result.message}
+    </div>
+  )}
+  <HostelServicesPage client:load services={services} />
 </Layout>

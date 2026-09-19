@@ -1387,3 +1387,48 @@ export function XIcon({ className = 'w-5 h-5', animate = false }: DoodleIconProp
     </motion.svg>
   );
 }
+
+// Cocktail glass icon (bar)
+export function CocktailIcon({ className = 'w-8 h-8', animate = true }: DoodleIconProps) {
+  return (
+    <motion.svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      whileHover={animate ? { rotate: [0, -6, 6, 0] } : {}}
+    >
+      <path
+        d="M20 20 H80 L52 55 V80 M52 80 H36 M52 80 H68 M20 20 L52 55 L80 20"
+        stroke="currentColor"
+        strokeWidth="6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <circle cx="38" cy="30" r="4" fill="currentColor" />
+    </motion.svg>
+  );
+}
+
+// Tree icon (park)
+export function TreeIcon({ className = 'w-8 h-8', animate = true }: DoodleIconProps) {
+  return (
+    <motion.svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      animate={animate ? { rotate: [0, 2, -2, 0] } : {}}
+      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+    >
+      <path
+        d="M50 15 C30 15 22 32 30 42 C22 44 18 58 30 64 C22 68 20 80 35 82 H65 C80 80 78 68 70 64 C82 58 78 44 70 42 C78 32 70 15 50 15 Z"
+        stroke="currentColor"
+        strokeWidth="5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <path d="M50 82 L50 92" stroke="currentColor" strokeWidth="6" strokeLinecap="round" />
+    </motion.svg>
+  );
+}

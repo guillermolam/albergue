@@ -1,13 +1,24 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import Layout from '../../layouts/Layout.astro';
 import { AreaVisitPage } from '../../../react/area/AreaVisitPage';
+import { backendJson } from '../../lib/backend-api';
+import type { PlaceWithDetails } from '../../../react/places/types';
+
+const VISIT_CATEGORIES = new Set(['museum', 'trail', 'park', 'excursion']);
+const result = await backendJson<PlaceWithDetails[]>('/api/places');
+const places = result.ok ? result.data.filter((p) => VISIT_CATEGORIES.has(p.category)) : [];
 ---
 
 <Layout
   title="Qué Visitar - Albergue Municipal Carrascalejo"
   description="Rutas y visitas guiadas cerca del albergue"
 >
-  <AreaVisitPage client:load />
+  {!result.ok && (
+    <div class="container mx-auto mt-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      Could not load places: {result.message}
+    </div>
+  )}
+  <AreaVisitPage client:load places={places} />
 </Layout>

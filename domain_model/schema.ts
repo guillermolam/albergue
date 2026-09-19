@@ -8,6 +8,7 @@ import {
   decimal,
   date,
   jsonb,
+  pgEnum,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
@@ -178,6 +179,273 @@ export const auditLog = pgTable("audit_log", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// --- Places (points of interest: restaurants, bars, night clubs, museums,
+// trails, parks, excursions, and practical nearby services like
+// pharmacies/ATMs) -- a generic gallery aggregate, distinct from the
+// hostel's own operational booking data. ---
+
+export const placeCategoryEnum = pgEnum("place_category", [
+  "restaurant",
+  "bar",
+  "night_club",
+  "museum",
+  "trail",
+  "park",
+  "excursion",
+  "pharmacy",
+  "atm",
+  "medical",
+  "transport",
+  "supermarket",
+  "other",
+]);
+
+export const places = pgTable("places", {
+  id: serial("id").primaryKey(),
+  slug: text("slug").notNull().unique(),
+  category: placeCategoryEnum("category").notNull(),
+  nameEs: text("name_es").notNull(),
+  nameEn: text("name_en").notNull(),
+  shortDescriptionEs: text("short_description_es"),
+  shortDescriptionEn: text("short_description_en"),
+  descriptionMarkdownEs: text("description_markdown_es"),
+  descriptionMarkdownEn: text("description_markdown_en"),
+  avatarUrl: text("avatar_url"),
+  iconName: text("icon_name"),
+  rating: decimal("rating", { precision: 2, scale: 1 }),
+  ratingCount: integer("rating_count").default(0),
+  priceLevel: integer("price_level"),
+  latitude: decimal("latitude", { precision: 9, scale: 6 }),
+  longitude: decimal("longitude", { precision: 9, scale: 6 }),
+  websiteUrl: text("website_url"),
+  isActive: boolean("is_active").default(true),
+  isFeatured: boolean("is_featured").default(false),
+  displayOrder: integer("display_order").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const placeAddresses = pgTable("place_addresses", {
+  id: serial("id").primaryKey(),
+  placeId: integer("place_id")
+    .references(() => places.id)
+    .notNull(),
+  label: text("label"),
+  street: text("street").notNull(),
+  city: text("city").notNull(),
+  postalCode: text("postal_code"),
+  province: text("province"),
+  country: text("country").default("España"),
+  isPrimary: boolean("is_primary").default(true),
+  displayOrder: integer("display_order").default(0),
+});
+
+export const placePhones = pgTable("place_phones", {
+  id: serial("id").primaryKey(),
+  placeId: integer("place_id")
+    .references(() => places.id)
+    .notNull(),
+  label: text("label"),
+  phoneNumber: text("phone_number").notNull(),
+  isPrimary: boolean("is_primary").default(true),
+  displayOrder: integer("display_order").default(0),
+});
+
+export const placeImages = pgTable("place_images", {
+  id: serial("id").primaryKey(),
+  placeId: integer("place_id")
+    .references(() => places.id)
+    .notNull(),
+  url: text("url").notNull(),
+  altTextEs: text("alt_text_es"),
+  altTextEn: text("alt_text_en"),
+  displayOrder: integer("display_order").default(0),
+});
+
+export const placeLabels = pgTable("place_labels", {
+  id: serial("id").primaryKey(),
+  placeId: integer("place_id")
+    .references(() => places.id)
+    .notNull(),
+  labelEs: text("label_es").notNull(),
+  labelEn: text("label_en").notNull(),
+  displayOrder: integer("display_order").default(0),
+});
+
+export const placePrices = pgTable("place_prices", {
+  id: serial("id").primaryKey(),
+  placeId: integer("place_id")
+    .references(() => places.id)
+    .notNull(),
+  labelEs: text("label_es").notNull(),
+  labelEn: text("label_en").notNull(),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  currency: text("currency").default("EUR"),
+  displayOrder: integer("display_order").default(0),
+});
+
+// --- Hostel (the hostel's own structure + descriptive/legal/contact
+// content) -- fully separate from the operational `beds`/`bookings` tables
+// above, so this content aggregate carries zero risk to the booking flow.
+// `hostelBeds.operationalBedId` is an optional link back to the booking
+// engine's own beds, so a future "explore the hostel" view can surface live
+// availability without duplicating pricing/status data here. ---
+
+export const hostels = pgTable("hostels", {
+  id: serial("id").primaryKey(),
+  nameEs: text("name_es").notNull(),
+  nameEn: text("name_en").notNull(),
+  taglineEs: text("tagline_es"),
+  taglineEn: text("tagline_en"),
+  aboutMarkdownEs: text("about_markdown_es"),
+  aboutMarkdownEn: text("about_markdown_en"),
+  historyMarkdownEs: text("history_markdown_es"),
+  historyMarkdownEn: text("history_markdown_en"),
+  logoUrl: text("logo_url"),
+  heroImageUrl: text("hero_image_url"),
+  addressStreet: text("address_street"),
+  addressPostalCode: text("address_postal_code"),
+  addressCity: text("address_city"),
+  addressRegion: text("address_region"),
+  addressCountry: text("address_country").default("España"),
+  latitude: decimal("latitude", { precision: 9, scale: 6 }),
+  longitude: decimal("longitude", { precision: 9, scale: 6 }),
+  phone: text("phone"),
+  email: text("email"),
+  checkInFrom: text("check_in_from"),
+  checkInUntil: text("check_in_until"),
+  checkOutBefore: text("check_out_before"),
+  touristicRegistry: text("touristic_registry"),
+  cif: text("cif"),
+  ruralTourismLicense: text("rural_tourism_license"),
+  dataProtectionOfficer: text("data_protection_officer"),
+  rgpdRegistry: text("rgpd_registry"),
+  arbitrationBoard: text("arbitration_board"),
+  arbitrationUrl: text("arbitration_url"),
+  odrPlatform: text("odr_platform"),
+  accessibilityLevel: text("accessibility_level"),
+  liabilityInsurance: text("liability_insurance"),
+  insuranceCompany: text("insurance_company"),
+  paymentMethods: text("payment_methods").array(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const hostelSocialLinks = pgTable("hostel_social_links", {
+  id: serial("id").primaryKey(),
+  hostelId: integer("hostel_id")
+    .references(() => hostels.id)
+    .notNull(),
+  platform: text("platform").notNull(),
+  url: text("url").notNull(),
+  displayOrder: integer("display_order").default(0),
+});
+
+export const hostelCertifications = pgTable("hostel_certifications", {
+  id: serial("id").primaryKey(),
+  hostelId: integer("hostel_id")
+    .references(() => hostels.id)
+    .notNull(),
+  nameEs: text("name_es").notNull(),
+  nameEn: text("name_en").notNull(),
+  badgeIconName: text("badge_icon_name"),
+  displayOrder: integer("display_order").default(0),
+});
+
+export const hostelComplianceBadges = pgTable("hostel_compliance_badges", {
+  id: serial("id").primaryKey(),
+  hostelId: integer("hostel_id")
+    .references(() => hostels.id)
+    .notNull(),
+  code: text("code").notNull(),
+  nameEs: text("name_es").notNull(),
+  nameEn: text("name_en").notNull(),
+  descriptionEs: text("description_es"),
+  descriptionEn: text("description_en"),
+  displayOrder: integer("display_order").default(0),
+});
+
+export const hostelServices = pgTable("hostel_services", {
+  id: serial("id").primaryKey(),
+  hostelId: integer("hostel_id")
+    .references(() => hostels.id)
+    .notNull(),
+  titleEs: text("title_es").notNull(),
+  titleEn: text("title_en").notNull(),
+  descriptionEs: text("description_es"),
+  descriptionEn: text("description_en"),
+  price: decimal("price", { precision: 10, scale: 2 }),
+  currency: text("currency").default("EUR"),
+  iconName: text("icon_name"),
+  displayOrder: integer("display_order").default(0),
+  isActive: boolean("is_active").default(true),
+});
+
+export const hostelOpeningHours = pgTable("hostel_opening_hours", {
+  id: serial("id").primaryKey(),
+  hostelId: integer("hostel_id")
+    .references(() => hostels.id)
+    .notNull(),
+  area: text("area").default("general"),
+  dayOfWeek: integer("day_of_week").notNull(),
+  opensAt: text("opens_at"),
+  closesAt: text("closes_at"),
+  isClosed: boolean("is_closed").default(false),
+});
+
+export const hostelBuildings = pgTable("hostel_buildings", {
+  id: serial("id").primaryKey(),
+  hostelId: integer("hostel_id")
+    .references(() => hostels.id)
+    .notNull(),
+  nameEs: text("name_es").notNull(),
+  nameEn: text("name_en").notNull(),
+  descriptionMarkdownEs: text("description_markdown_es"),
+  descriptionMarkdownEn: text("description_markdown_en"),
+  floorCount: integer("floor_count"),
+  displayOrder: integer("display_order").default(0),
+});
+
+export const hostelBedrooms = pgTable("hostel_bedrooms", {
+  id: serial("id").primaryKey(),
+  buildingId: integer("building_id")
+    .references(() => hostelBuildings.id)
+    .notNull(),
+  roomNumber: text("room_number").notNull(),
+  nameEs: text("name_es").notNull(),
+  nameEn: text("name_en").notNull(),
+  roomType: text("room_type").default("dormitory"),
+  floor: integer("floor"),
+  descriptionEs: text("description_es"),
+  descriptionEn: text("description_en"),
+  displayOrder: integer("display_order").default(0),
+});
+
+export const hostelBedBunks = pgTable("hostel_bed_bunks", {
+  id: serial("id").primaryKey(),
+  bedroomId: integer("bedroom_id")
+    .references(() => hostelBedrooms.id)
+    .notNull(),
+  bunkNumber: integer("bunk_number").notNull(),
+  displayOrder: integer("display_order").default(0),
+});
+
+export const hostelBedPositionEnum = pgEnum("hostel_bed_position", [
+  "bottom",
+  "top",
+  "single",
+]);
+
+export const hostelBeds = pgTable("hostel_beds", {
+  id: serial("id").primaryKey(),
+  bunkId: integer("bunk_id")
+    .references(() => hostelBedBunks.id)
+    .notNull(),
+  position: hostelBedPositionEnum("position").notNull(),
+  label: text("label"),
+  operationalBedId: integer("operational_bed_id").references(() => beds.id),
+});
+
 export const usersRelations = relations(users, ({ many }) => ({
   auditLog: many(auditLog),
 }));
@@ -237,6 +505,98 @@ export const auditLogRelations = relations(auditLog, ({ one }) => ({
   user: one(users, {
     fields: [auditLog.userId],
     references: [users.id],
+  }),
+}));
+
+export const placesRelations = relations(places, ({ many }) => ({
+  addresses: many(placeAddresses),
+  phones: many(placePhones),
+  images: many(placeImages),
+  labels: many(placeLabels),
+  prices: many(placePrices),
+}));
+
+export const placeAddressesRelations = relations(placeAddresses, ({ one }) => ({
+  place: one(places, { fields: [placeAddresses.placeId], references: [places.id] }),
+}));
+
+export const placePhonesRelations = relations(placePhones, ({ one }) => ({
+  place: one(places, { fields: [placePhones.placeId], references: [places.id] }),
+}));
+
+export const placeImagesRelations = relations(placeImages, ({ one }) => ({
+  place: one(places, { fields: [placeImages.placeId], references: [places.id] }),
+}));
+
+export const placeLabelsRelations = relations(placeLabels, ({ one }) => ({
+  place: one(places, { fields: [placeLabels.placeId], references: [places.id] }),
+}));
+
+export const placePricesRelations = relations(placePrices, ({ one }) => ({
+  place: one(places, { fields: [placePrices.placeId], references: [places.id] }),
+}));
+
+export const hostelsRelations = relations(hostels, ({ many }) => ({
+  socialLinks: many(hostelSocialLinks),
+  certifications: many(hostelCertifications),
+  complianceBadges: many(hostelComplianceBadges),
+  services: many(hostelServices),
+  openingHours: many(hostelOpeningHours),
+  buildings: many(hostelBuildings),
+}));
+
+export const hostelSocialLinksRelations = relations(hostelSocialLinks, ({ one }) => ({
+  hostel: one(hostels, { fields: [hostelSocialLinks.hostelId], references: [hostels.id] }),
+}));
+
+export const hostelCertificationsRelations = relations(hostelCertifications, ({ one }) => ({
+  hostel: one(hostels, { fields: [hostelCertifications.hostelId], references: [hostels.id] }),
+}));
+
+export const hostelComplianceBadgesRelations = relations(
+  hostelComplianceBadges,
+  ({ one }) => ({
+    hostel: one(hostels, {
+      fields: [hostelComplianceBadges.hostelId],
+      references: [hostels.id],
+    }),
+  }),
+);
+
+export const hostelServicesRelations = relations(hostelServices, ({ one }) => ({
+  hostel: one(hostels, { fields: [hostelServices.hostelId], references: [hostels.id] }),
+}));
+
+export const hostelOpeningHoursRelations = relations(hostelOpeningHours, ({ one }) => ({
+  hostel: one(hostels, { fields: [hostelOpeningHours.hostelId], references: [hostels.id] }),
+}));
+
+export const hostelBuildingsRelations = relations(hostelBuildings, ({ one, many }) => ({
+  hostel: one(hostels, { fields: [hostelBuildings.hostelId], references: [hostels.id] }),
+  bedrooms: many(hostelBedrooms),
+}));
+
+export const hostelBedroomsRelations = relations(hostelBedrooms, ({ one, many }) => ({
+  building: one(hostelBuildings, {
+    fields: [hostelBedrooms.buildingId],
+    references: [hostelBuildings.id],
+  }),
+  bedBunks: many(hostelBedBunks),
+}));
+
+export const hostelBedBunksRelations = relations(hostelBedBunks, ({ one, many }) => ({
+  bedroom: one(hostelBedrooms, {
+    fields: [hostelBedBunks.bedroomId],
+    references: [hostelBedrooms.id],
+  }),
+  beds: many(hostelBeds),
+}));
+
+export const hostelBedsRelations = relations(hostelBeds, ({ one }) => ({
+  bunk: one(hostelBedBunks, { fields: [hostelBeds.bunkId], references: [hostelBedBunks.id] }),
+  operationalBed: one(beds, {
+    fields: [hostelBeds.operationalBedId],
+    references: [beds.id],
   }),
 }));
 
@@ -300,6 +660,40 @@ export const insertContactMessageSchema = createInsertSchema(contactMessages).om
   createdAt: true,
 });
 
+export const insertPlaceSchema = createInsertSchema(places).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export const insertPlaceAddressSchema = createInsertSchema(placeAddresses).omit({ id: true });
+export const insertPlacePhoneSchema = createInsertSchema(placePhones).omit({ id: true });
+export const insertPlaceImageSchema = createInsertSchema(placeImages).omit({ id: true });
+export const insertPlaceLabelSchema = createInsertSchema(placeLabels).omit({ id: true });
+export const insertPlacePriceSchema = createInsertSchema(placePrices).omit({ id: true });
+
+export const insertHostelSchema = createInsertSchema(hostels).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export const insertHostelSocialLinkSchema = createInsertSchema(hostelSocialLinks).omit({
+  id: true,
+});
+export const insertHostelCertificationSchema = createInsertSchema(hostelCertifications).omit({
+  id: true,
+});
+export const insertHostelComplianceBadgeSchema = createInsertSchema(
+  hostelComplianceBadges,
+).omit({ id: true });
+export const insertHostelServiceSchema = createInsertSchema(hostelServices).omit({ id: true });
+export const insertHostelOpeningHoursSchema = createInsertSchema(hostelOpeningHours).omit({
+  id: true,
+});
+export const insertHostelBuildingSchema = createInsertSchema(hostelBuildings).omit({ id: true });
+export const insertHostelBedroomSchema = createInsertSchema(hostelBedrooms).omit({ id: true });
+export const insertHostelBedBunkSchema = createInsertSchema(hostelBedBunks).omit({ id: true });
+export const insertHostelBedSchema = createInsertSchema(hostelBeds).omit({ id: true });
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type Pilgrim = typeof pilgrims.$inferSelect;
@@ -322,3 +716,37 @@ export type AuditLog = typeof auditLog.$inferSelect;
 export type InsertAuditLog = z.infer<typeof insertAuditLogSchema>;
 export type ContactMessage = typeof contactMessages.$inferSelect;
 export type InsertContactMessage = z.infer<typeof insertContactMessageSchema>;
+
+export type Place = typeof places.$inferSelect;
+export type InsertPlace = z.infer<typeof insertPlaceSchema>;
+export type PlaceAddress = typeof placeAddresses.$inferSelect;
+export type InsertPlaceAddress = z.infer<typeof insertPlaceAddressSchema>;
+export type PlacePhone = typeof placePhones.$inferSelect;
+export type InsertPlacePhone = z.infer<typeof insertPlacePhoneSchema>;
+export type PlaceImage = typeof placeImages.$inferSelect;
+export type InsertPlaceImage = z.infer<typeof insertPlaceImageSchema>;
+export type PlaceLabel = typeof placeLabels.$inferSelect;
+export type InsertPlaceLabel = z.infer<typeof insertPlaceLabelSchema>;
+export type PlacePrice = typeof placePrices.$inferSelect;
+export type InsertPlacePrice = z.infer<typeof insertPlacePriceSchema>;
+
+export type Hostel = typeof hostels.$inferSelect;
+export type InsertHostel = z.infer<typeof insertHostelSchema>;
+export type HostelSocialLink = typeof hostelSocialLinks.$inferSelect;
+export type InsertHostelSocialLink = z.infer<typeof insertHostelSocialLinkSchema>;
+export type HostelCertification = typeof hostelCertifications.$inferSelect;
+export type InsertHostelCertification = z.infer<typeof insertHostelCertificationSchema>;
+export type HostelComplianceBadge = typeof hostelComplianceBadges.$inferSelect;
+export type InsertHostelComplianceBadge = z.infer<typeof insertHostelComplianceBadgeSchema>;
+export type HostelService = typeof hostelServices.$inferSelect;
+export type InsertHostelService = z.infer<typeof insertHostelServiceSchema>;
+export type HostelOpeningHours = typeof hostelOpeningHours.$inferSelect;
+export type InsertHostelOpeningHours = z.infer<typeof insertHostelOpeningHoursSchema>;
+export type HostelBuilding = typeof hostelBuildings.$inferSelect;
+export type InsertHostelBuilding = z.infer<typeof insertHostelBuildingSchema>;
+export type HostelBedroom = typeof hostelBedrooms.$inferSelect;
+export type InsertHostelBedroom = z.infer<typeof insertHostelBedroomSchema>;
+export type HostelBedBunk = typeof hostelBedBunks.$inferSelect;
+export type InsertHostelBedBunk = z.infer<typeof insertHostelBedBunkSchema>;
+export type HostelBed = typeof hostelBeds.$inferSelect;
+export type InsertHostelBed = z.infer<typeof insertHostelBedSchema>;
