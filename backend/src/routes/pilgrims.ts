@@ -3,9 +3,10 @@
  * API endpoints for pilgrims
  */
 
-import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
-import type { Context } from "hono";
+import { Hono } from 'hono';
+import { HTTPException } from 'hono/http-exception';
+import type { Context } from 'hono';
+import { authMiddleware } from '../lib/middleware.js';
 import {
   getAllPilgrims,
   getPilgrimById,
@@ -15,7 +16,7 @@ import {
   getPilgrimsWithActiveBookings,
   getPilgrimStats,
   getRecentPilgrims,
-} from "../queries/pilgrims.js";
+} from '../queries/pilgrims.js';
 import {
   createPilgrim,
   createPilgrimsBatch,
@@ -28,7 +29,7 @@ import {
   updatePilgrimDocument,
   bulkUpdatePilgrims,
   cleanupExpiredPilgrims,
-} from "../commands/pilgrims.js";
+} from '../commands/pilgrims.js';
 import type {
   CreatePilgrimInput,
   UpdatePilgrimInput,
@@ -37,23 +38,22 @@ import type {
   PaginatedResponse,
   PilgrimFilter,
   PilgrimStats,
-} from "../types/index.js";
+} from '../types/index.js';
 
 const pilgrims = new Hono();
 
 /**
  * GET /pilgrims - Get all pilgrims with optional filters
  */
-pilgrims.get("/", async (c: Context) => {
+pilgrims.get('/', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
-    const { page, pageSize, orderBy, orderDirection, ...filters } =
-      c.req.query();
+    const { page, pageSize, orderBy, orderDirection, ...filters } = c.req.query();
 
     const params = {
       page: page ? Number(page) : undefined,
       pageSize: pageSize ? Number(pageSize) : undefined,
       orderBy: orderBy as string,
-      orderDirection: orderDirection as "asc" | "desc",
+      orderDirection: orderDirection as 'asc' | 'desc',
       ...filters,
     };
 
@@ -62,7 +62,7 @@ pilgrims.get("/", async (c: Context) => {
     return c.json<ApiResponse<PaginatedResponse<Pilgrim>>>({
       success: true,
       data: result,
-      message: "Pilgrims retrieved successfully",
+      message: 'Pilgrims retrieved successfully',
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
@@ -73,55 +73,24 @@ pilgrims.get("/", async (c: Context) => {
 });
 
 /**
- * GET /pilgrims/:id - Get pilgrim by ID
- */
-pilgrims.get("/:id", async (c: Context) => {
-  try {
-    const id = Number(c.req.param("id"));
-
-    if (isNaN(id)) {
-      throw new HTTPException(400, { message: "Invalid pilgrim ID" });
-    }
-
-    const pilgrim = await getPilgrimById(id);
-
-    if (!pilgrim) {
-      throw new HTTPException(404, { message: "Pilgrim not found" });
-    }
-
-    return c.json<ApiResponse<Pilgrim>>({
-      success: true,
-      data: pilgrim,
-      message: "Pilgrim retrieved successfully",
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    if (error instanceof HTTPException) throw error;
-    throw new HTTPException(500, {
-      message: `Failed to get pilgrim: ${String(error)}`,
-    });
-  }
-});
-
-/**
  * GET /pilgrims/email/:email - Get pilgrim by email
  */
-pilgrims.get("/email/:email", async (c: Context) => {
+pilgrims.get('/email/:email', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
-    const email = c.req.param("email");
+    const email = c.req.param('email');
     if (!email) {
-      throw new HTTPException(400, { message: "email is required" });
+      throw new HTTPException(400, { message: 'email is required' });
     }
     const pilgrim = await getPilgrimByEmail(email);
 
     if (!pilgrim) {
-      throw new HTTPException(404, { message: "Pilgrim not found" });
+      throw new HTTPException(404, { message: 'Pilgrim not found' });
     }
 
     return c.json<ApiResponse<Pilgrim>>({
       success: true,
       data: pilgrim,
-      message: "Pilgrim retrieved successfully",
+      message: 'Pilgrim retrieved successfully',
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
@@ -135,25 +104,23 @@ pilgrims.get("/email/:email", async (c: Context) => {
 /**
  * GET /pilgrims/document/:type/:number - Get pilgrim by document
  */
-pilgrims.get("/document/:type/:number", async (c: Context) => {
+pilgrims.get('/document/:type/:number', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
-    const type = c.req.param("type");
-    const number = c.req.param("number");
+    const type = c.req.param('type');
+    const number = c.req.param('number');
     if (!type || !number) {
-      throw new HTTPException(400, {
-        message: "document type and number are required",
-      });
+      throw new HTTPException(400, { message: 'document type and number are required' });
     }
     const pilgrim = await getPilgrimByDocumentNumber(type, number);
 
     if (!pilgrim) {
-      throw new HTTPException(404, { message: "Pilgrim not found" });
+      throw new HTTPException(404, { message: 'Pilgrim not found' });
     }
 
     return c.json<ApiResponse<Pilgrim>>({
       success: true,
       data: pilgrim,
-      message: "Pilgrim retrieved successfully",
+      message: 'Pilgrim retrieved successfully',
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
@@ -167,10 +134,10 @@ pilgrims.get("/document/:type/:number", async (c: Context) => {
 /**
  * GET /pilgrims/search - Search pilgrims
  */
-pilgrims.get("/search", async (c: Context) => {
+pilgrims.get('/search', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const { q, limit } = c.req.query();
-    const query = (q as string) || "";
+    const query = q as string || '';
     const limitNum = limit ? Number(limit) : 10;
 
     const results = await searchPilgrims(query, limitNum);
@@ -178,7 +145,7 @@ pilgrims.get("/search", async (c: Context) => {
     return c.json<ApiResponse<Pilgrim[]>>({
       success: true,
       data: results,
-      message: "Pilgrims search completed",
+      message: 'Pilgrims search completed',
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
@@ -191,14 +158,14 @@ pilgrims.get("/search", async (c: Context) => {
 /**
  * GET /pilgrims/active-bookings - Get pilgrims with active bookings
  */
-pilgrims.get("/active-bookings", async (c: Context) => {
+pilgrims.get('/active-bookings', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const results = await getPilgrimsWithActiveBookings();
 
     return c.json<ApiResponse<Pilgrim[]>>({
       success: true,
       data: results,
-      message: "Active booking pilgrims retrieved",
+      message: 'Active booking pilgrims retrieved',
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
@@ -211,14 +178,14 @@ pilgrims.get("/active-bookings", async (c: Context) => {
 /**
  * GET /pilgrims/stats - Get pilgrim statistics
  */
-pilgrims.get("/stats", async (c: Context) => {
+pilgrims.get('/stats', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const stats = await getPilgrimStats();
 
     return c.json<ApiResponse<PilgrimStats>>({
       success: true,
       data: stats,
-      message: "Pilgrim statistics retrieved",
+      message: 'Pilgrim statistics retrieved',
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
@@ -231,7 +198,7 @@ pilgrims.get("/stats", async (c: Context) => {
 /**
  * GET /pilgrims/recent - Get recent pilgrims
  */
-pilgrims.get("/recent", async (c: Context) => {
+pilgrims.get('/recent', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const { limit } = c.req.query();
     const limitNum = limit ? Number(limit) : 5;
@@ -241,7 +208,7 @@ pilgrims.get("/recent", async (c: Context) => {
     return c.json<ApiResponse<Pilgrim[]>>({
       success: true,
       data: results,
-      message: "Recent pilgrims retrieved",
+      message: 'Recent pilgrims retrieved',
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
@@ -252,22 +219,54 @@ pilgrims.get("/recent", async (c: Context) => {
 });
 
 /**
- * POST /pilgrims - Create a new pilgrim
+ * GET /pilgrims/:id - Get pilgrim by ID
+ * Registered after every static-segment GET route above: Hono matches
+ * routes in registration order, and this single-segment wildcard would
+ * otherwise shadow static paths like /search or /stats.
  */
-pilgrims.post("/", async (c: Context) => {
+pilgrims.get('/:id', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
+  try {
+    const id = Number(c.req.param('id'));
+
+    if (isNaN(id)) {
+      throw new HTTPException(400, { message: 'Invalid pilgrim ID' });
+    }
+
+    const pilgrim = await getPilgrimById(id);
+
+    if (!pilgrim) {
+      throw new HTTPException(404, { message: 'Pilgrim not found' });
+    }
+
+    return c.json<ApiResponse<Pilgrim>>({
+      success: true,
+      data: pilgrim,
+      message: 'Pilgrim retrieved successfully',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    if (error instanceof HTTPException) throw error;
+    throw new HTTPException(500, {
+      message: `Failed to get pilgrim: ${String(error)}`,
+    });
+  }
+});
+
+/**
+ * POST /pilgrims - Create a new pilgrim
+ * Public: this is the guest self-registration step of the booking flow.
+ */
+pilgrims.post('/', async (c: Context) => {
   try {
     const body = await c.req.json<CreatePilgrimInput>();
     const pilgrim = await createPilgrim(body);
 
-    return c.json<ApiResponse<Pilgrim>>(
-      {
-        success: true,
-        data: pilgrim,
-        message: "Pilgrim created successfully",
-        timestamp: new Date().toISOString(),
-      },
-      201,
-    );
+    return c.json<ApiResponse<Pilgrim>>({
+      success: true,
+      data: pilgrim,
+      message: 'Pilgrim created successfully',
+      timestamp: new Date().toISOString(),
+    }, 201);
   } catch (error) {
     throw new HTTPException(400, {
       message: `Failed to create pilgrim: ${String(error)}`,
@@ -278,20 +277,17 @@ pilgrims.post("/", async (c: Context) => {
 /**
  * POST /pilgrims/batch - Create multiple pilgrims
  */
-pilgrims.post("/batch", async (c: Context) => {
+pilgrims.post('/batch', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const bodies = await c.req.json<CreatePilgrimInput[]>();
     const pilgrims = await createPilgrimsBatch(bodies);
 
-    return c.json<ApiResponse<Pilgrim[]>>(
-      {
-        success: true,
-        data: pilgrims,
-        message: "Pilgrims batch created successfully",
-        timestamp: new Date().toISOString(),
-      },
-      201,
-    );
+    return c.json<ApiResponse<Pilgrim[]>>({
+      success: true,
+      data: pilgrims,
+      message: 'Pilgrims batch created successfully',
+      timestamp: new Date().toISOString(),
+    }, 201);
   } catch (error) {
     throw new HTTPException(400, {
       message: `Failed to create pilgrims batch: ${String(error)}`,
@@ -302,25 +298,25 @@ pilgrims.post("/batch", async (c: Context) => {
 /**
  * PUT /pilgrims/:id - Update a pilgrim
  */
-pilgrims.put("/:id", async (c: Context) => {
+pilgrims.put('/:id', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
-    const id = Number(c.req.param("id"));
+    const id = Number(c.req.param('id'));
     const body = await c.req.json<UpdatePilgrimInput>();
 
     if (isNaN(id)) {
-      throw new HTTPException(400, { message: "Invalid pilgrim ID" });
+      throw new HTTPException(400, { message: 'Invalid pilgrim ID' });
     }
 
     const pilgrim = await updatePilgrim(id, body);
 
     if (!pilgrim) {
-      throw new HTTPException(404, { message: "Pilgrim not found" });
+      throw new HTTPException(404, { message: 'Pilgrim not found' });
     }
 
     return c.json<ApiResponse<Pilgrim>>({
       success: true,
       data: pilgrim,
-      message: "Pilgrim updated successfully",
+      message: 'Pilgrim updated successfully',
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
@@ -334,24 +330,24 @@ pilgrims.put("/:id", async (c: Context) => {
 /**
  * PATCH /pilgrims/:id/language - Update pilgrim language
  */
-pilgrims.patch("/:id/language", async (c: Context) => {
+pilgrims.patch('/:id/language', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
-    const id = Number(c.req.param("id"));
+    const id = Number(c.req.param('id'));
     const { language } = await c.req.json<{ language: string }>();
 
     if (isNaN(id)) {
-      throw new HTTPException(400, { message: "Invalid pilgrim ID" });
+      throw new HTTPException(400, { message: 'Invalid pilgrim ID' });
     }
 
     const success = await updatePilgrimLanguage(id, language);
 
     if (!success) {
-      throw new HTTPException(404, { message: "Pilgrim not found" });
+      throw new HTTPException(404, { message: 'Pilgrim not found' });
     }
 
     return c.json<ApiResponse<null>>({
       success: true,
-      message: "Pilgrim language updated successfully",
+      message: 'Pilgrim language updated successfully',
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
@@ -365,23 +361,23 @@ pilgrims.patch("/:id/language", async (c: Context) => {
 /**
  * PATCH /pilgrims/:id/last-access - Update pilgrim last access date
  */
-pilgrims.patch("/:id/last-access", async (c: Context) => {
+pilgrims.patch('/:id/last-access', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
-    const id = Number(c.req.param("id"));
+    const id = Number(c.req.param('id'));
 
     if (isNaN(id)) {
-      throw new HTTPException(400, { message: "Invalid pilgrim ID" });
+      throw new HTTPException(400, { message: 'Invalid pilgrim ID' });
     }
 
     const success = await updatePilgrimLastAccess(id);
 
     if (!success) {
-      throw new HTTPException(404, { message: "Pilgrim not found" });
+      throw new HTTPException(404, { message: 'Pilgrim not found' });
     }
 
     return c.json<ApiResponse<null>>({
       success: true,
-      message: "Pilgrim last access updated successfully",
+      message: 'Pilgrim last access updated successfully',
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
@@ -395,23 +391,23 @@ pilgrims.patch("/:id/last-access", async (c: Context) => {
 /**
  * DELETE /pilgrims/:id - Soft delete a pilgrim
  */
-pilgrims.delete("/:id", async (c: Context) => {
+pilgrims.delete('/:id', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
-    const id = Number(c.req.param("id"));
+    const id = Number(c.req.param('id'));
 
     if (isNaN(id)) {
-      throw new HTTPException(400, { message: "Invalid pilgrim ID" });
+      throw new HTTPException(400, { message: 'Invalid pilgrim ID' });
     }
 
     const success = await softDeletePilgrim(id);
 
     if (!success) {
-      throw new HTTPException(404, { message: "Pilgrim not found" });
+      throw new HTTPException(404, { message: 'Pilgrim not found' });
     }
 
     return c.json<ApiResponse<null>>({
       success: true,
-      message: "Pilgrim soft deleted successfully",
+      message: 'Pilgrim soft deleted successfully',
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
@@ -425,23 +421,23 @@ pilgrims.delete("/:id", async (c: Context) => {
 /**
  * DELETE /pilgrims/:id/force - Hard delete a pilgrim
  */
-pilgrims.delete("/:id/force", async (c: Context) => {
+pilgrims.delete('/:id/force', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
-    const id = Number(c.req.param("id"));
+    const id = Number(c.req.param('id'));
 
     if (isNaN(id)) {
-      throw new HTTPException(400, { message: "Invalid pilgrim ID" });
+      throw new HTTPException(400, { message: 'Invalid pilgrim ID' });
     }
 
     const success = await deletePilgrim(id);
 
     if (!success) {
-      throw new HTTPException(404, { message: "Pilgrim not found" });
+      throw new HTTPException(404, { message: 'Pilgrim not found' });
     }
 
     return c.json<ApiResponse<null>>({
       success: true,
-      message: "Pilgrim hard deleted successfully",
+      message: 'Pilgrim hard deleted successfully',
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
@@ -455,23 +451,23 @@ pilgrims.delete("/:id/force", async (c: Context) => {
 /**
  * POST /pilgrims/:id/deactivate - Deactivate a pilgrim
  */
-pilgrims.post("/:id/deactivate", async (c: Context) => {
+pilgrims.post('/:id/deactivate', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
-    const id = Number(c.req.param("id"));
+    const id = Number(c.req.param('id'));
 
     if (isNaN(id)) {
-      throw new HTTPException(400, { message: "Invalid pilgrim ID" });
+      throw new HTTPException(400, { message: 'Invalid pilgrim ID' });
     }
 
     const success = await deactivatePilgrim(id);
 
     if (!success) {
-      throw new HTTPException(404, { message: "Pilgrim not found" });
+      throw new HTTPException(404, { message: 'Pilgrim not found' });
     }
 
     return c.json<ApiResponse<null>>({
       success: true,
-      message: "Pilgrim deactivated successfully",
+      message: 'Pilgrim deactivated successfully',
       timestamp: new Date().toISOString(),
     });
   } catch (error) {

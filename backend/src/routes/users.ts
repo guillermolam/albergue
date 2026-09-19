@@ -36,26 +36,6 @@ users.get("/", async (c: Context) => {
   }
 });
 
-users.get("/:id", async (c: Context) => {
-  try {
-    const id = Number(c.req.param("id"));
-    if (isNaN(id)) throw new HTTPException(400, { message: "Invalid user ID" });
-    const user = await getUserById(id);
-    if (!user) throw new HTTPException(404, { message: "User not found" });
-    return c.json<ApiResponse<User>>({
-      success: true,
-      data: user,
-      message: "User retrieved successfully",
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    if (error instanceof HTTPException) throw error;
-    throw new HTTPException(500, {
-      message: `Failed to get user: ${String(error)}`,
-    });
-  }
-});
-
 users.get("/username/:username", async (c: Context) => {
   try {
     const username = c.req.param("username");
@@ -90,6 +70,32 @@ users.get("/stats", async (c: Context) => {
   } catch (error) {
     throw new HTTPException(500, {
       message: `Failed to get user statistics: ${String(error)}`,
+    });
+  }
+});
+
+/**
+ * GET /users/:id - Get user by ID
+ * Registered after every static-segment GET route above: Hono matches
+ * routes in registration order, and this single-segment wildcard would
+ * otherwise shadow static paths like /stats.
+ */
+users.get("/:id", async (c: Context) => {
+  try {
+    const id = Number(c.req.param("id"));
+    if (isNaN(id)) throw new HTTPException(400, { message: "Invalid user ID" });
+    const user = await getUserById(id);
+    if (!user) throw new HTTPException(404, { message: "User not found" });
+    return c.json<ApiResponse<User>>({
+      success: true,
+      data: user,
+      message: "User retrieved successfully",
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    if (error instanceof HTTPException) throw error;
+    throw new HTTPException(500, {
+      message: `Failed to get user: ${String(error)}`,
     });
   }
 });

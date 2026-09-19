@@ -169,6 +169,10 @@ const api = new Hono();
 api.use("/users/*", authMiddleware({ roles: ["admin"] }));
 api.use("/audit-log/*", authMiddleware({ roles: ["admin"] }));
 api.use("/government-submissions/*", authMiddleware({ roles: ["admin"] }));
+// Neither route group is called by the guest booking flow — every endpoint
+// here is an admin read (no create/mutate routes are exposed for either).
+api.use("/pricing/*", authMiddleware({ roles: ["admin"] }));
+api.use("/notifications/*", authMiddleware({ roles: ["admin"] }));
 
 // Mount all routes
 api.route("/auth", auth); // public: credential verification only
