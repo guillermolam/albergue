@@ -32,6 +32,194 @@ interface PaymentData {
   [key: string]: unknown;
 }
 
+interface BookingData {
+  checkInDate?: Date;
+  checkOutDate?: Date;
+  ocrData?: OcrData;
+  pilgrimData?: PilgrimData;
+  selectedBeds: number[];
+  paymentData?: PaymentData;
+}
+
+interface BookingConfirmationStepProps {
+  isEs: boolean;
+  bookingData: BookingData;
+  nights: number;
+  pricePerNight: number;
+  onBack: () => void;
+  onComplete: () => void;
+}
+
+/** Pulled out of BookingFlow's render: this step alone was most of that
+ * function's cognitive-complexity budget (SonarCloud flagged 27 vs the
+ * 15 allowed), and it's a self-contained summary screen with no state
+ * of its own. */
+function BookingConfirmationStep({
+  isEs,
+  bookingData,
+  nights,
+  pricePerNight,
+  onBack,
+  onComplete,
+}: BookingConfirmationStepProps) {
+  const paymentMethodLabel =
+    bookingData.paymentData?.method === 'card'
+      ? isEs
+        ? 'Tarjeta de Crédito/Débito'
+        : 'Credit/Debit Card'
+      : isEs
+        ? 'Efectivo al Llegar'
+        : 'Cash at Arrival';
+
+  return (
+    <motion.div
+      key="step-6"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.3 }}
+      className="max-w-3xl mx-auto"
+    >
+      <div className="text-center mb-12">
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', stiffness: 150, delay: 0.2 }}
+          className="mb-6"
+        >
+          <div className="w-24 h-24 mx-auto rounded-full bg-[#00AB39] flex items-center justify-center text-6xl">
+            ✓
+          </div>
+        </motion.div>
+        <h1 className="text-5xl sketch-title text-[#00AB39] mb-4">
+          {isEs ? '¡Reserva Confirmada!' : 'Booking Confirmed!'}
+        </h1>
+        <p className="text-gray-600 hand-drawn text-lg">
+          {isEs ? 'Tu reserva está completa' : 'Your reservation is complete'}
+        </p>
+
+        <svg className="mx-auto mt-4 w-32 h-2 opacity-40">
+          <path
+            d="M0,1 Q8,-1 16,1 T32,1 T48,1 T64,1 T80,1 T96,1 T112,1 T128,1"
+            stroke="#00AB39"
+            strokeWidth="2"
+            fill="none"
+          />
+        </svg>
+      </div>
+
+      <div className="relative mb-8">
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          style={{ filter: 'drop-shadow(3px 4px 6px rgba(0,0,0,0.1))' }}
+        >
+          <rect
+            x="4"
+            y="4"
+            width="calc(100% - 8px)"
+            height="calc(100% - 8px)"
+            fill="white"
+            stroke="#00AB39"
+            strokeWidth="3.5"
+            rx="24"
+          />
+        </svg>
+
+        <div className="relative z-10 p-8 space-y-6">
+          <div>
+            <h3 className="text-xl sketch-title mb-4 flex items-center gap-2">
+              <HandDrawnCalendar size={28} animate />
+              {isEs ? 'Fechas de Estancia' : 'Stay Dates'}
+            </h3>
+            <div className="grid grid-cols-2 gap-4 text-gray-700">
+              <div>
+                <p className="text-sm text-gray-500">{isEs ? 'Entrada' : 'Check-in'}</p>
+                <p className="font-medium hand-drawn">
+                  {bookingData.checkInDate?.toLocaleDateString()}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">{isEs ? 'Salida' : 'Check-out'}</p>
+                <p className="font-medium hand-drawn">
+                  {bookingData.checkOutDate?.toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t-2 border-dashed pt-6">
+            <h3 className="text-xl sketch-title mb-4">
+              {isEs ? 'Información del Huésped' : 'Guest Information'}
+            </h3>
+            <div className="grid grid-cols-2 gap-4 text-gray-700">
+              <div>
+                <p className="text-sm text-gray-500">{isEs ? 'Nombre' : 'Name'}</p>
+                <p className="font-medium hand-drawn">
+                  {bookingData.pilgrimData?.firstName} {bookingData.pilgrimData?.lastName}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Email</p>
+                <p className="font-medium hand-drawn">{bookingData.pilgrimData?.email}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t-2 border-dashed pt-6">
+            <h3 className="text-xl sketch-title mb-4">
+              {isEs ? 'Selección de Cama' : 'Bed Selection'}
+            </h3>
+            <p className="text-gray-700 hand-drawn">
+              {isEs ? 'Cama' : 'Bed'} #{bookingData.selectedBeds[0]}
+            </p>
+          </div>
+
+          <div className="border-t-2 border-dashed pt-6">
+            <h3 className="text-xl sketch-title mb-4">
+              {isEs ? 'Método de Pago' : 'Payment Method'}
+            </h3>
+            <p className="text-gray-700 hand-drawn">{paymentMethodLabel}</p>
+            {bookingData.paymentData?.method === 'cash' && bookingData.paymentData?.eta && (
+              <p className="text-sm text-gray-600 mt-2 hand-drawn">
+                ETA: {new Date(bookingData.paymentData.eta).toLocaleString()}
+              </p>
+            )}
+          </div>
+
+          <div className="border-t-2 border-dashed pt-6">
+            <h3 className="text-xl sketch-title mb-4">{isEs ? 'Coste Total' : 'Total Cost'}</h3>
+            <p className="text-3xl sketch-title text-[#00AB39]">€{nights * pricePerNight}</p>
+            <p className="text-sm text-gray-500 hand-drawn">
+              ({nights} {isEs ? 'noche' : 'night'}
+              {nights > 1 ? 's' : ''} × €{pricePerNight}/{isEs ? 'noche' : 'night'})
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="flex gap-4"
+      >
+        <button
+          onClick={onBack}
+          className="flex-1 px-6 py-4 text-lg doodle-border bg-white hover:bg-gray-50 transition-colors sketch-title"
+        >
+          ← {isEs ? 'Volver' : 'Back'}
+        </button>
+        <button
+          onClick={onComplete}
+          className="flex-1 px-6 py-4 text-lg doodle-border bg-[#00AB39] text-white hover:bg-[#008c2f] transition-colors sketch-title"
+        >
+          {isEs ? '¡Ir al Panel! ✨' : 'Go to Dashboard! ✨'}
+        </button>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export function BookingFlow() {
   const { locale } = useI18n();
   const isEs = locale !== 'en';
@@ -40,14 +228,7 @@ export function BookingFlow() {
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [isPriceModalExpanded, setIsPriceModalExpanded] = useState(false);
 
-  const [bookingData, setBookingData] = useState<{
-    checkInDate?: Date;
-    checkOutDate?: Date;
-    ocrData?: OcrData;
-    pilgrimData?: PilgrimData;
-    selectedBeds: number[];
-    paymentData?: PaymentData;
-  }>({
+  const [bookingData, setBookingData] = useState<BookingData>({
     selectedBeds: [],
   });
 
@@ -300,164 +481,14 @@ export function BookingFlow() {
             )}
 
             {currentStep === 6 && (
-              <motion.div
-                key="step-6"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-                className="max-w-3xl mx-auto"
-              >
-                <div className="text-center mb-12">
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 150, delay: 0.2 }}
-                    className="mb-6"
-                  >
-                    <div className="w-24 h-24 mx-auto rounded-full bg-[#00AB39] flex items-center justify-center text-6xl">
-                      ✓
-                    </div>
-                  </motion.div>
-                  <h1 className="text-5xl sketch-title text-[#00AB39] mb-4">
-                    {isEs ? '¡Reserva Confirmada!' : 'Booking Confirmed!'}
-                  </h1>
-                  <p className="text-gray-600 hand-drawn text-lg">
-                    {isEs ? 'Tu reserva está completa' : 'Your reservation is complete'}
-                  </p>
-
-                  <svg className="mx-auto mt-4 w-32 h-2 opacity-40">
-                    <path
-                      d="M0,1 Q8,-1 16,1 T32,1 T48,1 T64,1 T80,1 T96,1 T112,1 T128,1"
-                      stroke="#00AB39"
-                      strokeWidth="2"
-                      fill="none"
-                    />
-                  </svg>
-                </div>
-
-                <div className="relative mb-8">
-                  <svg
-                    className="absolute inset-0 w-full h-full pointer-events-none"
-                    style={{ filter: 'drop-shadow(3px 4px 6px rgba(0,0,0,0.1))' }}
-                  >
-                    <rect
-                      x="4"
-                      y="4"
-                      width="calc(100% - 8px)"
-                      height="calc(100% - 8px)"
-                      fill="white"
-                      stroke="#00AB39"
-                      strokeWidth="3.5"
-                      rx="24"
-                    />
-                  </svg>
-
-                  <div className="relative z-10 p-8 space-y-6">
-                    <div>
-                      <h3 className="text-xl sketch-title mb-4 flex items-center gap-2">
-                        <HandDrawnCalendar size={28} animate />
-                        {isEs ? 'Fechas de Estancia' : 'Stay Dates'}
-                      </h3>
-                      <div className="grid grid-cols-2 gap-4 text-gray-700">
-                        <div>
-                          <p className="text-sm text-gray-500">{isEs ? 'Entrada' : 'Check-in'}</p>
-                          <p className="font-medium hand-drawn">
-                            {bookingData.checkInDate?.toLocaleDateString()}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">{isEs ? 'Salida' : 'Check-out'}</p>
-                          <p className="font-medium hand-drawn">
-                            {bookingData.checkOutDate?.toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="border-t-2 border-dashed pt-6">
-                      <h3 className="text-xl sketch-title mb-4">
-                        {isEs ? 'Información del Huésped' : 'Guest Information'}
-                      </h3>
-                      <div className="grid grid-cols-2 gap-4 text-gray-700">
-                        <div>
-                          <p className="text-sm text-gray-500">{isEs ? 'Nombre' : 'Name'}</p>
-                          <p className="font-medium hand-drawn">
-                            {bookingData.pilgrimData?.firstName} {bookingData.pilgrimData?.lastName}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">Email</p>
-                          <p className="font-medium hand-drawn">{bookingData.pilgrimData?.email}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="border-t-2 border-dashed pt-6">
-                      <h3 className="text-xl sketch-title mb-4">
-                        {isEs ? 'Selección de Cama' : 'Bed Selection'}
-                      </h3>
-                      <p className="text-gray-700 hand-drawn">
-                        {isEs ? 'Cama' : 'Bed'} #{bookingData.selectedBeds[0]}
-                      </p>
-                    </div>
-
-                    <div className="border-t-2 border-dashed pt-6">
-                      <h3 className="text-xl sketch-title mb-4">
-                        {isEs ? 'Método de Pago' : 'Payment Method'}
-                      </h3>
-                      <p className="text-gray-700 hand-drawn">
-                        {bookingData.paymentData?.method === 'card'
-                          ? isEs
-                            ? 'Tarjeta de Crédito/Débito'
-                            : 'Credit/Debit Card'
-                          : isEs
-                            ? 'Efectivo al Llegar'
-                            : 'Cash at Arrival'}
-                      </p>
-                      {bookingData.paymentData?.method === 'cash' &&
-                        bookingData.paymentData?.eta && (
-                          <p className="text-sm text-gray-600 mt-2 hand-drawn">
-                            ETA: {new Date(bookingData.paymentData.eta).toLocaleString()}
-                          </p>
-                        )}
-                    </div>
-
-                    <div className="border-t-2 border-dashed pt-6">
-                      <h3 className="text-xl sketch-title mb-4">
-                        {isEs ? 'Coste Total' : 'Total Cost'}
-                      </h3>
-                      <p className="text-3xl sketch-title text-[#00AB39]">
-                        €{nights * pricePerNight}
-                      </p>
-                      <p className="text-sm text-gray-500 hand-drawn">
-                        ({nights} {isEs ? 'noche' : 'night'}
-                        {nights > 1 ? 's' : ''} × €{pricePerNight}/{isEs ? 'noche' : 'night'})
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="flex gap-4"
-                >
-                  <button
-                    onClick={() => setCurrentStep(5)}
-                    className="flex-1 px-6 py-4 text-lg doodle-border bg-white hover:bg-gray-50 transition-colors sketch-title"
-                  >
-                    ← {isEs ? 'Volver' : 'Back'}
-                  </button>
-                  <button
-                    onClick={handleComplete}
-                    className="flex-1 px-6 py-4 text-lg doodle-border bg-[#00AB39] text-white hover:bg-[#008c2f] transition-colors sketch-title"
-                  >
-                    {isEs ? '¡Ir al Panel! ✨' : 'Go to Dashboard! ✨'}
-                  </button>
-                </motion.div>
-              </motion.div>
+              <BookingConfirmationStep
+                isEs={isEs}
+                bookingData={bookingData}
+                nights={nights}
+                pricePerNight={pricePerNight}
+                onBack={() => setCurrentStep(5)}
+                onComplete={handleComplete}
+              />
             )}
           </AnimatePresence>
         </div>

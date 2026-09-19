@@ -11,6 +11,80 @@ interface WiredCalendarProps {
   onContinue?: () => void;
 }
 
+interface DayCellState {
+  isRangeEdge: boolean;
+  inRange: boolean;
+  isHovering: boolean;
+  hasEndDate: boolean;
+  isTodayDate: boolean;
+  disabled: boolean;
+}
+
+interface DayCellStyle {
+  fill: string;
+  stroke: string;
+  strokeWidth: string;
+  rx: string;
+  textClassName: string;
+}
+
+/** Pulled out of the render loop: SonarCloud flags deeply nested ternaries
+ * as high cognitive complexity, and a sequence of early returns reads more
+ * clearly here anyway than five levels of nested `? :`. */
+function getDayCellStyle({
+  isRangeEdge,
+  inRange,
+  isHovering,
+  hasEndDate,
+  isTodayDate,
+  disabled,
+}: DayCellState): DayCellStyle {
+  if (isRangeEdge) {
+    return {
+      fill: '#00AB39',
+      stroke: '#005a1e',
+      strokeWidth: '4',
+      rx: '20',
+      textClassName: 'text-white sketch-title',
+    };
+  }
+  if (inRange) {
+    const fill = isHovering && !hasEndDate ? 'rgba(0, 171, 57, 0.2)' : 'rgba(0, 171, 57, 0.15)';
+    return {
+      fill,
+      stroke: 'rgba(0, 171, 57, 0.3)',
+      strokeWidth: '2',
+      rx: '8',
+      textClassName: 'text-[#00AB39] sketch-title',
+    };
+  }
+  if (isTodayDate) {
+    return {
+      fill: '#EAC102',
+      stroke: '#D4A574',
+      strokeWidth: '2.5',
+      rx: '15',
+      textClassName: 'text-white sketch-title',
+    };
+  }
+  if (disabled) {
+    return {
+      fill: '#f5f5f5',
+      stroke: '#e0e0e0',
+      strokeWidth: '2.5',
+      rx: '15',
+      textClassName: 'text-gray-300',
+    };
+  }
+  return {
+    fill: '#FFF9F0',
+    stroke: '#D4A574',
+    strokeWidth: '2.5',
+    rx: '15',
+    textClassName: 'text-[#5D4E37]',
+  };
+}
+
 export function WiredCalendar({
   onSelectRange,
   selectedStartDate,
@@ -530,7 +604,15 @@ export function WiredCalendar({
                   const isEnd = isRangeEnd(date);
                   const inRange = isInRange(date);
                   const isTodayDate = isToday(date);
-                  const isHovering = hoverDate && isSameDay(hoverDate, date);
+                  const isHovering = Boolean(hoverDate && isSameDay(hoverDate, date));
+                  const cell = getDayCellStyle({
+                    isRangeEdge: isStart || isEnd,
+                    inRange,
+                    isHovering,
+                    hasEndDate: Boolean(endDate),
+                    isTodayDate,
+                    disabled,
+                  });
 
                   return (
                     <motion.button
@@ -557,32 +639,10 @@ export function WiredCalendar({
                           y="5"
                           width="90"
                           height="90"
-                          rx={isStart || isEnd ? '20' : inRange ? '8' : '15'}
-                          fill={
-                            isStart || isEnd
-                              ? '#00AB39'
-                              : inRange
-                                ? isHovering && !endDate
-                                  ? 'rgba(0, 171, 57, 0.2)'
-                                  : 'rgba(0, 171, 57, 0.15)'
-                                : isTodayDate
-                                  ? '#EAC102'
-                                  : disabled
-                                    ? '#f5f5f5'
-                                    : '#FFF9F0'
-                          }
-                          stroke={
-                            isStart || isEnd
-                              ? '#005a1e'
-                              : inRange
-                                ? 'rgba(0, 171, 57, 0.3)'
-                                : isTodayDate
-                                  ? '#D4A574'
-                                  : disabled
-                                    ? '#e0e0e0'
-                                    : '#D4A574'
-                          }
-                          strokeWidth={isStart || isEnd ? '4' : inRange ? '2' : '2.5'}
+                          rx={cell.rx}
+                          fill={cell.fill}
+                          stroke={cell.stroke}
+                          strokeWidth={cell.strokeWidth}
                           style={{ strokeLinecap: 'round' }}
                         />
                         {(isStart || isEnd) && (
@@ -602,17 +662,7 @@ export function WiredCalendar({
                       </svg>
 
                       <span
-                        className={`relative z-10 text-lg ${
-                          isStart || isEnd
-                            ? 'text-white sketch-title'
-                            : isTodayDate && !inRange
-                              ? 'text-white sketch-title'
-                              : inRange
-                                ? 'text-[#00AB39] sketch-title'
-                                : disabled
-                                  ? 'text-gray-300'
-                                  : 'text-[#5D4E37]'
-                        }`}
+                        className={`relative z-10 text-lg ${cell.textClassName}`}
                         style={{ fontFamily: 'Patrick Hand, cursive' }}
                       >
                         {date.getDate()}

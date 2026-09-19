@@ -841,8 +841,12 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
     // Simulate OCR processing
     await new Promise((resolve) => setTimeout(resolve, 2500));
 
-    // Simulate random success/error
-    const success = Math.random() > 0.1; // 90% success rate
+    // Simulate random success/error (mock OCR -- no backend wired yet).
+    // crypto.getRandomValues instead of Math.random: not because this
+    // needs to be cryptographically secure, but because Math.random trips
+    // SonarCloud's blanket "PRNG in security context" rule regardless of
+    // actual usage.
+    const success = crypto.getRandomValues(new Uint32Array(1))[0] / 0xffffffff > 0.1; // 90% success rate
 
     if (success) {
       const mockData = {
