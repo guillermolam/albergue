@@ -5,8 +5,8 @@
 // ── CSS side-effect imports ────────────────────────────────────────────────
 // Vite handles .css files at build time. This declaration silences ts(2882)
 // in Astro frontmatter where CSS files are imported for bundling.
-declare module '*.css' {}
-declare module '*.module.css' {
+declare module "*.css" {}
+declare module "*.module.css" {
   const classes: Record<string, string>;
   export default classes;
 }
@@ -35,7 +35,7 @@ interface Env {
   OCR_SERVICE?: CloudflareServiceBinding;
 }
 
-declare module 'cloudflare:workers' {
+declare module "cloudflare:workers" {
   export const env: Env;
 }
 
@@ -55,7 +55,7 @@ interface Window {
 }
 
 // In @astrojs/cloudflare v13+, Runtime only exposes cfContext.
-type Runtime = import('@astrojs/cloudflare').Runtime;
+type Runtime = import("@astrojs/cloudflare").Runtime;
 
 declare namespace App {
   // Merged with Runtime so all bindings are typed correctly.
@@ -63,7 +63,7 @@ declare namespace App {
     /** Authenticated user — null when role is 'guest'. Populated in Phase 5. */
     user: { id: string; email: string; name: string } | null;
     /** Coarse-grained role for server-side RBAC. */
-    role: 'admin' | 'pilgrim' | 'guest';
+    role: "admin" | "pilgrim" | "guest";
     locale: string;
     /** HttpOnly session token — always null until Phase 5 session auth. */
     sessionToken: string | null;

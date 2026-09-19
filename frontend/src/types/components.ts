@@ -1,20 +1,20 @@
 // TypeScript type definitions for Figma-inspired components
 // SSR-compatible types for Astro + TypeScript
 
-import type { HTMLAttributes } from 'astro/types';
+import type { HTMLAttributes } from "astro/types";
 
 // Base component props extending HTML attributes
-export interface BaseComponentProps extends HTMLAttributes<'div'> {
+export interface BaseComponentProps extends HTMLAttributes<"div"> {
   class?: string;
   children?: any;
 }
 
 // Button component props
-export interface ButtonProps extends HTMLAttributes<'button' | 'a'> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+export interface ButtonProps extends HTMLAttributes<"button" | "a"> {
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger";
+  size?: "sm" | "md" | "lg" | "xl";
   icon?: string;
-  iconPosition?: 'left' | 'right';
+  iconPosition?: "left" | "right";
   loading?: boolean;
   disabled?: boolean;
   fullWidth?: boolean;
@@ -24,31 +24,31 @@ export interface ButtonProps extends HTMLAttributes<'button' | 'a'> {
   href?: string;
   target?: string;
   rel?: string;
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
   onClick?: string;
 }
 
 // Card component props
 export interface CardProps extends BaseComponentProps {
-  variant?: 'default' | 'elevated' | 'subtle' | 'gradient' | 'glass';
-  padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
-  rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full';
-  shadow?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+  variant?: "default" | "elevated" | "subtle" | "gradient" | "glass";
+  padding?: "none" | "sm" | "md" | "lg" | "xl";
+  rounded?: "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
+  shadow?: "none" | "sm" | "md" | "lg" | "xl" | "2xl";
   border?: boolean;
   hover?: boolean;
   glow?: boolean;
   header?: string;
   footer?: string;
   icon?: string;
-  gradient?: 'green' | 'blue' | 'purple' | 'orange' | 'red' | 'teal';
+  gradient?: "green" | "blue" | "purple" | "orange" | "red" | "teal";
 }
 
 // DoodleIcon component props
 export interface DoodleIconProps extends BaseComponentProps {
   name: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
-  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info' | 'current';
-  variant?: 'outline' | 'filled' | 'doodle' | 'animated';
+  size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
+  color?: "primary" | "secondary" | "success" | "warning" | "error" | "info" | "current";
+  variant?: "outline" | "filled" | "doodle" | "animated";
   animated?: boolean;
   bounce?: boolean;
   spin?: boolean;
@@ -64,23 +64,23 @@ export interface HeroProps extends BaseComponentProps {
     text: string;
     href: string;
     icon?: string;
-    variant?: 'primary' | 'secondary' | 'outline';
+    variant?: "primary" | "secondary" | "outline";
   };
   secondaryAction?: {
     text: string;
     href: string;
     icon?: string;
-    variant?: 'ghost' | 'outline';
+    variant?: "ghost" | "outline";
   };
-  background?: 'gradient' | 'image' | 'solid' | 'doodle';
+  background?: "gradient" | "image" | "solid" | "doodle";
   gradientColors?: string[];
   imageSrc?: string;
   imageAlt?: string;
   overlay?: boolean;
   particles?: boolean;
   animated?: boolean;
-  align?: 'left' | 'center' | 'right';
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  align?: "left" | "center" | "right";
+  size?: "sm" | "md" | "lg" | "xl";
 }
 
 // Stats component props
@@ -89,18 +89,18 @@ export interface StatItem {
   value: string | number;
   unit?: string;
   icon?: string;
-  trend?: 'up' | 'down' | 'neutral';
+  trend?: "up" | "down" | "neutral";
   change?: string;
-  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
-  size?: 'sm' | 'md' | 'lg';
+  color?: "primary" | "secondary" | "success" | "warning" | "error" | "info";
+  size?: "sm" | "md" | "lg";
 }
 
 export interface StatsProps extends BaseComponentProps {
   stats: StatItem[];
-  layout?: 'grid' | 'flex' | 'list';
+  layout?: "grid" | "flex" | "list";
   columns?: 1 | 2 | 3 | 4 | 5 | 6;
-  gap?: 'sm' | 'md' | 'lg' | 'xl';
-  variant?: 'default' | 'cards' | 'minimal' | 'gradient';
+  gap?: "sm" | "md" | "lg" | "xl";
+  variant?: "default" | "cards" | "minimal" | "gradient";
   animated?: boolean;
 }
 
@@ -112,7 +112,7 @@ export interface LayoutProps {
   author?: string;
   image?: string;
   url?: string;
-  type?: 'website' | 'article';
+  type?: "website" | "article";
   locale?: string;
   siteName?: string;
   themeColor?: string;
@@ -209,7 +209,7 @@ export interface SSRProps {
 
 // Hydration types
 export interface HydrationOptions {
-  client?: 'load' | 'idle' | 'visible' | 'media' | 'only';
+  client?: "load" | "idle" | "visible" | "media" | "only";
   props?: Record<string, any>;
   directive?: string;
 }
@@ -220,8 +220,8 @@ export interface AnimationConfig {
   easing: string;
   delay?: number;
   iterations?: number;
-  direction?: 'normal' | 'reverse' | 'alternate' | 'alternate-reverse';
-  fillMode?: 'none' | 'forwards' | 'backwards' | 'both';
+  direction?: "normal" | "reverse" | "alternate" | "alternate-reverse";
+  fillMode?: "none" | "forwards" | "backwards" | "both";
 }
 
 // Responsive types
@@ -230,31 +230,31 @@ export interface ResponsiveConfig {
   md?: string | number;
   lg?: string | number;
   xl?: string | number;
-  '2xl'?: string | number;
+  "2xl"?: string | number;
 }
 
 // Utility types for component development
-export type ColorVariant = 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
-export type SizeVariant = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
-export type ShadowVariant = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
-export type BorderRadiusVariant = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full';
-export type LayoutVariant = 'grid' | 'flex' | 'list' | 'stack';
-export type AlignmentVariant = 'left' | 'center' | 'right' | 'justify';
-export type AnimationVariant = 'fade' | 'slide' | 'bounce' | 'pulse' | 'spin' | 'shake';
+export type ColorVariant = "primary" | "secondary" | "success" | "warning" | "error" | "info";
+export type SizeVariant = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
+export type ShadowVariant = "none" | "sm" | "md" | "lg" | "xl" | "2xl";
+export type BorderRadiusVariant = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
+export type LayoutVariant = "grid" | "flex" | "list" | "stack";
+export type AlignmentVariant = "left" | "center" | "right" | "justify";
+export type AnimationVariant = "fade" | "slide" | "bounce" | "pulse" | "spin" | "shake";
 
 // Type guards for runtime type checking
 export const isColorVariant = (value: any): value is ColorVariant => {
-  return ['primary', 'secondary', 'success', 'warning', 'error', 'info'].includes(value);
+  return ["primary", "secondary", "success", "warning", "error", "info"].includes(value);
 };
 
 export const isSizeVariant = (value: any): value is SizeVariant => {
-  return ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'].includes(value);
+  return ["xs", "sm", "md", "lg", "xl", "2xl", "3xl"].includes(value);
 };
 
 export const isShadowVariant = (value: any): value is ShadowVariant => {
-  return ['none', 'sm', 'md', 'lg', 'xl', '2xl'].includes(value);
+  return ["none", "sm", "md", "lg", "xl", "2xl"].includes(value);
 };
 
 export const isAnimationVariant = (value: any): value is AnimationVariant => {
-  return ['fade', 'slide', 'bounce', 'pulse', 'spin', 'shake'].includes(value);
+  return ["fade", "slide", "bounce", "pulse", "spin", "shake"].includes(value);
 };

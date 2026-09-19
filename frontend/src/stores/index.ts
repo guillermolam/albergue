@@ -2,7 +2,7 @@
 // Export all stores and utilities from a single entry point
 
 // Localization store (booking workflow is server-session, not a nanostore)
-export { i18nActions, i18nStore, loadPersistedLocale, t } from './i18nStore';
+export { i18nActions, i18nStore, loadPersistedLocale, t } from "./i18nStore";
 
 // Camino progress stores
 export {
@@ -14,7 +14,7 @@ export {
   setDailyGoal,
   setStageProgress,
   syncProgressToServer,
-} from './app';
+} from "./app";
 
 // User stores
 export {
@@ -26,4 +26,4 @@ export {
   updateBookingCart,
   updateUserPreferences,
   userPreferences,
-} from './user';
+} from "./user";

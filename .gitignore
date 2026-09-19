@@ -15,6 +15,7 @@ frontend/.wrangler/
 **/.netlify/
 **/.spin/
 .trunk/tools/**
+.trunk/out/
 **/v10/
 **/v3/
 **/.direnv/

@@ -4,16 +4,16 @@
  * Draft steps persist in the server session. Bed claim, price, and payment
  * go through the Hono write API. The browser never posts a trusted total.
  */
-import { defineAction, ActionError } from 'astro:actions';
-import { z } from 'astro:schema';
-import { BACKEND_API_URL } from 'astro:env/server';
+import { defineAction, ActionError } from "astro:actions";
+import { z } from "astro:schema";
+import { BACKEND_API_URL } from "astro:env/server";
 import {
   AUTH_SESSION_KEY,
   type BookingQuote,
   type CreatePaymentIntentResponse,
   type LoginResponse,
-} from '@albergue/api-contract';
-import { backendJson } from '../lib/backend-api';
+} from "@albergue/api-contract";
+import { backendJson } from "../lib/backend-api";
 import {
   BOOKING_DRAFT_SESSION_KEY,
   attachBooking,
@@ -25,19 +25,19 @@ import {
   updateBookingGuests,
   type BookingDraft,
   type BookingStep,
-} from '../lib/booking-draft';
+} from "../lib/booking-draft";
 
 const isoDate = z.string().date();
 
 async function persistDraft(
-  session: ActionAPIContext['session'],
-  draft: BookingDraft
+  session: ActionAPIContext["session"],
+  draft: BookingDraft,
 ): Promise<{ step: BookingStep }> {
   if (!session) {
     // Adapter has no session driver (SESSION KV binding not provisioned yet).
     throw new ActionError({
-      code: 'SERVICE_UNAVAILABLE',
-      message: 'Booking sessions are not available on this deployment yet.',
+      code: "SERVICE_UNAVAILABLE",
+      message: "Booking sessions are not available on this deployment yet.",
     });
   }
   await session.set(BOOKING_DRAFT_SESSION_KEY, draft);
@@ -58,29 +58,29 @@ export const server = {
       handler: async (input, context) => {
         if (!context.session) {
           throw new ActionError({
-            code: 'SERVICE_UNAVAILABLE',
-            message: 'Sessions are not available on this deployment yet.',
+            code: "SERVICE_UNAVAILABLE",
+            message: "Sessions are not available on this deployment yet.",
           });
         }
         if (!BACKEND_API_URL) {
           throw new ActionError({
-            code: 'SERVICE_UNAVAILABLE',
-            message: 'Backend API is not configured (BACKEND_API_URL).',
+            code: "SERVICE_UNAVAILABLE",
+            message: "Backend API is not configured (BACKEND_API_URL).",
           });
         }
 
         const response = await fetch(`${BACKEND_API_URL}/api/auth/login`, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
+          method: "POST",
+          headers: { "content-type": "application/json" },
           body: JSON.stringify(input),
         });
         if (!response.ok) {
-          throw new ActionError({ code: 'UNAUTHORIZED', message: 'Invalid credentials' });
+          throw new ActionError({ code: "UNAUTHORIZED", message: "Invalid credentials" });
         }
 
         const envelope = (await response.json()) as { data?: LoginResponse };
         if (!envelope.data) {
-          throw new ActionError({ code: 'BAD_GATEWAY', message: 'Malformed backend response' });
+          throw new ActionError({ code: "BAD_GATEWAY", message: "Malformed backend response" });
         }
 
         await context.session.set(AUTH_SESSION_KEY, envelope.data);
@@ -105,7 +105,7 @@ export const server = {
           departureDate: isoDate,
         })
         .refine((v) => v.departureDate > v.arrivalDate, {
-          message: 'departureDate must be after arrivalDate',
+          message: "departureDate must be after arrivalDate",
         }),
       handler: async (input, context) => {
         const current = await context.session?.get<BookingDraft>(BOOKING_DRAFT_SESSION_KEY);
@@ -133,10 +133,10 @@ export const server = {
         if (draft.arrivalDate && draft.departureDate) {
           const bedId = Number(input.selectedBedId);
           if (!Number.isInteger(bedId) || bedId < 1) {
-            throw new ActionError({ code: 'BAD_REQUEST', message: 'Invalid bed' });
+            throw new ActionError({ code: "BAD_REQUEST", message: "Invalid bed" });
           }
-          const quoted = await backendJson<BookingQuote>('/api/bookings/quote', {
-            method: 'POST',
+          const quoted = await backendJson<BookingQuote>("/api/bookings/quote", {
+            method: "POST",
             body: JSON.stringify({
               bedId,
               checkInDate: draft.arrivalDate,
@@ -156,12 +156,12 @@ export const server = {
         firstName: z.string().min(1).max(80),
         lastName1: z.string().min(1).max(80),
         lastName2: z.string().max(80).optional(),
-        email: z.union([z.string().email(), z.literal('')]).optional(),
+        email: z.union([z.string().email(), z.literal("")]).optional(),
         phone: z.string().min(6).max(32),
-        documentType: z.enum(['dni', 'nie', 'passport']),
+        documentType: z.enum(["dni", "nie", "passport"]),
         documentNumber: z.string().min(3).max(32),
         birthDate: isoDate,
-        gender: z.enum(['male', 'female', 'other']),
+        gender: z.enum(["male", "female", "other"]),
         nationality: z.string().max(64).optional(),
         addressCountry: z.string().min(2).max(64),
         addressStreet: z.string().min(1).max(120),
@@ -188,13 +188,13 @@ export const server = {
         const current = await context.session?.get<BookingDraft>(BOOKING_DRAFT_SESSION_KEY);
         if (!current || !isDraftReadyToSubmit(current) || !current.contact) {
           throw new ActionError({
-            code: 'BAD_REQUEST',
-            message: 'Booking draft is incomplete.',
+            code: "BAD_REQUEST",
+            message: "Booking draft is incomplete.",
           });
         }
 
-        const pilgrim = await backendJson<{ id: number }>('/api/pilgrims', {
-          method: 'POST',
+        const pilgrim = await backendJson<{ id: number }>("/api/pilgrims", {
+          method: "POST",
           body: JSON.stringify({
             ...current.contact,
             consentGiven: true,
@@ -202,7 +202,7 @@ export const server = {
         });
         if (!pilgrim.ok) {
           throw new ActionError({
-            code: pilgrim.status === 503 ? 'SERVICE_UNAVAILABLE' : 'BAD_REQUEST',
+            code: pilgrim.status === 503 ? "SERVICE_UNAVAILABLE" : "BAD_REQUEST",
             message: pilgrim.message,
           });
         }
@@ -211,8 +211,8 @@ export const server = {
         const booking = await backendJson<{
           id: number;
           referenceNumber: string;
-        }>('/api/bookings', {
-          method: 'POST',
+        }>("/api/bookings", {
+          method: "POST",
           body: JSON.stringify({
             pilgrimId: pilgrim.data.id,
             checkInDate: current.arrivalDate,
@@ -223,7 +223,7 @@ export const server = {
         });
         if (!booking.ok) {
           throw new ActionError({
-            code: 'BAD_REQUEST',
+            code: "BAD_REQUEST",
             message: booking.message,
           });
         }
@@ -234,8 +234,8 @@ export const server = {
         });
         await persistDraft(context.session, draft);
 
-        const intent = await backendJson<CreatePaymentIntentResponse>('/api/payments/intent', {
-          method: 'POST',
+        const intent = await backendJson<CreatePaymentIntentResponse>("/api/payments/intent", {
+          method: "POST",
           body: JSON.stringify({ bookingReference: booking.data.referenceNumber }),
         });
 
@@ -258,5 +258,5 @@ export const server = {
 };
 
 // Type-only import placed at the bottom to keep the action definitions readable.
-import type { APIContext } from 'astro';
+import type { APIContext } from "astro";
 type ActionAPIContext = APIContext;

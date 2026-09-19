@@ -2,13 +2,13 @@
  * Server-only Hono client. Used by Actions and on-demand pages.
  * Never imported from client islands.
  */
-import { BACKEND_API_URL } from 'astro:env/server';
-import type { ApiResponse } from '@albergue/api-contract';
+import { BACKEND_API_URL } from "astro:env/server";
+import type { ApiResponse } from "@albergue/api-contract";
 
 export class BackendUnavailableError extends Error {
-  constructor(message = 'Backend API is not configured (BACKEND_API_URL).') {
+  constructor(message = "Backend API is not configured (BACKEND_API_URL).") {
     super(message);
-    this.name = 'BackendUnavailableError';
+    this.name = "BackendUnavailableError";
   }
 }
 
@@ -16,12 +16,12 @@ export function requireBackendUrl(): string {
   if (!BACKEND_API_URL) {
     throw new BackendUnavailableError();
   }
-  return BACKEND_API_URL.replace(/\/$/, '');
+  return BACKEND_API_URL.replace(/\/$/, "");
 }
 
 export async function backendJson<T>(
   path: string,
-  init: RequestInit = {}
+  init: RequestInit = {},
 ): Promise<{ ok: true; status: number; data: T } | { ok: false; status: number; message: string }> {
   let base: string;
   try {
@@ -33,8 +33,8 @@ export async function backendJson<T>(
   const response = await fetch(`${base}${path}`, {
     ...init,
     headers: {
-      accept: 'application/json',
-      ...(init.body ? { 'content-type': 'application/json' } : {}),
+      accept: "application/json",
+      ...(init.body ? { "content-type": "application/json" } : {}),
       ...init.headers,
     },
   });

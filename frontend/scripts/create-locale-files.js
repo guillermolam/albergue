@@ -1,38 +1,38 @@
 #!/usr/bin/env node
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const languages = [
-  'es',
-  'en',
-  'fr',
-  'de',
-  'it',
-  'pt',
-  'nl',
-  'pl',
-  'ko',
-  'ja',
-  'zh',
-  'ru',
-  'cs',
-  'sk',
-  'hu',
-  'ca',
-  'eu',
-  'gl',
-  'oc',
-  'Gode',
+  "es",
+  "en",
+  "fr",
+  "de",
+  "it",
+  "pt",
+  "nl",
+  "pl",
+  "ko",
+  "ja",
+  "zh",
+  "ru",
+  "cs",
+  "sk",
+  "hu",
+  "ca",
+  "eu",
+  "gl",
+  "oc",
+  "Gode",
 ];
 
-const categories = ['common', 'navigation', 'booking', 'dashboard', 'admin', 'messages'];
+const categories = ["common", "navigation", "booking", "dashboard", "admin", "messages"];
 
-const localesDir = path.join(__dirname, '../src/components/LanguageSelector/locales');
+const localesDir = path.join(__dirname, "../src/components/LanguageSelector/locales");
 
 // Create locales directory if it doesn't exist
 if (!fs.existsSync(localesDir)) {

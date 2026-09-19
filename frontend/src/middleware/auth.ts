@@ -1,5 +1,5 @@
-import { defineMiddleware } from 'astro:middleware';
-import { AUTH_SESSION_KEY, type LoginResponse } from '@albergue/api-contract';
+import { defineMiddleware } from "astro:middleware";
+import { AUTH_SESSION_KEY, type LoginResponse } from "@albergue/api-contract";
 
 /**
  * Auth gate (ASTRO-004 / AUTH-003 / AUTH-004).
@@ -13,19 +13,19 @@ import { AUTH_SESSION_KEY, type LoginResponse } from '@albergue/api-contract';
 export const authMiddleware = defineMiddleware(async (context, next) => {
   const identity = await context.session?.get<LoginResponse>(AUTH_SESSION_KEY);
 
-  context.locals.user = identity ? { id: identity.id, email: '', name: identity.username } : null;
-  context.locals.role = identity?.role ?? 'guest';
+  context.locals.user = identity ? { id: identity.id, email: "", name: identity.username } : null;
+  context.locals.role = identity?.role ?? "guest";
   context.locals.sessionToken = context.session?.sessionID ?? null;
 
   const { pathname } = context.url;
-  if (pathname === '/admin' || pathname.startsWith('/admin/')) {
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
     if (!identity) {
-      return context.redirect('/auth');
+      return context.redirect("/auth");
     }
-    if (identity.role !== 'admin') {
-      return new Response('Forbidden', {
+    if (identity.role !== "admin") {
+      return new Response("Forbidden", {
         status: 403,
-        headers: { 'Cache-Control': 'no-store', 'Content-Type': 'text/plain; charset=utf-8' },
+        headers: { "Cache-Control": "no-store", "Content-Type": "text/plain; charset=utf-8" },
       });
     }
   }

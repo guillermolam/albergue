@@ -44,7 +44,7 @@ export interface EmergencyContact {
  * Medical information for safety
  */
 export interface MedicalInfo {
-  bloodType?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+  bloodType?: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
   allergies?: string[];
   medications?: string[];
   medicalConditions?: string[];
@@ -61,8 +61,8 @@ export interface PilgrimProfile extends BaseEntity {
   profilePicture?: string;
   bio?: string;
   languages: string[];
-  experienceLevel: 'beginner' | 'intermediate' | 'advanced' | 'expert';
-  preferredPace: 'slow' | 'moderate' | 'fast';
+  experienceLevel: "beginner" | "intermediate" | "advanced" | "expert";
+  preferredPace: "slow" | "moderate" | "fast";
   motivation: string;
   previousCaminoExperience?: CaminoExperience[];
   socialLinks?: SocialLinks;
@@ -85,14 +85,14 @@ export interface CaminoExperience {
  * Camino route types
  */
 export type CaminoRoute =
-  | 'frances'
-  | 'portugues'
-  | 'del-norte'
-  | 'primitivo'
-  | 'ingles'
-  | 'via-plata'
-  | 'finisterre'
-  | 'muxia';
+  | "frances"
+  | "portugues"
+  | "del-norte"
+  | "primitivo"
+  | "ingles"
+  | "via-plata"
+  | "finisterre"
+  | "muxia";
 
 /**
  * Social media links
@@ -145,7 +145,7 @@ export interface GeoLocation {
  * Accommodation preferences
  */
 export interface AccommodationPreference {
-  type: 'albergue' | 'hostel' | 'hotel' | 'pension' | 'camping' | 'private';
+  type: "albergue" | "hostel" | "hotel" | "pension" | "camping" | "private";
   priority: 1 | 2 | 3 | 4 | 5;
   maxPricePerNight?: number;
   requiredAmenities: string[];
@@ -167,14 +167,14 @@ export interface BudgetRange {
  * Travel style preferences
  */
 export type TravelStyle =
-  | 'backpacker'
-  | 'budget'
-  | 'comfort'
-  | 'luxury'
-  | 'minimalist'
-  | 'photographer'
-  | 'spiritual'
-  | 'social';
+  | "backpacker"
+  | "budget"
+  | "comfort"
+  | "luxury"
+  | "minimalist"
+  | "photographer"
+  | "spiritual"
+  | "social";
 
 /**
  * Companion information
@@ -184,7 +184,7 @@ export interface Companion {
   name: string;
   relationship: string;
   contactInfo: string;
-  experienceLevel: 'beginner' | 'intermediate' | 'advanced';
+  experienceLevel: "beginner" | "intermediate" | "advanced";
 }
 
 /**
@@ -211,7 +211,7 @@ export interface ItineraryStage {
   plannedDate: Date;
   distance: number;
   estimatedDuration: number;
-  difficulty: 'easy' | 'moderate' | 'hard' | 'extreme';
+  difficulty: "easy" | "moderate" | "hard" | "extreme";
   accommodation?: string;
   notes?: string;
   waypoints: GeoLocation[];
@@ -231,7 +231,7 @@ export interface Booking extends BaseEntity {
   checkInDate: Date;
   checkOutDate: Date;
   numberOfNights: number;
-  roomType: 'shared' | 'private' | 'family';
+  roomType: "shared" | "private" | "family";
   numberOfBeds: number;
   pricePerNight: number;
   totalPrice: number;
@@ -247,12 +247,17 @@ export interface Booking extends BaseEntity {
  * Booking status
  */
 export type BookingStatus =
-  'pending' | 'confirmed' | 'checked-in' | 'checked-out' | 'cancelled' | 'no-show';
+  | "pending"
+  | "confirmed"
+  | "checked-in"
+  | "checked-out"
+  | "cancelled"
+  | "no-show";
 
 /**
  * Payment status
  */
-export type PaymentStatus = 'pending' | 'partial' | 'paid' | 'refunded' | 'failed';
+export type PaymentStatus = "pending" | "partial" | "paid" | "refunded" | "failed";
 
 /**
  * Cancellation policy
@@ -301,7 +306,7 @@ export interface WeatherConditions {
   humidity: number;
   windSpeed: number;
   precipitation: number;
-  conditions: 'sunny' | 'cloudy' | 'rainy' | 'stormy' | 'snowy' | 'foggy';
+  conditions: "sunny" | "cloudy" | "rainy" | "stormy" | "snowy" | "foggy";
 }
 
 /**
@@ -312,7 +317,7 @@ export interface Achievement {
   name: string;
   description: string;
   icon: string;
-  category: 'distance' | 'speed' | 'consistency' | 'social' | 'spiritual' | 'exploration';
+  category: "distance" | "speed" | "consistency" | "social" | "spiritual" | "exploration";
   unlockedAt: Date;
   progress: number;
   maxProgress: number;
@@ -353,13 +358,13 @@ export interface HealthSafety extends BaseEntity {
  */
 export interface DailyHealthCheck {
   date: Date;
-  overallFeeling: 'excellent' | 'good' | 'fair' | 'poor' | 'bad';
+  overallFeeling: "excellent" | "good" | "fair" | "poor" | "bad";
   energyLevel: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
   painLevel: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
-  sleepQuality: 'excellent' | 'good' | 'fair' | 'poor';
+  sleepQuality: "excellent" | "good" | "fair" | "poor";
   hoursSlept: number;
-  hydrationLevel: 'well-hydrated' | 'adequate' | 'dehydrated';
-  nutritionQuality: 'excellent' | 'good' | 'fair' | 'poor';
+  hydrationLevel: "well-hydrated" | "adequate" | "dehydrated";
+  nutritionQuality: "excellent" | "good" | "fair" | "poor";
   notes?: string;
   symptoms?: string[];
   medicationsTaken?: string[];
@@ -372,8 +377,8 @@ export interface Incident {
   id: string;
   date: Date;
   time: string;
-  type: 'injury' | 'illness' | 'lost' | 'theft' | 'accident' | 'other';
-  severity: 'minor' | 'moderate' | 'severe' | 'critical';
+  type: "injury" | "illness" | "lost" | "theft" | "accident" | "other";
+  severity: "minor" | "moderate" | "severe" | "critical";
   description: string;
   location?: GeoLocation;
   treatment?: string;
@@ -388,7 +393,7 @@ export interface EmergencyContactUsed {
   contactId: string;
   date: Date;
   reason: string;
-  method: 'phone' | 'text' | 'email' | 'app-notification';
+  method: "phone" | "text" | "email" | "app-notification";
   successful: boolean;
   notes?: string;
 }
@@ -399,7 +404,7 @@ export interface EmergencyContactUsed {
 export interface MedicalAttention {
   date: Date;
   provider: string;
-  type: 'pharmacy' | 'clinic' | 'hospital' | 'first-aid' | 'paramedic';
+  type: "pharmacy" | "clinic" | "hospital" | "first-aid" | "paramedic";
   diagnosis?: string;
   treatment?: string;
   cost?: number;
@@ -416,7 +421,7 @@ export interface SocialProfile extends BaseEntity {
   displayName: string;
   bio?: string;
   profilePicture?: string;
-  privacyLevel: 'public' | 'friends' | 'private';
+  privacyLevel: "public" | "friends" | "private";
   languages: string[];
   interests: string[];
   isLookingForCompanions: boolean;
@@ -433,13 +438,13 @@ export interface CompanionPreferences {
     min: number;
     max: number;
   };
-  preferredExperienceLevel: ('beginner' | 'intermediate' | 'advanced')[];
+  preferredExperienceLevel: ("beginner" | "intermediate" | "advanced")[];
   preferredTravelStyle: TravelStyle[];
   languages: string[];
   maxGroupSize: number;
-  sameGenderPreference?: 'yes' | 'no' | 'no-preference';
-  smokingPreference?: 'yes' | 'no' | 'no-preference';
-  pacePreference?: 'slower' | 'same' | 'faster' | 'no-preference';
+  sameGenderPreference?: "yes" | "no" | "no-preference";
+  smokingPreference?: "yes" | "no" | "no-preference";
+  pacePreference?: "slower" | "same" | "faster" | "no-preference";
 }
 
 /**
@@ -481,7 +486,7 @@ export interface Permission {
   id: string;
   name: string;
   resource: string;
-  action: 'create' | 'read' | 'update' | 'delete' | 'manage';
+  action: "create" | "read" | "update" | "delete" | "manage";
   conditions?: Record<string, unknown>;
 }
 
@@ -591,7 +596,7 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
  */
 export interface SortingInfo {
   field: string;
-  direction: 'asc' | 'desc';
+  direction: "asc" | "desc";
 }
 
 /**
@@ -599,7 +604,7 @@ export interface SortingInfo {
  */
 export interface FilterInfo {
   field: string;
-  operator: 'eq' | 'ne' | 'gt' | 'gte' | 'lt' | 'lte' | 'in' | 'nin' | 'like' | 'between';
+  operator: "eq" | "ne" | "gt" | "gte" | "lt" | "lte" | "in" | "nin" | "like" | "between";
   value: unknown;
   values?: unknown[];
 }
@@ -618,7 +623,7 @@ export interface SearchQuery {
  * Export configuration
  */
 export interface ExportConfig {
-  format: 'csv' | 'json' | 'xml' | 'pdf';
+  format: "csv" | "json" | "xml" | "pdf";
   fields: string[];
   filters?: FilterInfo[];
   sorting?: SortingInfo[];
@@ -629,7 +634,7 @@ export interface ExportConfig {
  * Import configuration
  */
 export interface ImportConfig {
-  format: 'csv' | 'json' | 'xml';
+  format: "csv" | "json" | "xml";
   mapping: Record<string, string>;
   validationRules?: Record<string, unknown>;
   skipErrors?: boolean;

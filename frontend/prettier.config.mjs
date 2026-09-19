@@ -6,94 +6,94 @@ export default {
   useTabs: false,
   semi: true,
   singleQuote: true,
-  quoteProps: 'as-needed',
-  trailingComma: 'es5',
+  quoteProps: "as-needed",
+  trailingComma: "es5",
   bracketSpacing: true,
   bracketSameLine: false,
-  arrowParens: 'always',
-  endOfLine: 'auto',
+  arrowParens: "always",
+  endOfLine: "auto",
 
   // Astro-specific settings
-  plugins: ['prettier-plugin-astro'],
+  plugins: ["prettier-plugin-astro"],
   overrides: [
     {
-      files: '*.astro',
+      files: "*.astro",
       options: {
-        parser: 'astro',
+        parser: "astro",
       },
     },
     {
-      files: '*.ts',
+      files: "*.ts",
       options: {
-        parser: 'typescript',
+        parser: "typescript",
       },
     },
     {
-      files: '*.tsx',
+      files: "*.tsx",
       options: {
-        parser: 'typescript',
+        parser: "typescript",
       },
     },
     {
-      files: '*.js',
+      files: "*.js",
       options: {
-        parser: 'babel',
+        parser: "babel",
       },
     },
     {
-      files: '*.jsx',
+      files: "*.jsx",
       options: {
-        parser: 'babel',
+        parser: "babel",
       },
     },
     {
-      files: '*.json',
+      files: "*.json",
       options: {
-        parser: 'json',
+        parser: "json",
       },
     },
     {
-      files: '*.md',
+      files: "*.md",
       options: {
-        parser: 'markdown',
-        proseWrap: 'always',
+        parser: "markdown",
+        proseWrap: "always",
       },
     },
     {
-      files: '*.mdx',
+      files: "*.mdx",
       options: {
-        parser: 'mdx',
-        proseWrap: 'always',
+        parser: "mdx",
+        proseWrap: "always",
       },
     },
     {
-      files: '*.css',
+      files: "*.css",
       options: {
-        parser: 'css',
+        parser: "css",
       },
     },
     {
-      files: '*.scss',
+      files: "*.scss",
       options: {
-        parser: 'scss',
+        parser: "scss",
       },
     },
     {
-      files: '*.html',
+      files: "*.html",
       options: {
-        parser: 'html',
+        parser: "html",
       },
     },
     {
-      files: '*.vue',
+      files: "*.vue",
       options: {
-        parser: 'vue',
+        parser: "vue",
       },
     },
     {
-      files: '*.svelte',
+      files: "*.svelte",
       options: {
-        parser: 'svelte',
+        parser: "svelte",
       },
     },
   ],
