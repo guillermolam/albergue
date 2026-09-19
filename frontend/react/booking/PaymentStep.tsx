@@ -1,5 +1,9 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { CreditCard, Banknote, Check } from 'lucide-react';
+import {
+  CreditCardIcon as CreditCard,
+  BanknoteIcon as Banknote,
+  CheckIcon as Check,
+} from '../doodle/DoodleIcons';
 import type { ComponentType } from 'react';
 import { useState } from 'react';
 import { WiredButton } from '../doodle/WiredButton';

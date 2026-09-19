@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../ui/dialog';
-import { Search, Filter } from 'lucide-react';
+import { SearchIcon as Search, FilterIcon as Filter } from '../doodle/DoodleIcons';
 import { useI18n } from '../hooks/useI18n';
 
 export type BookingStatus =

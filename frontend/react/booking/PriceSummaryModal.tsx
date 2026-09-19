@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { Calendar, Bed, Euro } from 'lucide-react';
+import { CalendarIcon as Calendar, BedIcon as Bed, EuroIcon as Euro } from '../doodle/DoodleIcons';
 import { useI18n } from '../hooks/useI18n';
 
 interface PriceSummaryModalProps {

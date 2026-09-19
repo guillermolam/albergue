@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Calendar, Clock } from 'lucide-react';
+import { CalendarIcon as Calendar, ClockIcon as Clock } from './DoodleIcons';
 import { HandDrawnCalendar } from './HandDrawnCalendar';
 
 interface DateTimePickerProps {

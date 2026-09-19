@@ -1,5 +1,14 @@
 import { motion } from 'motion/react';
-import { Calendar, CreditCard, FileText, Bed, User, Upload, CheckCircle, Home } from 'lucide-react';
+import {
+  CalendarIcon as Calendar,
+  CreditCardIcon as CreditCard,
+  FileTextIcon as FileText,
+  BedIcon as Bed,
+  UserIcon as User,
+  UploadIcon as Upload,
+  CheckCircleIcon as CheckCircle,
+  HomeIcon as Home,
+} from '../doodle/DoodleIcons';
 import { useI18n } from '../hooks/useI18n';
 
 interface Step {

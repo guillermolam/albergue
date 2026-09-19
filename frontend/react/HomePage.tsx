@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { motion } from 'motion/react';
-import { Bed, MapPin, Heart, Compass } from 'lucide-react';
+import {
+  BedIcon as Bed,
+  MapPinIcon as MapPin,
+  HeartIcon as Heart,
+  CompassIcon as Compass,
+} from './doodle/DoodleIcons';
 import { VisualAreaShowcase } from './VisualAreaShowcase';
 import { useI18n } from './hooks/useI18n';
 

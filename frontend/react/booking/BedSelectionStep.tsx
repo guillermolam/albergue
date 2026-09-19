@@ -1,7 +1,12 @@
 import { motion } from 'motion/react';
 import { WiredButton } from '../doodle/WiredButton';
 import { useState } from 'react';
-import { Bed, ArrowUp, ArrowDown, MapPin } from 'lucide-react';
+import {
+  BedIcon as Bed,
+  ArrowUpIcon as ArrowUp,
+  ArrowDownIcon as ArrowDown,
+  MapPinIcon as MapPin,
+} from '../doodle/DoodleIcons';
 import { useI18n } from '../hooks/useI18n';
 
 interface BedSelectionStepProps {

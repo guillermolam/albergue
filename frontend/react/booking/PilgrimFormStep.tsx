@@ -3,7 +3,7 @@ import { WiredButton } from '../doodle/WiredButton';
 import { PhoneInput } from '../doodle/PhoneInput';
 import { AddressAutocomplete } from '../doodle/AddressAutocomplete';
 import { useState, useEffect } from 'react';
-import { User } from 'lucide-react';
+import { UserIcon as User } from '../doodle/DoodleIcons';
 import { useI18n } from '../hooks/useI18n';
 
 interface PilgrimFormData {

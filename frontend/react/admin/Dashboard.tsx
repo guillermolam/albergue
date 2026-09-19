@@ -1,7 +1,12 @@
 import { motion } from 'motion/react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { Bed, Users, Calendar, TrendingUp } from 'lucide-react';
+import {
+  BedIcon as Bed,
+  UsersIcon as Users,
+  CalendarIcon as Calendar,
+  TrendingUpIcon as TrendingUp,
+} from '../doodle/DoodleIcons';
 import { useI18n } from '../hooks/useI18n';
 import {
   LineChart,

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeftIcon as ChevronLeft, ChevronRightIcon as ChevronRight } from './DoodleIcons';
 
 interface WiredCalendarProps {
   onSelectRange: (startDate: Date, endDate: Date) => void;

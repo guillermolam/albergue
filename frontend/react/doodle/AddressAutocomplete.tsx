@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MapPin, Loader } from 'lucide-react';
+import { MapPinIcon as MapPin, LoaderIcon as Loader } from './DoodleIcons';
 
 interface AddressSuggestion {
   placeId: string;

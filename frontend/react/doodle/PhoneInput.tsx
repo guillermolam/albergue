@@ -1,6 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDown, Search, Check, Phone } from 'lucide-react';
+import {
+  ChevronDownIcon as ChevronDown,
+  SearchIcon as Search,
+  CheckIcon as Check,
+  PhoneIcon as Phone,
+} from './DoodleIcons';
 
 interface Country {
   code: string;

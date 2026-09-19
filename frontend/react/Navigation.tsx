@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDownIcon as ChevronDown } from './doodle/DoodleIcons';
 import { WiredButton } from './doodle/WiredButton';
 import { useI18n } from './hooks/useI18n';
 import {

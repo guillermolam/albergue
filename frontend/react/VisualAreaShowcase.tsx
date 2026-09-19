@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useSpring } from 'motion/react';
-import { ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
+import {
+  ChevronLeftIcon as ChevronLeft,
+  ChevronRightIcon as ChevronRight,
+  MapPinIcon as MapPin,
+} from './doodle/DoodleIcons';
 
 interface VisualSlide {
   image: string;

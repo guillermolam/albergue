@@ -1,5 +1,12 @@
 import { motion } from 'motion/react';
-import { Star, MapPin, Phone, Mail, ExternalLink, Shield } from 'lucide-react';
+import {
+  StarIcon as Star,
+  MapPinIcon as MapPin,
+  PhoneIcon as Phone,
+  MailIcon as Mail,
+  ExternalLinkIcon as ExternalLink,
+  ShieldIcon as Shield,
+} from './doodle/DoodleIcons';
 import type { ComponentType } from 'react';
 import { useI18n } from './hooks/useI18n';
 import {
