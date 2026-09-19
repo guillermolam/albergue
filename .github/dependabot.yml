@@ -14,8 +14,6 @@ updates:
     commit-message:
       prefix: "chore(frontend)"
       include: "scope"
-    reviewers:
-      - "guillermolam"
     versioning-strategy: increase
     groups:
       astro:
