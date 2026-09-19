@@ -3,10 +3,8 @@ export const prerender = true;
 
 import Layout from '../layouts/Layout.astro';
 import DoodleIcons from '../components/doodle/DoodleIcons.astro';
-import DoodleButton from '../components/doodle/DoodleButton.astro';
-import DoodleCard from '../components/doodle/DoodleCard.astro';
 import Icon from '../components/core/Icon.astro';
-import Stats from '../components/core/Stats.astro';
+import { Button, Card, Stat } from '../components/ui';
 
 const heroStats = [
   {
@@ -115,9 +113,9 @@ const features = [
         </div>
 
         <div class="space-y-4">
-          <DoodleButton href="/booking" variant="primary" size="lg">
+          <Button href="/booking" variant="primary" size="lg">
             Reservar Ahora
-          </DoodleButton>
+          </Button>
           <p class="text-dark-grey text-base">
             Tu refugio en la ruta histórica de la Vía de la Plata
           </p>
@@ -139,14 +137,21 @@ const features = [
           </p>
         </div>
 
-        <Stats
-          stats={heroStats}
-          layout="grid"
-          columns={4}
-          variant="default"
-          animated={true}
-          gap="lg"
-        />
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg">
+          {heroStats.map((stat, index) => (
+            <Stat
+              key={index}
+              title={stat.label}
+              value={stat.value}
+              desc={stat.unit}
+              variant="default"
+            >
+              <slot name="figure">
+                <Icon name={stat.icon} size="xl" color={stat.color} />
+              </slot>
+            </Stat>
+          ))}
+        </div>
       </div>
     </section>
 
@@ -164,16 +169,16 @@ const features = [
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
-            <DoodleCard variant="elevated" padding="lg" key={index}>
+            <Card variant="elevated" padding="lg" key={index}>
               <div class="text-4xl mb-4 text-green-dark">{feature.icon}</div>
               <h3 class="text-xl font-bold text-charcoal mb-3 font-sketch">{feature.title}</h3>
               <p class="text-dark-grey leading-relaxed">{feature.description}</p>
               <div class="mt-4">
-                <DoodleButton href="/info" variant="outline" size="sm">
+                <Button href="/info" variant="outline" size="sm">
                   Saber más
-                </DoodleButton>
+                </Button>
               </div>
-            </DoodleCard>
+            </Card>
           ))}
         </div>
       </div>
@@ -192,12 +197,12 @@ const features = [
             cama te está esperando después de un largo día de caminata.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <DoodleButton href="/booking" variant="primary" size="lg">
+            <Button href="/booking" variant="primary" size="lg">
               Reservar Ahora
-            </DoodleButton>
-            <DoodleButton href="/info" variant="outline" size="lg">
+            </Button>
+            <Button href="/info" variant="outline" size="lg">
               Contactar
-            </DoodleButton>
+            </Button>
           </div>
         </div>
       </div>
