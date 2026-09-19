@@ -6,6 +6,15 @@
 /** Local plugin shape — avoids broken `@swup/core` CDN-era import */
 type SwupPlugin = () => any;
 
+/** Shape of the context object Swup passes into `replace.animation.*.await`
+ * and `on.willReplaceContent`/`contentReplaced` hooks. Not swup's own
+ * exported type (its published types model a different, newer hook API
+ * than this file's `replace:` structure) -- local enough to resolve
+ * `container` off `any` without guessing at swup internals. */
+interface SwupAnimationContext {
+  container: HTMLElement;
+}
+
 // Custom animation plugin with staggered element animations
 const complexAnimationsPlugin: SwupPlugin = () => {
   return {
@@ -15,7 +24,7 @@ const complexAnimationsPlugin: SwupPlugin = () => {
     replace: {
       animation: {
         out: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             // Find all elements with animation classes
             const animateOutElements =
               container.querySelectorAll<HTMLElement>('[data-animate-out]');
@@ -45,7 +54,7 @@ const complexAnimationsPlugin: SwupPlugin = () => {
         },
 
         in: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             // Find all elements with animation classes
             const animateInElements = container.querySelectorAll<HTMLElement>('[data-animate-in]');
 
@@ -97,11 +106,11 @@ const complexAnimationsPlugin: SwupPlugin = () => {
 
     // Hook into will replace content
     on: {
-      willReplaceContent: ({ container }) => {
+      willReplaceContent: ({ container }: SwupAnimationContext) => {
         // Add will-change for better performance
         container.style.willChange = 'transform, opacity';
       },
-      contentReplaced: ({ container }) => {
+      contentReplaced: ({ container }: SwupAnimationContext) => {
         // Reset will-change after animation
         setTimeout(() => {
           container.style.willChange = 'auto';
@@ -119,7 +128,7 @@ const perspectiveAnimationPlugin: SwupPlugin = () => {
     replace: {
       animation: {
         out: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition =
               'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease-out';
             container.style.transform = 'perspective(1200px) rotateY(-15deg) translateZ(-50px)';
@@ -133,7 +142,7 @@ const perspectiveAnimationPlugin: SwupPlugin = () => {
         },
 
         in: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition =
               'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease-out';
             container.style.transform = 'perspective(1200px) rotateY(15deg) translateZ(-50px)';
@@ -164,7 +173,7 @@ const morphAnimationPlugin: SwupPlugin = () => {
     replace: {
       animation: {
         out: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition =
               'clip-path 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.8s ease-out';
             container.style.clipPath = 'circle(0% at 50% 50%)';
@@ -178,7 +187,7 @@ const morphAnimationPlugin: SwupPlugin = () => {
         },
 
         in: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition =
               'clip-path 1s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.8s ease-out';
             container.style.clipPath = 'circle(150% at 50% 50%)';
@@ -208,7 +217,7 @@ const glitchAnimationPlugin: SwupPlugin = () => {
     replace: {
       animation: {
         out: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             const duration = 300;
             const steps = 3;
 
@@ -235,7 +244,7 @@ const glitchAnimationPlugin: SwupPlugin = () => {
         },
 
         in: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition = 'opacity 0.3s ease-out';
             container.style.opacity = '1';
             container.style.filter = 'none';
@@ -260,7 +269,7 @@ const warpAnimationPlugin: SwupPlugin = () => {
     replace: {
       animation: {
         out: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition = 'all 0.5s ease-out';
             container.style.filter = 'blur(20px)';
             container.style.transform = 'scale(1.2) skewX(-20deg)';
@@ -274,7 +283,7 @@ const warpAnimationPlugin: SwupPlugin = () => {
         },
 
         in: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition = 'all 0.5s ease-out';
             container.style.filter = 'blur(0)';
             container.style.transform = 'scale(1) skewX(0deg)';
@@ -299,7 +308,7 @@ const liquidAnimationPlugin: SwupPlugin = () => {
     replace: {
       animation: {
         out: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition = 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
             container.style.transform = 'scale3d(1.1, 1.1, 1.1)';
             container.style.filter = 'blur(10px)';
@@ -313,7 +322,7 @@ const liquidAnimationPlugin: SwupPlugin = () => {
         },
 
         in: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition = 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
             container.style.transform = 'scale3d(0.9, 0.9, 0.9)';
             container.style.filter = 'blur(10px)';
@@ -345,7 +354,7 @@ const particleExplosionPlugin: SwupPlugin = () => {
     replace: {
       animation: {
         out: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             const duration = 800;
             const particleCount = 20;
 
@@ -394,7 +403,7 @@ const particleExplosionPlugin: SwupPlugin = () => {
         },
 
         in: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition = 'opacity 0.4s ease-out';
             container.style.opacity = '0';
 
@@ -419,7 +428,7 @@ const neonGlowPlugin: SwupPlugin = () => {
     replace: {
       animation: {
         out: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition = 'all 0.5s ease-out';
             container.style.filter = 'drop-shadow(0 0 20px rgba(0, 171, 57, 0.8))';
             container.style.transform = 'scale(1.05)';
@@ -433,7 +442,7 @@ const neonGlowPlugin: SwupPlugin = () => {
         },
 
         in: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition = 'all 0.5s ease-out';
             container.style.filter = 'drop-shadow(0 0 20px rgba(0, 171, 57, 0))';
             container.style.transform = 'scale(0.95)';
@@ -465,7 +474,7 @@ const rotateCubePlugin: SwupPlugin = () => {
     replace: {
       animation: {
         out: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition = 'transform 0.8s ease-out, opacity 0.4s ease-out';
             container.style.transformStyle = 'preserve-3d';
             container.style.transform = 'rotateY(-90deg) rotateX(10deg)';
@@ -479,7 +488,7 @@ const rotateCubePlugin: SwupPlugin = () => {
         },
 
         in: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition = 'transform 0.8s ease-out, opacity 0.4s ease-out';
             container.style.transformStyle = 'preserve-3d';
             container.style.transform = 'rotateY(90deg) rotateX(-10deg)';
@@ -510,7 +519,7 @@ const wobblePlugin: SwupPlugin = () => {
     replace: {
       animation: {
         out: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition = 'transform 0.3s ease-out';
 
             // Wobble effect
@@ -534,7 +543,7 @@ const wobblePlugin: SwupPlugin = () => {
         },
 
         in: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition = 'transform 0.3s ease-out, opacity 0.4s ease-out';
             container.style.transform = 'translate3d(0, 20px, 0) rotate3d(0, 0, 1, -2deg)';
             container.style.opacity = '0';
@@ -564,7 +573,7 @@ const zoomOutPlugin: SwupPlugin = () => {
     replace: {
       animation: {
         out: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition =
               'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease-out';
             container.style.transform = 'scale(0.8)';
@@ -579,7 +588,7 @@ const zoomOutPlugin: SwupPlugin = () => {
         },
 
         in: {
-          await: async ({ container }) => {
+          await: async ({ container }: SwupAnimationContext) => {
             container.style.transition =
               'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease-out, filter 0.6s ease-out';
             container.style.transform = 'scale(1.2)';

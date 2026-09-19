@@ -38,7 +38,7 @@ const paddingClasses = {
   lg: 'p-8',
 };
 
-const classes = `${variantClasses[variant]} ${padding ? paddingClasses[padding] : ''}`;
+const classes = `${variantClasses[variant]} ${padding ? paddingClasses[padding] : ''} ${hoverable ? 'card-hoverable' : ''}`;
 
 const Component = href ? 'a' : 'div';
 ---
@@ -56,8 +56,9 @@ const Component = href ? 'a' : 'div';
   document.addEventListener('DOMContentLoaded', () => {
     const card = document.currentScript?.previousElementSibling;
     if (!card) return;
-    card.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
+    card.addEventListener('keydown', (e: Event) => {
+      const key = (e as KeyboardEvent).key;
+      if (key === 'Enter' || key === ' ') {
         e.preventDefault();
         (card as HTMLElement).click();
       }

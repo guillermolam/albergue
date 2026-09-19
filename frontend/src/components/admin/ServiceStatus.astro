@@ -1,5 +1,16 @@
 ﻿---
-const { initialServices = [] } = Astro.props;
+interface ServiceEntry {
+  name: string;
+  status: 'healthy' | 'warning' | 'error';
+  responseTime: string;
+  message: string;
+}
+
+export interface Props {
+  initialServices?: ServiceEntry[];
+}
+
+const { initialServices = [] }: Props = Astro.props;
 ---
 
 <div class="bg-base-200 rounded-box p-6">

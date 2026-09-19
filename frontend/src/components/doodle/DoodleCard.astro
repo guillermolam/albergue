@@ -5,6 +5,16 @@
  * Uses Tailwind v4 + Doodle CSS
  */
 
+export interface Props {
+  variant?: 'default' | 'elevated' | 'outlined' | 'flat' | 'paper';
+  padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
+  hoverable?: boolean;
+  clickable?: boolean;
+  href?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+
 const {
   variant = 'default',
   padding = 'md',
@@ -13,7 +23,7 @@ const {
   href,
   class: className = '',
   ...props
-} = Astro.props;
+}: Props = Astro.props;
 
 // Variant styles
 const variantClasses = {

@@ -1,6 +1,4 @@
 ---
-type Locale = string;
-
 interface Props {
   className?: string;
   showFlags?: boolean;
@@ -21,7 +19,7 @@ const getLocale = () => {
 };
 
 const locale = getLocale();
-const currentLanguage = LANGUAGES[locale] || LANGUAGES.es;
+const currentLanguage = i18nActions.isSupportedLocale(locale) ? LANGUAGES[locale] : LANGUAGES.es;
 
 const initialLanguageCode = currentLanguage.code;
 const initialLanguageName = currentLanguage.name;
