@@ -30,11 +30,11 @@ check_pinned_action() {
 	local repo="$1"
 	local expected_tag="$2"
 
+	# `local x=$(cmd)` masks cmd's exit status behind local's own — set -e
+	# won't catch a failed substitution here, so each call is split from its
+	# declaration to fail loudly instead of silently comparing against "".
 	local latest_tag
-	latest_tag="$(
-		github_api_get "repos/${repo}/releases/latest" |
-			jq -r '.tag_name'
-	)"
+	latest_tag="$(github_api_get "repos/${repo}/releases/latest" | jq -r '.tag_name')"
 
 	if [[ ${latest_tag} != "${expected_tag}" ]]; then
 		echo "latest tag drift for ${repo}: expected ${expected_tag}, got ${latest_tag}" >&2
@@ -42,17 +42,11 @@ check_pinned_action() {
 	fi
 
 	local latest_sha
-	latest_sha="$(
-		github_api_get "repos/${repo}/git/ref/tags/${expected_tag}" |
-			jq -r '.object.sha'
-	)"
+	latest_sha="$(github_api_get "repos/${repo}/git/ref/tags/${expected_tag}" | jq -r '.object.sha')"
 
 	# Lightweight tags point directly to commits; annotated tags point to tag objects.
 	local object_type
-	object_type="$(
-		github_api_get "repos/${repo}/git/ref/tags/${expected_tag}" |
-			jq -r '.object.type'
-	)"
+	object_type="$(github_api_get "repos/${repo}/git/ref/tags/${expected_tag}" | jq -r '.object.type')"
 
 	if [[ ${object_type} == "tag" ]]; then
 		latest_sha="$(
