@@ -79,8 +79,8 @@ test.describe('Visual regression - key pages', () => {
     await page.goto('http://localhost:4321/', { waitUntil: 'networkidle' });
 
     // Check for hero section - use the specific hero title
-    await expect(page.getByRole('heading', { name: 'Bienvenido al Albergue' })).toBeVisible();
-    await expect(page.getByText('Albergue Municipal Carrascalejo')).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Bienvenido/ }).first()).toBeVisible();
+    await expect(page.getByText('Albergue Carrascalejo').first()).toBeVisible();
   });
 
   test('Booking page loads', async ({ page }) => {

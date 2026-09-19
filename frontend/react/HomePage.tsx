@@ -91,6 +91,21 @@ function SketchyButton({
   );
 }
 
+/**
+ * Deterministic pseudo-random in [0, 1), seeded by index. Avoids Math.random()
+ * so the decorative background circles don't mismatch between the prerendered
+ * HTML and the client:load hydration pass (each would otherwise reseed).
+ */
+function pseudoRandom(seed: number): number {
+  const x = Math.sin(seed * 12.9898) * 43758.5453;
+  const value = x - Math.floor(x);
+  // Fixed precision so the SSR-rendered string and Motion's client-side
+  // re-serialization of the same style value always match byte-for-byte --
+  // otherwise React flags a hydration mismatch (Motion rounds internally,
+  // the raw float doesn't).
+  return Math.round(value * 10000) / 10000;
+}
+
 function Squiggle({ delay = 0 }: { delay?: number }) {
   return (
     <motion.svg
@@ -134,12 +149,12 @@ export function HomePage() {
           <motion.div
             key={i}
             className="absolute"
-            style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%` }}
+            style={{ left: `${pseudoRandom(i) * 100}%`, top: `${pseudoRandom(i + 100) * 100}%` }}
             animate={{ rotate: [0, 360], scale: [1, 1.15, 1] }}
             transition={{
-              duration: 12 + Math.random() * 8,
+              duration: 12 + pseudoRandom(i + 200) * 8,
               repeat: Infinity,
-              delay: Math.random() * 3,
+              delay: pseudoRandom(i + 300) * 3,
             }}
           >
             <svg width="30" height="30" viewBox="0 0 30 30">

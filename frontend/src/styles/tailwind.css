@@ -1,2 +1,13 @@
+/* Explicit layer order: `legacy` must be declared before Tailwind's own
+   `theme, base, components, utilities` layers so it sits BELOW them in the
+   cascade. Per the CSS Cascade Layers spec, layered rules always lose to
+   unlayered ones regardless of source order -- design-system.css/
+   animations.css are plain unlayered CSS, so without this they were
+   silently beating every conflicting Tailwind utility (e.g. `.hidden` vs
+   `.sm:block`) everywhere both stylesheets loaded together. */
+@layer legacy, theme, base, components, utilities;
+
+@import './design-system.css' layer(legacy);
+@import './animations.css' layer(legacy);
 @import 'tailwindcss';
 @import './shadcn-theme.css';
