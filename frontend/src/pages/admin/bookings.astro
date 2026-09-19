@@ -2,7 +2,7 @@
 export const prerender = false;
 
 import AdminLayout from '../../layouts/AdminLayout.astro';
-import { BookingsTable, type BookingRow } from '../../components/admin/BookingsTable';
+import { BookingsTable, type BookingRow } from '../../../react/admin/BookingsTable';
 import { backendJson } from '../../lib/backend-api';
 
 const result = await backendJson<BookingRow[]>('/api/bookings/table');

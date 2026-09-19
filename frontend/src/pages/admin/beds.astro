@@ -2,7 +2,7 @@
 export const prerender = false;
 
 import AdminLayout from '../../layouts/AdminLayout.astro';
-import { BedManagement, type BedDashboardItem } from '../../components/admin/BedManagement';
+import { BedManagement, type BedDashboardItem } from '../../../react/admin/BedManagement';
 import { backendJson } from '../../lib/backend-api';
 
 const result = await backendJson<BedDashboardItem[]>('/api/beds/dashboard');

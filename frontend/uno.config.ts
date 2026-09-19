@@ -3,36 +3,7 @@ import { defineConfig, presetTypography, presetWind3, transformerVariantGroup } 
 export default defineConfig({
   content: {
     pipeline: {
-      // Components ported from figma/ are styled with Tailwind v4 + the
-      // shadcn theme (src/styles/shadcn-theme.css), not UnoCSS's presetWind3.
-      // With mode: 'global', UnoCSS scans every matching file regardless of
-      // page-level imports — leaving these in scope meant it generated its
-      // own (different) CSS for the same class names Tailwind emits
-      // (flex, border, rounded-lg, bg-primary, ...), and cascade order
-      // between the two engines' stylesheets decided which one won, which
-      // broke the shadcn design's actual appearance.
-      //
-      // Negated inside `include` rather than a separate `exclude` key: on
-      // this Astro 7 / Vite 8 / Rolldown stack, using `exclude` here (even
-      // scoped to just *.tsx) made the production build nondeterministically
-      // fail with "Rolldown failed to resolve import webcoreui/astro" from
-      // unrelated pre-existing .astro files — reproduced 3x on CI (Linux),
-      // never reproducible locally (macOS) even with node_modules wiped and
-      // pnpm pinned to the exact CI version. Bisected across 4 throwaway
-      // branches against the already-merged base commit: base alone passed,
-      // base + this Layout.astro change alone passed, base + `exclude` (both
-      // broad and *.tsx-scoped) failed identically, base + this same
-      // exclusion expressed as `!`-negated include entries passed. Only the
-      // `exclude` key itself triggers whatever the underlying bug is — scope
-      // of the pattern makes no difference. Not excluded from ui/**  or
-      // admin/** wholesale: those directories also hold pre-existing *.astro
-      // components (Button.astro, Stat.astro, ...) that legitimately use
-      // UnoCSS's own btn/stat shortcuts and must stay in scope.
-      include: [
-        './src/**/*.{astro,js,jsx,ts,tsx,vue,svelte}',
-        '!./src/components/ui/*.tsx',
-        '!./src/components/admin/*.tsx',
-      ],
+      include: ['./src/**/*.{astro,js,jsx,ts,tsx,vue,svelte}'],
     },
   },
   presets: [presetWind3(), presetTypography()],
