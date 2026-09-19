@@ -12,7 +12,12 @@ export default defineConfig({
       // (flex, border, rounded-lg, bg-primary, ...), and cascade order
       // between the two engines' stylesheets decided which one won, which
       // broke the shadcn design's actual appearance.
-      exclude: ['./src/components/ui/**', './src/components/admin/**'],
+      //
+      // Scoped to *.tsx only (not **) — src/components/ui/ and
+      // src/components/admin/ also hold pre-existing *.astro components
+      // (Button.astro, Stat.astro, ...) that legitimately use UnoCSS's own
+      // btn/stat shortcuts and must stay in scope.
+      exclude: ['./src/components/ui/*.tsx', './src/components/admin/*.tsx'],
     },
   },
   presets: [presetWind3(), presetTypography()],
