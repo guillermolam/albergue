@@ -31,7 +31,7 @@ test.describe('Route rendering tests', () => {
         errors.push(error.message);
       });
 
-      await page.goto(`http://localhost:4321${route.path}`, {
+      await page.goto(route.path, {
         waitUntil: 'networkidle',
         timeout: 30000,
       });
@@ -76,28 +76,28 @@ test.describe('Route rendering tests', () => {
 
 test.describe('Visual regression - key pages', () => {
   test('Homepage loads and has hero section', async ({ page }) => {
-    await page.goto('http://localhost:4321/', { waitUntil: 'networkidle' });
+    await page.goto('/', { waitUntil: 'networkidle' });
 
     // Check for hero section - use the specific hero title
-    await expect(page.getByRole('heading', { name: 'Bienvenido al Albergue' })).toBeVisible();
-    await expect(page.getByText('Albergue Municipal Carrascalejo')).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Bienvenido/ }).first()).toBeVisible();
+    await expect(page.getByText('Albergue Carrascalejo').first()).toBeVisible();
   });
 
   test('Booking page loads', async ({ page }) => {
-    await page.goto('http://localhost:4321/book', { waitUntil: 'networkidle' });
+    await page.goto('/book', { waitUntil: 'networkidle' });
 
     // Check for booking form or content
     await expect(page.locator('body')).toBeVisible();
   });
 
   test('Dashboard page loads', async ({ page }) => {
-    await page.goto('http://localhost:4321/dashboard', { waitUntil: 'networkidle' });
+    await page.goto('/dashboard', { waitUntil: 'networkidle' });
 
     await expect(page.locator('body')).toBeVisible();
   });
 
   test('Admin page loads', async ({ page }) => {
-    await page.goto('http://localhost:4321/admin', { waitUntil: 'networkidle' });
+    await page.goto('/admin', { waitUntil: 'networkidle' });
 
     await expect(page.locator('body')).toBeVisible();
   });

@@ -11,9 +11,6 @@ export { default as DoodleIcon } from './components/core/Icon.astro';
 export { default as Hero } from './components/Hero.astro';
 export { default as Stats } from './components/Stats.astro';
 
-// Design Tokens
-export * from './styles/design-tokens';
-
 // TypeScript Interfaces
 export type { Props as ButtonProps } from './components/Button.astro';
 export type { Props as CardProps } from './components/Card.astro';

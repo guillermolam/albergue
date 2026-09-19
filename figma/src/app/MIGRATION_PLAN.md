@@ -16,6 +16,23 @@ isProject: false
 
 > This document is the canonical migration and architecture execution runbook. Other Cursor plans, implementation notes and migration documents MUST defer to this document when conflicts exist.
 
+## Amendment — ADR-UI-REACT (2026-09-19)
+
+> **Supersedes**: INV-001; the "Introduce React" / "Introduce Tailwind" non-goals in §1.2; the "Do not import React, Tailwind, Radix, MUI, or Motion from `figma/`" hard rule in §A.5; the `webcoreui` KEEP decision and React/Tailwind rows in §F; the "no React/Radix/Tailwind dependency" DoD line under FIGMA-004; the "No React." line under §R Definition of Done → Frontend; and the §V.14 "Decisions made" bullet "Production stays React-free, Tailwind-free and server-first."
+
+**Decision**: The production frontend adopts React 19.3, Tailwind v4, and Radix UI primitives for the Figma port, and removes `webcoreui`. `figma/` components are ported into `frontend/react/` (structure, tokens, and interaction logic reused directly) rather than re-implemented from scratch in Astro-native markup.
+
+**Context**: This runbook's original React-free stance (§1.2, §A.5, §V.14) was written 2026-09-12. One week later the repository owner explicitly directed the opposite for a first slice of production UI ("Let use tailwindcss and react and react latest 19.3"; "we can remove webcoreui and use radixui like figma is doing") and it shipped to production: PR #22 (React/Tailwind/Radix primitives, admin Dashboard/BedManagement/BookingsTable, `webcoreui` removed) and PR #23 (UnoCSS/Tailwind scope fix, `@nanostores/react` wiring). When the conflict between this runbook and that shipped work was surfaced directly, the owner re-confirmed: keep React/Tailwind/Radix rather than reverting the merged work.
+
+**Consequences**:
+- INV-001 is retired. The frontend is not React-free; React is scoped to interactive islands (`client:load`) — Astro remains the server-first rendering/routing layer for everything else (SSR/prerendering, Actions, sessions, middleware are unaffected by this amendment).
+- Astro components still own plain-HTML/content-only surfaces (legal pages, static marketing sections) where no interactivity is needed — this amendment does not mandate React everywhere, only where `figma/` React components are the direct port source.
+- `webcoreui` is removed, not "KEEP constrained" as §F stated.
+- `default_shadcn_theme.css` is no longer "reference-only" (§V.8) — it is the live token source for ported components (see `frontend/src/styles/shadcn-theme.css`, corrected to Figma's actual brand palette in PR #24 rather than shadcn's generic defaults).
+- All other sections of this runbook (security, booking state machine, auth, i18n, testing, deployment) remain in force and are unaffected by this amendment.
+
+---
+
 ## 0. Executive Summary
 
 This document is the authoritative migration and architecture runbook for Albergue Carrascalejo.

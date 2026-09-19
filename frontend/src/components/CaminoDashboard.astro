@@ -381,7 +381,7 @@ const difficultyPill = (difficulty: string) =>
           }
         }
         const estimatedDays = Math.ceil(720 / dailyGoal);
-        const estimatedEl = dashboard.querySelector('div:has(#daily-goal) + div');
+        const estimatedEl = dashboard?.querySelector('div:has(#daily-goal) + div');
         if (estimatedEl) {
           const text = estimatedEl.textContent || '';
           estimatedEl.textContent = text.replace(

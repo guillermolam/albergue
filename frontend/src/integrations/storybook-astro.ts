@@ -12,7 +12,7 @@ export default function storybookAstroIntegration(): AstroIntegration {
       'astro:config:setup': ({ config, injectScript }) => {
         // Inject environment variables for Storybook compatibility
         injectScript(
-          'head',
+          'head-inline',
           `
           <script>
             window.ASTRO_ENV = {
@@ -20,7 +20,7 @@ export default function storybookAstroIntegration(): AstroIntegration {
               PUBLIC_ENV: '${import.meta.env.MODE || 'development'}',
               PUBLIC_VERSION: '${import.meta.env.PACKAGE_VERSION || '1.0.0'}',
               STORYBOOK: true,
-              ASTRO_VERSION: '${config.version || '6.1.5'}'
+              ASTRO_VERSION: '7.3.2'
             };
           </script>
         `
@@ -28,7 +28,7 @@ export default function storybookAstroIntegration(): AstroIntegration {
 
         // Inject Three.js for GIS components
         injectScript(
-          'head',
+          'head-inline',
           `
           <script type="module">
             import * as THREE from 'three';
@@ -70,9 +70,11 @@ export default function storybookAstroIntegration(): AstroIntegration {
         ];
 
         vite.build = vite.build || {};
-        vite.build.rollupOptions = vite.build.rollupOptions || {};
-        vite.build.rollupOptions.external = [
-          ...(vite.build.rollupOptions.external || []),
+        vite.build.rolldownOptions = vite.build.rolldownOptions || {};
+        const existingExternal = vite.build.rolldownOptions.external;
+        const existingExternalList = Array.isArray(existingExternal) ? existingExternal : [];
+        vite.build.rolldownOptions.external = [
+          ...existingExternalList,
           'fs',
           'path',
           'async_hooks',
