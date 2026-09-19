@@ -3,8 +3,8 @@ import { PageHero } from '../shared/PageHero';
 import { PlaceGallery } from '../places/PlaceGallery';
 import type { PlaceWithDetails } from '../places/types';
 
-/** Same invented-placeholder-coordinates caveat as AreaEatPage. */
-const HOSTEL_CENTER: [number, number] = [-6.3487, 39.0027];
+/** Same Nominatim-geocoded village centroid as AreaEatPage. */
+const HOSTEL_CENTER: [number, number] = [-6.3371905, 39.0223673];
 
 const COPY = {
   es: {

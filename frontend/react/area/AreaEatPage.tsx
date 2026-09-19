@@ -3,9 +3,11 @@ import { PageHero } from '../shared/PageHero';
 import { PlaceGallery } from '../places/PlaceGallery';
 import type { PlaceWithDetails } from '../places/types';
 
-/** Approximate center of El Carrascalejo, Badajoz -- used when the map has
- * no geolocated places to derive a center from. */
-const HOSTEL_CENTER: [number, number] = [-6.3487, 39.0027];
+/** Real "El Carrascalejo, Badajoz" village centroid (Nominatim-geocoded,
+ * see domain_model/seed/geocode.mjs), matching the hostel's corrected
+ * coordinates in dev_seed_places_and_hostel.sql -- used when the map has no
+ * geolocated places to derive a center from. */
+const HOSTEL_CENTER: [number, number] = [-6.3371905, 39.0223673];
 
 const COPY = {
   es: {

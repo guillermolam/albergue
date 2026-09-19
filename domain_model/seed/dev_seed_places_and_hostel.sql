@@ -30,8 +30,15 @@ INSERT INTO hostels (
   'A welcoming municipal hostel in the heart of Extremadura, built for pilgrims walking the Vía de la Plata.',
   'El albergue ocupa un edificio tradicional restaurado de Carrascalejo, abierto a peregrinos desde hace más de una década.',
   'The hostel occupies a restored traditional building in Carrascalejo, open to pilgrims for over a decade.',
-  'Calle Principal, 123', '10680', 'Carrascalejo', 'Extremadura', 'España',
-  39.1234, -5.6789, '+34 924 XXX XXX', 'info@alberguecarrascalejo.com',
+  -- Coordinates are the real "El Carrascalejo, Badajoz" village centroid,
+  -- geocoded via Nominatim (see geocode.mjs): the previous placeholder
+  -- (39.1234, -5.6789, inherited from footerData.ts) was ~70km off, in a
+  -- different part of Extremadura entirely. No street-level OSM data
+  -- exists for "Calle Principal" in this village, so the village centroid
+  -- is the most precise real anchor available; a precise street-level pin
+  -- needs manual correction once the real street address is known.
+  'Calle Principal, 123', '10680', 'El Carrascalejo', 'Extremadura', 'España',
+  39.0223673, -6.3371905, '+34 924 XXX XXX', 'info@alberguecarrascalejo.com',
   '15:00', '22:00', '11:00',
   'H-CC-00123', 'B-12345678', 'ATR-EX-2024-001', 'dpo@alberguecarrascalejo.com', 'AEPD-R-2024-12345',
   'Junta Arbitral de Consumo de Extremadura', 'https://consumo.juntaex.es', 'https://ec.europa.eu/consumers/odr',
@@ -120,6 +127,14 @@ CROSS JOIN (VALUES ('bottom'), ('top')) AS p(position);
 
 -- ============================================================
 -- Places: restaurants (from AreaEatPage.tsx)
+--
+-- NOT geocoded: these are placeholder/fictional businesses invented as
+-- demo content (no place_addresses rows exist for them, and the original
+-- AreaEatPage.tsx source explicitly documented their coordinates as
+-- "invented offsets... not real geocoding"). Nominatim has nothing real to
+-- resolve for a nonexistent business, so their coordinates stay as
+-- approximate offsets from the hostel's (now-corrected) real location.
+-- Replace with real coordinates once real local businesses are chosen.
 -- ============================================================
 INSERT INTO places (slug, category, name_es, name_en, short_description_es, short_description_en, description_markdown_es, description_markdown_en, icon_name, price_level, latitude, longitude, display_order) VALUES
   ('restaurante-el-camino', 'restaurant', 'Restaurante El Camino', 'Restaurante El Camino', 'Cocina tradicional extremeña', 'Traditional Extremaduran', 'Restaurante familiar con auténtica cocina de Extremadura.', 'Family-run restaurant serving authentic Extremadura cuisine.', 'utensils', 2, 39.0031, -6.3492, 0),
@@ -143,6 +158,9 @@ INSERT INTO place_labels (place_id, label_es, label_en, display_order) VALUES
 
 -- ============================================================
 -- Places: trails, parks, excursions (from AreaVisitPage.tsx)
+--
+-- Same caveat as the restaurants above: these are demo/placeholder
+-- activities with no real address, not geocoded for the same reason.
 -- ============================================================
 INSERT INTO places (slug, category, name_es, name_en, short_description_es, short_description_en, description_markdown_es, description_markdown_en, icon_name, latitude, longitude, display_order) VALUES
   ('paseo-casco-historico', 'trail', 'Paseo por el Casco Histórico', 'Historic Town Center Walk', 'Autoguiado · 1-2 horas', 'Self-guided · 1-2 hours', 'Explora las calles y edificios históricos de Carrascalejo a tu propio ritmo.', 'Explore the charming streets and historic buildings of Carrascalejo at your own pace.', 'compass', 39.0029, -6.3485, 0),
