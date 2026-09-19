@@ -3,63 +3,100 @@ import { FancyCard } from '../shared/FancyCard';
 import { PhoneIcon, ClipboardIcon } from '../doodle/DoodleIcons';
 import { useI18n } from '../hooks/useI18n';
 
+// Paired ES/EN source data -- COPY.es/COPY.en below derive their `rules`/
+// `emergencies` arrays from these via .map() rather than repeating the same
+// four-item shape twice, which SonarCloud's duplication detector (rightly)
+// flags as a near-identical block when written out longhand per locale.
+const RULES_DATA = [
+  {
+    titleES: 'Horarios',
+    titleEN: 'Hours',
+    descriptionES:
+      'Entrada 15:00–22:00 · Salida antes de las 11:00 · Silencio 22:00–07:00 · Cocina cierra a las 21:30.',
+    descriptionEN:
+      'Check-in 3:00–10:00 PM · Check-out before 11:00 AM · Quiet hours 10:00 PM–7:00 AM · Kitchen closes at 9:30 PM.',
+  },
+  {
+    titleES: 'Convivencia',
+    titleEN: 'Shared living',
+    descriptionES:
+      'Zonas comunes limpias, respeta el descanso de otros peregrinos, no fumar en interiores, mascotas no permitidas.',
+    descriptionEN:
+      'Keep common areas clean, respect other pilgrims’ rest, no smoking indoors, pets not allowed.',
+  },
+  {
+    titleES: 'Seguridad',
+    titleEN: 'Security',
+    descriptionES:
+      'Taquillas con candado, no dejes objetos de valor a la vista, extintores señalizados en todo el edificio.',
+    descriptionEN:
+      'Lockers with a padlock, don’t leave valuables in plain sight, fire extinguishers signposted throughout.',
+  },
+  {
+    titleES: 'Servicios incluidos',
+    titleEN: 'Included services',
+    descriptionES:
+      'WiFi gratuito, ropa de cama incluida, uso libre de la cocina, consigna de equipaje disponible.',
+    descriptionEN:
+      'Free WiFi, linens included, free use of the kitchen, luggage storage available.',
+  },
+] as const;
+
+const EMERGENCIES_DATA = [
+  {
+    titleES: 'Emergencias Generales',
+    titleEN: 'General Emergency',
+    number: '112',
+    descriptionES: 'Policía, bomberos y sanidad para cualquier emergencia.',
+    descriptionEN: 'Police, fire and medical for any emergency.',
+    availableES: '24/7',
+    availableEN: '24/7',
+  },
+  {
+    titleES: 'Emergencia Médica',
+    titleEN: 'Medical Emergency',
+    number: '061',
+    descriptionES: 'Ambulancia y asistencia médica urgente.',
+    descriptionEN: 'Ambulance and urgent medical assistance.',
+    availableES: '24/7',
+    availableEN: '24/7',
+  },
+  {
+    titleES: 'Policía Local',
+    titleEN: 'Local Police',
+    number: '092',
+    descriptionES: 'Policía local de Carrascalejo.',
+    descriptionEN: 'Carrascalejo local police.',
+    availableES: '24/7',
+    availableEN: '24/7',
+  },
+  {
+    titleES: 'Centro de Salud',
+    titleEN: 'Health Center',
+    number: '924 123 456',
+    descriptionES: 'Centro de Salud de Carrascalejo, para consultas no urgentes.',
+    descriptionEN: 'Carrascalejo Health Center, for non-urgent matters.',
+    availableES: 'L–V: 9:00–21:00',
+    availableEN: 'Mon–Fri: 9am–9pm',
+  },
+] as const;
+
 const COPY = {
   es: {
     eyebrow: 'El Albergue',
     title: 'Servicios',
     subtitle: 'Normas de convivencia y contactos de emergencia para tu estancia.',
     rulesHeading: 'Normas del albergue',
-    rules: [
-      {
-        title: 'Horarios',
-        description:
-          'Entrada 15:00–22:00 · Salida antes de las 11:00 · Silencio 22:00–07:00 · Cocina cierra a las 21:30.',
-      },
-      {
-        title: 'Convivencia',
-        description:
-          'Zonas comunes limpias, respeta el descanso de otros peregrinos, no fumar en interiores, mascotas no permitidas.',
-      },
-      {
-        title: 'Seguridad',
-        description:
-          'Taquillas con candado, no dejes objetos de valor a la vista, extintores señalizados en todo el edificio.',
-      },
-      {
-        title: 'Servicios incluidos',
-        description:
-          'WiFi gratuito, ropa de cama incluida, uso libre de la cocina, consigna de equipaje disponible.',
-      },
-    ],
+    rules: RULES_DATA.map((r) => ({ title: r.titleES, description: r.descriptionES })),
     emergencyHeading: 'Contactos de emergencia',
     emergencySubtitle: 'Disponibles las 24 horas, todos los días.',
     availability: 'Disponibilidad',
-    emergencies: [
-      {
-        title: 'Emergencias Generales',
-        number: '112',
-        description: 'Policía, bomberos y sanidad para cualquier emergencia.',
-        available: '24/7',
-      },
-      {
-        title: 'Emergencia Médica',
-        number: '061',
-        description: 'Ambulancia y asistencia médica urgente.',
-        available: '24/7',
-      },
-      {
-        title: 'Policía Local',
-        number: '092',
-        description: 'Policía local de Carrascalejo.',
-        available: '24/7',
-      },
-      {
-        title: 'Centro de Salud',
-        number: '924 123 456',
-        description: 'Centro de Salud de Carrascalejo, para consultas no urgentes.',
-        available: 'L–V: 9:00–21:00',
-      },
-    ],
+    emergencies: EMERGENCIES_DATA.map((e) => ({
+      title: e.titleES,
+      number: e.number,
+      description: e.descriptionES,
+      available: e.availableES,
+    })),
     call: 'Llamar',
   },
   en: {
@@ -67,57 +104,16 @@ const COPY = {
     title: 'Services',
     subtitle: 'House rules and emergency contacts for your stay.',
     rulesHeading: 'House rules',
-    rules: [
-      {
-        title: 'Hours',
-        description:
-          'Check-in 3:00–10:00 PM · Check-out before 11:00 AM · Quiet hours 10:00 PM–7:00 AM · Kitchen closes at 9:30 PM.',
-      },
-      {
-        title: 'Shared living',
-        description:
-          'Keep common areas clean, respect other pilgrims’ rest, no smoking indoors, pets not allowed.',
-      },
-      {
-        title: 'Security',
-        description:
-          'Lockers with a padlock, don’t leave valuables in plain sight, fire extinguishers signposted throughout.',
-      },
-      {
-        title: 'Included services',
-        description:
-          'Free WiFi, linens included, free use of the kitchen, luggage storage available.',
-      },
-    ],
+    rules: RULES_DATA.map((r) => ({ title: r.titleEN, description: r.descriptionEN })),
     emergencyHeading: 'Emergency contacts',
     emergencySubtitle: 'Available 24 hours a day, every day.',
     availability: 'Availability',
-    emergencies: [
-      {
-        title: 'General Emergency',
-        number: '112',
-        description: 'Police, fire and medical for any emergency.',
-        available: '24/7',
-      },
-      {
-        title: 'Medical Emergency',
-        number: '061',
-        description: 'Ambulance and urgent medical assistance.',
-        available: '24/7',
-      },
-      {
-        title: 'Local Police',
-        number: '092',
-        description: 'Carrascalejo local police.',
-        available: '24/7',
-      },
-      {
-        title: 'Health Center',
-        number: '924 123 456',
-        description: 'Carrascalejo Health Center, for non-urgent matters.',
-        available: 'Mon–Fri: 9am–9pm',
-      },
-    ],
+    emergencies: EMERGENCIES_DATA.map((e) => ({
+      title: e.titleEN,
+      number: e.number,
+      description: e.descriptionEN,
+      available: e.availableEN,
+    })),
     call: 'Call',
   },
 } as const;
