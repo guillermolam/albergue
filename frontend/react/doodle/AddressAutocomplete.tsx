@@ -2,11 +2,31 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MapPinIcon as MapPin, LoaderIcon as Loader } from './DoodleIcons';
 
+interface NominatimAddress {
+  road?: string;
+  house_number?: string;
+  city?: string;
+  town?: string;
+  village?: string;
+  postcode?: string;
+  country?: string;
+}
+
+interface NominatimResult {
+  place_id: number;
+  display_name: string;
+  address?: NominatimAddress;
+}
+
 interface AddressSuggestion {
   placeId: string;
   description: string;
   mainText: string;
   secondaryText: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  country: string;
 }
 
 interface AddressAutocompleteProps {
@@ -23,57 +43,45 @@ interface AddressAutocompleteProps {
   required?: boolean;
 }
 
-// Mock address suggestions (in production, connect to Google Maps API)
-const mockSuggestions: Record<string, AddressSuggestion[]> = {
-  calle: [
-    {
-      placeId: '1',
-      description: 'Calle Mayor, 123, Madrid, Spain',
-      mainText: 'Calle Mayor, 123',
-      secondaryText: 'Madrid, Spain',
-    },
-    {
-      placeId: '2',
-      description: 'Calle Gran Vía, 45, Madrid, Spain',
-      mainText: 'Calle Gran Vía, 45',
-      secondaryText: 'Madrid, Spain',
-    },
-    {
-      placeId: '3',
-      description: 'Calle de Alcalá, 67, Madrid, Spain',
-      mainText: 'Calle de Alcalá, 67',
-      secondaryText: 'Madrid, Spain',
-    },
-  ],
-  main: [
-    {
-      placeId: '4',
-      description: '123 Main Street, London, UK',
-      mainText: '123 Main Street',
-      secondaryText: 'London, UK',
-    },
-    {
-      placeId: '5',
-      description: '456 Main Avenue, New York, USA',
-      mainText: '456 Main Avenue',
-      secondaryText: 'New York, USA',
-    },
-  ],
-  rue: [
-    {
-      placeId: '6',
-      description: '78 Rue de Rivoli, Paris, France',
-      mainText: '78 Rue de Rivoli',
-      secondaryText: 'Paris, France',
-    },
-    {
-      placeId: '7',
-      description: '90 Rue Saint-Honoré, Paris, France',
-      mainText: '90 Rue Saint-Honoré',
-      secondaryText: 'Paris, France',
-    },
-  ],
-};
+const DEBOUNCE_MS = 500;
+const MIN_QUERY_LENGTH = 3;
+// Nominatim's usage policy (https://operations.osmfoundation.org/policies/
+// nominatim/) asks callers to identify themselves. Browsers can't set a
+// custom User-Agent from fetch(), so the `email` param is their documented
+// alternative for client-side callers.
+const NOMINATIM_CONTACT_EMAIL = 'info@alberguecarrascalejo.com';
+
+function toSuggestion(result: NominatimResult): AddressSuggestion {
+  const addr = result.address ?? {};
+  const streetParts = [addr.road, addr.house_number].filter(Boolean);
+  const street = streetParts.join(' ') || result.display_name.split(',')[0];
+  const city = addr.city ?? addr.town ?? addr.village ?? '';
+
+  return {
+    placeId: String(result.place_id),
+    description: result.display_name,
+    mainText: street,
+    secondaryText: [city, addr.country].filter(Boolean).join(', '),
+    address: street,
+    city,
+    postalCode: addr.postcode ?? '',
+    country: addr.country ?? '',
+  };
+}
+
+async function searchNominatim(query: string, signal: AbortSignal): Promise<AddressSuggestion[]> {
+  const url = new URL('https://nominatim.openstreetmap.org/search');
+  url.searchParams.set('q', query);
+  url.searchParams.set('format', 'json');
+  url.searchParams.set('limit', '5');
+  url.searchParams.set('addressdetails', '1');
+  url.searchParams.set('email', NOMINATIM_CONTACT_EMAIL);
+
+  const res = await fetch(url, { signal });
+  if (!res.ok) throw new Error(`Nominatim request failed: ${res.status}`);
+  const results = (await res.json()) as NominatimResult[];
+  return results.map(toSuggestion);
+}
 
 export function AddressAutocomplete({
   value,
@@ -89,6 +97,8 @@ export function AddressAutocomplete({
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const abortRef = useRef<AbortController | undefined>(undefined);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -105,40 +115,45 @@ export function AddressAutocomplete({
     setInputValue(value);
   }, [value]);
 
+  useEffect(() => {
+    return () => {
+      clearTimeout(debounceRef.current);
+      abortRef.current?.abort();
+    };
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
     onChange(newValue);
 
-    if (newValue.length >= 3) {
-      setLoading(true);
+    clearTimeout(debounceRef.current);
+    abortRef.current?.abort();
 
-      // Simulate API call delay
-      setTimeout(() => {
-        const searchTerm = newValue.toLowerCase();
-        let results: AddressSuggestion[] = [];
-
-        // Mock search through suggestions
-        Object.keys(mockSuggestions).forEach((key) => {
-          if (searchTerm.includes(key)) {
-            results = [...results, ...mockSuggestions[key]];
-          }
-        });
-
-        // If no specific matches, show all
-        if (results.length === 0 && searchTerm.length > 0) {
-          results = Object.values(mockSuggestions).flat().slice(0, 5);
-        }
-
-        setSuggestions(results);
-        setShowSuggestions(results.length > 0);
-        setLoading(false);
-      }, 300);
-    } else {
+    if (newValue.trim().length < MIN_QUERY_LENGTH) {
       setSuggestions([]);
       setShowSuggestions(false);
       setLoading(false);
+      return;
     }
+
+    setLoading(true);
+    debounceRef.current = setTimeout(async () => {
+      const controller = new AbortController();
+      abortRef.current = controller;
+      try {
+        const results = await searchNominatim(newValue.trim(), controller.signal);
+        setSuggestions(results);
+        setShowSuggestions(results.length > 0);
+      } catch (error) {
+        if ((error as Error).name !== 'AbortError') {
+          setSuggestions([]);
+          setShowSuggestions(false);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }, DEBOUNCE_MS);
   };
 
   const handleSuggestionClick = (suggestion: AddressSuggestion) => {
@@ -146,17 +161,12 @@ export function AddressAutocomplete({
     onChange(suggestion.mainText);
     setShowSuggestions(false);
 
-    // Extract city and postal code from mock data
-    if (onPlaceSelected) {
-      // Parse mock data (in production, use actual Google Places API response)
-      const parts = suggestion.description.split(', ');
-      onPlaceSelected({
-        address: suggestion.mainText,
-        city: parts[parts.length - 2] || '',
-        postalCode: '28001', // Mock postal code
-        country: parts[parts.length - 1] || '',
-      });
-    }
+    onPlaceSelected?.({
+      address: suggestion.address,
+      city: suggestion.city,
+      postalCode: suggestion.postalCode,
+      country: suggestion.country,
+    });
   };
 
   return (
@@ -212,6 +222,9 @@ export function AddressAutocomplete({
             }}
             onBlur={() => setFocused(false)}
             placeholder={placeholder}
+            minLength={1}
+            maxLength={120}
+            autoComplete="address-line1"
             className="w-full pl-11 pr-10 py-3 bg-transparent focus:outline-none text-[#5D4E37]"
             style={{ fontFamily: 'Patrick Hand, cursive', fontSize: '16px' }}
           />
@@ -286,9 +299,8 @@ export function AddressAutocomplete({
                   </motion.button>
                 ))}
 
-                {/* Google Maps Attribution */}
                 <div className="mt-2 px-3 py-2 text-xs text-gray-400 text-center border-t border-gray-200">
-                  <p className="hand-drawn">🗺️ Powered by Google Maps API (Demo)</p>
+                  <p className="hand-drawn">🗺️ © OpenStreetMap contributors</p>
                 </div>
               </div>
             </motion.div>
@@ -298,7 +310,7 @@ export function AddressAutocomplete({
 
       {/* Helper Text */}
       <AnimatePresence>
-        {focused && inputValue.length > 0 && inputValue.length < 3 && (
+        {focused && inputValue.length > 0 && inputValue.length < MIN_QUERY_LENGTH && (
           <motion.p
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}

@@ -1,17 +1,25 @@
 import { motion, AnimatePresence } from 'motion/react';
-import {
-  CreditCardIcon as CreditCard,
-  BanknoteIcon as Banknote,
-  CheckIcon as Check,
-} from '../doodle/DoodleIcons';
+import { actions } from 'astro:actions';
+import { CreditCardIcon as CreditCard, BanknoteIcon as Banknote } from '../doodle/DoodleIcons';
 import type { ComponentType } from 'react';
 import { useState } from 'react';
 import { WiredButton } from '../doodle/WiredButton';
 import { DateTimePicker } from '../doodle/DateTimePicker';
 import { useI18n } from '../hooks/useI18n';
 
+export interface PaymentResult {
+  method: 'card' | 'cash';
+  bookingReference: string;
+  eta?: Date;
+}
+
 interface PaymentStepProps {
-  onNext: (paymentData: Record<string, unknown>) => void;
+  /** Called once the booking is actually created server-side. For the cash
+   * path this means the booking is confirmed; for the card path this is
+   * only reached if Redsys was unavailable and we degraded to cash (a
+   * successful card payment instead redirects the whole page to Redsys and
+   * never returns here). */
+  onNext: (result: PaymentResult) => void;
   onBack: () => void;
   totalCost: number;
 }
@@ -21,17 +29,11 @@ const PAYMENT_COPY = {
     title: 'Método de Pago',
     subtitle: 'Elige cómo quieres pagar',
     cardTitle: 'Tarjeta de Crédito/Débito',
-    cardSubtitle: 'Paga de forma segura ahora',
+    cardSubtitle: 'Serás redirigido a nuestra pasarela de pago segura',
     cashTitle: 'Efectivo al Llegar',
     cashSubtitle: 'Paga al hacer el check-in',
     selectMethod: 'Selecciona un método de pago',
-    required: 'Este campo es obligatorio',
     provideEta: 'Indica tu hora estimada de llegada',
-    cardDetails: 'Datos de la Tarjeta',
-    cardNumber: 'Número de Tarjeta',
-    cardholderName: 'Nombre del Titular',
-    expiryDate: 'Fecha de Caducidad',
-    encrypted: 'Tu información de pago está cifrada y es segura',
     whenArrive: '¿Cuándo llegarás?',
     eta: 'Hora Estimada de Llegada',
     important: 'Importante:',
@@ -39,23 +41,22 @@ const PAYMENT_COPY = {
     exactChange: 'Trae el importe exacto si es posible',
     lateArrival: 'Las llegadas tardías deben avisarnos con antelación',
     back: 'Volver a Selección de Cama',
-    continue: 'Continuar al Resumen',
+    continue: 'Continuar',
+    redirecting: 'Redirigiendo al pago seguro...',
+    submitting: 'Confirmando tu reserva...',
+    cardUnavailable:
+      'El pago con tarjeta no está disponible en este momento. Tu reserva se ha confirmado para pago en efectivo al llegar.',
+    submitError: 'No se pudo confirmar tu reserva. Inténtalo de nuevo.',
   },
   en: {
     title: 'Payment Method',
     subtitle: "Choose how you'd like to pay",
     cardTitle: 'Credit/Debit Card',
-    cardSubtitle: 'Pay securely online now',
+    cardSubtitle: "You'll be redirected to our secure payment gateway",
     cashTitle: 'Cash at Arrival',
     cashSubtitle: 'Pay when you check in',
     selectMethod: 'Please select a payment method',
-    required: 'This field is required',
     provideEta: 'Please provide your estimated time of arrival',
-    cardDetails: 'Card Details',
-    cardNumber: 'Card Number',
-    cardholderName: 'Cardholder Name',
-    expiryDate: 'Expiry Date',
-    encrypted: 'Your payment information is encrypted and secure',
     whenArrive: 'When will you arrive?',
     eta: 'Estimated Time of Arrival (ETA)',
     important: 'Important:',
@@ -63,7 +64,12 @@ const PAYMENT_COPY = {
     exactChange: 'Bring exact change if possible',
     lateArrival: 'Late arrivals must notify us in advance',
     back: 'Back to Bed Selection',
-    continue: 'Continue to Summary',
+    continue: 'Continue',
+    redirecting: 'Redirecting to secure payment...',
+    submitting: 'Confirming your booking...',
+    cardUnavailable:
+      "Card payment isn't available right now. Your booking is confirmed for cash payment on arrival instead.",
+    submitError: "Couldn't confirm your booking. Please try again.",
   },
 } as const;
 
@@ -127,33 +133,45 @@ function PaymentMethodCard({
       </svg>
 
       <div className="relative z-10 p-8 text-center">
-        <Icon
-          className={`w-16 h-16 mx-auto mb-4 ${selected ? '' : 'text-gray-400'}`}
-          style={selected ? { color: activeColor } : undefined}
-        />
+        <Icon className={`w-16 h-16 mx-auto mb-4 ${selected ? '' : 'text-gray-400'}`} />
         <h3 className="text-2xl sketch-title text-[#5D4E37] mb-2">{title}</h3>
         <p className="text-sm text-gray-600 hand-drawn">{subtitle}</p>
-        {selected && (
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: activeColor }}
-          >
-            <Check className="w-5 h-5 text-white" />
-          </motion.div>
-        )}
       </div>
     </motion.button>
   );
 }
 
+/** Redirects the whole page to Redsys's hosted payment form -- this site
+ * never collects card data itself. Builds and submits a real <form> (not a
+ * fetch) so the browser navigates away, matching booking.astro's existing
+ * pattern for the same redirect. */
+function redirectToRedsys(payment: { gatewayUrl: string; clientToken: string; signature: string }) {
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = payment.gatewayUrl;
+
+  const fields: Record<string, string> = {
+    Ds_SignatureVersion: 'HMAC_SHA256_V1',
+    Ds_MerchantParameters: payment.clientToken,
+    Ds_Signature: payment.signature,
+  };
+  for (const [name, value] of Object.entries(fields)) {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = name;
+    input.value = value;
+    form.appendChild(input);
+  }
+
+  document.body.appendChild(form);
+  form.submit();
+}
+
 /**
- * Visual/structural port of the Figma prototype's mock payment step.
- * The card fields below are held in component state only and go nowhere --
- * this must NOT be wired to a real submission path before SEC-001/BOOK-004
- * (PSP-hosted tokenized fields) land per MIGRATION_PLAN.md; raw PAN/CVV must
- * never reach a request body, session, or persistence layer.
+ * This site never collects raw card data -- "pay by card" calls the real
+ * booking.submit Action and redirects the browser to Redsys's own hosted
+ * payment page (PSP-hosted, PCI-DSS-safe). Only method selection and, for
+ * cash, an ETA are ever held in this component's state.
  */
 export function PaymentStep({ onNext, onBack, totalCost }: PaymentStepProps) {
   const { locale } = useI18n();
@@ -162,50 +180,52 @@ export function PaymentStep({ onNext, onBack, totalCost }: PaymentStepProps) {
 
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'cash' | null>(null);
   const [etaDateTime, setEtaDateTime] = useState<Date>();
-  const [cardData, setCardData] = useState({ cardNumber: '', cardName: '', expiry: '', cvv: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
 
   const handlePaymentMethodSelect = (method: 'card' | 'cash') => {
     setPaymentMethod(method);
     setErrors({});
   };
 
-  const handleCardChange = (field: string, value: string) => {
-    setCardData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: '' }));
-    }
-  };
-
-  const validateCardFields = () => {
-    const newErrors: Record<string, string> = {};
-    if (!cardData.cardNumber) newErrors.cardNumber = t.required;
-    if (!cardData.cardName) newErrors.cardName = t.required;
-    if (!cardData.expiry) newErrors.expiry = t.required;
-    if (!cardData.cvv) newErrors.cvv = t.required;
-    return newErrors;
-  };
-
-  const validatePayment = () => {
+  const handleSubmit = async () => {
     if (!paymentMethod) {
       setErrors({ method: t.selectMethod });
-      return false;
+      return;
+    }
+    if (paymentMethod === 'cash' && !etaDateTime) {
+      setErrors({ eta: t.provideEta });
+      return;
     }
 
-    const newErrors =
-      paymentMethod === 'card' ? validateCardFields() : !etaDateTime ? { eta: t.provideEta } : {};
+    setErrors({});
+    setSubmitting(true);
+    const { data, error } = await actions.booking.submit();
+    setSubmitting(false);
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = () => {
-    if (validatePayment()) {
-      onNext({
-        method: paymentMethod,
-        ...(paymentMethod === 'card' ? cardData : { eta: etaDateTime }),
-      });
+    if (error || !data) {
+      setErrors({ _form: t.submitError });
+      return;
     }
+
+    if (paymentMethod === 'card' && data.payment && 'gatewayUrl' in data.payment) {
+      setRedirecting(true);
+      redirectToRedsys(
+        data.payment as { gatewayUrl: string; clientToken: string; signature: string }
+      );
+      return;
+    }
+
+    if (paymentMethod === 'card') {
+      setErrors({ _form: t.cardUnavailable });
+    }
+
+    onNext({
+      method: 'cash',
+      bookingReference: data.bookingReference,
+      eta: etaDateTime,
+    });
   };
 
   return (
@@ -222,7 +242,7 @@ export function PaymentStep({ onNext, onBack, totalCost }: PaymentStepProps) {
             transition={{ type: 'spring', stiffness: 150, delay: 0.2 }}
             className="inline-block mb-4"
           >
-            <CreditCard className="w-20 h-20 text-[#00AB39] mx-auto" strokeWidth={2} />
+            <CreditCard className="w-20 h-20 text-[#00AB39] mx-auto" />
           </motion.div>
           <h1 className="text-4xl md:text-5xl sketch-title text-[#5D4E37] mb-3">{t.title}</h1>
           <p className="text-lg text-gray-600 hand-drawn">{t.subtitle}</p>
@@ -282,10 +302,34 @@ export function PaymentStep({ onNext, onBack, totalCost }: PaymentStepProps) {
           </motion.div>
         )}
 
+        {errors._form && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 relative"
+          >
+            <svg className="absolute inset-0 w-full h-full pointer-events-none">
+              <rect
+                x="4"
+                y="4"
+                width="calc(100% - 8px)"
+                height="calc(100% - 8px)"
+                fill="#FFF9E6"
+                stroke="#EAC102"
+                strokeWidth="3"
+                rx="16"
+              />
+            </svg>
+            <div className="relative z-10 text-center p-4">
+              <p className="text-[#5D4E37] font-medium hand-drawn">{errors._form}</p>
+            </div>
+          </motion.div>
+        )}
+
         <AnimatePresence mode="wait">
           {paymentMethod === 'card' && (
             <motion.div
-              key="card-form"
+              key="card-info"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
@@ -308,86 +352,16 @@ export function PaymentStep({ onNext, onBack, totalCost }: PaymentStepProps) {
                 />
               </svg>
 
-              <div className="relative z-10 p-8 space-y-6">
-                <h3 className="text-2xl sketch-title text-[#00AB39] mb-6">💳 {t.cardDetails}</h3>
-
-                <div>
-                  <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                    {t.cardNumber} <span className="text-[#ED1C24]">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={cardData.cardNumber}
-                    onChange={(e) => handleCardChange('cardNumber', e.target.value)}
-                    placeholder="1234 5678 9012 3456"
-                    maxLength={19}
-                    className={`w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 ${errors.cardNumber ? 'focus:ring-[#ED1C24]' : 'focus:ring-[#00AB39]'}`}
-                    style={{ fontFamily: 'Patrick Hand, cursive' }}
-                    autoFocus
-                  />
-                  {errors.cardNumber && (
-                    <p className="mt-1 text-xs text-[#ED1C24] hand-drawn">{errors.cardNumber}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                    {t.cardholderName} <span className="text-[#ED1C24]">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={cardData.cardName}
-                    onChange={(e) => handleCardChange('cardName', e.target.value)}
-                    placeholder="John Doe"
-                    className={`w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 ${errors.cardName ? 'focus:ring-[#ED1C24]' : 'focus:ring-[#00AB39]'}`}
-                    style={{ fontFamily: 'Patrick Hand, cursive' }}
-                  />
-                  {errors.cardName && (
-                    <p className="mt-1 text-xs text-[#ED1C24] hand-drawn">{errors.cardName}</p>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                      {t.expiryDate} <span className="text-[#ED1C24]">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={cardData.expiry}
-                      onChange={(e) => handleCardChange('expiry', e.target.value)}
-                      placeholder="MM/YY"
-                      maxLength={5}
-                      className={`w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 ${errors.expiry ? 'focus:ring-[#ED1C24]' : 'focus:ring-[#00AB39]'}`}
-                      style={{ fontFamily: 'Patrick Hand, cursive' }}
-                    />
-                    {errors.expiry && (
-                      <p className="mt-1 text-xs text-[#ED1C24] hand-drawn">{errors.expiry}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                      CVV <span className="text-[#ED1C24]">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={cardData.cvv}
-                      onChange={(e) => handleCardChange('cvv', e.target.value)}
-                      placeholder="123"
-                      maxLength={4}
-                      className={`w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 ${errors.cvv ? 'focus:ring-[#ED1C24]' : 'focus:ring-[#00AB39]'}`}
-                      style={{ fontFamily: 'Patrick Hand, cursive' }}
-                    />
-                    {errors.cvv && (
-                      <p className="mt-1 text-xs text-[#ED1C24] hand-drawn">{errors.cvv}</p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="pt-4 text-center">
-                  <p className="text-sm text-gray-500 hand-drawn">🔒 {t.encrypted}</p>
-                </div>
+              <div className="relative z-10 p-8 text-center space-y-2">
+                <p className="text-lg text-[#5D4E37] hand-drawn">
+                  🔒{' '}
+                  {isEs ? 'Pago seguro gestionado por Redsys' : 'Secure payment handled by Redsys'}
+                </p>
+                <p className="text-sm text-gray-500 hand-drawn">
+                  {isEs
+                    ? 'Nunca recopilamos ni almacenamos los datos de tu tarjeta.'
+                    : 'We never collect or store your card details.'}
+                </p>
               </div>
             </motion.div>
           )}
@@ -461,12 +435,22 @@ export function PaymentStep({ onNext, onBack, totalCost }: PaymentStepProps) {
           transition={{ delay: 0.5 }}
           className="flex gap-4 justify-between"
         >
-          <WiredButton variant="outline" size="lg" onClick={onBack}>
+          <WiredButton
+            variant="outline"
+            size="lg"
+            onClick={onBack}
+            disabled={submitting || redirecting}
+          >
             ← {t.back}
           </WiredButton>
 
-          <WiredButton variant="primary" size="lg" onClick={handleSubmit}>
-            {t.continue} →
+          <WiredButton
+            variant="primary"
+            size="lg"
+            onClick={handleSubmit}
+            disabled={submitting || redirecting}
+          >
+            {redirecting ? t.redirecting : submitting ? t.submitting : `${t.continue} →`}
           </WiredButton>
         </motion.div>
       </motion.div>

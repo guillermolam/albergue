@@ -944,7 +944,11 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
     setUploadStatus('processing');
     setError('');
 
-    // Simulate OCR processing
+    // Simulate OCR processing. This stays mocked by design, not oversight:
+    // no OCR provider is integrated anywhere in this codebase (a real one
+    // is a distinct, separate feature). Its output only prefills
+    // PilgrimFormStep's fields as a convenience -- nothing from this step
+    // is ever submitted to the backend.
     await new Promise((resolve) => setTimeout(resolve, 2500));
 
     // Simulate random success/error (mock OCR -- no backend wired yet).

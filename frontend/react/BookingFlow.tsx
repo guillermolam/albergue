@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { actions } from 'astro:actions';
 import { AnimatePresence, motion } from 'motion/react';
 import { DatePickerStep } from './booking/DatePickerStep';
 import { IDUploadStep } from './booking/IDUploadStep';
 import { PilgrimFormStep } from './booking/PilgrimFormStep';
-import { BedSelectionStep } from './booking/BedSelectionStep';
-import { PaymentStep } from './booking/PaymentStep';
+import { BedSelectionStep, type AvailableBed } from './booking/BedSelectionStep';
+import { PaymentStep, type PaymentResult } from './booking/PaymentStep';
 import { PriceSummaryModal } from './booking/PriceSummaryModal';
 import { BookingStepper } from './booking/BookingStepper';
 import { HandDrawnCalendar } from './doodle/HandDrawnCalendar';
@@ -19,26 +20,36 @@ interface OcrData {
   nationality: string;
 }
 
-interface PilgrimData {
+interface PilgrimFormData {
   firstName: string;
   lastName: string;
-  email?: string;
-  [key: string]: unknown;
-}
-
-interface PaymentData {
-  method: 'card' | 'cash';
-  eta?: Date;
-  [key: string]: unknown;
+  secondLastName: string;
+  phone: string;
+  nationality: string;
+  country: string;
+  documentType: 'dni' | 'nie' | 'passport' | '';
+  documentNumber: string;
+  gender: 'male' | 'female' | 'other' | '';
+  addressLine1: string;
+  addressLine2: string;
+  postalCode: string;
+  city: string;
+  dateOfBirth: string;
+  email: string;
+  emergencyContact: string;
+  emergencyPhone: string;
 }
 
 interface BookingData {
   checkInDate?: Date;
   checkOutDate?: Date;
+  guestCount?: number;
   ocrData?: OcrData;
-  pilgrimData?: PilgrimData;
-  selectedBeds: number[];
-  paymentData?: PaymentData;
+  pilgrimData?: PilgrimFormData;
+  selectedBed?: AvailableBed;
+  pricePerNight?: number;
+  totalAmount?: number;
+  paymentResult?: PaymentResult;
 }
 
 interface BookingConfirmationStepProps {
@@ -46,6 +57,7 @@ interface BookingConfirmationStepProps {
   bookingData: BookingData;
   nights: number;
   pricePerNight: number;
+  totalAmount: number;
   onBack: () => void;
   onComplete: () => void;
 }
@@ -58,6 +70,7 @@ const CONFIRMATION_COPY = {
   es: {
     title: '¡Reserva Confirmada!',
     subtitle: 'Tu reserva está completa',
+    reference: 'Referencia de Reserva',
     stayDates: 'Fechas de Estancia',
     checkIn: 'Entrada',
     checkOut: 'Salida',
@@ -77,6 +90,7 @@ const CONFIRMATION_COPY = {
   en: {
     title: 'Booking Confirmed!',
     subtitle: 'Your reservation is complete',
+    reference: 'Booking Reference',
     stayDates: 'Stay Dates',
     checkIn: 'Check-in',
     checkOut: 'Check-out',
@@ -100,11 +114,12 @@ function BookingConfirmationStep({
   bookingData,
   nights,
   pricePerNight,
+  totalAmount,
   onBack,
   onComplete,
 }: BookingConfirmationStepProps) {
   const t = isEs ? CONFIRMATION_COPY.es : CONFIRMATION_COPY.en;
-  const paymentMethodLabel = bookingData.paymentData?.method === 'card' ? t.card : t.cash;
+  const paymentMethodLabel = bookingData.paymentResult?.method === 'card' ? t.card : t.cash;
   const nightLabel = nights > 1 ? t.nightPlural : t.night;
 
   return (
@@ -158,7 +173,16 @@ function BookingConfirmationStep({
         </svg>
 
         <div className="relative z-10 p-8 space-y-6">
-          <div>
+          {bookingData.paymentResult?.bookingReference && (
+            <div>
+              <h3 className="text-xl sketch-title mb-2">{t.reference}</h3>
+              <p className="text-2xl font-mono text-[#00AB39]">
+                {bookingData.paymentResult.bookingReference}
+              </p>
+            </div>
+          )}
+
+          <div className="border-t-2 border-dashed pt-6">
             <h3 className="text-xl sketch-title mb-4 flex items-center gap-2">
               <HandDrawnCalendar size={28} animate />
               {t.stayDates}
@@ -198,23 +222,23 @@ function BookingConfirmationStep({
           <div className="border-t-2 border-dashed pt-6">
             <h3 className="text-xl sketch-title mb-4">{t.bedSelection}</h3>
             <p className="text-gray-700 hand-drawn">
-              {t.bed} #{bookingData.selectedBeds[0]}
+              {t.bed} #{bookingData.selectedBed?.bedNumber} · {bookingData.selectedBed?.roomName}
             </p>
           </div>
 
           <div className="border-t-2 border-dashed pt-6">
             <h3 className="text-xl sketch-title mb-4">{t.paymentMethod}</h3>
             <p className="text-gray-700 hand-drawn">{paymentMethodLabel}</p>
-            {bookingData.paymentData?.method === 'cash' && bookingData.paymentData?.eta && (
+            {bookingData.paymentResult?.method === 'cash' && bookingData.paymentResult?.eta && (
               <p className="text-sm text-gray-600 mt-2 hand-drawn">
-                ETA: {new Date(bookingData.paymentData.eta).toLocaleString()}
+                ETA: {new Date(bookingData.paymentResult.eta).toLocaleString()}
               </p>
             )}
           </div>
 
           <div className="border-t-2 border-dashed pt-6">
             <h3 className="text-xl sketch-title mb-4">{t.totalCost}</h3>
-            <p className="text-3xl sketch-title text-[#00AB39]">€{nights * pricePerNight}</p>
+            <p className="text-3xl sketch-title text-[#00AB39]">€{totalAmount}</p>
             <p className="text-sm text-gray-500 hand-drawn">
               ({nights} {nightLabel} × €{pricePerNight}/{t.night})
             </p>
@@ -245,6 +269,36 @@ function BookingConfirmationStep({
   );
 }
 
+function toIsoDate(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
+
+/** Maps PilgrimFormStep's local field names to booking.setContact's Action
+ * input shape. addressLine2 has no counterpart in that schema, so it's
+ * folded into addressStreet rather than dropped. */
+function toSetContactInput(data: PilgrimFormData) {
+  const addressStreet = data.addressLine2
+    ? `${data.addressLine1}, ${data.addressLine2}`
+    : data.addressLine1;
+
+  return {
+    firstName: data.firstName,
+    lastName1: data.lastName,
+    lastName2: data.secondLastName || undefined,
+    email: data.email || undefined,
+    phone: data.phone,
+    documentType: data.documentType as 'dni' | 'nie' | 'passport',
+    documentNumber: data.documentNumber,
+    birthDate: data.dateOfBirth,
+    gender: data.gender as 'male' | 'female' | 'other',
+    nationality: data.nationality || undefined,
+    addressCountry: data.country,
+    addressStreet: addressStreet.slice(0, 120),
+    addressCity: data.city,
+    addressPostalCode: data.postalCode,
+  };
+}
+
 export function BookingFlow() {
   const { locale } = useI18n();
   const isEs = locale !== 'en';
@@ -253,21 +307,36 @@ export function BookingFlow() {
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [isPriceModalExpanded, setIsPriceModalExpanded] = useState(false);
 
-  const [bookingData, setBookingData] = useState<BookingData>({
-    selectedBeds: [],
-  });
-
-  const pricePerNight = 10;
+  const [bookingData, setBookingData] = useState<BookingData>({});
 
   const markStepComplete = (step: number) => {
     setCompletedSteps((prev) => (prev.includes(step) ? prev : [...prev, step]));
   };
 
-  const handleDateNext = (checkIn: Date, checkOut: Date) => {
-    setBookingData((prev) => ({ ...prev, checkInDate: checkIn, checkOutDate: checkOut }));
+  const handleDateNext = async (
+    checkIn: Date,
+    checkOut: Date,
+    guestCount: number
+  ): Promise<boolean> => {
+    const { error: datesError } = await actions.booking.setDates({
+      arrivalDate: toIsoDate(checkIn),
+      departureDate: toIsoDate(checkOut),
+    });
+    if (datesError) return false;
+
+    const { error: guestsError } = await actions.booking.setGuests({ guestCount });
+    if (guestsError) return false;
+
+    setBookingData((prev) => ({
+      ...prev,
+      checkInDate: checkIn,
+      checkOutDate: checkOut,
+      guestCount,
+    }));
     markStepComplete(1);
     setCurrentStep(2);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    return true;
   };
 
   const handleIDNext = (data: OcrData) => {
@@ -277,22 +346,35 @@ export function BookingFlow() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleFormNext = (data: PilgrimData) => {
+  const handleFormNext = async (data: PilgrimFormData): Promise<boolean> => {
+    const { error } = await actions.booking.setContact(toSetContactInput(data));
+    if (error) return false;
+
     setBookingData((prev) => ({ ...prev, pilgrimData: data }));
     markStepComplete(3);
     setCurrentStep(4);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    return true;
   };
 
-  const handleBedNext = (beds: number[]) => {
-    setBookingData((prev) => ({ ...prev, selectedBeds: beds }));
+  const handleBedNext = async (bed: AvailableBed): Promise<boolean> => {
+    const { data, error } = await actions.booking.setBeds({ selectedBedId: String(bed.id) });
+    if (error || !data) return false;
+
+    setBookingData((prev) => ({
+      ...prev,
+      selectedBed: bed,
+      pricePerNight: data.quote ? Number(data.quote.pricePerNight) : prev.pricePerNight,
+      totalAmount: data.quote ? Number(data.quote.totalAmount) : prev.totalAmount,
+    }));
     markStepComplete(4);
     setCurrentStep(5);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    return true;
   };
 
-  const handlePaymentNext = (paymentData: Record<string, unknown>) => {
-    setBookingData((prev) => ({ ...prev, paymentData: paymentData as PaymentData }));
+  const handlePaymentNext = (result: PaymentResult) => {
+    setBookingData((prev) => ({ ...prev, paymentResult: result }));
     markStepComplete(5);
     setIsPriceModalExpanded(true);
     setCurrentStep(6);
@@ -316,7 +398,8 @@ export function BookingFlow() {
         )
       : 0;
 
-  const selectedBed = bookingData.selectedBeds.length > 0 ? bookingData.selectedBeds[0] : undefined;
+  const pricePerNight = bookingData.pricePerNight ?? 0;
+  const totalAmount = bookingData.totalAmount ?? nights * pricePerNight;
 
   return (
     <div className="min-h-screen bg-[#FFF9F0] paper-texture flex overflow-x-hidden w-full max-w-[100vw]">
@@ -425,7 +508,7 @@ export function BookingFlow() {
             <a href="/">
               <h2 className="sketch-title text-lg text-[#00AB39]">Albergue Carrascalejo</h2>
               <p className="text-xs text-gray-500 hand-drawn">
-                {isEs ? 'Paso' : 'Step'} {currentStep} {isEs ? 'de' : 'of'} 7
+                {isEs ? 'Paso' : 'Step'} {currentStep} {isEs ? 'de' : 'of'} 6
               </p>
             </a>
           </div>
@@ -445,6 +528,7 @@ export function BookingFlow() {
                   onNext={handleDateNext}
                   initialCheckIn={bookingData.checkInDate}
                   initialCheckOut={bookingData.checkOutDate}
+                  initialGuestCount={bookingData.guestCount}
                 />
               </motion.div>
             )}
@@ -485,7 +569,12 @@ export function BookingFlow() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <BedSelectionStep onNext={handleBedNext} onBack={() => setCurrentStep(3)} />
+                <BedSelectionStep
+                  checkInDate={bookingData.checkInDate}
+                  checkOutDate={bookingData.checkOutDate}
+                  onNext={handleBedNext}
+                  onBack={() => setCurrentStep(3)}
+                />
               </motion.div>
             )}
 
@@ -500,7 +589,7 @@ export function BookingFlow() {
                 <PaymentStep
                   onNext={handlePaymentNext}
                   onBack={() => setCurrentStep(4)}
-                  totalCost={nights * pricePerNight}
+                  totalCost={totalAmount}
                 />
               </motion.div>
             )}
@@ -511,6 +600,7 @@ export function BookingFlow() {
                 bookingData={bookingData}
                 nights={nights}
                 pricePerNight={pricePerNight}
+                totalAmount={totalAmount}
                 onBack={() => setCurrentStep(5)}
                 onComplete={handleComplete}
               />
@@ -524,7 +614,7 @@ export function BookingFlow() {
             checkOutDate={bookingData.checkOutDate}
             nights={nights}
             pricePerNight={pricePerNight}
-            selectedBed={selectedBed}
+            selectedBed={bookingData.selectedBed?.bedNumber}
             isExpanded={isPriceModalExpanded}
             onClose={() => setIsPriceModalExpanded(false)}
           />
