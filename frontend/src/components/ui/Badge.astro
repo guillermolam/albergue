@@ -1,76 +1,46 @@
 ---
 /**
- * Badge Component - WebcoreUI Wrapper
+ * Badge Component - Matching Figma Design
  *
- * Variants (mapped to WebcoreUI themes):
- * - green -> 'success'
- * - grey -> 'secondary'
- * - success -> 'success'
- * - warning -> 'warning'
- * - error -> 'alert'
- * - info -> 'info'
+ * Variants:
+ * - green: Green background (default)
+ * - grey: Grey background
+ * - success: Success status
+ * - warning: Warning status
+ * - error: Error status
+ * - info: Info status
  *
  * Sizes:
- * - sm: Small (via className)
+ * - sm: Small
  * - md: Medium (default)
- *
- * Props:
- * - dot: Show indicator dot
- * - transparent: Use transparent variant (WebcoreUI prop)
  */
-
-import { Badge as WcBadge } from 'webcoreui/astro';
 
 interface Props {
   variant?: 'green' | 'grey' | 'success' | 'warning' | 'error' | 'info';
   size?: 'sm' | 'md';
   dot?: boolean;
-  transparent?: boolean;
-  className?: string;
 }
 
-const {
-  variant = 'green',
-  size = 'md',
-  dot = false,
-  transparent = false,
-  className = '',
-} = Astro.props;
+const { variant = 'green', size = 'md', dot = false } = Astro.props;
 
-// Map our variants to WebcoreUI themes
-const themeMap: Record<string, string> = {
-  green: 'success',
-  grey: 'secondary',
-  success: 'success',
-  warning: 'warning',
-  error: 'alert',
-  info: 'info',
+const variantClasses = {
+  green: 'badge-green',
+  grey: 'badge-grey',
+  success: 'badge-success',
+  warning: 'badge-warning',
+  error: 'badge-error',
+  info: 'badge-info',
 };
 
-const theme = themeMap[variant] || 'success';
-const sizeClass = size === 'sm' ? 'w-badge-sm' : '';
-const classes = `${sizeClass} ${className}`.trim();
+const sizeClasses = {
+  sm: 'badge-sm',
+  md: '',
+};
+
+const classes = `badge ${variantClasses[variant]} ${sizeClasses[size]}`;
 ---
 
-<WcBadge theme={theme} transparent={transparent} className={classes}>
-  {dot && <span class="w-badge-dot" aria-hidden="true" />}
+<span class={classes}>
+  {dot && <span class="w-1.5 h-1.5 rounded-full bg-current" aria-hidden="true" />}
   <slot />
-</WcBadge>
-
-<style>
-  /* Small badge size */
-  .w-badge-sm {
-    font-size: var(--w-font-size-xs, 12px);
-    padding: var(--w-spacing-xxs, 2px) var(--w-spacing-xs, 5px);
-  }
-
-  /* Dot indicator */
-  .w-badge-dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: currentColor;
-    margin-right: var(--w-spacing-xxs, 2px);
-  }
-</style>
+</span>

@@ -1,6 +1,6 @@
 ---
 /**
- * Stat Component - WebcoreUI Wrapper
+ * Stat Component - Matching Figma Design
  *
  * A flexible stat display component with figure, title, value, and description.
  *
@@ -12,86 +12,31 @@
  * - variant: Visual variant (default, doodle)
  */
 
-import { Card, Flex, Icon } from 'webcoreui/astro';
-
 interface Props {
   title?: string;
   value?: string | number;
   desc?: string;
   variant?: 'default' | 'doodle';
-  className?: string;
 }
 
-const { title, value, desc, variant = 'default', className = '' } = Astro.props;
+const { title, value, desc, variant = 'default' } = Astro.props;
 
-const variantClassMap = {
-  default: 'w-stat-default',
-  doodle: 'w-stat-doodle',
+const variantClasses = {
+  default: 'stat',
+  doodle: 'stat card-doodle',
 };
-
-const variantClass = variantClassMap[variant] || variantClassMap.default;
-const classes = `${variantClass} ${className}`.trim();
 ---
 
-<Card flat={variant === 'default'} secondary={variant === 'doodle'} compact className={classes}>
-  <Flex direction="column" align="center" gap="xs" class="w-stat-content">
-    <div class="w-stat-figure">
-      <slot name="figure" />
-    </div>
+<div class={variantClasses[variant]}>
+  <div class="stat-figure">
+    <slot name="figure" />
+  </div>
 
-    {title && <div class="w-stat-title">{title}</div>}
+  {title && <div class="stat-title">{title}</div>}
 
-    {value !== undefined && <div class="w-stat-value">{value}</div>}
+  {value !== undefined && <div class="stat-value">{value}</div>}
 
-    {desc && <div class="w-stat-desc">{desc}</div>}
+  {desc && <div class="stat-desc">{desc}</div>}
 
-    <slot />
-  </Flex>
-</Card>
-
-<style>
-  .w-stat-content {
-    text-align: center;
-    padding: var(--w-spacing-xs, 5px) 0;
-  }
-
-  .w-stat-figure {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--w-color-primary, #00ab39);
-  }
-
-  .w-stat-title {
-    font-size: var(--w-font-size-sm, 14px);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--w-color-primary-40, #4caf50);
-    margin-bottom: var(--w-spacing-xxs, 2px);
-    font-family: var(--w-font-bold);
-  }
-
-  .w-stat-value {
-    font-size: var(--w-font-size-3xl, 32px);
-    font-weight: 700;
-    color: var(--w-color-primary-70, #1b5e20);
-    line-height: 1;
-    font-family: var(--w-font-bold);
-  }
-
-  .w-stat-desc {
-    font-size: var(--w-font-size-xs, 12px);
-    color: var(--w-color-primary-30, #81c784);
-    margin-top: var(--w-spacing-xxs, 2px);
-    font-family: var(--w-font-regular);
-  }
-
-  /* Doodle variant uses secondary card styling */
-  .w-stat-doodle {
-    border-width: var(--w-card-border-width, 3px);
-    border-radius: var(--w-card-radius, 12px);
-    box-shadow: var(--w-card-shadow, 4px 4px 0 #5d4e37);
-    border-color: var(--w-card-border, #5d4e37);
-  }
-</style>
+  <slot />
+</div>
