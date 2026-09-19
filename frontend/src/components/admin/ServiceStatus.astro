@@ -3,7 +3,7 @@ interface ServiceEntry {
   name: string;
   status: 'healthy' | 'warning' | 'error';
   responseTime: string;
-  message: string;
+  message?: string;
 }
 
 export interface Props {

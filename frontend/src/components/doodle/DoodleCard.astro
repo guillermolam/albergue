@@ -6,7 +6,8 @@
  */
 
 export interface Props {
-  variant?: 'default' | 'elevated' | 'outlined' | 'flat' | 'paper';
+  variant?: 'default' | 'elevated' | 'outlined' | 'flat' | 'paper' | 'subtle' | 'gradient';
+  gradient?: 'green';
   padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
   hoverable?: boolean;
   clickable?: boolean;
@@ -17,6 +18,7 @@ export interface Props {
 
 const {
   variant = 'default',
+  gradient = 'green',
   padding = 'md',
   hoverable = false,
   clickable = false,
@@ -32,6 +34,12 @@ const variantClasses = {
   outlined: 'bg-transparent border-[#00AB39]',
   flat: 'bg-[#FFF9F0] border-[#5D4E37]',
   paper: 'bg-[#FFF9F0] border-[#8B6914]',
+  subtle: 'bg-[#FFF9F0]/60 border-[#5D4E37]/40',
+  gradient: '',
+};
+
+const gradientClasses: Record<NonNullable<Props['gradient']>, string> = {
+  green: 'bg-linear-to-br from-[#00AB39]/10 to-[#EAC102]/10 border-[#00AB39]',
 };
 
 // Padding styles
@@ -61,6 +69,7 @@ const additionalProps = href ? { href } : {};
     'doodle-border doodle-shadow wired-border paper-texture',
     'border-2',
     variantClasses[variant],
+    variant === 'gradient' ? gradientClasses[gradient] : '',
     paddingClasses[padding],
     interactiveClasses,
     className,
