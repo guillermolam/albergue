@@ -6,8 +6,7 @@
 import { db } from "../lib/db.js";
 import { contactMessages } from "@albergue/domain-model";
 import { eq, count, desc, asc } from "drizzle-orm";
-import type { ContactMessage } from "../types/index.js";
-import type { PaginatedResponse, PaginationParams } from "../types/index.js";
+import type { ContactMessage, PaginatedResponse, PaginationParams } from "../types/index.js";
 
 /**
  * Get all contact messages with pagination, newest first by default
@@ -15,12 +14,7 @@ import type { PaginatedResponse, PaginationParams } from "../types/index.js";
 export async function getAllContactMessages(
   params: PaginationParams = {},
 ): Promise<PaginatedResponse<ContactMessage>> {
-  const {
-    page = 1,
-    pageSize = 20,
-    orderBy = "createdAt",
-    orderDirection = "desc",
-  } = params;
+  const { page = 1, pageSize = 20, orderDirection = "desc" } = params;
 
   const offset = (page - 1) * pageSize;
   const orderFn = orderDirection === "asc" ? asc : desc;
@@ -28,13 +22,11 @@ export async function getAllContactMessages(
   const [countResult] = await db.select({ count: count() }).from(contactMessages);
   const total = countResult?.count || 0;
 
-  const orderColumn =
-    orderBy === "createdAt" ? contactMessages.createdAt : contactMessages.createdAt;
-
+  // createdAt is the only sortable column contact_messages has today.
   const results = await db
     .select()
     .from(contactMessages)
-    .orderBy(orderFn(orderColumn))
+    .orderBy(orderFn(contactMessages.createdAt))
     .limit(pageSize)
     .offset(offset);
 

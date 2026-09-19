@@ -28,7 +28,7 @@ interface PageHeroProps {
   children?: ReactNode;
 }
 
-export function PageHero({ eyebrow, title, subtitle, ctas, children }: PageHeroProps) {
+export function PageHero({ eyebrow, title, subtitle, ctas, children }: Readonly<PageHeroProps>) {
   const sectionRef = useRef<HTMLElement>(null);
   const patternRef = useRef<HTMLDivElement>(null);
 

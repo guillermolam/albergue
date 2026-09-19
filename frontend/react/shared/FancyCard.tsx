@@ -36,7 +36,7 @@ export function FancyCard({
   variant = 'default',
   onClick,
   className = '',
-}: FancyCardProps) {
+}: Readonly<FancyCardProps>) {
   const isFeatured = variant === 'featured';
 
   return (

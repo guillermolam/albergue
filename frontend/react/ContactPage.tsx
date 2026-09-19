@@ -48,6 +48,15 @@ const COPY = {
 
 type FormStatus = 'idle' | 'sending' | 'success' | 'error';
 
+/** FormData.get() returns `FormDataEntryValue | null` (string | File | null),
+ * so a bare `String(x || '')` would stringify a File as "[object File]" if
+ * one were ever present. This form has no file inputs, but narrow properly
+ * rather than relying on that. */
+function getStringField(formData: FormData, key: string): string {
+  const value = formData.get(key);
+  return typeof value === 'string' ? value : '';
+}
+
 export function ContactPage() {
   const { locale } = useI18n();
   const isEs = locale !== 'en';
@@ -63,10 +72,10 @@ export function ContactPage() {
 
     const formData = new FormData(event.currentTarget);
     const { data, error } = await actions.contact.submit({
-      name: String(formData.get('name') || ''),
-      email: String(formData.get('email') || ''),
-      subject: String(formData.get('subject') || '') || undefined,
-      message: String(formData.get('message') || ''),
+      name: getStringField(formData, 'name'),
+      email: getStringField(formData, 'email'),
+      subject: getStringField(formData, 'subject') || undefined,
+      message: getStringField(formData, 'message'),
     });
 
     if (error || !data?.ok) {
@@ -202,9 +211,9 @@ export function ContactPage() {
             </WiredButton>
 
             {status === 'success' && (
-              <p role="status" className="text-sm font-semibold text-[#00AB39]">
+              <output className="block text-sm font-semibold text-[#00AB39]">
                 {t.formSuccess}
-              </p>
+              </output>
             )}
             {status === 'error' && (
               <p role="alert" className="text-sm font-semibold text-[#ED1C24]">

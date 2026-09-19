@@ -28,7 +28,7 @@ function getStatusColor(status: string | null) {
   }
 }
 
-export function ContactMessagesTable({ initialMessages }: ContactMessagesTableProps) {
+export function ContactMessagesTable({ initialMessages }: Readonly<ContactMessagesTableProps>) {
   return (
     <Card>
       <CardHeader>

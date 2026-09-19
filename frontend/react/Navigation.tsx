@@ -80,11 +80,11 @@ function DesktopNavDropdown({
   group,
   isGroupActive,
   currentPath,
-}: {
+}: Readonly<{
   group: NavGroupData;
   isGroupActive: boolean;
   currentPath: string;
-}) {
+}>) {
   return (
     <NavigationMenuItem className="relative">
       <NavigationMenuTrigger>{group.trigger}</NavigationMenuTrigger>
@@ -193,12 +193,12 @@ function MobileNavSection({
   currentPath,
   onNavigate,
   delay,
-}: {
+}: Readonly<{
   group: NavGroupData;
   currentPath: string;
   onNavigate: () => void;
   delay: number;
-}) {
+}>) {
   const groupActive = currentPath === group.prefix || currentPath.startsWith(`${group.prefix}/`);
   const [expanded, setExpanded] = useState(groupActive);
 

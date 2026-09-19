@@ -58,7 +58,7 @@ test('unknown routes render the 404 page', async ({ page }) => {
 });
 
 test('desktop nav dropdown opens, shows sub-links, and navigates', async ({ page }) => {
-  await page.goto('/', { waitUntil: 'networkidle' });
+  await page.goto('/');
 
   // Scoped to the header nav landmark -- the footer also links to /hostel/info
   // labeled "El Albergue", so an unscoped role query is ambiguous.
@@ -76,7 +76,7 @@ test('desktop nav dropdown opens, shows sub-links, and navigates', async ({ page
 
 test('mobile nav accordion expands and navigates', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/', { waitUntil: 'networkidle' });
+  await page.goto('/');
 
   const nav = page.getByRole('navigation', { name: 'Main navigation' });
   await nav.getByRole('button', { name: /Abrir menú/ }).click();
@@ -91,7 +91,7 @@ test('mobile nav accordion expands and navigates', async ({ page }) => {
 });
 
 test('contact form submits and shows a result', async ({ page }) => {
-  await page.goto('/contact', { waitUntil: 'networkidle' });
+  await page.goto('/contact');
 
   await page.getByLabel('Nombre').fill('Playwright Test');
   await page.getByLabel('Email', { exact: true }).fill('playwright-test@example.com');

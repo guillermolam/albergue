@@ -21,7 +21,9 @@ interface MapLibreMapProps {
 
 function createMarkerElement(label: string, active?: boolean): HTMLDivElement {
   const el = document.createElement('div');
-  el.setAttribute('role', 'img');
+  // A pin the user can click, not a static picture -- "button" describes it
+  // more accurately than "img" ever would.
+  el.setAttribute('role', 'button');
   el.setAttribute('aria-label', label);
   el.style.cursor = 'pointer';
   el.innerHTML = `
@@ -40,7 +42,12 @@ function createMarkerElement(label: string, active?: boolean): HTMLDivElement {
 
 /** client:only="react" -- genuine browser-only WebGL library, same rationale
  * as HostelScene.tsx for Three.js this session: SSR would crash on import. */
-export function MapLibreMap({ center, zoom = 14, markers, className = '' }: MapLibreMapProps) {
+export function MapLibreMap({
+  center,
+  zoom = 14,
+  markers,
+  className = '',
+}: Readonly<MapLibreMapProps>) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MaplibreMapInstance | null>(null);
   const markersRef = useRef<Marker[]>([]);
@@ -86,7 +93,7 @@ export function MapLibreMap({ center, zoom = 14, markers, className = '' }: MapL
     <div
       ref={containerRef}
       className={`h-80 w-full overflow-hidden rounded-xl border-2 border-[#5D4E37]/30 doodle-shadow ${className}`}
-      role="img"
+      role="region"
       aria-label="Mapa interactivo"
     />
   );
