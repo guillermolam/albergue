@@ -1,8 +1,8 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { vi } from "vitest";
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 
-vi.mock("@/lib/toast", () => {
+vi.mock('@/lib/toast', () => {
   return {
     toast: {
       success: vi.fn(),
@@ -14,11 +14,11 @@ vi.mock("@/lib/toast", () => {
   };
 });
 
-import { ToastDemo } from "@/components/ToastDemo";
-import { toast } from "@/lib/toast";
+import { ToastDemo } from '@/components/ToastDemo';
+import { toast } from '@/lib/toast';
 
-describe("ToastDemo", () => {
-  it("renders all toast buttons", () => {
+describe('ToastDemo', () => {
+  it('renders all toast buttons', () => {
     render(<ToastDemo />);
 
     expect(screen.getByText(/Success Toast/i)).toBeInTheDocument();
@@ -28,33 +28,33 @@ describe("ToastDemo", () => {
     expect(screen.getByText(/Promise Toast/i)).toBeInTheDocument();
   });
 
-  it("calls toast helpers on click", async () => {
+  it('calls toast helpers on click', async () => {
     const user = userEvent.setup();
     render(<ToastDemo />);
 
     await user.click(screen.getByText(/Success Toast/i));
     expect(toast.success).toHaveBeenCalledWith(
-      "Success!",
-      "Your action was completed successfully.",
+      'Success!',
+      'Your action was completed successfully.'
     );
 
     await user.click(screen.getByText(/Error Toast/i));
-    expect(toast.error).toHaveBeenCalledWith("Error!", "Something went wrong. Please try again.");
+    expect(toast.error).toHaveBeenCalledWith('Error!', 'Something went wrong. Please try again.');
 
     await user.click(screen.getByText(/Info Toast/i));
-    expect(toast.info).toHaveBeenCalledWith("Info", "Here is some useful information.");
+    expect(toast.info).toHaveBeenCalledWith('Info', 'Here is some useful information.');
 
     await user.click(screen.getByText(/Warning Toast/i));
-    expect(toast.warning).toHaveBeenCalledWith("Warning!", "Please be careful with this action.");
+    expect(toast.warning).toHaveBeenCalledWith('Warning!', 'Please be careful with this action.');
 
     await user.click(screen.getByText(/Promise Toast/i));
     expect(toast.promise).toHaveBeenCalled();
     const [promiseArg, opts] = (toast.promise as any).mock.calls[0];
-    expect(typeof promiseArg?.then).toBe("function");
+    expect(typeof promiseArg?.then).toBe('function');
     expect(opts).toMatchObject({
-      loading: "Loading...",
-      success: "Completed!",
-      error: "Failed!",
+      loading: 'Loading...',
+      success: 'Completed!',
+      error: 'Failed!',
     });
   });
 });

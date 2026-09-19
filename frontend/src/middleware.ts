@@ -1,9 +1,9 @@
-import { sequence } from "astro:middleware";
-import { requestIdMiddleware } from "./middleware/request-id";
-import { securityMiddleware } from "./middleware/security";
-import { localeMiddleware } from "./middleware/locale";
-import { authMiddleware } from "./middleware/auth";
-import { mockApiMiddleware } from "./middleware/mock-api";
+import { sequence } from 'astro:middleware';
+import { requestIdMiddleware } from './middleware/request-id';
+import { securityMiddleware } from './middleware/security';
+import { localeMiddleware } from './middleware/locale';
+import { authMiddleware } from './middleware/auth';
+import { mockApiMiddleware } from './middleware/mock-api';
 
 /**
  * Middleware chain (ASTRO-004). Order matters:
@@ -14,5 +14,5 @@ export const onRequest = sequence(
   securityMiddleware,
   localeMiddleware,
   authMiddleware,
-  mockApiMiddleware,
+  mockApiMiddleware
 );
