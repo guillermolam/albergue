@@ -2,7 +2,7 @@
 export const prerender = false;
 
 import AdminLayout from '../../layouts/AdminLayout.astro';
-import ServiceStatus from '../../components/admin/ServiceStatus.astro';
+import { ServiceStatusIsland } from '../../islands';
 import { mockHealthChecks } from '../../lib/healthchecks';
 ---
 
@@ -99,7 +99,7 @@ import { mockHealthChecks } from '../../lib/healthchecks';
     </div>
 
     <!-- Real-time Service Status Component -->
-    <ServiceStatus initialServices={mockHealthChecks} />
+    <ServiceStatusIsland initialServices={mockHealthChecks} pollInterval={30000} client:load />
 
     <!-- Quick Actions -->
     <div class="space-y-4">

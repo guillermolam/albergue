@@ -1,0 +1,108 @@
+---
+import { ErrorBoundary } from '../../../react/ErrorBoundary';
+
+export interface Props {
+  initialKm?: number;
+  onSubmit?: string; // URL endpoint
+}
+
+const { initialKm = 0, onSubmit = '/api/camino/log-km' } = Astro.props;
+---
+
+<ErrorBoundary
+  fallback={
+    <div class="bg-base-200 rounded-box p-6 text-center">
+      <p class="text-base-content/60">No se pudo cargar el registrador</p>
+    </div>
+  }
+>
+  <daily-km-logger class="block" data-initial-km={String(initialKm)} data-on-submit={onSubmit}>
+    <!-- Server-rendered fallback -->
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title flex items-center gap-2">
+          <span>🏃</span>
+          Registrar Km de Hoy
+        </h2>
+        <form class="flex gap-3 mt-4" id="km-logger-form">
+          <input
+            type="number"
+            id="km-input"
+            name="km"
+            min="0"
+            step="0.1"
+            value={initialKm}
+            placeholder="Km recorridos hoy"
+            class="input input-bordered flex-1"
+            aria-label="Kilómetros recorridos hoy"
+          />
+          <button type="submit" class="btn btn-primary">
+            Guardar
+          </button>
+        </form>
+        <p id="km-status" class="text-sm text-base-content/60 mt-2"></p>
+      </div>
+    </div>
+  </daily-km-logger>
+</ErrorBoundary>
+
+<script is:inline>
+  (function () {
+    'use strict';
+
+    const root = document.querySelector('daily-km-logger');
+    if (!root) return;
+
+    const endpoint = root.dataset.submit || '/api/camino/log-km';
+    const form = root.querySelector('#km-logger-form');
+    const input = root.querySelector('#km-input');
+    const status = root.querySelector('#km-status');
+
+    if (!form || !input) return;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const km = parseFloat(input.value);
+      if (isNaN(km) || km < 0) {
+        setStatus('Por favor introduce un número válido de km', 'error');
+        return;
+      }
+
+      setStatus('Guardando...', 'loading');
+
+      fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({ km, date: new Date().toISOString().split('T')[0] }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.success) {
+            setStatus(`${km} km guardados para hoy ✓`, 'success');
+          } else {
+            setStatus(data.error || 'Error al guardar', 'error');
+          }
+        })
+        .catch(() => {
+          setStatus('Error de conexión', 'error');
+        });
+    });
+
+    function setStatus(msg, type) {
+      if (!status) return;
+      status.textContent = msg;
+      status.className =
+        'text-sm mt-2 ' +
+        (type === 'error'
+          ? 'text-error'
+          : type === 'success'
+            ? 'text-success'
+            : type === 'loading'
+              ? 'text-warning'
+              : 'text-base-content/60');
+    }
+  })();
+</script>

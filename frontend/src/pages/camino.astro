@@ -5,6 +5,7 @@ import Layout from '../layouts/Layout.astro';
 import DoodleCard from '../components/doodle/DoodleCard.astro';
 import DoodleButton from '../components/doodle/DoodleButton.astro';
 import Icon from '../components/core/Icon.astro';
+import { CaminoStageProgress, DailyKmLogger } from '../islands';
 ---
 
 <Layout title="Mi Camino - Albergue Municipal Carrascalejo">
@@ -152,72 +153,17 @@ import Icon from '../components/core/Icon.astro';
         </div>
       </div>
     </section>
-
     <!-- Current Stage -->
     <section class="py-16 bg-linear-to-br from-green-50 to-cream">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <DoodleCard variant="gradient" gradient="green" padding="lg">
-          <h2 class="text-2xl font-bold text-charcoal mb-6 font-sketch flex items-center gap-3">
-            <span class="text-3xl">🗺️</span>
-            Etapa Actual
-            <span class="text-sm font-normal text-dark-grey">Mérida → Alcuéscar (38.2 km)</span>
-          </h2>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div>
-              <div class="flex justify-between mb-4">
-                <span class="text-sm font-semibold text-dark-grey">Progreso de Etapa</span>
-                <span class="text-sm font-bold text-green-darker">68%</span>
-              </div>
-              <div class="w-full bg-green-light rounded-full h-3 mb-4">
-                <div class="bg-green-dark h-3 rounded-full" style="width: 68%"></div>
-              </div>
-              <div class="grid grid-cols-2 gap-4 text-sm text-dark-grey">
-                <div class="bg-white p-3 rounded-lg">
-                  <div class="font-semibold text-charcoal">26 km</div>
-                  <div class="text-xs text-dark-grey">Completados</div>
-                </div>
-                <div class="bg-white p-3 rounded-lg">
-                  <div class="font-semibold text-charcoal">12.2 km</div>
-                  <div class="text-xs text-dark-grey">Restantes</div>
-                </div>
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div class="bg-white p-4 rounded-lg">
-                <div class="flex items-center gap-3 mb-2">
-                  <span class="text-xl">📍</span>
-                  <div class="font-semibold text-charcoal">Punto de Partida</div>
-                </div>
-                <div class="text-sm text-dark-grey">Mérida</div>
-                <div class="text-xs text-dark-grey">08:30 AM</div>
-              </div>
-              <div class="bg-white p-4 rounded-lg">
-                <div class="flex items-center gap-3 mb-2">
-                  <span class="text-xl">🎯</span>
-                  <div class="font-semibold text-charcoal">Destino</div>
-                </div>
-                <div class="text-sm text-dark-grey">Alcuéscar</div>
-                <div class="text-xs text-dark-grey">Est. 4:30 PM</div>
-              </div>
-              <div class="bg-white p-4 rounded-lg">
-                <div class="flex items-center gap-3 mb-2">
-                  <span class="text-xl">⏱️</span>
-                  <div class="font-semibold text-charcoal">Tiempo Caminando</div>
-                </div>
-                <div class="text-sm text-dark-grey">5h 15m</div>
-                <div class="text-xs text-dark-grey">2h 45m restantes</div>
-              </div>
-              <div class="bg-white p-4 rounded-lg">
-                <div class="flex items-center gap-3 mb-2">
-                  <span class="text-xl">📈</span>
-                  <div class="font-semibold text-charcoal">Ritmo Actual</div>
-                </div>
-                <div class="text-sm text-dark-grey">4.9 km/h</div>
-                <div class="text-xs text-dark-grey">Buen ritmo</div>
-              </div>
-            </div>
-          </div>
-        </DoodleCard>
+        <CaminoStageProgress client:load />
+      </div>
+    </section>
+
+    <!-- Daily Km Logger -->
+    <section class="py-16 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl">
+        <DailyKmLogger client:load initialKm={18.1} />
       </div>
     </section>
 

@@ -1,0 +1,139 @@
+---
+import { ErrorBoundary } from '../../../react/ErrorBoundary';
+
+export interface FAQItem {
+  id: string;
+  question: string;
+  answer: string;
+  category?: string;
+}
+
+export interface Props {
+  items?: FAQItem[];
+  searchable?: boolean;
+  defaultOpen?: string | null;
+}
+
+const { items = [], searchable = true, defaultOpen = null } = Astro.props;
+---
+
+<ErrorBoundary
+  fallback={
+    <div class="bg-base-200 rounded-box p-6 text-center">
+      <p class="text-base-content/60">No se pudo cargar el FAQ</p>
+    </div>
+  }
+>
+  <faq-accordion
+    class="block"
+    data-default-open={defaultOpen ?? ''}
+    data-items={JSON.stringify(items)}
+  >
+    <!-- Server-rendered fallback -->
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title flex items-center gap-2">
+          <span>❓</span>
+          Preguntas Frecuentes
+        </h2>
+        {searchable && (
+          <input
+            type="text"
+            id="faq-search"
+            placeholder=" Buscar pregunta..."
+            class="input input-bordered mt-4"
+            aria-label="Buscar en FAQ"
+          />
+        )}
+        <div class="space-y-3 mt-4" id="faq-list">
+          {items.map((item) => (
+            <details
+              class="group border border-medium-grey rounded-lg"
+              open={item.id === defaultOpen}
+            >
+              <summary class="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-green-light transition-colors cursor-pointer list-none font-semibold text-charcoal">
+                <span>{item.question}</span>
+                <span
+                  class="transform transition-transform group-open:rotate-180 text-green-dark"
+                  aria-hidden="true"
+                >
+                  ▼
+                </span>
+              </summary>
+              <div class="px-4 pb-3 text-dark-grey font-handwritten">{item.answer}</div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </faq-accordion>
+</ErrorBoundary>
+
+<script is:inline>
+  (function () {
+    'use strict';
+
+    const root = document.querySelector('faq-accordion');
+    if (!root) return;
+
+    let items = [];
+    try {
+      items = JSON.parse(root.dataset.items || '[]');
+    } catch {
+      items = [];
+    }
+
+    const list = root.querySelector('#faq-list');
+    const searchInput = root.querySelector('#faq-search');
+
+    if (!list) return;
+
+    function renderFAQ(filtered) {
+      list.innerHTML = '';
+      filtered.forEach((item) => {
+        const details = document.createElement('details');
+        details.className = 'group border border-medium-grey rounded-lg';
+        details.open = item.id === root.dataset.defaultOpen;
+
+        const summary = document.createElement('summary');
+        summary.className =
+          'w-full px-4 py-3 text-left flex justify-between items-center hover:bg-green-light transition-colors cursor-pointer list-none font-semibold text-charcoal';
+        summary.textContent = item.question;
+
+        const arrow = document.createElement('span');
+        arrow.className = 'transform transition-transform group-open:rotate-180 text-green-dark';
+        arrow.setAttribute('aria-hidden', 'true');
+        arrow.textContent = '▼';
+
+        summary.appendChild(arrow);
+
+        const answer = document.createElement('div');
+        answer.className = 'px-4 pb-3 text-dark-grey font-handwritten';
+        answer.textContent = item.answer;
+
+        details.appendChild(summary);
+        details.appendChild(answer);
+        list.appendChild(details);
+      });
+    }
+
+    if (items.length) {
+      renderFAQ(items);
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        const q = searchInput.value.toLowerCase();
+        if (!q) {
+          renderFAQ(items);
+          return;
+        }
+        renderFAQ(
+          items.filter(
+            (i) => i.question.toLowerCase().includes(q) || i.answer.toLowerCase().includes(q)
+          )
+        );
+      });
+    }
+  })();
+</script>

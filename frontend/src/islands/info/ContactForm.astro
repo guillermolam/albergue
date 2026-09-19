@@ -1,0 +1,165 @@
+---
+import { ErrorBoundary } from '../../../react/ErrorBoundary';
+
+export interface ContactFormProps {
+  name?: string;
+  email?: string;
+  subject?: string;
+  message?: string;
+}
+
+export interface Props {
+  endpoint?: string;
+  successMessage?: string;
+  errorMessage?: string;
+}
+
+const {
+  endpoint = '/api/contact',
+  successMessage = 'Tu mensaje ha sido enviado. ¡Gracias!',
+  errorMessage = 'Error al enviar el mensaje. Inténtalo de nuevo.',
+} = Astro.props;
+---
+
+<ErrorBoundary
+  fallback={
+    <div class="bg-base-200 rounded-box p-6 text-center">
+      <p class="text-base-content/60">No se pudo cargar el formulario</p>
+    </div>
+  }
+>
+  <contact-form
+    class="block"
+    data-endpoint={endpoint}
+    data-success-message={successMessage}
+    data-error-message={errorMessage}
+  >
+    <!-- Server-rendered fallback -->
+    <form class="card bg-base-100 shadow-xl" id="contact-form">
+      <div class="card-body">
+        <h2 class="card-title flex items-center gap-2">
+          <span>📝</span>
+          Contáctanos
+        </h2>
+        <label class="form-control w-full">
+          <span class="label-text font-semibold text-charcoal">Nombre</span>
+          <input
+            type="text"
+            name="name"
+            required
+            placeholder="Tu nombre"
+            class="input input-bordered"
+            aria-required="true"
+          />
+        </label>
+        <label class="form-control w-full">
+          <span class="label-text font-semibold text-charcoal">Email</span>
+          <input
+            type="email"
+            name="email"
+            required
+            placeholder="tu@ejemplo.com"
+            class="input input-bordered"
+            aria-required="true"
+          />
+        </label>
+        <label class="form-control w-full">
+          <span class="label-text font-semibold text-charcoal">Asunto</span>
+          <input
+            type="text"
+            name="subject"
+            required
+            placeholder="Asunto del mensaje"
+            class="input input-bordered"
+            aria-required="true"
+          />
+        </label>
+        <label class="form-control w-full">
+          <span class="label-text font-semibold text-charcoal"> Mensaje</span>
+          <textarea
+            name="message"
+            rows="4"
+            required
+            placeholder="Escribe tu mensaje…"
+            class="textarea textarea-bordered"
+            aria-required="true"
+          ></textarea>
+        </label>
+        <div class="card-actions justify-end mt-4">
+          <button type="submit" class="btn btn-primary">
+            Enviar
+          </button>
+        </div>
+        <p id="contact-status" class="text-sm text-base-content/60 mt-2"></p>
+      </div>
+    </form>
+  </contact-form>
+</ErrorBoundary>
+
+<script is:inline>
+  (function () {
+    'use strict';
+
+    const root = document.querySelector('contact-form');
+    if (!root) return;
+
+    const endpoint = root.dataset.endpoint;
+    const successMsg = root.dataset.successMessage;
+    const errorMsg = root.dataset.errorMessage;
+    const form = root.querySelector('#contact-form');
+    const status = root.querySelector('#contact-status');
+
+    if (!form) return;
+
+    function setStatus(msg, type) {
+      if (!status) return;
+      status.textContent = msg;
+      status.className =
+        'text-sm mt-2 ' +
+        (type === 'success'
+          ? 'text-success'
+          : type === 'error'
+            ? 'text-error'
+            : 'text-base-content/60');
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const data = new FormData(form);
+      const payload = {
+        name: data.get('name'),
+        email: data.get('email'),
+        subject: data.get('subject'),
+        message: data.get('message'),
+      };
+
+      if (!payload.name || !payload.email || !payload.subject || !payload.message) {
+        setStatus('Por favor completa todos los campos', 'error');
+        return;
+      }
+
+      setStatus('Enviando…', 'loading');
+
+      fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify(payload),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.success) {
+            setStatus(successMsg, 'success');
+            form.reset();
+          } else {
+            setStatus(data.error || errorMsg, 'error');
+          }
+        })
+        .catch(() => {
+          setStatus(errorMsg, 'error');
+        });
+    });
+  })();
+</script>

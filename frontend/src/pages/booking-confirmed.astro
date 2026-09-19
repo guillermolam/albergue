@@ -4,6 +4,7 @@ export const prerender = false;
 import Layout from '../layouts/Layout.astro';
 import { DoodleCard } from '../components';
 import { backendJson } from '../lib/backend-api';
+import { BookingShareActions } from '../islands';
 import '../styles/booking-confirmation.css';
 
 interface ConfirmedBooking {
@@ -83,6 +84,15 @@ const nights = booking?.numberOfNights ?? 0;
                 Nueva reserva
               </a>
             </div>
+            <BookingShareActions
+              booking={{
+                referenceNumber: booking.referenceNumber,
+                checkInDate: booking.checkInDate,
+                checkOutDate: booking.checkOutDate,
+                nights,
+                totalAmount: booking.totalAmount,
+              }}
+            />
           </div>
         )}
       </DoodleCard>
