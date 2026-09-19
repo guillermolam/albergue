@@ -1,0 +1,13 @@
+---
+export const prerender = true;
+
+import Layout from '../../layouts/Layout.astro';
+import { HostelInfoPage } from '../../../react/hostel/HostelInfoPage';
+---
+
+<Layout
+  title="Cómo Llegar - Albergue Municipal Carrascalejo"
+  description="Cómo llegar al Albergue Municipal Carrascalejo en el Camino de Santiago"
+>
+  <HostelInfoPage client:load />
+</Layout>

@@ -1,7 +1,16 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { ChevronDown } from 'lucide-react';
 import { WiredButton } from './doodle/WiredButton';
 import { useI18n } from './hooks/useI18n';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from './ui/navigation-menu';
 
 interface NavigationProps {
   currentPath: string;
@@ -10,6 +19,44 @@ interface NavigationProps {
 interface NavLinkData {
   path: string;
   label: string;
+}
+
+interface NavGroupData {
+  id: string;
+  trigger: string;
+  prefix: string;
+  items: NavLinkData[];
+}
+
+type NavEntryData = NavLinkData | NavGroupData;
+
+function isGroup(entry: NavEntryData): entry is NavGroupData {
+  return 'items' in entry;
+}
+
+/** Shared squiggle underline shown under the active flat link or the
+ * currently-open/active dropdown trigger -- extracted so both DesktopNavLink
+ * and DesktopNavDropdown's trigger can render it via the same layoutId,
+ * producing a sliding-underline FLIP animation between them. */
+function ActiveUnderline() {
+  return (
+    <motion.svg
+      layoutId="activeUnderline"
+      className="absolute bottom-0 left-2 right-2 h-1"
+      style={{ overflow: 'visible' }}
+    >
+      <motion.path
+        d="M0,2 Q5,0 10,2 T20,2 T30,2 T40,2 T50,2"
+        stroke="#00AB39"
+        strokeWidth="2.5"
+        fill="none"
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 0.5, type: 'spring' }}
+      />
+    </motion.svg>
+  );
 }
 
 /** Extracted so Navigation's own cognitive complexity stays under
@@ -24,25 +71,36 @@ function DesktopNavLink({ link, isActive }: { link: NavLinkData; isActive: boole
       >
         {link.label}
       </motion.span>
-      {isActive && (
-        <motion.svg
-          layoutId="activeUnderline"
-          className="absolute bottom-0 left-2 right-2 h-1"
-          style={{ overflow: 'visible' }}
-        >
-          <motion.path
-            d="M0,2 Q5,0 10,2 T20,2 T30,2 T40,2 T50,2"
-            stroke="#00AB39"
-            strokeWidth="2.5"
-            fill="none"
-            strokeLinecap="round"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 0.5, type: 'spring' }}
-          />
-        </motion.svg>
-      )}
+      {isActive && <ActiveUnderline />}
     </a>
+  );
+}
+
+function DesktopNavDropdown({
+  group,
+  isGroupActive,
+  currentPath,
+}: {
+  group: NavGroupData;
+  isGroupActive: boolean;
+  currentPath: string;
+}) {
+  return (
+    <NavigationMenuItem className="relative">
+      <NavigationMenuTrigger>{group.trigger}</NavigationMenuTrigger>
+      {isGroupActive && <ActiveUnderline />}
+      <NavigationMenuContent>
+        <ul className="min-w-[220px] space-y-1 rounded-xl border-2 border-[#5D4E37]/30 bg-[#FFF9F0] p-2 paper-texture doodle-border doodle-shadow">
+          {group.items.map((item) => (
+            <li key={item.path}>
+              <NavigationMenuLink asChild active={currentPath === item.path}>
+                <a href={item.path}>{item.label}</a>
+              </NavigationMenuLink>
+            </li>
+          ))}
+        </ul>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
   );
 }
 
@@ -50,10 +108,21 @@ const NAV_COPY = {
   es: {
     home: 'Inicio',
     book: 'Reservar',
-    restaurants: 'Restaurantes',
-    visits: 'Visitas',
-    tourism: 'Turismo',
-    emergencies: 'Emergencias',
+    camino: 'El Camino',
+    contact: 'Contacto',
+    hostel: {
+      trigger: 'El Albergue',
+      info: 'Info',
+      facilities: 'Instalaciones',
+      restaurant: 'Nuestra Cocina',
+      services: 'Servicios',
+    },
+    area: {
+      trigger: 'La Zona',
+      visit: 'Qué Visitar',
+      eat: 'Dónde Comer',
+      do: 'Qué Hacer',
+    },
     switchLang: 'Switch to English',
     langCode: 'ES',
     login: 'Entrar',
@@ -64,10 +133,21 @@ const NAV_COPY = {
   en: {
     home: 'Home',
     book: 'Book Now',
-    restaurants: 'Restaurants',
-    visits: 'Visits',
-    tourism: 'Tourism',
-    emergencies: 'Emergencies',
+    camino: 'El Camino',
+    contact: 'Contact',
+    hostel: {
+      trigger: 'The Hotel',
+      info: 'Info',
+      facilities: 'Facilities',
+      restaurant: 'Our Restaurant',
+      services: 'Services',
+    },
+    area: {
+      trigger: 'The Area',
+      visit: 'What to Visit',
+      eat: 'Where to Eat',
+      do: 'What to Do',
+    },
     switchLang: 'Cambiar a Español',
     langCode: 'EN',
     login: 'Login',
@@ -82,17 +162,20 @@ function MobileNavLink({
   isActive,
   onClick,
   delay,
+  indent,
 }: {
   link: NavLinkData;
   isActive: boolean;
   onClick: () => void;
   delay: number;
+  indent?: boolean;
 }) {
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay }}
+      className={indent ? 'pl-4' : undefined}
     >
       <a
         href={link.path}
@@ -105,6 +188,64 @@ function MobileNavLink({
   );
 }
 
+function MobileNavSection({
+  group,
+  currentPath,
+  onNavigate,
+  delay,
+}: {
+  group: NavGroupData;
+  currentPath: string;
+  onNavigate: () => void;
+  delay: number;
+}) {
+  const groupActive = currentPath === group.prefix || currentPath.startsWith(`${group.prefix}/`);
+  const [expanded, setExpanded] = useState(groupActive);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay }}
+    >
+      <button
+        type="button"
+        onClick={() => setExpanded((value) => !value)}
+        aria-expanded={expanded}
+        aria-controls={`mobile-group-${group.id}`}
+        className={`flex w-full items-center justify-between px-4 py-3 doodle-border transition-all ${groupActive ? 'bg-[#00AB39]/10 text-[#00AB39]' : 'bg-white text-gray-700 hover:bg-[#F5E6D3]'}`}
+      >
+        <span>{group.trigger}</span>
+        <ChevronDown className={`h-4 w-4 transition-transform ${expanded ? 'rotate-180' : ''}`} />
+      </button>
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            id={`mobile-group-${group.id}`}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden pt-2"
+          >
+            <div className="space-y-2">
+              {group.items.map((item, index) => (
+                <MobileNavLink
+                  key={item.path}
+                  link={item}
+                  isActive={currentPath === item.path}
+                  onClick={onNavigate}
+                  delay={index * 0.03}
+                  indent
+                />
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
 export function Navigation({ currentPath }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { locale, setLocale } = useI18n();
@@ -112,15 +253,36 @@ export function Navigation({ currentPath }: NavigationProps) {
 
   const t = isEs ? NAV_COPY.es : NAV_COPY.en;
   const isActive = (path: string) => currentPath === path;
+  const isGroupActive = (group: NavGroupData) =>
+    currentPath === group.prefix || currentPath.startsWith(`${group.prefix}/`);
   const mobileMenuLabel = isOpen ? t.closeMenu : t.openMenu;
 
-  const navLinks = [
+  const navEntries: NavEntryData[] = [
     { path: '/', label: t.home },
+    {
+      id: 'hostel',
+      trigger: t.hostel.trigger,
+      prefix: '/hostel',
+      items: [
+        { path: '/hostel/info', label: t.hostel.info },
+        { path: '/hostel/facilities', label: t.hostel.facilities },
+        { path: '/hostel/restaurant', label: t.hostel.restaurant },
+        { path: '/hostel/services', label: t.hostel.services },
+      ],
+    },
+    {
+      id: 'area',
+      trigger: t.area.trigger,
+      prefix: '/area',
+      items: [
+        { path: '/area/visit', label: t.area.visit },
+        { path: '/area/eat', label: t.area.eat },
+        { path: '/area/do', label: t.area.do },
+      ],
+    },
+    { path: '/camino', label: t.camino },
+    { path: '/contact', label: t.contact },
     { path: '/book', label: t.book },
-    { path: '/restaurants', label: t.restaurants },
-    { path: '/visits', label: t.visits },
-    { path: '/tourism', label: t.tourism },
-    { path: '/emergencies', label: t.emergencies },
   ];
 
   return (
@@ -128,6 +290,7 @@ export function Navigation({ currentPath }: NavigationProps) {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+      aria-label="Main navigation"
       className="bg-[#FFF9F0] sticky top-0 z-50 paper-texture border-b-4 border-[#5D4E37]/20 doodle-border"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -188,10 +351,25 @@ export function Navigation({ currentPath }: NavigationProps) {
             </div>
           </a>
 
-          <div className="hidden md:flex items-center space-x-1">
-            {navLinks.map((link) => (
-              <DesktopNavLink key={link.path} link={link} isActive={isActive(link.path)} />
-            ))}
+          <div className="hidden md:flex items-center">
+            <NavigationMenu viewport={false} aria-label="Site sections">
+              <NavigationMenuList>
+                {navEntries.map((entry) =>
+                  isGroup(entry) ? (
+                    <DesktopNavDropdown
+                      key={entry.id}
+                      group={entry}
+                      isGroupActive={isGroupActive(entry)}
+                      currentPath={currentPath}
+                    />
+                  ) : (
+                    <NavigationMenuItem key={entry.path}>
+                      <DesktopNavLink link={entry} isActive={isActive(entry.path)} />
+                    </NavigationMenuItem>
+                  )
+                )}
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
 
           <div className="flex items-center space-x-3">
@@ -296,19 +474,29 @@ export function Navigation({ currentPath }: NavigationProps) {
               className="md:hidden overflow-hidden pb-4"
             >
               <div className="space-y-3 pt-2">
-                {navLinks.map((link, index) => (
-                  <MobileNavLink
-                    key={link.path}
-                    link={link}
-                    isActive={isActive(link.path)}
-                    onClick={() => setIsOpen(false)}
-                    delay={index * 0.05}
-                  />
-                ))}
+                {navEntries.map((entry, index) =>
+                  isGroup(entry) ? (
+                    <MobileNavSection
+                      key={entry.id}
+                      group={entry}
+                      currentPath={currentPath}
+                      onNavigate={() => setIsOpen(false)}
+                      delay={index * 0.05}
+                    />
+                  ) : (
+                    <MobileNavLink
+                      key={entry.path}
+                      link={entry}
+                      isActive={isActive(entry.path)}
+                      onClick={() => setIsOpen(false)}
+                      delay={index * 0.05}
+                    />
+                  )
+                )}
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: navLinks.length * 0.05 }}
+                  transition={{ delay: navEntries.length * 0.05 }}
                 >
                   <WiredButton href="/admin" variant="primary" className="w-full">
                     {t.adminLogin}

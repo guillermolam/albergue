@@ -47,6 +47,11 @@ export const sharedConfig = {
     prefetchAll: true,
     defaultStrategy: 'hover',
   },
+  // /info's old content is now split across /hostel/info, /hostel/facilities
+  // and /hostel/services -- redirect rather than leave a dead/duplicate page.
+  redirects: {
+    '/info': '/hostel/info',
+  },
   integrations: [
     react(),
     swup({
@@ -88,13 +93,13 @@ export const sharedConfig = {
       target: 'es2022',
       minify: 'esbuild',
       cssMinify: true,
-      // Vite's 500kB default flags three-core.js (~730kB): the actual,
-      // unavoidable weight of the WebGLRenderer/Scene/Camera classes
-      // HostelScene's <Canvas> requires from Three.js itself -- confirmed
-      // by splitting three/@react-three/fiber/@react-three/drei into
-      // separate chunks (below) and finding none of them shrinks further
-      // without dropping 3D rendering. Not a stand-in for fixing bloat.
-      chunkSizeWarningLimit: 800,
+      // Vite's 500kB default flags three-core.js (~730kB) and maplibre.js
+      // (~1MB): the actual, unavoidable weight of the WebGL engines
+      // HostelScene's <Canvas> and MapLibreMap require from Three.js and
+      // MapLibre GL JS themselves -- confirmed by isolating each into its
+      // own chunk (below) and finding none shrinks further without
+      // dropping 3D/map rendering. Not a stand-in for fixing bloat.
+      chunkSizeWarningLimit: 1100,
       rolldownOptions: {
         output: {
           // three/@react-three/* (HostelScene's client:only island) are the
@@ -107,6 +112,12 @@ export const sharedConfig = {
             if (/node_modules\/@react-three\/drei\//.test(id)) return 'three-drei';
             if (/node_modules\/@react-three\/fiber\//.test(id)) return 'three-fiber';
             if (/node_modules\/three\//.test(id)) return 'three-core';
+            // maplibre-gl is only pulled in via client:only on the Area/Contact
+            // map pages -- isolate it so it doesn't inflate an unrelated chunk.
+            if (/node_modules\/maplibre-gl\//.test(id)) return 'maplibre';
+            // gsap is used across most of the new Hostel/Area pages -- one
+            // shared, cacheable chunk rather than duplicated per page.
+            if (/node_modules\/gsap\//.test(id)) return 'gsap';
             return undefined;
           },
         },

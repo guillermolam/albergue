@@ -1,0 +1,13 @@
+---
+export const prerender = true;
+
+import Layout from '../../layouts/Layout.astro';
+import { AreaVisitPage } from '../../../react/area/AreaVisitPage';
+---
+
+<Layout
+  title="Qué Visitar - Albergue Municipal Carrascalejo"
+  description="Rutas y visitas guiadas cerca del albergue"
+>
+  <AreaVisitPage client:load />
+</Layout>

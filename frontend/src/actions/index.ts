@@ -338,6 +338,28 @@ export const server = {
       },
     }),
   },
+
+  contact: {
+    /** Public contact-form submission -- no session, no admin token. */
+    submit: defineAction({
+      input: z.object({
+        name: z.string().min(1).max(120),
+        email: z.email(),
+        subject: z.string().max(200).optional(),
+        message: z.string().min(1).max(4000),
+      }),
+      handler: async (input) => {
+        const result = await backendJson('/api/contact-messages', {
+          method: 'POST',
+          body: JSON.stringify(input),
+        });
+        if (!result.ok) {
+          throw new ActionError({ code: 'BAD_REQUEST', message: result.message });
+        }
+        return { ok: true as const };
+      },
+    }),
+  },
 };
 
 // Type-only import placed at the bottom to keep the action definitions readable.

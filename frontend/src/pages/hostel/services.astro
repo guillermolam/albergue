@@ -1,0 +1,13 @@
+---
+export const prerender = true;
+
+import Layout from '../../layouts/Layout.astro';
+import { HostelServicesPage } from '../../../react/hostel/HostelServicesPage';
+---
+
+<Layout
+  title="Servicios - Albergue Municipal Carrascalejo"
+  description="Normas del albergue y contactos de emergencia para peregrinos en el Camino de Santiago"
+>
+  <HostelServicesPage client:load />
+</Layout>

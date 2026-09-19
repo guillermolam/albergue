@@ -1,0 +1,39 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import {
+  ContactMessagesTable,
+  type ContactMessageRow,
+} from '../../../react/admin/ContactMessagesTable';
+import { backendJson } from '../../lib/backend-api';
+import { ADMIN_API_TOKEN } from 'astro:env/server';
+
+interface ContactMessagesPage {
+  data: ContactMessageRow[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+// Unlike bookings/beds, /api/contact-messages GET is admin-gated on the
+// backend too (defense in depth -- these rows can carry visitor PII), so the
+// shared ADMIN_API_TOKEN has to be attached here, same as callAdminBackendRoute
+// does for admin Actions.
+const result = ADMIN_API_TOKEN
+  ? await backendJson<ContactMessagesPage>('/api/contact-messages', {
+      headers: { authorization: `Bearer ${ADMIN_API_TOKEN}` },
+    })
+  : { ok: false as const, status: 503, message: 'Admin API is not configured (ADMIN_API_TOKEN).' };
+const initialMessages = result.ok ? result.data.data : [];
+---
+
+<AdminLayout title="Contact Messages" activeSection="contact-messages">
+  {!result.ok && (
+    <div class="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 mb-6">
+      Could not load contact messages: {result.message}
+    </div>
+  )}
+  <ContactMessagesTable client:load initialMessages={initialMessages} />
+</AdminLayout>

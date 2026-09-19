@@ -6,11 +6,19 @@ const routes = [
   { path: '/camino', name: 'Camino' },
   { path: '/camino-dashboard', name: 'Camino Dashboard' },
   { path: '/dashboard', name: 'Dashboard' },
-  { path: '/info', name: 'Info' },
+  { path: '/info', name: 'Info (redirect)' },
   { path: '/auth', name: 'Auth' },
   { path: '/booking-confirmed', name: 'Booking Confirmed' },
   { path: '/demo-booking-confirmed', name: 'Demo Booking Confirmed' },
   { path: '/demo-camino', name: 'Demo Camino' },
+  { path: '/hostel/info', name: 'Hostel Info' },
+  { path: '/hostel/facilities', name: 'Hostel Facilities' },
+  { path: '/hostel/restaurant', name: 'Hostel Restaurant' },
+  { path: '/hostel/services', name: 'Hostel Services' },
+  { path: '/area/visit', name: 'Area Visit' },
+  { path: '/area/eat', name: 'Area Eat' },
+  { path: '/area/do', name: 'Area Do' },
+  { path: '/contact', name: 'Contact' },
 ];
 
 test.describe('Route rendering tests', () => {

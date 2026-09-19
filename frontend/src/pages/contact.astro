@@ -1,0 +1,13 @@
+---
+export const prerender = true;
+
+import Layout from '../layouts/Layout.astro';
+import { ContactPage } from '../../react/ContactPage';
+---
+
+<Layout
+  title="Contacto - Albergue Municipal Carrascalejo"
+  description="Ponte en contacto con el Albergue Municipal Carrascalejo"
+>
+  <ContactPage client:load />
+</Layout>

@@ -14,3 +14,4 @@ export { default as notifications } from "./notifications.js";
 export { default as auditLog } from "./audit_log.js";
 export { default as users } from "./users.js";
 export { default as auth } from "./auth.js";
+export { default as contactMessages } from "./contact_messages.js";

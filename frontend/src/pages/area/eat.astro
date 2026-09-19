@@ -1,0 +1,13 @@
+---
+export const prerender = true;
+
+import Layout from '../../layouts/Layout.astro';
+import { AreaEatPage } from '../../../react/area/AreaEatPage';
+---
+
+<Layout
+  title="Dónde Comer - Albergue Municipal Carrascalejo"
+  description="Restaurantes y opciones para comer cerca del albergue"
+>
+  <AreaEatPage client:load />
+</Layout>

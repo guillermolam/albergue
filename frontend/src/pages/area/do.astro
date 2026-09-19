@@ -1,0 +1,13 @@
+---
+export const prerender = true;
+
+import Layout from '../../layouts/Layout.astro';
+import { AreaDoPage } from '../../../react/area/AreaDoPage';
+---
+
+<Layout
+  title="Qué Hacer - Albergue Municipal Carrascalejo"
+  description="Información turística sobre Carrascalejo y la zona"
+>
+  <AreaDoPage client:load />
+</Layout>

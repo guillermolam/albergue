@@ -1,0 +1,13 @@
+---
+export const prerender = true;
+
+import Layout from '../../layouts/Layout.astro';
+import { HostelRestaurantPage } from '../../../react/hostel/HostelRestaurantPage';
+---
+
+<Layout
+  title="Nuestra Cocina - Albergue Municipal Carrascalejo"
+  description="Recomendación gastronómica junto al Albergue Municipal Carrascalejo"
+>
+  <HostelRestaurantPage client:load />
+</Layout>

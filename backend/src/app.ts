@@ -43,6 +43,7 @@ import {
   auditLog,
   users,
   auth,
+  contactMessages,
 } from "./routes/index.js";
 
 // Create main Hono app
@@ -86,6 +87,7 @@ app.get("/", (c) => {
       notifications: "/api/notifications",
       auditLog: "/api/audit-log",
       users: "/api/users",
+      contactMessages: "/api/contact-messages",
       health: "/health",
     },
   });
@@ -184,6 +186,9 @@ api.route("/government-submissions", governmentSubmissions);
 api.route("/notifications", notifications);
 api.route("/audit-log", auditLog);
 api.route("/users", users);
+// POST is public (website contact form); GET/:id are admin-gated inside the
+// route file itself, since this is the one router that mixes both.
+api.route("/contact-messages", contactMessages);
 
 // Mount API routes under /api prefix
 app.route("/api", api);

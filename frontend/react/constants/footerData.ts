@@ -128,6 +128,34 @@ export const QUICK_LINKS = {
       labelES: 'Mi Reserva',
       labelEN: 'My Booking',
     },
+    {
+      id: 'hostel-info',
+      pathES: '/hostel/info',
+      pathEN: '/hostel/info',
+      labelES: 'El Albergue',
+      labelEN: 'The Hotel',
+    },
+    {
+      id: 'area-visit',
+      pathES: '/area/visit',
+      pathEN: '/area/visit',
+      labelES: 'La Zona',
+      labelEN: 'The Area',
+    },
+    {
+      id: 'camino',
+      pathES: '/camino',
+      pathEN: '/camino',
+      labelES: 'El Camino',
+      labelEN: 'El Camino',
+    },
+    {
+      id: 'contact',
+      pathES: '/contact',
+      pathEN: '/contact',
+      labelES: 'Contacto',
+      labelEN: 'Contact',
+    },
   ],
   legal: [
     {
