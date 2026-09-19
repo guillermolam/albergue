@@ -1,5 +1,10 @@
 import { useStore } from '@nanostores/react';
-import { i18nStore, i18nActions, type TranslationKeys } from '../../src/stores/i18nStore';
+import {
+  i18nStore,
+  i18nActions,
+  type Locale,
+  type TranslationKeys,
+} from '../../src/stores/i18nStore';
 
 /**
  * React bridge for the app's existing nanostores i18n store. Plain `t()`
@@ -16,5 +21,8 @@ export function useI18n() {
     isLoading: state.isLoading,
     t: (key: keyof TranslationKeys, fallback?: string): string =>
       i18nActions.getMessage(key, fallback),
+    setLocale: (locale: Locale): void => {
+      void i18nActions.setLocale(locale);
+    },
   };
 }
