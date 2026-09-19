@@ -143,9 +143,6 @@ importers:
       three:
         specifier: ^0.186.0
         version: 0.186.0
-      webcoreui:
-        specifier: ^1.5.0
-        version: 1.5.0
     devDependencies:
       '@astrojs/check':
         specifier: ^0.9.10
@@ -8962,9 +8959,6 @@ packages:
   web-streams-polyfill@3.3.3:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
     engines: {node: '>= 8'}
-
-  webcoreui@1.5.0:
-    resolution: {integrity: sha512-QgAw+CP2C4em3T25smGrthVeyPB8zj4CYfiCDrd1JijpXOkEvz4TNftStRkxVxnLEINb4yiKfoZ8FFI3xaimkg==}
 
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
@@ -18514,8 +18508,6 @@ snapshots:
       defaults: 1.0.4
 
   web-streams-polyfill@3.3.3: {}
-
-  webcoreui@1.5.0: {}
 
   webidl-conversions@3.0.1: {}
 

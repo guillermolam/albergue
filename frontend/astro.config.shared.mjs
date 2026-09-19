@@ -3,7 +3,6 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import swup from '@swup/astro';
 import icon from 'astro-icon';
-import { webcore } from 'webcoreui/integration';
 import { envField } from 'astro/config';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -50,7 +49,6 @@ export const sharedConfig = {
   },
   integrations: [
     react(),
-    webcore(),
     swup({
       theme: 'fade',
       animationClass: 'transition-',
@@ -119,7 +117,7 @@ export const sharedConfig = {
       },
     },
     ssr: {
-      noExternal: ['@unocss/vite', 'unocss', 'webcoreui'],
+      noExternal: ['@unocss/vite', 'unocss'],
     },
     plugins: [
       tailwindcss(),
