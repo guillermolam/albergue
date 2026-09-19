@@ -6,7 +6,7 @@
  */
 import { defineAction, ActionError } from 'astro:actions';
 import { z } from 'astro:schema';
-import { BACKEND_API_URL } from 'astro:env/server';
+import { BACKEND_API_URL, ADMIN_API_TOKEN } from 'astro:env/server';
 import {
   AUTH_SESSION_KEY,
   type BookingQuote,
@@ -93,6 +93,78 @@ export const server = {
       handler: async (_input, context) => {
         context.session?.destroy();
         return { ok: true as const };
+      },
+    }),
+  },
+
+  beds: {
+    /**
+     * Admin-only bed claim/release (ADMIN-001). The browser only ever holds
+     * an Astro session; the shared ADMIN_API_TOKEN the backend requires for
+     * these routes is attached here, server-side, never sent to the client.
+     */
+    reserve: defineAction({
+      input: z.object({
+        bedId: z.coerce.number().int().min(1),
+      }),
+      handler: async (input, context) => {
+        if (context.locals.role !== 'admin') {
+          throw new ActionError({ code: 'FORBIDDEN', message: 'Admin access required.' });
+        }
+        if (!ADMIN_API_TOKEN) {
+          throw new ActionError({
+            code: 'SERVICE_UNAVAILABLE',
+            message: 'Admin API is not configured (ADMIN_API_TOKEN).',
+          });
+        }
+
+        const result = await backendJson<{ id: number; status: string }>(
+          `/api/beds/${input.bedId}/reserve`,
+          {
+            method: 'PATCH',
+            headers: { authorization: `Bearer ${ADMIN_API_TOKEN}` },
+            body: JSON.stringify({}),
+          }
+        );
+        if (!result.ok) {
+          throw new ActionError({
+            code: result.status === 409 ? 'CONFLICT' : 'BAD_REQUEST',
+            message: result.message,
+          });
+        }
+        return result.data;
+      },
+    }),
+
+    release: defineAction({
+      input: z.object({
+        bedId: z.coerce.number().int().min(1),
+      }),
+      handler: async (input, context) => {
+        if (context.locals.role !== 'admin') {
+          throw new ActionError({ code: 'FORBIDDEN', message: 'Admin access required.' });
+        }
+        if (!ADMIN_API_TOKEN) {
+          throw new ActionError({
+            code: 'SERVICE_UNAVAILABLE',
+            message: 'Admin API is not configured (ADMIN_API_TOKEN).',
+          });
+        }
+
+        const result = await backendJson<{ id: number; status: string }>(
+          `/api/beds/${input.bedId}/release`,
+          {
+            method: 'PATCH',
+            headers: { authorization: `Bearer ${ADMIN_API_TOKEN}` },
+          }
+        );
+        if (!result.ok) {
+          throw new ActionError({
+            code: result.status === 409 ? 'CONFLICT' : 'BAD_REQUEST',
+            message: result.message,
+          });
+        }
+        return result.data;
       },
     }),
   },

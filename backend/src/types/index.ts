@@ -181,6 +181,18 @@ export interface BedStats {
   byRoomType: Record<string, { total: number; available: number }>;
 }
 
+export interface BedWithGuest {
+  id: number;
+  bedNumber: number;
+  roomNumber: number;
+  roomName: string;
+  roomType: string | null;
+  status: string | null;
+  guestName: string | null;
+  checkInDate: string | null;
+  checkOutDate: string | null;
+}
+
 // Dashboard types
 export interface DashboardMetrics {
   bookings: BookingStats;

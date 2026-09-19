@@ -33,6 +33,15 @@ export const sharedConfig = {
         access: 'secret',
         optional: true,
       }),
+      // Matches backend/src/lib/middleware.ts's resolveIdentity(): the only
+      // credential its admin-gated routes accept until session/OIDC
+      // verification lands. Never sent to the client — only used server-side
+      // when an already-authenticated Astro admin session calls those routes.
+      ADMIN_API_TOKEN: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true,
+      }),
     },
   },
   prefetch: {
