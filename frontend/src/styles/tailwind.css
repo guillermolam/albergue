@@ -1,3 +1,12 @@
+/* Doodle/hand-drawn typography used by design-system.css, plus IBM Plex and
+   JetBrains Mono. @import must precede any @layer rule with a body, so
+   these live here, unlayered, rather than inside design-system.css itself
+   (which gets wrapped in `@layer legacy {}` below -- @import can't nest
+   inside a layer block). */
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&family=Patrick+Hand&family=Shadows+Into+Light&family=Cabin+Sketch:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
 /* Explicit layer order: `legacy` must be declared before Tailwind's own
    `theme, base, components, utilities` layers so it sits BELOW them in the
    cascade. Per the CSS Cascade Layers spec, layered rules always lose to

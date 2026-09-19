@@ -5,7 +5,10 @@ import { defineMiddleware } from 'astro:middleware';
  * or mints a new one; exposed on `locals.requestId` and echoed back.
  */
 export const requestIdMiddleware = defineMiddleware(async (context, next) => {
-  const requestId = context.request.headers.get('x-request-id') ?? crypto.randomUUID();
+  // Prerendered pages have no real inbound request to correlate; mint one.
+  const requestId = context.isPrerendered
+    ? crypto.randomUUID()
+    : (context.request.headers.get('x-request-id') ?? crypto.randomUUID());
   context.locals.requestId = requestId;
 
   const response = await next();

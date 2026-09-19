@@ -5,16 +5,9 @@
    STRICT RULE: Only use greens + neutrals (except status indicators)
    ========================================================================= */
 
-/* =========================================================================
-   FONT IMPORTS - Hand-Drawn Doodle Typography
-   ========================================================================= */
-@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&family=Patrick+Hand&family=Shadows+Into+Light&family=Cabin+Sketch:wght@400;700&display=swap');
-
-/* IBM Plex as fallback for system elements */
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap');
-
-/* JetBrains Mono for code */
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+/* Font imports (Indie Flower/Patrick Hand/Shadows Into Light/Cabin Sketch,
+   IBM Plex, JetBrains Mono) live in tailwind.css, unlayered -- @import
+   cannot be nested inside the @layer block this file is loaded into. */
 
 /* =========================================================================
    COLOR PALETTE (STRICT - Only These Colors)

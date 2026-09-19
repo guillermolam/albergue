@@ -11,7 +11,12 @@ import { AUTH_SESSION_KEY, type LoginResponse } from '@albergue/api-contract';
  * RBAC: /admin requires an authenticated admin; everyone else is a guest.
  */
 export const authMiddleware = defineMiddleware(async (context, next) => {
-  const identity = await context.session?.get<LoginResponse>(AUTH_SESSION_KEY);
+  // Prerendered pages have no real request to read a session cookie from
+  // (session.get() reads the cookie, which reads the Request's headers -
+  // the exact access Astro warns about on prerendered routes); treat as guest.
+  const identity = context.isPrerendered
+    ? undefined
+    : await context.session?.get<LoginResponse>(AUTH_SESSION_KEY);
 
   context.locals.user = identity ? { id: identity.id, email: '', name: identity.username } : null;
   context.locals.role = identity?.role ?? 'guest';

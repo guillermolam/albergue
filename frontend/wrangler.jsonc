@@ -4,6 +4,9 @@
   // Worker instead of updating the live one at albergue.<subdomain>.workers.dev.
   "name": "albergue",
   "compatibility_date": "2025-05-21",
+  // @astrojs/react's SSR code imports Node built-ins (e.g. node:stream) that
+  // the Workers runtime only provides under this flag.
+  "compatibility_flags": ["nodejs_compat"],
 
   // Phase 4 prerequisite (ASTRO-002): Astro sessions use the Cloudflare KV
   // driver with the default `SESSION` binding. Provision with:
