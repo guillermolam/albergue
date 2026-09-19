@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 test('home page loads and links to booking', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'networkidle' });
 
   await expect(page).toHaveTitle(/Albergue Municipal Carrascalejo/);
   await expect(page.getByRole('heading', { name: /Bienvenido/ }).first()).toBeVisible();
