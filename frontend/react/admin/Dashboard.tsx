@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Bed, Users, Calendar, TrendingUp } from 'lucide-react';
+import { useI18n } from '../hooks/useI18n';
 import {
   LineChart,
   Line,
@@ -58,6 +59,7 @@ function getStatusColor(status: string | null) {
 }
 
 export function Dashboard({ metrics }: DashboardProps) {
+  const { t } = useI18n();
   const stats = [
     {
       title: 'Total Bookings',
@@ -89,7 +91,7 @@ export function Dashboard({ metrics }: DashboardProps) {
   return (
     <div className="space-y-6 max-w-full overflow-x-hidden">
       <div>
-        <h1 className="text-3xl mb-2">Dashboard</h1>
+        <h1 className="text-3xl mb-2">{t('admin.dashboard', 'Dashboard')}</h1>
         <p className="text-gray-500">Overview of albergue operations</p>
       </div>
 

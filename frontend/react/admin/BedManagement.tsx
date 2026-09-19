@@ -3,6 +3,7 @@ import { actions } from 'astro:actions';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
+import { useI18n } from '../hooks/useI18n';
 
 type BedStatus = 'available' | 'occupied' | 'reserved' | 'maintenance' | (string & {});
 
@@ -45,6 +46,7 @@ function StatusBadge({ status }: { status: BedStatus }) {
 }
 
 export function BedManagement({ initialBeds }: BedManagementProps) {
+  const { t } = useI18n();
   const [beds, setBeds] = useState<BedDashboardItem[]>(initialBeds);
   const [pendingId, setPendingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -105,7 +107,7 @@ export function BedManagement({ initialBeds }: BedManagementProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h1>Bed Management</h1>
+        <h1>{t('admin.beds', 'Bed Management')}</h1>
         <p className="text-gray-600 text-sm mt-1">View and manage bed availability</p>
       </div>
 

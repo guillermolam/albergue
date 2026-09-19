@@ -2,7 +2,7 @@
 export const prerender = false;
 
 import AdminLayout from '../../layouts/AdminLayout.astro';
-import { Dashboard, type DashboardMetrics } from '../../components/admin/Dashboard';
+import { Dashboard, type DashboardMetrics } from '../../../react/admin/Dashboard';
 import { backendJson } from '../../lib/backend-api';
 
 const result = await backendJson<DashboardMetrics>('/api/dashboard/metrics');

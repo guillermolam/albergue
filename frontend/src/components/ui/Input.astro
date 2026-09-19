@@ -1,10 +1,10 @@
 ---
 /**
- * Input Component - WebcoreUI Wrapper
+ * Input Component - Matching Figma Design
  *
- * Variants (mapped to WebcoreUI themes):
- * - default -> default (no theme)
- * - doodle -> 'fill' theme with custom class
+ * Variants:
+ * - default: Standard input (default)
+ * - doodle: Hand-drawn sketchy style
  *
  * Props:
  * - type: Input type (text, email, password, etc.)
@@ -15,8 +15,6 @@
  * - required: Required field
  * - disabled: Disabled state
  */
-
-import { Input as WcInput } from 'webcoreui/astro';
 
 interface Props {
   variant?: 'default' | 'doodle';
@@ -29,8 +27,6 @@ interface Props {
   helper?: string;
   required?: boolean;
   disabled?: boolean;
-  className?: string;
-  value?: string;
 }
 
 const {
@@ -44,86 +40,51 @@ const {
   helper,
   required = false,
   disabled = false,
-  className = '',
-  value,
 } = Astro.props;
 
 const inputId = id || name;
 const hasError = !!error;
+const variantClasses = {
+  default: 'input',
+  doodle: 'input input-doodle',
+};
 
-// Map variant to WebcoreUI theme
-const theme = variant === 'doodle' ? 'fill' : undefined;
-const errorTheme = hasError ? 'alert' : theme;
-const finalTheme = errorTheme || undefined;
-
-const inputClasses = `${className}`.trim();
+const classes = `${variantClasses[variant]} ${hasError ? 'border-status-error' : ''}`;
 ---
 
 <div class="w-full">
   {label && (
-    <label for={inputId} class="w-input-label">
+    <label for={inputId} class="block text-sm font-medium text-charcoal mb-2">
       {label}
       {required && (
-        <span class="w-input-required" aria-hidden="true">
+        <span class="text-status-error ml-1" aria-hidden="true">
           *
         </span>
       )}
     </label>
   )}
 
-  <WcInput
+  <input
     type={type}
     id={inputId}
     name={name}
     placeholder={placeholder}
-    theme={finalTheme}
+    class={classes}
     required={required}
     disabled={disabled}
     aria-invalid={hasError}
     aria-describedby={hasError ? `${inputId}-error` : helper ? `${inputId}-helper` : undefined}
-    className={inputClasses}
-    value={value}
   />
 
   {hasError && (
-    <p id={`${inputId}-error`} class="w-input-error" role="alert">
+    <p id={`${inputId}-error`} class="mt-2 text-sm text-status-error" role="alert">
       {error}
     </p>
   )}
 
   {helper && !hasError && (
-    <p id={`${inputId}-helper`} class="w-input-helper">
+    <p id={`${inputId}-helper`} class="mt-2 text-sm text-dark-grey">
       {helper}
     </p>
   )}
 </div>
-
-<style>
-  /* Label styling */
-  .w-input-label {
-    display: block;
-    font-size: var(--w-font-size-sm, 14px);
-    font-weight: 500;
-    color: var(--w-color-primary-70, #1b5e20);
-    margin-bottom: var(--w-spacing-xs, 5px);
-  }
-
-  .w-input-required {
-    color: var(--w-color-alert, #ed1c24);
-    margin-left: var(--w-spacing-xxs, 2px);
-  }
-
-  /* Error message */
-  .w-input-error {
-    margin-top: var(--w-spacing-xs, 5px);
-    font-size: var(--w-font-size-sm, 14px);
-    color: var(--w-color-alert, #ed1c24);
-  }
-
-  /* Helper text */
-  .w-input-helper {
-    margin-top: var(--w-spacing-xs, 5px);
-    font-size: var(--w-font-size-sm, 14px);
-    color: var(--w-color-primary-40, #4caf50);
-  }
-</style>

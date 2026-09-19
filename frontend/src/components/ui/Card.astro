@@ -1,22 +1,18 @@
 ---
 /**
- * Card Component - WebcoreUI Wrapper
+ * Card Component - Matching Figma Design
  *
- * Variants (mapped to WebcoreUI props):
- * - default: Standard card -> flat: false, secondary: false, compact: false
- * - compact: Less padding -> compact: true
- * - elevated: Stronger shadow -> secondary: true
- * - doodle: Hand-drawn sketchy style -> flat: false with custom class
+ * Variants:
+ * - default: Standard card (default)
+ * - compact: Less padding
+ * - elevated: Stronger shadow
+ * - doodle: Hand-drawn sketchy style
  *
  * Props:
- * - hoverable: Add hover effects (handled by WebcoreUI)
- * - clickable: Make card clickable (use href)
- * - padding: Custom padding (handled by compact prop)
- * - title: Card title (WebcoreUI prop)
- * - titleTag: HTML tag for title (WebcoreUI prop)
+ * - hoverable: Add hover effects (default: true)
+ * - clickable: Make card clickable
+ * - padding: Custom padding (none, sm, md, lg)
  */
-
-import { Card as WcCard } from 'webcoreui/astro';
 
 interface Props {
   variant?: 'default' | 'compact' | 'elevated' | 'doodle';
@@ -24,81 +20,47 @@ interface Props {
   clickable?: boolean;
   padding?: 'none' | 'sm' | 'md' | 'lg';
   href?: string;
-  title?: string;
-  titleTag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-  className?: string;
-  children?: string | JSX.Element;
 }
 
-const {
-  variant = 'default',
-  hoverable = true,
-  clickable = false,
-  padding,
-  href,
-  title,
-  titleTag = 'h3',
-  className = '',
-  children,
-} = Astro.props;
+const { variant = 'default', hoverable = true, clickable = false, padding, href } = Astro.props;
 
-// Map variants to WebcoreUI props
-const variantProps: Record<string, { compact?: boolean; secondary?: boolean; flat?: boolean }> = {
-  default: { flat: false, secondary: false, compact: false },
-  compact: { flat: false, secondary: false, compact: true },
-  elevated: { flat: false, secondary: true, compact: false },
-  doodle: { flat: false, secondary: false, compact: false }, // Will use custom class
+const variantClasses = {
+  default: 'card',
+  compact: 'card card-compact',
+  elevated: 'card card-elevated',
+  doodle: 'card card-doodle',
 };
 
-const { compact = false, secondary = false, flat = false } = variantProps[variant] || {};
+const paddingClasses = {
+  none: 'p-0',
+  sm: 'p-4',
+  md: 'p-6',
+  lg: 'p-8',
+};
 
-const isDoodle = variant === 'doodle';
-const doodleClass = isDoodle ? 'w-card-doodle' : '';
-const paddingClass = padding ? `w-card-padding-${padding}` : '';
-const classes = `${doodleClass} ${paddingClass} ${className}`.trim();
+const classes = `${variantClasses[variant]} ${padding ? paddingClasses[padding] : ''}`;
 
-// Use href for clickable cards
-const cardHref = clickable || href ? href : undefined;
+const Component = href ? 'a' : 'div';
 ---
 
-<WcCard
-  title={title}
-  titleTag={titleTag}
-  compact={compact}
-  secondary={secondary}
-  flat={flat}
-  href={cardHref}
-  className={classes}
+<Component
+  class={classes}
+  href={href}
+  role={clickable ? 'button' : undefined}
+  tabindex={clickable ? 0 : undefined}
 >
   <slot />
-</WcCard>
+</Component>
 
-<style>
-  /* Custom padding classes for WebcoreUI Card */
-  .w-card-padding-none {
-    padding: 0;
-  }
-  .w-card-padding-sm {
-    padding: var(--w-spacing-sm, 10px);
-  }
-  .w-card-padding-md {
-    padding: var(--w-spacing-default, 20px);
-  }
-  .w-card-padding-lg {
-    padding: var(--w-spacing-xl, 30px);
-  }
-
-  /* Doodle variant styling */
-  .w-card-doodle {
-    border-width: var(--w-card-border-width, 3px) !important;
-    border-radius: var(--w-card-radius, 12px) !important;
-    box-shadow: var(--w-card-shadow, 4px 4px 0 #5d4e37) !important;
-    border-color: var(--w-card-border, #5d4e37) !important;
-  }
-
-  /* Hover effects */
-  .w-card-doodle:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--w-card-shadow-md, 6px 6px 0 #5d4e37) !important;
-  }
-</style>
+{clickable && <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const card = document.currentScript?.previousElementSibling;
+    if (!card) return;
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        (card as HTMLElement).click();
+      }
+    });
+  });
+</script>}

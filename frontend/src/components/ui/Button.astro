@@ -1,13 +1,13 @@
 ---
 /**
- * Button Component - WebcoreUI Wrapper
+ * Button Component - Matching Figma Design
  *
- * Variants (mapped to WebcoreUI themes):
- * - primary: Green background (default) -> 'primary'
- * - secondary: Light green background -> 'secondary'
- * - outline: Green border, transparent background -> 'outline'
- * - ghost: Transparent with hover effect -> 'flat'
- * - doodle: Hand-drawn sketchy style -> 'primary' with custom class
+ * Variants:
+ * - primary: Green background (default)
+ * - secondary: Light green background
+ * - outline: Green border, transparent background
+ * - ghost: Transparent with hover effect
+ * - doodle: Hand-drawn sketchy style
  *
  * Sizes:
  * - sm: Small
@@ -17,8 +17,6 @@
  * - circle: Circle (for icons)
  */
 
-import { Button as WcButton } from 'webcoreui/astro';
-
 interface Props {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'doodle';
   size?: 'sm' | 'md' | 'lg' | 'icon' | 'circle';
@@ -27,8 +25,6 @@ interface Props {
   loading?: boolean;
   fullWidth?: boolean;
   href?: string;
-  className?: string;
-  children?: string | JSX.Element;
 }
 
 const {
@@ -39,48 +35,37 @@ const {
   loading = false,
   fullWidth = false,
   href,
-  className = '',
-  children,
 } = Astro.props;
 
-// Map our variants to WebcoreUI themes
-const themeMap: Record<string, string> = {
-  primary: 'primary',
-  secondary: 'secondary',
-  outline: 'outline',
-  ghost: 'flat',
-  doodle: 'primary', // Will use custom class for doodle styling
+const baseClasses = `btn ${fullWidth ? 'w-full' : ''}`;
+
+const variantClasses = {
+  primary: 'btn-primary',
+  secondary: 'btn-secondary',
+  outline: 'btn-outline',
+  ghost: 'btn-ghost',
+  doodle: 'btn-doodle',
 };
 
-// Map sizes to WebcoreUI - WebcoreUI doesn't have size props, use className
-const sizeClassMap: Record<string, string> = {
-  sm: 'w-button-sm',
+const sizeClasses = {
+  sm: 'btn-sm',
   md: '',
-  lg: 'w-button-lg',
-  icon: 'w-button-icon',
-  circle: 'w-button-circle',
+  lg: 'text-lg px-6 py-4',
+  icon: 'btn-icon',
+  circle: 'btn-circle',
 };
 
-const theme = themeMap[variant] || 'primary';
-const sizeClass = sizeClassMap[size] || '';
-const fullWidthClass = fullWidth ? 'w-full' : '';
-const customClasses = `${sizeClass} ${fullWidthClass} ${className}`.trim();
+const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]}`;
 
-// Handle doodle variant with custom styling
-const isDoodle = variant === 'doodle';
-
-if (isDoodle) {
-  // Use custom class for doodle variant
-}
+const Component = href ? 'a' : 'button';
 ---
 
-<WcButton
-  theme={theme}
-  type={type}
-  disabled={disabled || loading}
-  aria-busy={loading}
+<Component
+  type={href ? undefined : type}
   href={href}
-  className={customClasses}
+  class={classes}
+  disabled={href ? undefined : disabled || loading}
+  aria-busy={loading}
 >
   {loading && (
     <svg
@@ -98,32 +83,4 @@ if (isDoodle) {
     </svg>
   )}
   <slot />
-</WcButton>
-
-<style>
-  /* Custom size classes for WebcoreUI Button */
-  .w-button-sm {
-    font-size: var(--w-font-size-xs, 12px);
-    padding: var(--w-spacing-xxs, 2px) var(--w-spacing-sm, 10px);
-  }
-
-  .w-button-lg {
-    font-size: var(--w-font-size-lg, 21px);
-    padding: var(--w-spacing-md, 15px) var(--w-spacing-xl, 30px);
-  }
-
-  .w-button-icon {
-    aspect-ratio: 1;
-    padding: var(--w-spacing-sm, 10px);
-  }
-
-  .w-button-circle {
-    aspect-ratio: 1;
-    padding: var(--w-spacing-sm, 10px);
-    border-radius: 9999px;
-  }
-
-  .w-full {
-    width: 100%;
-  }
-</style>
+</Component>
