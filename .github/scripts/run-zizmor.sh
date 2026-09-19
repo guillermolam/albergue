@@ -11,9 +11,12 @@ fi
 report_json="$(mktemp)"
 trap 'rm -f "$report_json"' EXIT
 
+# zizmor exits non-zero based on the highest finding severity (not just on
+# execution failure), so its own exit code can't gate this script — capture
+# it but always fall through to inspecting the JSON report for real findings.
 env -u GH_TOKEN -u GITHUB_TOKEN -u ZIZMOR_GITHUB_TOKEN \
 	zizmor --offline --no-progress --pedantic --no-ignores --format json \
-	.github/workflows/*.yml .github/actions/**/*.yml >"${report_json}"
+	.github/workflows/*.yml .github/actions/**/*.yml >"${report_json}" || true
 
 if [[ "$(jq 'length' "${report_json}")" != "0" ]]; then
 	echo "zizmor findings detected:" >&2

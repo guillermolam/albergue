@@ -1,7 +1,8 @@
 import unocss from '@unocss/vite';
+import tailwindcss from '@tailwindcss/vite';
+import react from '@astrojs/react';
 import swup from '@swup/astro';
 import icon from 'astro-icon';
-import { webcore } from 'webcoreui/integration';
 import { envField } from 'astro/config';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -31,6 +32,15 @@ export const sharedConfig = {
         access: 'secret',
         optional: true,
       }),
+      // Matches backend/src/lib/middleware.ts's resolveIdentity(): the only
+      // credential its admin-gated routes accept until session/OIDC
+      // verification lands. Never sent to the client — only used server-side
+      // when an already-authenticated Astro admin session calls those routes.
+      ADMIN_API_TOKEN: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true,
+      }),
     },
   },
   prefetch: {
@@ -38,7 +48,7 @@ export const sharedConfig = {
     defaultStrategy: 'hover',
   },
   integrations: [
-    webcore(),
+    react(),
     swup({
       theme: 'fade',
       animationClass: 'transition-',
@@ -107,9 +117,10 @@ export const sharedConfig = {
       },
     },
     ssr: {
-      noExternal: ['@unocss/vite', 'unocss', 'webcoreui'],
+      noExternal: ['@unocss/vite', 'unocss'],
     },
     plugins: [
+      tailwindcss(),
       unocss({
         configFile: fileURLToPath(new URL('./uno.config.ts', import.meta.url)),
         mode: 'global',

@@ -1,4 +1,6 @@
 ---
+import '../styles/tailwind.css';
+
 export interface Props {
   title?: string;
   activeSection?: string;
@@ -9,6 +11,7 @@ const { title = 'Admin Dashboard', activeSection = 'services' } = Astro.props;
 const menuItems = [
   { id: 'services', label: 'Services', icon: 'server', path: '/admin/services' },
   { id: 'bookings', label: 'Bookings', icon: 'calendar', path: '/admin/bookings' },
+  { id: 'beds', label: 'Beds', icon: 'bed', path: '/admin/beds' },
   { id: 'pilgrims', label: 'Pilgrims', icon: 'users', path: '/admin/pilgrims' },
   { id: 'analytics', label: 'Analytics', icon: 'chart-bar', path: '/admin/analytics' },
   { id: 'settings', label: 'Settings', icon: 'cog', path: '/admin/settings' },
@@ -69,6 +72,14 @@ const menuItems = [
                         stroke-linejoin="round"
                         stroke-width="2"
                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    )}
+                    {item.icon === 'bed' && (
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 18v-6a2 2 0 012-2h14a2 2 0 012 2v6M3 18v2M3 18h18m0 0v2M5 10V6a2 2 0 012-2h2a2 2 0 012 2v4"
                       />
                     )}
                     {item.icon === 'users' && (

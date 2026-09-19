@@ -4,7 +4,7 @@
  */
 
 import { db } from "../lib/db.js";
-import { beds, bookings } from "@albergue/domain-model";
+import { beds, bookings, pilgrims } from "@albergue/domain-model";
 import {
   eq,
   and,
@@ -25,6 +25,7 @@ import type {
   PaginationParams,
   BedFilter,
   BedStats,
+  BedWithGuest,
 } from "../types/index.js";
 
 /**
@@ -293,6 +294,52 @@ export async function getBedsWithBookings(): Promise<Bed[]> {
     .groupBy(beds.id);
 
   return results.map((r) => r.bed);
+}
+
+/**
+ * Get all beds with their current occupant, if any.
+ *
+ * A bed is "occupied" (for this view) when it has a booking whose status is
+ * still claiming the bed — reserved or checked in. Cancelled, expired,
+ * checked-out, completed and deleted bookings never surface a guest here,
+ * matching how `getActiveBookings` scopes "active".
+ */
+export async function getBedsWithGuestInfo(): Promise<BedWithGuest[]> {
+  const results = await db
+    .select({
+      id: beds.id,
+      bedNumber: beds.bedNumber,
+      roomNumber: beds.roomNumber,
+      roomName: beds.roomName,
+      roomType: beds.roomType,
+      status: beds.status,
+      firstName: pilgrims.firstName,
+      lastName1: pilgrims.lastName1,
+      checkInDate: bookings.checkInDate,
+      checkOutDate: bookings.checkOutDate,
+    })
+    .from(beds)
+    .leftJoin(
+      bookings,
+      and(
+        eq(bookings.bedAssignmentId, beds.id),
+        or(eq(bookings.status, "reserved"), eq(bookings.status, "checked_in")),
+      ),
+    )
+    .leftJoin(pilgrims, eq(pilgrims.id, bookings.pilgrimId))
+    .orderBy(asc(beds.roomNumber), asc(beds.bedNumber));
+
+  return results.map((r) => ({
+    id: r.id,
+    bedNumber: r.bedNumber,
+    roomNumber: r.roomNumber,
+    roomName: r.roomName,
+    roomType: r.roomType,
+    status: r.status,
+    guestName: r.firstName ? `${r.firstName} ${r.lastName1 ?? ""}`.trim() : null,
+    checkInDate: r.checkInDate,
+    checkOutDate: r.checkOutDate,
+  }));
 }
 
 /**

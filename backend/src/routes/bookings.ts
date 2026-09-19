@@ -21,6 +21,7 @@ import {
   getBookingWithDetails,
   searchBookings,
   getAvailableBedsForDates,
+  getBookingsTableRows,
 } from '../queries/bookings.js';
 import { createBooking, updateBookingStatus } from '../commands/bookings.js';
 import { computeBookingQuote } from '../queries/pricing.js';
@@ -38,6 +39,7 @@ import type {
   PaginatedResponse,
   BookingFilter,
   BookingStats,
+  BookingTableRow,
 } from '../types/index.js';
 
 const bookings = new Hono();
@@ -319,6 +321,25 @@ bookings.get('/date-range', authMiddleware({ roles: ['admin'] }), async (c: Cont
     throw new HTTPException(500, {
       message: `Failed to get bookings by date range: ${String(error)}`,
     });
+  }
+});
+
+/**
+ * GET /bookings/table - Get bookings joined with guest identity, contact,
+ * bed and payment, for the admin bookings table. GET / (above) only returns
+ * raw booking rows with no pilgrim/bed/payment identity attached.
+ */
+bookings.get('/table', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
+  try {
+    const data = await getBookingsTableRows();
+    return c.json<ApiResponse<BookingTableRow[]>>({
+      success: true,
+      data,
+      message: 'Bookings table retrieved',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    throw new HTTPException(500, { message: `Failed to get bookings table: ${String(error)}` });
   }
 });
 
