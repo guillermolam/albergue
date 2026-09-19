@@ -54,6 +54,47 @@ interface BookingConfirmationStepProps {
  * function's cognitive-complexity budget (SonarCloud flagged 27 vs the
  * 15 allowed), and it's a self-contained summary screen with no state
  * of its own. */
+const CONFIRMATION_COPY = {
+  es: {
+    title: '¡Reserva Confirmada!',
+    subtitle: 'Tu reserva está completa',
+    stayDates: 'Fechas de Estancia',
+    checkIn: 'Entrada',
+    checkOut: 'Salida',
+    guestInfo: 'Información del Huésped',
+    name: 'Nombre',
+    bedSelection: 'Selección de Cama',
+    bed: 'Cama',
+    paymentMethod: 'Método de Pago',
+    card: 'Tarjeta de Crédito/Débito',
+    cash: 'Efectivo al Llegar',
+    totalCost: 'Coste Total',
+    night: 'noche',
+    nightPlural: 'noches',
+    back: 'Volver',
+    goToDashboard: '¡Ir al Panel! ✨',
+  },
+  en: {
+    title: 'Booking Confirmed!',
+    subtitle: 'Your reservation is complete',
+    stayDates: 'Stay Dates',
+    checkIn: 'Check-in',
+    checkOut: 'Check-out',
+    guestInfo: 'Guest Information',
+    name: 'Name',
+    bedSelection: 'Bed Selection',
+    bed: 'Bed',
+    paymentMethod: 'Payment Method',
+    card: 'Credit/Debit Card',
+    cash: 'Cash at Arrival',
+    totalCost: 'Total Cost',
+    night: 'night',
+    nightPlural: 'nights',
+    back: 'Back',
+    goToDashboard: 'Go to Dashboard! ✨',
+  },
+} as const;
+
 function BookingConfirmationStep({
   isEs,
   bookingData,
@@ -62,14 +103,9 @@ function BookingConfirmationStep({
   onBack,
   onComplete,
 }: BookingConfirmationStepProps) {
-  const paymentMethodLabel =
-    bookingData.paymentData?.method === 'card'
-      ? isEs
-        ? 'Tarjeta de Crédito/Débito'
-        : 'Credit/Debit Card'
-      : isEs
-        ? 'Efectivo al Llegar'
-        : 'Cash at Arrival';
+  const t = isEs ? CONFIRMATION_COPY.es : CONFIRMATION_COPY.en;
+  const paymentMethodLabel = bookingData.paymentData?.method === 'card' ? t.card : t.cash;
+  const nightLabel = nights > 1 ? t.nightPlural : t.night;
 
   return (
     <motion.div
@@ -91,12 +127,8 @@ function BookingConfirmationStep({
             ✓
           </div>
         </motion.div>
-        <h1 className="text-5xl sketch-title text-[#00AB39] mb-4">
-          {isEs ? '¡Reserva Confirmada!' : 'Booking Confirmed!'}
-        </h1>
-        <p className="text-gray-600 hand-drawn text-lg">
-          {isEs ? 'Tu reserva está completa' : 'Your reservation is complete'}
-        </p>
+        <h1 className="text-5xl sketch-title text-[#00AB39] mb-4">{t.title}</h1>
+        <p className="text-gray-600 hand-drawn text-lg">{t.subtitle}</p>
 
         <svg className="mx-auto mt-4 w-32 h-2 opacity-40">
           <path
@@ -129,17 +161,17 @@ function BookingConfirmationStep({
           <div>
             <h3 className="text-xl sketch-title mb-4 flex items-center gap-2">
               <HandDrawnCalendar size={28} animate />
-              {isEs ? 'Fechas de Estancia' : 'Stay Dates'}
+              {t.stayDates}
             </h3>
             <div className="grid grid-cols-2 gap-4 text-gray-700">
               <div>
-                <p className="text-sm text-gray-500">{isEs ? 'Entrada' : 'Check-in'}</p>
+                <p className="text-sm text-gray-500">{t.checkIn}</p>
                 <p className="font-medium hand-drawn">
                   {bookingData.checkInDate?.toLocaleDateString()}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">{isEs ? 'Salida' : 'Check-out'}</p>
+                <p className="text-sm text-gray-500">{t.checkOut}</p>
                 <p className="font-medium hand-drawn">
                   {bookingData.checkOutDate?.toLocaleDateString()}
                 </p>
@@ -148,12 +180,10 @@ function BookingConfirmationStep({
           </div>
 
           <div className="border-t-2 border-dashed pt-6">
-            <h3 className="text-xl sketch-title mb-4">
-              {isEs ? 'Información del Huésped' : 'Guest Information'}
-            </h3>
+            <h3 className="text-xl sketch-title mb-4">{t.guestInfo}</h3>
             <div className="grid grid-cols-2 gap-4 text-gray-700">
               <div>
-                <p className="text-sm text-gray-500">{isEs ? 'Nombre' : 'Name'}</p>
+                <p className="text-sm text-gray-500">{t.name}</p>
                 <p className="font-medium hand-drawn">
                   {bookingData.pilgrimData?.firstName} {bookingData.pilgrimData?.lastName}
                 </p>
@@ -166,18 +196,14 @@ function BookingConfirmationStep({
           </div>
 
           <div className="border-t-2 border-dashed pt-6">
-            <h3 className="text-xl sketch-title mb-4">
-              {isEs ? 'Selección de Cama' : 'Bed Selection'}
-            </h3>
+            <h3 className="text-xl sketch-title mb-4">{t.bedSelection}</h3>
             <p className="text-gray-700 hand-drawn">
-              {isEs ? 'Cama' : 'Bed'} #{bookingData.selectedBeds[0]}
+              {t.bed} #{bookingData.selectedBeds[0]}
             </p>
           </div>
 
           <div className="border-t-2 border-dashed pt-6">
-            <h3 className="text-xl sketch-title mb-4">
-              {isEs ? 'Método de Pago' : 'Payment Method'}
-            </h3>
+            <h3 className="text-xl sketch-title mb-4">{t.paymentMethod}</h3>
             <p className="text-gray-700 hand-drawn">{paymentMethodLabel}</p>
             {bookingData.paymentData?.method === 'cash' && bookingData.paymentData?.eta && (
               <p className="text-sm text-gray-600 mt-2 hand-drawn">
@@ -187,11 +213,10 @@ function BookingConfirmationStep({
           </div>
 
           <div className="border-t-2 border-dashed pt-6">
-            <h3 className="text-xl sketch-title mb-4">{isEs ? 'Coste Total' : 'Total Cost'}</h3>
+            <h3 className="text-xl sketch-title mb-4">{t.totalCost}</h3>
             <p className="text-3xl sketch-title text-[#00AB39]">€{nights * pricePerNight}</p>
             <p className="text-sm text-gray-500 hand-drawn">
-              ({nights} {isEs ? 'noche' : 'night'}
-              {nights > 1 ? 's' : ''} × €{pricePerNight}/{isEs ? 'noche' : 'night'})
+              ({nights} {nightLabel} × €{pricePerNight}/{t.night})
             </p>
           </div>
         </div>
@@ -207,13 +232,13 @@ function BookingConfirmationStep({
           onClick={onBack}
           className="flex-1 px-6 py-4 text-lg doodle-border bg-white hover:bg-gray-50 transition-colors sketch-title"
         >
-          ← {isEs ? 'Volver' : 'Back'}
+          ← {t.back}
         </button>
         <button
           onClick={onComplete}
           className="flex-1 px-6 py-4 text-lg doodle-border bg-[#00AB39] text-white hover:bg-[#008c2f] transition-colors sketch-title"
         >
-          {isEs ? '¡Ir al Panel! ✨' : 'Go to Dashboard! ✨'}
+          {t.goToDashboard}
         </button>
       </motion.div>
     </motion.div>

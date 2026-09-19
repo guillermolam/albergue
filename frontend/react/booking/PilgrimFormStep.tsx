@@ -36,9 +36,78 @@ interface PilgrimFormStepProps {
   };
 }
 
+/** Single copy-object lookup instead of ~25 scattered `isEs ? a : b`
+ * ternaries -- SonarCloud counts each inline ternary as its own
+ * cognitive-complexity point, and this form genuinely has that many
+ * bilingual labels. One ternary (`t = isEs ? ... : ...`) replaces all
+ * of them. */
+const FORM_COPY = {
+  es: {
+    title: 'Información del Peregrino',
+    subtitle: 'Completa tus datos a continuación',
+    personalDetails: 'Datos Personales',
+    firstName: 'Nombre',
+    lastName: 'Apellido',
+    secondLastName: 'Segundo Apellido',
+    dateOfBirth: 'Fecha de Nacimiento',
+    nationality: 'Nacionalidad',
+    nationalityPlaceholder: 'p.ej., España',
+    contactInfo: 'Información de Contacto',
+    phone: 'Teléfono',
+    email: 'Correo Electrónico',
+    address: 'Dirección',
+    country: 'País',
+    countryPlaceholder: 'España',
+    addressLine1: 'Dirección Línea 1',
+    addressLine1Placeholder: 'Empieza a escribir tu dirección...',
+    addressLine2: 'Dirección Línea 2 (Opcional)',
+    addressLine2Placeholder: 'Piso, puerta, etc.',
+    postalCode: 'Código Postal',
+    autocompletingCity: 'Autocompletando ciudad...',
+    city: 'Ciudad',
+    emergencyContact: 'Contacto de Emergencia',
+    emergencyContactName: 'Nombre de Contacto',
+    emergencyPhone: 'Teléfono de Emergencia',
+    back: 'Volver a Documento',
+    continue: 'Continuar a Selección de Cama',
+    required: 'Este campo es obligatorio',
+  },
+  en: {
+    title: 'Pilgrim Information',
+    subtitle: 'Complete your details below',
+    personalDetails: 'Personal Details',
+    firstName: 'First Name',
+    lastName: 'Last Name',
+    secondLastName: 'Second Last Name',
+    dateOfBirth: 'Date of Birth',
+    nationality: 'Nationality',
+    nationalityPlaceholder: 'e.g., Spain',
+    contactInfo: 'Contact Information',
+    phone: 'Phone Number',
+    email: 'Email Address',
+    address: 'Home Address',
+    country: 'Country',
+    countryPlaceholder: 'Spain',
+    addressLine1: 'Address Line 1',
+    addressLine1Placeholder: 'Start typing your street address...',
+    addressLine2: 'Address Line 2 (Optional)',
+    addressLine2Placeholder: 'Apartment, suite, etc.',
+    postalCode: 'Postal / ZIP Code',
+    autocompletingCity: 'Autocompleting city...',
+    city: 'City',
+    emergencyContact: 'Emergency Contact',
+    emergencyContactName: 'Contact Name',
+    emergencyPhone: 'Emergency Phone',
+    back: 'Back to ID Upload',
+    continue: 'Continue to Bed Selection',
+    required: 'This field is required',
+  },
+} as const;
+
 export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStepProps) {
   const { locale } = useI18n();
   const isEs = locale !== 'en';
+  const t = isEs ? FORM_COPY.es : FORM_COPY.en;
 
   const [formData, setFormData] = useState<PilgrimFormData>({
     firstName: '',
@@ -116,18 +185,21 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
   };
 
   const validateForm = () => {
+    const requiredFields: (keyof PilgrimFormData)[] = [
+      'firstName',
+      'lastName',
+      'phone',
+      'nationality',
+      'country',
+      'addressLine1',
+      'postalCode',
+      'city',
+      'dateOfBirth',
+    ];
     const newErrors: Record<string, string> = {};
-    const req = (v: string) => (isEs ? 'Este campo es obligatorio' : 'This field is required');
-
-    if (!formData.firstName) newErrors.firstName = req(formData.firstName);
-    if (!formData.lastName) newErrors.lastName = req(formData.lastName);
-    if (!formData.phone) newErrors.phone = req(formData.phone);
-    if (!formData.nationality) newErrors.nationality = req(formData.nationality);
-    if (!formData.country) newErrors.country = req(formData.country);
-    if (!formData.addressLine1) newErrors.addressLine1 = req(formData.addressLine1);
-    if (!formData.postalCode) newErrors.postalCode = req(formData.postalCode);
-    if (!formData.city) newErrors.city = req(formData.city);
-    if (!formData.dateOfBirth) newErrors.dateOfBirth = req(formData.dateOfBirth);
+    for (const field of requiredFields) {
+      if (!formData[field]) newErrors[field] = t.required;
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -160,12 +232,8 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
           >
             <User className="w-20 h-20 text-[#00AB39] mx-auto" strokeWidth={2} />
           </motion.div>
-          <h1 className="text-4xl md:text-5xl sketch-title text-[#5D4E37] mb-3">
-            {isEs ? 'Información del Peregrino' : 'Pilgrim Information'}
-          </h1>
-          <p className="text-lg text-gray-600 hand-drawn">
-            {isEs ? 'Completa tus datos a continuación' : 'Complete your details below'}
-          </p>
+          <h1 className="text-4xl md:text-5xl sketch-title text-[#5D4E37] mb-3">{t.title}</h1>
+          <p className="text-lg text-gray-600 hand-drawn">{t.subtitle}</p>
 
           <svg className="mx-auto mt-4 w-32 h-2 opacity-40">
             <path
@@ -209,7 +277,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
           <div className="relative z-10 p-8 md:p-12 space-y-6">
             <div>
               <h3 className="text-2xl sketch-title text-[#5D4E37] mb-6 flex items-center gap-2">
-                <span>👤</span> {isEs ? 'Datos Personales' : 'Personal Details'}
+                <span>👤</span> {t.personalDetails}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <motion.div
@@ -218,7 +286,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                   transition={{ delay: 0.1 }}
                 >
                   <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                    {isEs ? 'Nombre' : 'First Name'} <span className="text-[#ED1C24]">*</span>
+                    {t.firstName} <span className="text-[#ED1C24]">*</span>
                   </label>
                   <input
                     type="text"
@@ -239,7 +307,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                   transition={{ delay: 0.15 }}
                 >
                   <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                    {isEs ? 'Apellido' : 'Last Name'} <span className="text-[#ED1C24]">*</span>
+                    {t.lastName} <span className="text-[#ED1C24]">*</span>
                   </label>
                   <input
                     type="text"
@@ -260,7 +328,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                   transition={{ delay: 0.2 }}
                 >
                   <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                    {isEs ? 'Segundo Apellido' : 'Second Last Name'}
+                    {t.secondLastName}
                   </label>
                   <input
                     type="text"
@@ -279,8 +347,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                   transition={{ delay: 0.25 }}
                 >
                   <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                    {isEs ? 'Fecha de Nacimiento' : 'Date of Birth'}{' '}
-                    <span className="text-[#ED1C24]">*</span>
+                    {t.dateOfBirth} <span className="text-[#ED1C24]">*</span>
                   </label>
                   <input
                     type="date"
@@ -301,14 +368,13 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                   transition={{ delay: 0.3 }}
                 >
                   <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                    {isEs ? 'Nacionalidad' : 'Nationality'}{' '}
-                    <span className="text-[#ED1C24]">*</span>
+                    {t.nationality} <span className="text-[#ED1C24]">*</span>
                   </label>
                   <input
                     type="text"
                     value={formData.nationality}
                     onChange={(e) => handleChange('nationality', e.target.value)}
-                    placeholder={isEs ? 'p.ej., España' : 'e.g., Spain'}
+                    placeholder={t.nationalityPlaceholder}
                     className="w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
                     style={{ fontFamily: 'Patrick Hand, cursive' }}
                     required
@@ -319,7 +385,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
 
             <div className="pt-6 border-t-2 border-dashed border-gray-300">
               <h3 className="text-2xl sketch-title text-[#5D4E37] mb-6 flex items-center gap-2">
-                <span>📞</span> {isEs ? 'Información de Contacto' : 'Contact Information'}
+                <span>📞</span> {t.contactInfo}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <motion.div
@@ -330,7 +396,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                   <PhoneInput
                     value={formData.phone}
                     onChange={(value) => handleChange('phone', value)}
-                    label={isEs ? 'Teléfono' : 'Phone Number'}
+                    label={t.phone}
                     defaultCountry="ES"
                     required
                   />
@@ -345,8 +411,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                   transition={{ delay: 0.4 }}
                 >
                   <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                    {isEs ? 'Correo Electrónico' : 'Email Address'}{' '}
-                    <span className="text-[#ED1C24]">*</span>
+                    {t.email} <span className="text-[#ED1C24]">*</span>
                   </label>
                   <input
                     type="email"
@@ -366,7 +431,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
 
             <div className="pt-6 border-t-2 border-dashed border-gray-300">
               <h3 className="text-2xl sketch-title text-[#5D4E37] mb-6 flex items-center gap-2">
-                <span>🏠</span> {isEs ? 'Dirección' : 'Home Address'}
+                <span>🏠</span> {t.address}
               </h3>
               <div className="space-y-6">
                 <motion.div
@@ -375,13 +440,13 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                   transition={{ delay: 0.45 }}
                 >
                   <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                    {isEs ? 'País' : 'Country'} <span className="text-[#ED1C24]">*</span>
+                    {t.country} <span className="text-[#ED1C24]">*</span>
                   </label>
                   <input
                     type="text"
                     value={formData.country}
                     onChange={(e) => handleChange('country', e.target.value)}
-                    placeholder={isEs ? 'España' : 'Spain'}
+                    placeholder={t.countryPlaceholder}
                     className={inputClass('country').replace(
                       'focus:ring-[#00AB39]',
                       'focus:ring-[#0071BC]'
@@ -403,12 +468,8 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                     value={formData.addressLine1}
                     onChange={(value) => handleChange('addressLine1', value)}
                     onPlaceSelected={handleAddressSelect}
-                    label={isEs ? 'Dirección Línea 1' : 'Address Line 1'}
-                    placeholder={
-                      isEs
-                        ? 'Empieza a escribir tu dirección...'
-                        : 'Start typing your street address...'
-                    }
+                    label={t.addressLine1}
+                    placeholder={t.addressLine1Placeholder}
                     required
                   />
                   {errors.addressLine1 && (
@@ -422,13 +483,13 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                   transition={{ delay: 0.55 }}
                 >
                   <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                    {isEs ? 'Dirección Línea 2 (Opcional)' : 'Address Line 2 (Optional)'}
+                    {t.addressLine2}
                   </label>
                   <input
                     type="text"
                     value={formData.addressLine2}
                     onChange={(e) => handleChange('addressLine2', e.target.value)}
-                    placeholder={isEs ? 'Piso, puerta, etc.' : 'Apartment, suite, etc.'}
+                    placeholder={t.addressLine2Placeholder}
                     className="w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 focus:ring-[#0071BC]"
                     style={{ fontFamily: 'Patrick Hand, cursive' }}
                   />
@@ -441,8 +502,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                     transition={{ delay: 0.6 }}
                   >
                     <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                      {isEs ? 'Código Postal' : 'Postal / ZIP Code'}{' '}
-                      <span className="text-[#ED1C24]">*</span>
+                      {t.postalCode} <span className="text-[#ED1C24]">*</span>
                     </label>
                     <input
                       type="text"
@@ -465,8 +525,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                         animate={{ opacity: 1 }}
                         className="mt-1 text-xs text-[#00AB39] hand-drawn flex items-center gap-1"
                       >
-                        <span>✓</span>{' '}
-                        {isEs ? 'Autocompletando ciudad...' : 'Autocompleting city...'}
+                        <span>✓</span> {t.autocompletingCity}
                       </motion.p>
                     )}
                   </motion.div>
@@ -477,7 +536,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                     transition={{ delay: 0.65 }}
                   >
                     <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                      {isEs ? 'Ciudad' : 'City'} <span className="text-[#ED1C24]">*</span>
+                      {t.city} <span className="text-[#ED1C24]">*</span>
                     </label>
                     <input
                       type="text"
@@ -501,7 +560,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
 
             <div className="pt-6 border-t-2 border-dashed border-gray-300">
               <h3 className="text-2xl sketch-title text-[#5D4E37] mb-6 flex items-center gap-2">
-                <span>🚨</span> {isEs ? 'Contacto de Emergencia' : 'Emergency Contact'}
+                <span>🚨</span> {t.emergencyContact}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <motion.div
@@ -510,7 +569,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                   transition={{ delay: 0.7 }}
                 >
                   <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                    {isEs ? 'Nombre de Contacto' : 'Contact Name'}
+                    {t.emergencyContactName}
                   </label>
                   <input
                     type="text"
@@ -530,7 +589,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                   <PhoneInput
                     value={formData.emergencyPhone}
                     onChange={(value) => handleChange('emergencyPhone', value)}
-                    label={isEs ? 'Teléfono de Emergencia' : 'Emergency Phone'}
+                    label={t.emergencyPhone}
                     defaultCountry="ES"
                     required={false}
                   />
@@ -547,11 +606,11 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
           className="mt-10 flex gap-4 justify-between"
         >
           <WiredButton variant="outline" size="lg" onClick={onBack}>
-            ← {isEs ? 'Volver a Documento' : 'Back to ID Upload'}
+            ← {t.back}
           </WiredButton>
 
           <WiredButton variant="primary" size="lg" onClick={handleSubmit}>
-            {isEs ? 'Continuar a Selección de Cama' : 'Continue to Bed Selection'} →
+            {t.continue} →
           </WiredButton>
         </motion.div>
       </motion.div>

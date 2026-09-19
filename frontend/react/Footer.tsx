@@ -21,6 +21,115 @@ const ICON_MAP: Record<string, ComponentType<{ className?: string }>> = {
   Star,
 };
 
+/** Extracted so Footer's own cognitive complexity stays under SonarCloud's
+ * threshold -- two independent .map() calls plus their ternaries were
+ * counted against the parent function before. */
+function FooterQuickLinksColumn({ isEs, goTo }: { isEs: boolean; goTo: (path: string) => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: 0.1 }}
+    >
+      <h4 className="text-xl sketch-title mb-6 flex items-center gap-2">
+        <SparkleIcon className="w-6 h-6" />
+        {isEs ? 'Enlaces Rápidos' : 'Quick Links'}
+      </h4>
+      <ul className="space-y-3">
+        {QUICK_LINKS.internal.map((link) => (
+          <li key={link.id}>
+            <motion.button
+              onClick={() => goTo(isEs ? link.pathES : link.pathEN)}
+              className="text-[#E8F5E9] hover:text-white transition-colors text-left hand-drawn"
+              whileHover={{ x: 5 }}
+            >
+              → {isEs ? link.labelES : link.labelEN}
+            </motion.button>
+          </li>
+        ))}
+        {QUICK_LINKS.external.map((link) => (
+          <li key={link.id}>
+            <motion.a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#E8F5E9] hover:text-white transition-colors flex items-center gap-2 hand-drawn"
+              whileHover={{ x: 5 }}
+            >
+              → {isEs ? link.labelES : link.labelEN}
+              <ExternalLink className="w-3 h-3" />
+            </motion.a>
+          </li>
+        ))}
+      </ul>
+    </motion.div>
+  );
+}
+
+function FooterCertificationsColumn({
+  isEs,
+  goTo,
+}: {
+  isEs: boolean;
+  goTo: (path: string) => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: 0.3 }}
+    >
+      <h4 className="text-xl sketch-title mb-6 flex items-center gap-2">
+        <Shield className="w-6 h-6" />
+        {isEs ? 'Certificaciones' : 'Certifications'}
+      </h4>
+
+      <div className="space-y-3 mb-6">
+        {CERTIFICATIONS.map((cert) => (
+          <motion.div
+            key={cert.id}
+            className="bg-white/10 rounded-lg p-2 border-2 border-[#00AB39] text-xs hand-drawn hover:bg-white/15 transition-colors"
+            whileHover={{ scale: 1.03 }}
+          >
+            ✓ {isEs ? cert.nameES : cert.nameEN}
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 mb-6">
+        {Object.entries(COMPLIANCE_BADGES).map(([key, badge]) => (
+          <motion.div
+            key={key}
+            className="bg-[#00AB39] rounded-lg p-2 text-center border-2 border-white"
+            whileHover={{ scale: 1.05 }}
+            title={badge.description}
+          >
+            <Shield className="w-5 h-5 mx-auto mb-1" />
+            <p className="text-[10px] hand-drawn leading-tight">
+              {isEs ? badge.nameES : badge.nameEN}
+            </p>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="space-y-2">
+        {QUICK_LINKS.legal.map((link) => (
+          <motion.button
+            key={link.id}
+            onClick={() => goTo(isEs ? link.pathES : link.pathEN)}
+            className="block text-xs text-[#E8F5E9] hover:text-white transition-colors underline hand-drawn text-left w-full"
+            whileHover={{ x: 3 }}
+          >
+            {isEs ? link.labelES : link.labelEN}
+          </motion.button>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
 export function Footer() {
   const { locale } = useI18n();
   const isEs = locale !== 'en';
@@ -67,44 +176,7 @@ export function Footer() {
             </div>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-          >
-            <h4 className="text-xl sketch-title mb-6 flex items-center gap-2">
-              <SparkleIcon className="w-6 h-6" />
-              {isEs ? 'Enlaces Rápidos' : 'Quick Links'}
-            </h4>
-            <ul className="space-y-3">
-              {QUICK_LINKS.internal.map((link) => (
-                <li key={link.id}>
-                  <motion.button
-                    onClick={() => goTo(isEs ? link.pathES : link.pathEN)}
-                    className="text-[#E8F5E9] hover:text-white transition-colors text-left hand-drawn"
-                    whileHover={{ x: 5 }}
-                  >
-                    → {isEs ? link.labelES : link.labelEN}
-                  </motion.button>
-                </li>
-              ))}
-              {QUICK_LINKS.external.map((link) => (
-                <li key={link.id}>
-                  <motion.a
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#E8F5E9] hover:text-white transition-colors flex items-center gap-2 hand-drawn"
-                    whileHover={{ x: 5 }}
-                  >
-                    → {isEs ? link.labelES : link.labelEN}
-                    <ExternalLink className="w-3 h-3" />
-                  </motion.a>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
+          <FooterQuickLinksColumn isEs={isEs} goTo={goTo} />
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -171,58 +243,7 @@ export function Footer() {
             </div>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-          >
-            <h4 className="text-xl sketch-title mb-6 flex items-center gap-2">
-              <Shield className="w-6 h-6" />
-              {isEs ? 'Certificaciones' : 'Certifications'}
-            </h4>
-
-            <div className="space-y-3 mb-6">
-              {CERTIFICATIONS.map((cert) => (
-                <motion.div
-                  key={cert.id}
-                  className="bg-white/10 rounded-lg p-2 border-2 border-[#00AB39] text-xs hand-drawn hover:bg-white/15 transition-colors"
-                  whileHover={{ scale: 1.03 }}
-                >
-                  ✓ {isEs ? cert.nameES : cert.nameEN}
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 mb-6">
-              {Object.entries(COMPLIANCE_BADGES).map(([key, badge]) => (
-                <motion.div
-                  key={key}
-                  className="bg-[#00AB39] rounded-lg p-2 text-center border-2 border-white"
-                  whileHover={{ scale: 1.05 }}
-                  title={badge.description}
-                >
-                  <Shield className="w-5 h-5 mx-auto mb-1" />
-                  <p className="text-[10px] hand-drawn leading-tight">
-                    {isEs ? badge.nameES : badge.nameEN}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="space-y-2">
-              {QUICK_LINKS.legal.map((link) => (
-                <motion.button
-                  key={link.id}
-                  onClick={() => goTo(isEs ? link.pathES : link.pathEN)}
-                  className="block text-xs text-[#E8F5E9] hover:text-white transition-colors underline hand-drawn text-left w-full"
-                  whileHover={{ x: 3 }}
-                >
-                  {isEs ? link.labelES : link.labelEN}
-                </motion.button>
-              ))}
-            </div>
-          </motion.div>
+          <FooterCertificationsColumn isEs={isEs} goTo={goTo} />
         </div>
       </div>
 

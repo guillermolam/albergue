@@ -7,12 +7,86 @@ interface NavigationProps {
   currentPath: string;
 }
 
+interface NavLinkData {
+  path: string;
+  label: string;
+}
+
+/** Extracted so Navigation's own cognitive complexity stays under
+ * SonarCloud's threshold -- this was inline with its own active-state
+ * ternary and conditional underline before. */
+function DesktopNavLink({ link, isActive }: { link: NavLinkData; isActive: boolean }) {
+  return (
+    <a href={link.path} className="relative px-4 py-2 group">
+      <motion.span
+        whileHover={{ y: -2, scale: 1.05 }}
+        className={`transition-colors ${isActive ? 'text-[#00AB39] font-semibold' : 'text-gray-700 group-hover:text-[#00AB39]'}`}
+      >
+        {link.label}
+      </motion.span>
+      {isActive && (
+        <motion.svg
+          layoutId="activeUnderline"
+          className="absolute bottom-0 left-2 right-2 h-1"
+          style={{ overflow: 'visible' }}
+        >
+          <motion.path
+            d="M0,2 Q5,0 10,2 T20,2 T30,2 T40,2 T50,2"
+            stroke="#00AB39"
+            strokeWidth="2.5"
+            fill="none"
+            strokeLinecap="round"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 0.5, type: 'spring' }}
+          />
+        </motion.svg>
+      )}
+    </a>
+  );
+}
+
+function MobileNavLink({
+  link,
+  isActive,
+  onClick,
+  delay,
+}: {
+  link: NavLinkData;
+  isActive: boolean;
+  onClick: () => void;
+  delay: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay }}
+    >
+      <a
+        href={link.path}
+        onClick={onClick}
+        className={`block px-4 py-3 doodle-border transition-all ${isActive ? 'bg-[#00AB39] text-white doodle-shadow' : 'bg-white text-gray-700 hover:bg-[#F5E6D3]'}`}
+      >
+        {link.label}
+      </a>
+    </motion.div>
+  );
+}
+
 export function Navigation({ currentPath }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { locale, setLocale } = useI18n();
   const isEs = locale !== 'en';
 
   const isActive = (path: string) => currentPath === path;
+  const mobileMenuLabel = isOpen
+    ? isEs
+      ? 'Cerrar menú'
+      : 'Close menu'
+    : isEs
+      ? 'Abrir menú'
+      : 'Open menu';
 
   const navLinks = [
     { path: '/', label: isEs ? 'Inicio' : 'Home' },
@@ -90,36 +164,7 @@ export function Navigation({ currentPath }: NavigationProps) {
 
           <div className="hidden md:flex items-center space-x-1">
             {navLinks.map((link) => (
-              <a key={link.path} href={link.path} className="relative px-4 py-2 group">
-                <motion.span
-                  whileHover={{ y: -2, scale: 1.05 }}
-                  className={`transition-colors ${
-                    isActive(link.path)
-                      ? 'text-[#00AB39] font-semibold'
-                      : 'text-gray-700 group-hover:text-[#00AB39]'
-                  }`}
-                >
-                  {link.label}
-                </motion.span>
-                {isActive(link.path) && (
-                  <motion.svg
-                    layoutId="activeUnderline"
-                    className="absolute bottom-0 left-2 right-2 h-1"
-                    style={{ overflow: 'visible' }}
-                  >
-                    <motion.path
-                      d="M0,2 Q5,0 10,2 T20,2 T30,2 T40,2 T50,2"
-                      stroke="#00AB39"
-                      strokeWidth="2.5"
-                      fill="none"
-                      strokeLinecap="round"
-                      initial={{ pathLength: 0 }}
-                      animate={{ pathLength: 1 }}
-                      transition={{ duration: 0.5, type: 'spring' }}
-                    />
-                  </motion.svg>
-                )}
-              </a>
+              <DesktopNavLink key={link.path} link={link} isActive={isActive(link.path)} />
             ))}
           </div>
 
@@ -177,9 +222,7 @@ export function Navigation({ currentPath }: NavigationProps) {
               whileTap={{ scale: 0.9 }}
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden relative"
-              aria-label={
-                isOpen ? (isEs ? 'Cerrar menú' : 'Close menu') : isEs ? 'Abrir menú' : 'Open menu'
-              }
+              aria-label={mobileMenuLabel}
               aria-expanded={isOpen}
             >
               <svg width="40" height="40">
@@ -228,24 +271,13 @@ export function Navigation({ currentPath }: NavigationProps) {
             >
               <div className="space-y-3 pt-2">
                 {navLinks.map((link, index) => (
-                  <motion.div
+                  <MobileNavLink
                     key={link.path}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <a
-                      href={link.path}
-                      onClick={() => setIsOpen(false)}
-                      className={`block px-4 py-3 doodle-border transition-all ${
-                        isActive(link.path)
-                          ? 'bg-[#00AB39] text-white doodle-shadow'
-                          : 'bg-white text-gray-700 hover:bg-[#F5E6D3]'
-                      }`}
-                    >
-                      {link.label}
-                    </a>
-                  </motion.div>
+                    link={link}
+                    isActive={isActive(link.path)}
+                    onClick={() => setIsOpen(false)}
+                    delay={index * 0.05}
+                  />
                 ))}
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
