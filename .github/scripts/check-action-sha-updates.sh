@@ -56,12 +56,12 @@ check_pinned_action() {
 	fi
 
 	local pattern="${repo}@${latest_sha}"
-	if ! rg -n --fixed-strings "${pattern}" "${WORKFLOW_DIR}" "${ACTIONS_DIR}" >/dev/null; then
+	if ! grep -rn --fixed-strings "${pattern}" "${WORKFLOW_DIR}" "${ACTIONS_DIR}" >/dev/null; then
 		echo "pinned SHA mismatch for ${repo}: expected ${pattern}" >&2
 		exit 1
 	fi
 
-	if ! rg -n --fixed-strings "${pattern} # ${expected_tag}" "${WORKFLOW_DIR}" "${ACTIONS_DIR}" >/dev/null; then
+	if ! grep -rn --fixed-strings "${pattern} # ${expected_tag}" "${WORKFLOW_DIR}" "${ACTIONS_DIR}" >/dev/null; then
 		echo "missing version comment for ${repo}: expected '# ${expected_tag}'" >&2
 		exit 1
 	fi
