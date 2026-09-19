@@ -51,7 +51,7 @@ beds.get('/', async (c: Context) => {
       orderDirection: orderDirection as 'asc' | 'desc',
       ...filters,
     } as any);
-    
+
     return c.json<ApiResponse<PaginatedResponse<Bed>>>({
       success: true,
       data: result,
@@ -138,7 +138,7 @@ beds.get('/room/:roomNumber', async (c: Context) => {
   try {
     const roomNumber = Number(c.req.param('roomNumber'));
     if (isNaN(roomNumber)) throw new HTTPException(400, { message: 'Invalid room number' });
-    
+
     const beds = await getBedsByRoomNumber(roomNumber);
     return c.json<ApiResponse<Bed[]>>({
       success: true,
@@ -242,11 +242,11 @@ beds.put('/:id', async (c: Context) => {
   try {
     const id = Number(c.req.param('id'));
     if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid bed ID' });
-    
+
     const body = await c.req.json();
     const bed = await updateBed(id, body);
     if (!bed) throw new HTTPException(404, { message: 'Bed not found' });
-    
+
     return c.json<ApiResponse<Bed>>({
       success: true,
       data: bed,
@@ -266,12 +266,12 @@ beds.patch('/:id/reserve', async (c: Context) => {
   try {
     const id = Number(c.req.param('id'));
     if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid bed ID' });
-    
+
     const { reservedUntil, status } = await c.req.json();
     const success = await reserveBed(id, new Date(reservedUntil), status);
     // Atomic claim fails when the bed is taken (409) or missing (404)
     if (!success) throw new HTTPException(409, { message: 'Bed unavailable or not found' });
-    
+
     return c.json<ApiResponse<null>>({
       success: true,
       message: 'Bed reserved successfully',
@@ -290,10 +290,10 @@ beds.patch('/:id/release', async (c: Context) => {
   try {
     const id = Number(c.req.param('id'));
     if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid bed ID' });
-    
+
     const success = await releaseBed(id);
     if (!success) throw new HTTPException(404, { message: 'Bed not found' });
-    
+
     return c.json<ApiResponse<null>>({
       success: true,
       message: 'Bed released successfully',
@@ -330,10 +330,10 @@ beds.delete('/:id', async (c: Context) => {
   try {
     const id = Number(c.req.param('id'));
     if (isNaN(id)) throw new HTTPException(400, { message: 'Invalid bed ID' });
-    
+
     const success = await softDeleteBed(id);
     if (!success) throw new HTTPException(404, { message: 'Bed not found' });
-    
+
     return c.json<ApiResponse<null>>({
       success: true,
       message: 'Bed soft deleted successfully',

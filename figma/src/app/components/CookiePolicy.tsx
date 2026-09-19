@@ -1,10 +1,10 @@
-import { motion } from 'motion/react';
-import { Cookie, Settings, BarChart3, Shield } from 'lucide-react';
-import { useI18n } from '../contexts/I18nContext';
-import { useNavigate } from 'react-router-dom';
-import { DoodleCard } from './doodle/DoodleCard';
-import { CONTACT_INFO } from '../constants/footerData';
-import logoImage from 'figma:asset/6340c39809bbb6dce9c21e3fed2ac80a388b79b7.png';
+import { motion } from "motion/react";
+import { Cookie, Settings, BarChart3, Shield } from "lucide-react";
+import { useI18n } from "../contexts/I18nContext";
+import { useNavigate } from "react-router-dom";
+import { DoodleCard } from "./doodle/DoodleCard";
+import { CONTACT_INFO } from "../constants/footerData";
+import logoImage from "figma:asset/6340c39809bbb6dce9c21e3fed2ac80a388b79b7.png";
 
 export function CookiePolicy() {
   const { language } = useI18n();
@@ -12,22 +12,23 @@ export function CookiePolicy() {
 
   const content = {
     es: {
-      title: 'Política de Cookies',
-      lastUpdated: 'Última actualización: 20 de Diciembre de 2025',
-      intro: 'Esta web utiliza cookies para mejorar tu experiencia de navegación. Conforme a la Ley 34/2002 (LSSI) y el RGPD, te informamos sobre las cookies que utilizamos.',
+      title: "Política de Cookies",
+      lastUpdated: "Última actualización: 20 de Diciembre de 2025",
+      intro:
+        "Esta web utiliza cookies para mejorar tu experiencia de navegación. Conforme a la Ley 34/2002 (LSSI) y el RGPD, te informamos sobre las cookies que utilizamos.",
       sections: [
         {
           icon: Cookie,
-          title: '¿Qué son las Cookies?',
+          title: "¿Qué son las Cookies?",
           content: `
             Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo cuando visitas un sitio web. Permiten que el sitio recuerde tus acciones y preferencias durante un período de tiempo.
             
             Utilizamos cookies propias y de terceros para fines técnicos, analíticos y de personalización.
-          `
+          `,
         },
         {
           icon: Settings,
-          title: 'Cookies Técnicas (Necesarias)',
+          title: "Cookies Técnicas (Necesarias)",
           content: `
             Estas cookies son esenciales para el funcionamiento del sitio:
             
@@ -37,11 +38,11 @@ export function CookiePolicy() {
             
             Duración: Sesión o 1 año
             No requieren consentimiento según RGPD (estrictamente necesarias)
-          `
+          `,
         },
         {
           icon: BarChart3,
-          title: 'Cookies Analíticas',
+          title: "Cookies Analíticas",
           content: `
             Utilizamos Google Analytics para entender cómo los usuarios interactúan con nuestro sitio:
             
@@ -51,11 +52,11 @@ export function CookiePolicy() {
             
             Estos datos son anónimos y nos ayudan a mejorar la experiencia del usuario.
             Requieren tu consentimiento explícito.
-          `
+          `,
         },
         {
           icon: Shield,
-          title: 'Gestión de Cookies',
+          title: "Gestión de Cookies",
           content: `
             Puedes controlar y gestionar las cookies de varias formas:
             
@@ -69,27 +70,28 @@ export function CookiePolicy() {
             Rechazar cookies puede afectar la funcionalidad del sitio.
             
             Más info sobre cookies: www.aboutcookies.org
-          `
-        }
-      ]
+          `,
+        },
+      ],
     },
     en: {
-      title: 'Cookie Policy',
-      lastUpdated: 'Last updated: December 20, 2025',
-      intro: 'This website uses cookies to improve your browsing experience. In accordance with Law 34/2002 (LSSI) and GDPR, we inform you about the cookies we use.',
+      title: "Cookie Policy",
+      lastUpdated: "Last updated: December 20, 2025",
+      intro:
+        "This website uses cookies to improve your browsing experience. In accordance with Law 34/2002 (LSSI) and GDPR, we inform you about the cookies we use.",
       sections: [
         {
           icon: Cookie,
-          title: 'What are Cookies?',
+          title: "What are Cookies?",
           content: `
             Cookies are small text files stored on your device when you visit a website. They allow the site to remember your actions and preferences over a period of time.
             
             We use our own and third-party cookies for technical, analytical, and personalization purposes.
-          `
+          `,
         },
         {
           icon: Settings,
-          title: 'Technical Cookies (Necessary)',
+          title: "Technical Cookies (Necessary)",
           content: `
             These cookies are essential for the site to function:
             
@@ -99,11 +101,11 @@ export function CookiePolicy() {
             
             Duration: Session or 1 year
             Do not require consent under GDPR (strictly necessary)
-          `
+          `,
         },
         {
           icon: BarChart3,
-          title: 'Analytical Cookies',
+          title: "Analytical Cookies",
           content: `
             We use Google Analytics to understand how users interact with our site:
             
@@ -113,11 +115,11 @@ export function CookiePolicy() {
             
             This data is anonymous and helps us improve user experience.
             Require your explicit consent.
-          `
+          `,
         },
         {
           icon: Shield,
-          title: 'Cookie Management',
+          title: "Cookie Management",
           content: `
             You can control and manage cookies in several ways:
             
@@ -131,10 +133,10 @@ export function CookiePolicy() {
             Rejecting cookies may affect site functionality.
             
             More info about cookies: www.aboutcookies.org
-          `
-        }
-      ]
-    }
+          `,
+        },
+      ],
+    },
   };
 
   const data = content[language];
@@ -149,13 +151,17 @@ export function CookiePolicy() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <motion.div
             className="flex items-center gap-4 cursor-pointer"
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
             whileHover={{ scale: 1.05 }}
           >
             <img src={logoImage} alt="Logo" className="w-16 h-16" />
             <div>
-              <h1 className="text-white sketch-title text-2xl">{CONTACT_INFO.name}</h1>
-              <p className="text-[#E8F5E9] text-sm hand-drawn">Camino de Santiago</p>
+              <h1 className="text-white sketch-title text-2xl">
+                {CONTACT_INFO.name}
+              </h1>
+              <p className="text-[#E8F5E9] text-sm hand-drawn">
+                Camino de Santiago
+              </p>
             </div>
           </motion.div>
         </div>
@@ -170,8 +176,12 @@ export function CookiePolicy() {
           <h1 className="text-5xl md:text-6xl sketch-title text-[#006b24] mb-4">
             {data.title}
           </h1>
-          <p className="text-gray-600 hand-drawn text-lg mb-6">{data.lastUpdated}</p>
-          <p className="text-gray-700 text-base leading-relaxed">{data.intro}</p>
+          <p className="text-gray-600 hand-drawn text-lg mb-6">
+            {data.lastUpdated}
+          </p>
+          <p className="text-gray-700 text-base leading-relaxed">
+            {data.intro}
+          </p>
         </motion.div>
 
         <div className="space-y-8">
@@ -203,12 +213,12 @@ export function CookiePolicy() {
         </div>
 
         <motion.button
-          onClick={() => navigate('/')}
+          onClick={() => navigate("/")}
           className="mt-12 px-8 py-4 bg-[#D4A574] text-white rounded-2xl border-5 border-[#8B6914] sketch-title text-xl"
           whileHover={{ scale: 1.05, y: -3 }}
-          style={{ boxShadow: '5px 7px 0px rgba(139, 105, 20, 0.5)' }}
+          style={{ boxShadow: "5px 7px 0px rgba(139, 105, 20, 0.5)" }}
         >
-          {language === 'es' ? '← Volver al Inicio' : '← Back to Home'}
+          {language === "es" ? "← Volver al Inicio" : "← Back to Home"}
         </motion.button>
       </div>
     </div>

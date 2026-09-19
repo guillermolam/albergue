@@ -1,3 +1,3 @@
-/** we use unocss for styling, animejs, roughjs, and astro **/
+/** We use UnoCSS, animejs, and Astro for the frontend UI. **/
 @import './styles/global.css';
 @import './styles/doodle.css';

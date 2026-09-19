@@ -1,15 +1,18 @@
-import { motion, AnimatePresence } from 'motion/react';
-import { Upload, Camera, CheckCircle } from 'lucide-react';
-import { useState } from 'react';
-import idGraphic1 from 'figma:asset/32d53c49866a895962edf70a09b2f882e5f1bf70.png';
-import idGraphic2 from 'figma:asset/3a9cc1df9539cddff4633c2231f0284ce0837611.png';
+import { motion, AnimatePresence } from "motion/react";
+import { Upload, Camera, CheckCircle } from "lucide-react";
+import { useState } from "react";
+import idGraphic1 from "figma:asset/32d53c49866a895962edf70a09b2f882e5f1bf70.png";
+import idGraphic2 from "figma:asset/3a9cc1df9539cddff4633c2231f0284ce0837611.png";
 
 interface IDUploadProps {
   onUpload: (file: File) => void;
   label?: string;
 }
 
-export function IDUpload({ onUpload, label = "Upload ID / DNI / Passport" }: IDUploadProps) {
+export function IDUpload({
+  onUpload,
+  label = "Upload ID / DNI / Passport",
+}: IDUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -27,9 +30,9 @@ export function IDUpload({ onUpload, label = "Upload ID / DNI / Passport" }: IDU
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
+    if (file && file.type.startsWith("image/")) {
       processFile(file);
     }
   };
@@ -66,14 +69,14 @@ export function IDUpload({ onUpload, label = "Upload ID / DNI / Passport" }: IDU
         <motion.div
           whileHover={{ scale: 1.02, rotate: -1 }}
           onClick={() => setShowGraphic(1)}
-          className={`cursor-pointer p-2 doodle-border ${showGraphic === 1 ? 'ring-2 ring-[#00AB39]' : ''}`}
+          className={`cursor-pointer p-2 doodle-border ${showGraphic === 1 ? "ring-2 ring-[#00AB39]" : ""}`}
         >
           <img src={idGraphic1} alt="ID example 1" className="w-full h-auto" />
         </motion.div>
         <motion.div
           whileHover={{ scale: 1.02, rotate: 1 }}
           onClick={() => setShowGraphic(2)}
-          className={`cursor-pointer p-2 doodle-border ${showGraphic === 2 ? 'ring-2 ring-[#00AB39]' : ''}`}
+          className={`cursor-pointer p-2 doodle-border ${showGraphic === 2 ? "ring-2 ring-[#00AB39]" : ""}`}
         >
           <img src={idGraphic2} alt="ID example 2" className="w-full h-auto" />
         </motion.div>
@@ -90,25 +93,25 @@ export function IDUpload({ onUpload, label = "Upload ID / DNI / Passport" }: IDU
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             className={`relative overflow-hidden transition-all duration-300 ${
-              isDragging ? 'scale-105' : ''
+              isDragging ? "scale-105" : ""
             }`}
           >
             {/* Hand-drawn border SVG */}
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none"
-              style={{ filter: 'drop-shadow(2px 2px 2px rgba(0,0,0,0.1))' }}
+              style={{ filter: "drop-shadow(2px 2px 2px rgba(0,0,0,0.1))" }}
             >
               <rect
                 x="4"
                 y="4"
                 width="calc(100% - 8px)"
                 height="calc(100% - 8px)"
-                fill={isDragging ? '#E8F5E9' : '#FFF9F0'}
-                stroke={isDragging ? '#00AB39' : '#5D4E37'}
+                fill={isDragging ? "#E8F5E9" : "#FFF9F0"}
+                stroke={isDragging ? "#00AB39" : "#5D4E37"}
                 strokeWidth="3"
                 rx="16"
-                strokeDasharray={isDragging ? '0' : '8, 8'}
-                style={{ strokeLinecap: 'round' }}
+                strokeDasharray={isDragging ? "0" : "8, 8"}
+                style={{ strokeLinecap: "round" }}
               />
               <rect
                 x="6"
@@ -116,7 +119,7 @@ export function IDUpload({ onUpload, label = "Upload ID / DNI / Passport" }: IDU
                 width="calc(100% - 12px)"
                 height="calc(100% - 12px)"
                 fill="none"
-                stroke={isDragging ? '#00AB39' : '#5D4E37'}
+                stroke={isDragging ? "#00AB39" : "#5D4E37"}
                 strokeWidth="2"
                 rx="14"
                 opacity="0.3"
@@ -133,7 +136,11 @@ export function IDUpload({ onUpload, label = "Upload ID / DNI / Passport" }: IDU
                 >
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
                     className="w-16 h-16 mx-auto"
                   >
                     <svg viewBox="0 0 64 64">
@@ -149,20 +156,31 @@ export function IDUpload({ onUpload, label = "Upload ID / DNI / Passport" }: IDU
                       />
                     </svg>
                   </motion.div>
-                  <p className="text-[#00AB39] hand-drawn text-xl">Processing your document...</p>
-                  <p className="text-sm text-gray-600">Simulating OCR extraction</p>
+                  <p className="text-[#00AB39] hand-drawn text-xl">
+                    Processing your document...
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Simulating OCR extraction
+                  </p>
                 </motion.div>
               ) : (
                 <>
                   <motion.div
                     animate={{ y: [0, -10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
                     className="w-20 h-20 mx-auto mb-4"
                   >
-                    <Upload className="w-full h-full text-[#00AB39]" strokeWidth={2} />
+                    <Upload
+                      className="w-full h-full text-[#00AB39]"
+                      strokeWidth={2}
+                    />
                   </motion.div>
                   <h3 className="text-2xl sketch-title text-[#5D4E37] mb-2">
-                    {isDragging ? 'Drop it here!' : 'Upload Your Document'}
+                    {isDragging ? "Drop it here!" : "Upload Your Document"}
                   </h3>
                   <p className="text-gray-600 mb-4">
                     Drag & drop or click to select
@@ -241,7 +259,7 @@ export function IDUpload({ onUpload, label = "Upload ID / DNI / Passport" }: IDU
           >
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none"
-              style={{ filter: 'drop-shadow(2px 2px 2px rgba(0,0,0,0.1))' }}
+              style={{ filter: "drop-shadow(2px 2px 2px rgba(0,0,0,0.1))" }}
             >
               <rect
                 x="4"
@@ -265,13 +283,21 @@ export function IDUpload({ onUpload, label = "Upload ID / DNI / Passport" }: IDU
                   <CheckCircle className="w-12 h-12 text-[#00AB39]" />
                 </motion.div>
                 <div className="flex-1">
-                  <h4 className="text-xl sketch-title text-[#00AB39] mb-1">Document Uploaded!</h4>
-                  <p className="text-sm text-gray-600">OCR processing complete</p>
+                  <h4 className="text-xl sketch-title text-[#00AB39] mb-1">
+                    Document Uploaded!
+                  </h4>
+                  <p className="text-sm text-gray-600">
+                    OCR processing complete
+                  </p>
                 </div>
               </div>
 
               <div className="mt-4 rounded-lg overflow-hidden border-2 border-[#00AB39]/30">
-                <img src={uploadedFile} alt="Uploaded document" className="w-full h-auto" />
+                <img
+                  src={uploadedFile}
+                  alt="Uploaded document"
+                  className="w-full h-auto"
+                />
               </div>
 
               <button
@@ -295,7 +321,8 @@ export function IDUpload({ onUpload, label = "Upload ID / DNI / Passport" }: IDU
         transition={{ delay: 0.3 }}
         className="text-xs text-gray-500 text-center italic"
       >
-        * This demo simulates OCR extraction. In production, connect to an OCR API service.
+        * This demo simulates OCR extraction. In production, connect to an OCR
+        API service.
       </motion.div>
     </div>
   );

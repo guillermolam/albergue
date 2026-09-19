@@ -3,8 +3,6 @@
  * Plugins themselves are registered by `@swup/astro` in astro.config — do not load unpkg CDNs.
  */
 
-import { initRough } from './runtime_rough';
-
 declare global {
   interface Window {
     swup?: {
@@ -78,7 +76,6 @@ export async function initializeSwupPlugins() {
   });
 
   swup.hooks.on('content:replace', () => {
-    initRough(document);
     window.dispatchEvent(new CustomEvent('swup:content:replaced'));
   });
 

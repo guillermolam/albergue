@@ -14,9 +14,7 @@ updates:
     commit-message:
       prefix: "chore(frontend)"
       include: "scope"
-    reviewers:
-      - "guillermolam"
-    versioning-strategy: increase
+    versioning-strategy: auto
     groups:
       astro:
         patterns: ["astro", "@astrojs/*"]
@@ -39,5 +37,3 @@ updates:
     commit-message:
       prefix: "ci(actions)"
       include: "scope"
-    reviewers:
-      - "guillermolam"

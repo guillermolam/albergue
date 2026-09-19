@@ -1,11 +1,18 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { User, LogOut, Settings, Calendar, Shield, ChevronDown } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { LoginModal } from './LoginModal';
-import { useI18n } from '../contexts/I18nContext';
-import { toast } from 'sonner@2.0.3';
+import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  User,
+  LogOut,
+  Settings,
+  Calendar,
+  Shield,
+  ChevronDown,
+} from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { LoginModal } from "./LoginModal";
+import { useI18n } from "../contexts/I18nContext";
+import { toast } from "sonner@2.0.3";
 
 export function UserProfileMenu() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -17,41 +24,41 @@ export function UserProfileMenu() {
   const handleLogout = () => {
     logout();
     setIsOpen(false);
-    toast.success(language === 'es' ? '¡Hasta pronto!' : 'See you soon!');
-    navigate('/');
+    toast.success(language === "es" ? "¡Hasta pronto!" : "See you soon!");
+    navigate("/");
   };
 
   const menuItems = [
     {
       icon: Calendar,
-      label: language === 'es' ? 'Mis Reservas' : 'My Bookings',
+      label: language === "es" ? "Mis Reservas" : "My Bookings",
       onClick: () => {
-        navigate('/dashboard');
+        navigate("/dashboard");
         setIsOpen(false);
       },
-      show: user?.role === 'guest',
+      show: user?.role === "guest",
     },
     {
       icon: Shield,
-      label: language === 'es' ? 'Panel Admin' : 'Admin Panel',
+      label: language === "es" ? "Panel Admin" : "Admin Panel",
       onClick: () => {
-        navigate('/admin');
+        navigate("/admin");
         setIsOpen(false);
       },
-      show: user?.role === 'admin',
+      show: user?.role === "admin",
     },
     {
       icon: Settings,
-      label: language === 'es' ? 'Configuración' : 'Settings',
+      label: language === "es" ? "Configuración" : "Settings",
       onClick: () => {
-        toast.info(language === 'es' ? 'Próximamente' : 'Coming soon');
+        toast.info(language === "es" ? "Próximamente" : "Coming soon");
         setIsOpen(false);
       },
       show: true,
     },
     {
       icon: LogOut,
-      label: language === 'es' ? 'Cerrar Sesión' : 'Sign Out',
+      label: language === "es" ? "Cerrar Sesión" : "Sign Out",
       onClick: handleLogout,
       show: true,
       danger: true,
@@ -70,26 +77,39 @@ export function UserProfileMenu() {
           {/* Doodle background */}
           <svg className="absolute inset-0 w-full h-full">
             <rect
-              x="2" y="2" width="calc(100% - 4px)" height="calc(100% - 4px)"
+              x="2"
+              y="2"
+              width="calc(100% - 4px)"
+              height="calc(100% - 4px)"
               fill="white"
-              stroke="#00AB39" strokeWidth="2.5" rx="20"
+              stroke="#00AB39"
+              strokeWidth="2.5"
+              rx="20"
               className="transition-all group-hover:fill-[#00AB39]"
             />
             <rect
-              x="4" y="4" width="calc(100% - 8px)" height="calc(100% - 8px)"
+              x="4"
+              y="4"
+              width="calc(100% - 8px)"
+              height="calc(100% - 8px)"
               fill="none"
-              stroke="#1A1A1A" strokeWidth="1" rx="18"
+              stroke="#1A1A1A"
+              strokeWidth="1"
+              rx="18"
               opacity="0.3"
             />
           </svg>
 
           {/* Content */}
-          <User className="relative w-5 h-5 text-[#00AB39] group-hover:text-white transition-colors" strokeWidth={2.5} />
-          <span 
+          <User
+            className="relative w-5 h-5 text-[#00AB39] group-hover:text-white transition-colors"
+            strokeWidth={2.5}
+          />
+          <span
             className="relative text-lg text-[#1A1A1A] group-hover:text-white transition-colors"
-            style={{ fontFamily: 'Patrick Hand, cursive' }}
+            style={{ fontFamily: "Patrick Hand, cursive" }}
           >
-            {language === 'es' ? 'Entrar' : 'Sign In'}
+            {language === "es" ? "Entrar" : "Sign In"}
           </span>
 
           {/* Pulsing dot */}
@@ -103,7 +123,10 @@ export function UserProfileMenu() {
           />
         </motion.button>
 
-        <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+        <LoginModal
+          isOpen={showLoginModal}
+          onClose={() => setShowLoginModal(false)}
+        />
       </>
     );
   }
@@ -123,9 +146,14 @@ export function UserProfileMenu() {
         {/* Background */}
         <svg className="absolute inset-0 w-full h-full">
           <rect
-            x="2" y="2" width="calc(100% - 4px)" height="calc(100% - 4px)"
+            x="2"
+            y="2"
+            width="calc(100% - 4px)"
+            height="calc(100% - 4px)"
             fill="white"
-            stroke="#00AB39" strokeWidth="2.5" rx="25"
+            stroke="#00AB39"
+            strokeWidth="2.5"
+            rx="25"
             className="transition-all group-hover:stroke-[#006b24]"
           />
         </svg>
@@ -133,7 +161,10 @@ export function UserProfileMenu() {
         {/* Avatar */}
         <div className="relative">
           <motion.img
-            src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}&background=00AB39&color=fff`}
+            src={
+              user?.avatar ||
+              `https://ui-avatars.com/api/?name=${user?.name}&background=00AB39&color=fff`
+            }
             alt={user?.name}
             className="w-8 h-8 rounded-full border-2 border-[#00AB39]"
             whileHover={{ scale: 1.1, rotate: 5 }}
@@ -147,9 +178,9 @@ export function UserProfileMenu() {
         </div>
 
         {/* Name */}
-        <span 
+        <span
           className="relative text-[#1A1A1A] group-hover:text-[#00AB39] transition-colors max-w-[100px] truncate hidden sm:block"
-          style={{ fontFamily: 'Patrick Hand, cursive' }}
+          style={{ fontFamily: "Patrick Hand, cursive" }}
         >
           {user?.name}
         </span>
@@ -164,13 +195,16 @@ export function UserProfileMenu() {
         </motion.div>
 
         {/* Role badge */}
-        {user?.role === 'admin' && (
+        {user?.role === "admin" && (
           <motion.div
             className="absolute -top-2 -left-2"
             animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.1, 1] }}
             transition={{ duration: 3, repeat: Infinity }}
           >
-            <Shield className="w-4 h-4 text-[#00AB39] fill-[#00AB39]" strokeWidth={2} />
+            <Shield
+              className="w-4 h-4 text-[#00AB39] fill-[#00AB39]"
+              strokeWidth={2}
+            />
           </motion.div>
         )}
       </motion.button>
@@ -199,14 +233,24 @@ export function UserProfileMenu() {
               {/* Menu background */}
               <svg className="absolute inset-0 w-full h-full">
                 <rect
-                  x="3" y="3" width="calc(100% - 6px)" height="calc(100% - 6px)"
+                  x="3"
+                  y="3"
+                  width="calc(100% - 6px)"
+                  height="calc(100% - 6px)"
                   fill="white"
-                  stroke="#1A1A1A" strokeWidth="3" rx="16"
+                  stroke="#1A1A1A"
+                  strokeWidth="3"
+                  rx="16"
                 />
                 <rect
-                  x="6" y="6" width="calc(100% - 12px)" height="calc(100% - 12px)"
+                  x="6"
+                  y="6"
+                  width="calc(100% - 12px)"
+                  height="calc(100% - 12px)"
                   fill="none"
-                  stroke="#00AB39" strokeWidth="2" rx="14"
+                  stroke="#00AB39"
+                  strokeWidth="2"
+                  rx="14"
                   opacity="0.6"
                 />
               </svg>
@@ -215,31 +259,37 @@ export function UserProfileMenu() {
               <div className="relative p-4 border-b-2 border-dashed border-gray-200">
                 <div className="flex items-center gap-3">
                   <img
-                    src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name}&background=00AB39&color=fff`}
+                    src={
+                      user?.avatar ||
+                      `https://ui-avatars.com/api/?name=${user?.name}&background=00AB39&color=fff`
+                    }
                     alt={user?.name}
                     className="w-12 h-12 rounded-full border-2 border-[#00AB39]"
                   />
                   <div className="flex-1 min-w-0">
-                    <p 
+                    <p
                       className="text-[#1A1A1A] truncate"
-                      style={{ fontFamily: 'Cabin Sketch, cursive' }}
+                      style={{ fontFamily: "Cabin Sketch, cursive" }}
                     >
                       {user?.name}
                     </p>
-                    <p 
+                    <p
                       className="text-sm text-gray-500 truncate"
-                      style={{ fontFamily: 'Patrick Hand, cursive' }}
+                      style={{ fontFamily: "Patrick Hand, cursive" }}
                     >
                       {user?.email}
                     </p>
                   </div>
                 </div>
-                {user?.role === 'admin' && (
+                {user?.role === "admin" && (
                   <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#00AB39]/10 rounded-full">
-                    <Shield className="w-3.5 h-3.5 text-[#00AB39]" strokeWidth={2.5} />
-                    <span 
+                    <Shield
+                      className="w-3.5 h-3.5 text-[#00AB39]"
+                      strokeWidth={2.5}
+                    />
+                    <span
                       className="text-xs text-[#00AB39]"
-                      style={{ fontFamily: 'Patrick Hand, cursive' }}
+                      style={{ fontFamily: "Patrick Hand, cursive" }}
                     >
                       Admin
                     </span>
@@ -249,51 +299,53 @@ export function UserProfileMenu() {
 
               {/* Menu items */}
               <div className="relative p-2">
-                {menuItems.filter(item => item.show).map((item, index) => (
-                  <motion.button
-                    key={index}
-                    onClick={item.onClick}
-                    className="relative w-full flex items-center gap-3 px-4 py-3 cursor-pointer group"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    whileHover={{ x: 3 }}
-                  >
-                    {/* Hover background */}
-                    <motion.div
-                      className="absolute inset-1 rounded-xl"
-                      initial={{ opacity: 0 }}
-                      whileHover={{ opacity: 1 }}
-                      style={{
-                        background: item.danger 
-                          ? 'linear-gradient(135deg, rgba(237, 28, 36, 0.1) 0%, rgba(237, 28, 36, 0.05) 100%)'
-                          : 'linear-gradient(135deg, rgba(0, 171, 57, 0.1) 0%, rgba(0, 171, 57, 0.05) 100%)',
-                      }}
-                    />
-
-                    {/* Icon */}
-                    <item.icon 
-                      className={`relative w-5 h-5 transition-colors ${
-                        item.danger 
-                          ? 'text-gray-500 group-hover:text-[#ED1C24]' 
-                          : 'text-[#00AB39] group-hover:text-[#006b24]'
-                      }`}
-                      strokeWidth={2.5}
-                    />
-
-                    {/* Label */}
-                    <span
-                      className={`relative transition-colors ${
-                        item.danger 
-                          ? 'text-gray-700 group-hover:text-[#ED1C24]' 
-                          : 'text-[#1A1A1A] group-hover:text-[#00AB39]'
-                      }`}
-                      style={{ fontFamily: 'Patrick Hand, cursive' }}
+                {menuItems
+                  .filter((item) => item.show)
+                  .map((item, index) => (
+                    <motion.button
+                      key={index}
+                      onClick={item.onClick}
+                      className="relative w-full flex items-center gap-3 px-4 py-3 cursor-pointer group"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      whileHover={{ x: 3 }}
                     >
-                      {item.label}
-                    </span>
-                  </motion.button>
-                ))}
+                      {/* Hover background */}
+                      <motion.div
+                        className="absolute inset-1 rounded-xl"
+                        initial={{ opacity: 0 }}
+                        whileHover={{ opacity: 1 }}
+                        style={{
+                          background: item.danger
+                            ? "linear-gradient(135deg, rgba(237, 28, 36, 0.1) 0%, rgba(237, 28, 36, 0.05) 100%)"
+                            : "linear-gradient(135deg, rgba(0, 171, 57, 0.1) 0%, rgba(0, 171, 57, 0.05) 100%)",
+                        }}
+                      />
+
+                      {/* Icon */}
+                      <item.icon
+                        className={`relative w-5 h-5 transition-colors ${
+                          item.danger
+                            ? "text-gray-500 group-hover:text-[#ED1C24]"
+                            : "text-[#00AB39] group-hover:text-[#006b24]"
+                        }`}
+                        strokeWidth={2.5}
+                      />
+
+                      {/* Label */}
+                      <span
+                        className={`relative transition-colors ${
+                          item.danger
+                            ? "text-gray-700 group-hover:text-[#ED1C24]"
+                            : "text-[#1A1A1A] group-hover:text-[#00AB39]"
+                        }`}
+                        style={{ fontFamily: "Patrick Hand, cursive" }}
+                      >
+                        {item.label}
+                      </span>
+                    </motion.button>
+                  ))}
               </div>
 
               {/* Decorative corner dot */}

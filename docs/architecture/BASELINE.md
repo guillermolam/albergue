@@ -15,8 +15,6 @@ Verified on 2026-09-12 at revision `521c119`.
   PostgreSQL migration ownership is fixed by ADR-0001.
 - `figma/`: untracked React/Vite design reference. It is outside the pnpm
   workspace and is not a production runtime.
-- `domain_model/rust/` and `packages/astro-roughjs/`: experimental paths. CI
-  does not treat them as production.
 
 ## Data flow and trust
 
@@ -50,5 +48,5 @@ must grow as existing errors are repaired.
 ## Unresolved ADRs
 
 Authentication, PSP, sessions, API contracts, Rust disposition, navigation,
-RoughJS ownership, content, i18n, 3D assets, and PII controls remain open. They
+Content, i18n, 3D assets, and PII controls remain open. They
 belong to later phases. ADR-0001 resolves only the PostgreSQL migration chain.

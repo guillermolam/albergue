@@ -1,5 +1,5 @@
 ---
-import RoughFrame from './RoughFrame.astro';
+import Surface from './Surface.astro';
 
 export type Tone = 'green' | 'cream' | 'blue' | 'yellow';
 export type Size = 'sm' | 'md';
@@ -46,10 +46,8 @@ const sizes = {
 const currentSize = sizes[size];
 ---
 
-<RoughFrame
+<Surface
   padding={currentSize.padding}
-  texture="hachure"
-  textureOpacity={0.08}
   class={`ds-card bg-white ${toneBorders[tone]} ${toneColors[tone]}`}
 >
   <div class="flex flex-col items-center text-center">
@@ -57,4 +55,4 @@ const currentSize = sizes[size];
     <div class={currentSize.valueClass}>{value}</div>
     {sublabel && <div class={`${currentSize.sublabelClass} mt-1 opacity-80`}>{sublabel}</div>}
   </div>
-</RoughFrame>
+</Surface>

@@ -48,7 +48,7 @@ const bookings = new Hono();
 bookings.get('/', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const { page, pageSize, orderBy, orderDirection, ...filters } = c.req.query();
-    
+
     const params = {
       page: page ? Number(page) : undefined,
       pageSize: pageSize ? Number(pageSize) : undefined,
@@ -58,7 +58,7 @@ bookings.get('/', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
     };
 
     const result = await getAllBookings(params as any);
-    
+
     return c.json<ApiResponse<PaginatedResponse<Booking>>>({
       success: true,
       data: result,
@@ -84,7 +84,7 @@ bookings.get('/reference/:reference', async (c: Context) => {
       throw new HTTPException(400, { message: 'reference is required' });
     }
     const booking = await getBookingByReference(reference);
-    
+
     if (!booking) {
       throw new HTTPException(404, { message: 'Booking not found' });
     }
@@ -109,13 +109,13 @@ bookings.get('/reference/:reference', async (c: Context) => {
 bookings.get('/pilgrim/:pilgrimId', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const pilgrimId = Number(c.req.param('pilgrimId'));
-    
+
     if (isNaN(pilgrimId)) {
       throw new HTTPException(400, { message: 'Invalid pilgrim ID' });
     }
 
     const bookings = await getBookingsByPilgrim(pilgrimId);
-    
+
     return c.json<ApiResponse<Booking[]>>({
       success: true,
       data: bookings,
@@ -136,7 +136,7 @@ bookings.get('/pilgrim/:pilgrimId', authMiddleware({ roles: ['admin'] }), async 
 bookings.get('/active', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const bookings = await getActiveBookings();
-    
+
     return c.json<ApiResponse<Booking[]>>({
       success: true,
       data: bookings,
@@ -157,9 +157,9 @@ bookings.get('/upcoming', authMiddleware({ roles: ['admin'] }), async (c: Contex
   try {
     const { days } = c.req.query();
     const daysNum = days ? Number(days) : 7;
-    
+
     const bookings = await getUpcomingCheckIns(daysNum);
-    
+
     return c.json<ApiResponse<Booking[]>>({
       success: true,
       data: bookings,
@@ -179,7 +179,7 @@ bookings.get('/upcoming', authMiddleware({ roles: ['admin'] }), async (c: Contex
 bookings.get('/overdue', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const bookings = await getOverdueReservations();
-    
+
     return c.json<ApiResponse<Booking[]>>({
       success: true,
       data: bookings,
@@ -199,7 +199,7 @@ bookings.get('/overdue', authMiddleware({ roles: ['admin'] }), async (c: Context
 bookings.get('/stats', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const stats = await getBookingStats();
-    
+
     return c.json<ApiResponse<BookingStats>>({
       success: true,
       data: stats,
@@ -220,9 +220,9 @@ bookings.get('/recent', authMiddleware({ roles: ['admin'] }), async (c: Context)
   try {
     const { limit } = c.req.query();
     const limitNum = limit ? Number(limit) : 10;
-    
+
     const bookings = await getRecentBookings(limitNum);
-    
+
     return c.json<ApiResponse<Booking[]>>({
       success: true,
       data: bookings,
@@ -244,9 +244,9 @@ bookings.get('/search', authMiddleware({ roles: ['admin'] }), async (c: Context)
     const { q, limit } = c.req.query();
     const query = q as string || '';
     const limitNum = limit ? Number(limit) : 10;
-    
+
     const results = await searchBookings(query, limitNum);
-    
+
     return c.json<ApiResponse<Booking[]>>({
       success: true,
       data: results,
@@ -267,7 +267,7 @@ bookings.get('/search', authMiddleware({ roles: ['admin'] }), async (c: Context)
 bookings.get('/available-beds', async (c: Context) => {
   try {
     const { checkInDate, checkOutDate, roomType } = c.req.query();
-    
+
     if (!checkInDate || !checkOutDate) {
       throw new HTTPException(400, { message: 'checkInDate and checkOutDate are required' });
     }
@@ -277,7 +277,7 @@ bookings.get('/available-beds', async (c: Context) => {
       new Date(checkOutDate as string),
       roomType as string
     );
-    
+
     return c.json<ApiResponse<any>>({
       success: true,
       data: beds,
@@ -298,7 +298,7 @@ bookings.get('/available-beds', async (c: Context) => {
 bookings.get('/date-range', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const { startDate, endDate } = c.req.query();
-    
+
     if (!startDate || !endDate) {
       throw new HTTPException(400, { message: 'startDate and endDate are required' });
     }
@@ -307,7 +307,7 @@ bookings.get('/date-range', authMiddleware({ roles: ['admin'] }), async (c: Cont
       new Date(startDate as string),
       new Date(endDate as string)
     );
-    
+
     return c.json<ApiResponse<Booking[]>>({
       success: true,
       data: bookings,
@@ -362,13 +362,13 @@ bookings.get('/:id', authMiddleware({ roles: ['admin'] }), async (c: Context) =>
 bookings.get('/:id/details', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const id = Number(c.req.param('id'));
-    
+
     if (isNaN(id)) {
       throw new HTTPException(400, { message: 'Invalid booking ID' });
     }
 
     const details = await getBookingWithDetails(id);
-    
+
     if (!details) {
       throw new HTTPException(404, { message: 'Booking not found' });
     }

@@ -1,0 +1,32 @@
+---
+export type Padding = 'sm' | 'md' | 'lg';
+export type ElementType = 'div' | 'a' | 'button';
+
+export interface Props {
+  padding?: Padding;
+  as?: ElementType;
+  href?: string;
+  type?: 'button' | 'submit';
+  class?: string;
+}
+
+const { padding = 'md', as = 'div', href, type, class: className = '' }: Props = Astro.props;
+
+const paddingClasses: Record<Padding, string> = {
+  sm: 'p-3',
+  md: 'p-4',
+  lg: 'p-6',
+};
+
+const Tag = as;
+---
+
+<Tag
+  {...(href && { href })}
+  {...(type && { type })}
+  class={`relative rounded-2xl ring-1 ring-black/10 shadow-sm ${paddingClasses[padding]} ${className}`}
+>
+  <div class="relative z-1">
+    <slot />
+  </div>
+</Tag>

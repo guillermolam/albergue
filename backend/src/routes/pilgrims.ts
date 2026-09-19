@@ -48,7 +48,7 @@ const pilgrims = new Hono();
 pilgrims.get('/', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const { page, pageSize, orderBy, orderDirection, ...filters } = c.req.query();
-    
+
     const params = {
       page: page ? Number(page) : undefined,
       pageSize: pageSize ? Number(pageSize) : undefined,
@@ -58,7 +58,7 @@ pilgrims.get('/', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
     };
 
     const result = await getAllPilgrims(params as any);
-    
+
     return c.json<ApiResponse<PaginatedResponse<Pilgrim>>>({
       success: true,
       data: result,
@@ -82,7 +82,7 @@ pilgrims.get('/email/:email', authMiddleware({ roles: ['admin'] }), async (c: Co
       throw new HTTPException(400, { message: 'email is required' });
     }
     const pilgrim = await getPilgrimByEmail(email);
-    
+
     if (!pilgrim) {
       throw new HTTPException(404, { message: 'Pilgrim not found' });
     }
@@ -112,7 +112,7 @@ pilgrims.get('/document/:type/:number', authMiddleware({ roles: ['admin'] }), as
       throw new HTTPException(400, { message: 'document type and number are required' });
     }
     const pilgrim = await getPilgrimByDocumentNumber(type, number);
-    
+
     if (!pilgrim) {
       throw new HTTPException(404, { message: 'Pilgrim not found' });
     }
@@ -139,9 +139,9 @@ pilgrims.get('/search', authMiddleware({ roles: ['admin'] }), async (c: Context)
     const { q, limit } = c.req.query();
     const query = q as string || '';
     const limitNum = limit ? Number(limit) : 10;
-    
+
     const results = await searchPilgrims(query, limitNum);
-    
+
     return c.json<ApiResponse<Pilgrim[]>>({
       success: true,
       data: results,
@@ -161,7 +161,7 @@ pilgrims.get('/search', authMiddleware({ roles: ['admin'] }), async (c: Context)
 pilgrims.get('/active-bookings', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const results = await getPilgrimsWithActiveBookings();
-    
+
     return c.json<ApiResponse<Pilgrim[]>>({
       success: true,
       data: results,
@@ -181,7 +181,7 @@ pilgrims.get('/active-bookings', authMiddleware({ roles: ['admin'] }), async (c:
 pilgrims.get('/stats', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const stats = await getPilgrimStats();
-    
+
     return c.json<ApiResponse<PilgrimStats>>({
       success: true,
       data: stats,
@@ -202,9 +202,9 @@ pilgrims.get('/recent', authMiddleware({ roles: ['admin'] }), async (c: Context)
   try {
     const { limit } = c.req.query();
     const limitNum = limit ? Number(limit) : 5;
-    
+
     const results = await getRecentPilgrims(limitNum);
-    
+
     return c.json<ApiResponse<Pilgrim[]>>({
       success: true,
       data: results,
@@ -260,7 +260,7 @@ pilgrims.post('/', async (c: Context) => {
   try {
     const body = await c.req.json<CreatePilgrimInput>();
     const pilgrim = await createPilgrim(body);
-    
+
     return c.json<ApiResponse<Pilgrim>>({
       success: true,
       data: pilgrim,
@@ -281,7 +281,7 @@ pilgrims.post('/batch', authMiddleware({ roles: ['admin'] }), async (c: Context)
   try {
     const bodies = await c.req.json<CreatePilgrimInput[]>();
     const pilgrims = await createPilgrimsBatch(bodies);
-    
+
     return c.json<ApiResponse<Pilgrim[]>>({
       success: true,
       data: pilgrims,
@@ -302,13 +302,13 @@ pilgrims.put('/:id', authMiddleware({ roles: ['admin'] }), async (c: Context) =>
   try {
     const id = Number(c.req.param('id'));
     const body = await c.req.json<UpdatePilgrimInput>();
-    
+
     if (isNaN(id)) {
       throw new HTTPException(400, { message: 'Invalid pilgrim ID' });
     }
 
     const pilgrim = await updatePilgrim(id, body);
-    
+
     if (!pilgrim) {
       throw new HTTPException(404, { message: 'Pilgrim not found' });
     }
@@ -334,13 +334,13 @@ pilgrims.patch('/:id/language', authMiddleware({ roles: ['admin'] }), async (c: 
   try {
     const id = Number(c.req.param('id'));
     const { language } = await c.req.json<{ language: string }>();
-    
+
     if (isNaN(id)) {
       throw new HTTPException(400, { message: 'Invalid pilgrim ID' });
     }
 
     const success = await updatePilgrimLanguage(id, language);
-    
+
     if (!success) {
       throw new HTTPException(404, { message: 'Pilgrim not found' });
     }
@@ -364,13 +364,13 @@ pilgrims.patch('/:id/language', authMiddleware({ roles: ['admin'] }), async (c: 
 pilgrims.patch('/:id/last-access', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const id = Number(c.req.param('id'));
-    
+
     if (isNaN(id)) {
       throw new HTTPException(400, { message: 'Invalid pilgrim ID' });
     }
 
     const success = await updatePilgrimLastAccess(id);
-    
+
     if (!success) {
       throw new HTTPException(404, { message: 'Pilgrim not found' });
     }
@@ -394,13 +394,13 @@ pilgrims.patch('/:id/last-access', authMiddleware({ roles: ['admin'] }), async (
 pilgrims.delete('/:id', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const id = Number(c.req.param('id'));
-    
+
     if (isNaN(id)) {
       throw new HTTPException(400, { message: 'Invalid pilgrim ID' });
     }
 
     const success = await softDeletePilgrim(id);
-    
+
     if (!success) {
       throw new HTTPException(404, { message: 'Pilgrim not found' });
     }
@@ -424,13 +424,13 @@ pilgrims.delete('/:id', authMiddleware({ roles: ['admin'] }), async (c: Context)
 pilgrims.delete('/:id/force', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const id = Number(c.req.param('id'));
-    
+
     if (isNaN(id)) {
       throw new HTTPException(400, { message: 'Invalid pilgrim ID' });
     }
 
     const success = await deletePilgrim(id);
-    
+
     if (!success) {
       throw new HTTPException(404, { message: 'Pilgrim not found' });
     }
@@ -454,13 +454,13 @@ pilgrims.delete('/:id/force', authMiddleware({ roles: ['admin'] }), async (c: Co
 pilgrims.post('/:id/deactivate', authMiddleware({ roles: ['admin'] }), async (c: Context) => {
   try {
     const id = Number(c.req.param('id'));
-    
+
     if (isNaN(id)) {
       throw new HTTPException(400, { message: 'Invalid pilgrim ID' });
     }
 
     const success = await deactivatePilgrim(id);
-    
+
     if (!success) {
       throw new HTTPException(404, { message: 'Pilgrim not found' });
     }

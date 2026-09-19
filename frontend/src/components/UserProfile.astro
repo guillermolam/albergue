@@ -29,7 +29,6 @@ try {
 <div class="user-profile">
   {pilgrim ? (
     <div class="relative">
-      <canvas id="profileSketch" class="absolute inset-0 pointer-events-none" />
       <div class="profile-card">
         <div class="profile-header mb-4">
           <h3>Hola, {pilgrim.name}</h3>
@@ -87,31 +86,8 @@ try {
 </div>
 
 <script type="module">
-  const canvas = document.getElementById('profileSketch');
-  const card = canvas?.nextElementSibling;
   const logoutBtn = document.getElementById('logoutBtn');
   const logoutError = document.getElementById('logoutError');
-
-  async function draw() {
-    if (!canvas || !card) return;
-    const rect = card.getBoundingClientRect();
-    canvas.width = Math.ceil(rect.width);
-    canvas.height = Math.ceil(rect.height);
-    const { default: rough } = await import('https://esm.sh/roughjs@4.6.6/bundled/rough.esm.js');
-    const rc = rough.canvas(canvas);
-    rc.rectangle(6, 6, canvas.width - 12, canvas.height - 12, {
-      roughness: 2.2,
-      bowing: 2.4,
-      stroke: '#334155',
-      fill: '#ffffff',
-      fillStyle: 'zigzag',
-      hachureGap: 10,
-    });
-  }
-
-  const ro = new ResizeObserver(() => draw());
-  if (card) ro.observe(card);
-  draw();
 
   if (logoutBtn) {
     logoutBtn.addEventListener('click', async () => {

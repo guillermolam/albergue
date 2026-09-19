@@ -1,9 +1,24 @@
-import { motion, useMotionValue, useTransform, AnimatePresence } from 'motion/react';
-import { WiredButton } from '../doodle/WiredButton';
-import { PhoneInput } from '../doodle/PhoneInput';
-import { AddressAutocomplete } from '../doodle/AddressAutocomplete';
-import { useState, useEffect, useRef } from 'react';
-import { User, MapPin, Phone, Mail, Calendar, Flag, Heart, Shield, CheckCircle2 } from 'lucide-react';
+import {
+  motion,
+  useMotionValue,
+  useTransform,
+  AnimatePresence,
+} from "motion/react";
+import { WiredButton } from "../doodle/WiredButton";
+import { PhoneInput } from "../doodle/PhoneInput";
+import { AddressAutocomplete } from "../doodle/AddressAutocomplete";
+import { useState, useEffect, useRef } from "react";
+import {
+  User,
+  MapPin,
+  Phone,
+  Mail,
+  Calendar,
+  Flag,
+  Heart,
+  Shield,
+  CheckCircle2,
+} from "lucide-react";
 
 interface PilgrimCardProps {
   onNext: (formData: any) => void;
@@ -19,7 +34,15 @@ interface PilgrimCardProps {
 }
 
 // Rough Notation-style underline component
-function RoughUnderline({ children, color, delay = 0 }: { children: React.ReactNode; color: string; delay?: number }) {
+function RoughUnderline({
+  children,
+  color,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  color: string;
+  delay?: number;
+}) {
   return (
     <span className="relative inline-block">
       {children}
@@ -35,7 +58,7 @@ function RoughUnderline({ children, color, delay = 0 }: { children: React.ReactN
           strokeWidth="2"
           fill="none"
           vectorEffect="non-scaling-stroke"
-          style={{ transform: 'scaleX(2)' }}
+          style={{ transform: "scaleX(2)" }}
         />
       </motion.svg>
     </span>
@@ -43,13 +66,21 @@ function RoughUnderline({ children, color, delay = 0 }: { children: React.ReactN
 }
 
 // Sketchy Circle annotation
-function SketchyCircle({ children, color, delay = 0 }: { children: React.ReactNode; color: string; delay?: number }) {
+function SketchyCircle({
+  children,
+  color,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  color: string;
+  delay?: number;
+}) {
   return (
     <span className="relative inline-block">
       {children}
       <motion.svg
         className="absolute inset-0 w-full h-full overflow-visible pointer-events-none"
-        style={{ padding: '8px' }}
+        style={{ padding: "8px" }}
         initial={{ pathLength: 0, opacity: 0 }}
         animate={{ pathLength: 1, opacity: 0.6 }}
         transition={{ duration: 1, delay, ease: "easeInOut" }}
@@ -72,10 +103,10 @@ function SketchyCircle({ children, color, delay = 0 }: { children: React.ReactNo
 function PhotoCard3D({ photoUrl }: { photoUrl?: string }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
-  
+
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  
+
   const rotateX = useTransform(mouseY, [-300, 300], [15, -15]);
   const rotateY = useTransform(mouseX, [-300, 300], [-15, 15]);
 
@@ -95,7 +126,9 @@ function PhotoCard3D({ photoUrl }: { photoUrl?: string }) {
   };
 
   // Mock pilgrim photo (from OCR in real scenario)
-  const pilgrimPhoto = photoUrl || 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop';
+  const pilgrimPhoto =
+    photoUrl ||
+    "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop";
 
   return (
     <motion.div
@@ -103,7 +136,7 @@ function PhotoCard3D({ photoUrl }: { photoUrl?: string }) {
       className="relative w-full h-full"
       style={{
         perspective: 1000,
-        transformStyle: 'preserve-3d'
+        transformStyle: "preserve-3d",
       }}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
@@ -111,22 +144,22 @@ function PhotoCard3D({ photoUrl }: { photoUrl?: string }) {
       animate={{
         scale: isHovered ? 1.02 : 1,
       }}
-      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
     >
       <motion.div
         className="relative w-full h-full rounded-2xl overflow-hidden"
         style={{
           rotateX,
           rotateY,
-          transformStyle: 'preserve-3d'
+          transformStyle: "preserve-3d",
         }}
       >
         {/* Gradient background with parallax */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-br from-[#0071BC] via-[#00AB39] to-[#FFC837]"
           style={{
-            transform: 'translateZ(-50px) scale(1.1)',
-            transformStyle: 'preserve-3d'
+            transform: "translateZ(-50px) scale(1.1)",
+            transformStyle: "preserve-3d",
           }}
         />
 
@@ -134,15 +167,15 @@ function PhotoCard3D({ photoUrl }: { photoUrl?: string }) {
         <motion.div
           className="absolute inset-0"
           style={{
-            transform: 'translateZ(20px)',
-            transformStyle: 'preserve-3d'
+            transform: "translateZ(20px)",
+            transformStyle: "preserve-3d",
           }}
         >
           <img
             src={pilgrimPhoto}
             alt="Pilgrim"
             className="w-full h-full object-cover"
-            style={{ mixBlendMode: 'luminosity', opacity: 0.9 }}
+            style={{ mixBlendMode: "luminosity", opacity: 0.9 }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         </motion.div>
@@ -152,21 +185,25 @@ function PhotoCard3D({ photoUrl }: { photoUrl?: string }) {
           <motion.div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: 'linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%)',
-              transform: 'translateZ(30px)',
+              background:
+                "linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%)",
+              transform: "translateZ(30px)",
             }}
             animate={{
-              x: ['-100%', '100%'],
+              x: ["-100%", "100%"],
             }}
             transition={{
               duration: 1,
-              ease: 'easeInOut',
+              ease: "easeInOut",
             }}
           />
         )}
 
         {/* Sketchy border */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ transform: 'translateZ(40px)' }}>
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          style={{ transform: "translateZ(40px)" }}
+        >
           <rect
             x="4"
             y="4"
@@ -185,10 +222,16 @@ function PhotoCard3D({ photoUrl }: { photoUrl?: string }) {
 }
 
 // Stat bar with hand-drawn style
-function StatBar({ label, value, icon: Icon, color, delay = 0 }: { 
-  label: string; 
-  value: string; 
-  icon: any; 
+function StatBar({
+  label,
+  value,
+  icon: Icon,
+  color,
+  delay = 0,
+}: {
+  label: string;
+  value: string;
+  icon: any;
   color: string;
   delay?: number;
 }) {
@@ -196,7 +239,7 @@ function StatBar({ label, value, icon: Icon, color, delay = 0 }: {
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ delay, type: 'spring', stiffness: 100 }}
+      transition={{ delay, type: "spring", stiffness: 100 }}
       className="relative group"
     >
       {/* Background with sketchy effect */}
@@ -222,11 +265,17 @@ function StatBar({ label, value, icon: Icon, color, delay = 0 }: {
           <Icon className="w-5 h-5" style={{ color }} strokeWidth={2.5} />
         </motion.div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs text-gray-600 uppercase tracking-wide" style={{ fontFamily: 'Cabin Sketch, cursive' }}>
+          <p
+            className="text-xs text-gray-600 uppercase tracking-wide"
+            style={{ fontFamily: "Cabin Sketch, cursive" }}
+          >
             {label}
           </p>
-          <p className="font-medium text-[#5D4E37] truncate" style={{ fontFamily: 'Patrick Hand, cursive', fontSize: '1rem' }}>
-            {value || '---'}
+          <p
+            className="font-medium text-[#5D4E37] truncate"
+            style={{ fontFamily: "Patrick Hand, cursive", fontSize: "1rem" }}
+          >
+            {value || "---"}
           </p>
         </div>
         {value && (
@@ -245,20 +294,20 @@ function StatBar({ label, value, icon: Icon, color, delay = 0 }: {
 
 export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    secondLastName: '',
-    phone: '',
-    nationality: '',
-    country: '',
-    addressLine1: '',
-    addressLine2: '',
-    postalCode: '',
-    city: '',
-    dateOfBirth: '',
-    email: '',
-    emergencyContact: '',
-    emergencyPhone: ''
+    firstName: "",
+    lastName: "",
+    secondLastName: "",
+    phone: "",
+    nationality: "",
+    country: "",
+    addressLine1: "",
+    addressLine2: "",
+    postalCode: "",
+    city: "",
+    dateOfBirth: "",
+    email: "",
+    emergencyContact: "",
+    emergencyPhone: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -267,51 +316,58 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
   // Prefill from OCR data
   useEffect(() => {
     if (prefillData) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         firstName: prefillData.firstName,
         lastName: prefillData.lastName,
         secondLastName: prefillData.secondLastName,
         dateOfBirth: prefillData.dateOfBirth,
-        nationality: prefillData.nationality === 'ESP' ? 'Spain' : prefillData.nationality,
-        country: prefillData.nationality === 'ESP' ? 'Spain' : prefillData.nationality
+        nationality:
+          prefillData.nationality === "ESP" ? "Spain" : prefillData.nationality,
+        country:
+          prefillData.nationality === "ESP" ? "Spain" : prefillData.nationality,
       }));
       setTimeout(() => setShowStats(true), 500);
     }
   }, [prefillData]);
 
   const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
-  const handleAddressSelect = (place: { address: string; city: string; postalCode: string; country: string }) => {
-    setFormData(prev => ({
+  const handleAddressSelect = (place: {
+    address: string;
+    city: string;
+    postalCode: string;
+    country: string;
+  }) => {
+    setFormData((prev) => ({
       ...prev,
       addressLine1: place.address,
       city: place.city,
-      postalCode: place.postalCode
+      postalCode: place.postalCode,
     }));
   };
 
   const handlePostalCodeChange = (value: string) => {
-    handleChange('postalCode', value);
-    
+    handleChange("postalCode", value);
+
     if (value.length >= 5) {
       setTimeout(() => {
         const mockCities: Record<string, string> = {
-          '28001': 'Madrid',
-          '08001': 'Barcelona',
-          '41001': 'Sevilla',
-          '46001': 'Valencia',
-          '06800': 'Mérida',
-          '10003': 'Cáceres'
+          "28001": "Madrid",
+          "08001": "Barcelona",
+          "41001": "Sevilla",
+          "46001": "Valencia",
+          "06800": "Mérida",
+          "10003": "Cáceres",
         };
-        const city = mockCities[value] || '';
+        const city = mockCities[value] || "";
         if (city) {
-          handleChange('city', city);
+          handleChange("city", city);
         }
       }, 500);
     }
@@ -319,16 +375,18 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    
-    if (!formData.firstName) newErrors.firstName = 'First name is required';
-    if (!formData.lastName) newErrors.lastName = 'Last name is required';
-    if (!formData.phone) newErrors.phone = 'Phone number is required';
-    if (!formData.nationality) newErrors.nationality = 'Nationality is required';
-    if (!formData.country) newErrors.country = 'Country is required';
-    if (!formData.addressLine1) newErrors.addressLine1 = 'Address is required';
-    if (!formData.postalCode) newErrors.postalCode = 'Postal code is required';
-    if (!formData.city) newErrors.city = 'City is required';
-    if (!formData.dateOfBirth) newErrors.dateOfBirth = 'Date of birth is required';
+
+    if (!formData.firstName) newErrors.firstName = "First name is required";
+    if (!formData.lastName) newErrors.lastName = "Last name is required";
+    if (!formData.phone) newErrors.phone = "Phone number is required";
+    if (!formData.nationality)
+      newErrors.nationality = "Nationality is required";
+    if (!formData.country) newErrors.country = "Country is required";
+    if (!formData.addressLine1) newErrors.addressLine1 = "Address is required";
+    if (!formData.postalCode) newErrors.postalCode = "Postal code is required";
+    if (!formData.city) newErrors.city = "City is required";
+    if (!formData.dateOfBirth)
+      newErrors.dateOfBirth = "Date of birth is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -343,7 +401,9 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
   // Calculate "Pilgrim Score" based on form completion
   const calculateScore = () => {
     const fields = Object.keys(formData);
-    const filled = fields.filter(key => formData[key as keyof typeof formData]).length;
+    const filled = fields.filter(
+      (key) => formData[key as keyof typeof formData],
+    ).length;
     return Math.round((filled / fields.length) * 100);
   };
 
@@ -354,11 +414,11 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, type: 'spring' }}
+        transition={{ duration: 0.6, type: "spring" }}
       >
         {/* Header with rough notation */}
         <div className="text-center mb-8">
-          <motion.h1 
+          <motion.h1
             className="text-4xl md:text-5xl sketch-title text-[#5D4E37] mb-3"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -368,7 +428,7 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
               Pilgrim Overview & Status
             </RoughUnderline>
           </motion.h1>
-          <motion.p 
+          <motion.p
             className="text-lg text-gray-600 hand-drawn"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -385,13 +445,17 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
             className="relative overflow-hidden rounded-3xl"
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.3, type: 'spring', stiffness: 100 }}
+            transition={{ delay: 0.3, type: "spring", stiffness: 100 }}
             style={{
-              background: 'linear-gradient(135deg, rgba(0, 171, 57, 0.1) 0%, rgba(0, 113, 188, 0.1) 100%)',
+              background:
+                "linear-gradient(135deg, rgba(0, 171, 57, 0.1) 0%, rgba(0, 113, 188, 0.1) 100%)",
             }}
           >
             {/* Sketchy border */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ filter: 'drop-shadow(4px 6px 12px rgba(0,0,0,0.15))' }}>
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none"
+              style={{ filter: "drop-shadow(4px 6px 12px rgba(0,0,0,0.15))" }}
+            >
               <rect
                 x="6"
                 y="6"
@@ -416,12 +480,18 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
                     className="relative"
                   >
                     <div className="inline-block">
-                      <p className="text-sm text-gray-600 uppercase tracking-wider mb-1" style={{ fontFamily: 'Cabin Sketch, cursive' }}>
+                      <p
+                        className="text-sm text-gray-600 uppercase tracking-wider mb-1"
+                        style={{ fontFamily: "Cabin Sketch, cursive" }}
+                      >
                         Pilgrim
                       </p>
-                      <h2 className="text-4xl md:text-5xl sketch-title" style={{ color: '#00AB39' }}>
+                      <h2
+                        className="text-4xl md:text-5xl sketch-title"
+                        style={{ color: "#00AB39" }}
+                      >
                         <SketchyCircle color="#00AB39" delay={0.8}>
-                          {formData.firstName || 'Your Name'}
+                          {formData.firstName || "Your Name"}
                         </SketchyCircle>
                       </h2>
                       <h3 className="text-3xl md:text-4xl sketch-title text-[#5D4E37] mt-1">
@@ -434,11 +504,21 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
                       className="absolute -top-4 -right-4 w-24 h-24 flex items-center justify-center"
                       initial={{ scale: 0, rotate: -180 }}
                       animate={{ scale: 1, rotate: 0 }}
-                      transition={{ delay: 0.6, type: 'spring', stiffness: 200 }}
+                      transition={{
+                        delay: 0.6,
+                        type: "spring",
+                        stiffness: 200,
+                      }}
                     >
                       <svg className="absolute inset-0 w-full h-full">
                         <defs>
-                          <linearGradient id="score-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <linearGradient
+                            id="score-gradient"
+                            x1="0%"
+                            y1="0%"
+                            x2="100%"
+                            y2="100%"
+                          >
                             <stop offset="0%" stopColor="#00AB39" />
                             <stop offset="100%" stopColor="#0071BC" />
                           </linearGradient>
@@ -459,10 +539,17 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
                         <motion.div
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
-                          transition={{ delay: 1, type: 'spring' }}
+                          transition={{ delay: 1, type: "spring" }}
                         >
-                          <p className="text-3xl font-bold text-white sketch-title">{pilgrimScore}</p>
-                          <p className="text-xs text-white/80" style={{ fontFamily: 'Cabin Sketch, cursive' }}>OVR</p>
+                          <p className="text-3xl font-bold text-white sketch-title">
+                            {pilgrimScore}
+                          </p>
+                          <p
+                            className="text-xs text-white/80"
+                            style={{ fontFamily: "Cabin Sketch, cursive" }}
+                          >
+                            OVR
+                          </p>
                         </motion.div>
                       </div>
                     </motion.div>
@@ -472,7 +559,9 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
                   <div className="space-y-3">
                     <StatBar
                       label="Status"
-                      value={pilgrimScore >= 80 ? 'Ready to Journey' : 'In Progress'}
+                      value={
+                        pilgrimScore >= 80 ? "Ready to Journey" : "In Progress"
+                      }
                       icon={Shield}
                       color="#00AB39"
                       delay={0.5}
@@ -521,7 +610,7 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
                           rx="16"
                         />
                       </svg>
-                      
+
                       <div className="relative z-10 p-6 space-y-4">
                         <h4 className="text-xl sketch-title text-[#00AB39] mb-4 flex items-center gap-2">
                           <User className="w-5 h-5" />
@@ -531,122 +620,175 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {/* First Name */}
                           <div>
-                            <label className="block text-sm font-medium text-[#5D4E37] mb-2" style={{ fontFamily: 'Cabin Sketch, cursive' }}>
-                              First Name <span className="text-[#ED1C24]">*</span>
+                            <label
+                              className="block text-sm font-medium text-[#5D4E37] mb-2"
+                              style={{ fontFamily: "Cabin Sketch, cursive" }}
+                            >
+                              First Name{" "}
+                              <span className="text-[#ED1C24]">*</span>
                             </label>
                             <input
                               type="text"
                               value={formData.firstName}
-                              onChange={(e) => handleChange('firstName', e.target.value)}
+                              onChange={(e) =>
+                                handleChange("firstName", e.target.value)
+                              }
                               className={`w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 ${
-                                errors.firstName ? 'focus:ring-[#ED1C24] border-[#ED1C24]' : 'focus:ring-[#00AB39]'
+                                errors.firstName
+                                  ? "focus:ring-[#ED1C24] border-[#ED1C24]"
+                                  : "focus:ring-[#00AB39]"
                               }`}
-                              style={{ fontFamily: 'Patrick Hand, cursive' }}
+                              style={{ fontFamily: "Patrick Hand, cursive" }}
                             />
                             {errors.firstName && (
-                              <p className="text-xs text-[#ED1C24] mt-1">{errors.firstName}</p>
+                              <p className="text-xs text-[#ED1C24] mt-1">
+                                {errors.firstName}
+                              </p>
                             )}
                           </div>
 
                           {/* Last Name */}
                           <div>
-                            <label className="block text-sm font-medium text-[#5D4E37] mb-2" style={{ fontFamily: 'Cabin Sketch, cursive' }}>
-                              Last Name <span className="text-[#ED1C24]">*</span>
+                            <label
+                              className="block text-sm font-medium text-[#5D4E37] mb-2"
+                              style={{ fontFamily: "Cabin Sketch, cursive" }}
+                            >
+                              Last Name{" "}
+                              <span className="text-[#ED1C24]">*</span>
                             </label>
                             <input
                               type="text"
                               value={formData.lastName}
-                              onChange={(e) => handleChange('lastName', e.target.value)}
+                              onChange={(e) =>
+                                handleChange("lastName", e.target.value)
+                              }
                               className={`w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 ${
-                                errors.lastName ? 'focus:ring-[#ED1C24] border-[#ED1C24]' : 'focus:ring-[#00AB39]'
+                                errors.lastName
+                                  ? "focus:ring-[#ED1C24] border-[#ED1C24]"
+                                  : "focus:ring-[#00AB39]"
                               }`}
-                              style={{ fontFamily: 'Patrick Hand, cursive' }}
+                              style={{ fontFamily: "Patrick Hand, cursive" }}
                             />
                             {errors.lastName && (
-                              <p className="text-xs text-[#ED1C24] mt-1">{errors.lastName}</p>
+                              <p className="text-xs text-[#ED1C24] mt-1">
+                                {errors.lastName}
+                              </p>
                             )}
                           </div>
 
                           {/* Second Last Name */}
                           <div>
-                            <label className="block text-sm font-medium text-[#5D4E37] mb-2" style={{ fontFamily: 'Cabin Sketch, cursive' }}>
+                            <label
+                              className="block text-sm font-medium text-[#5D4E37] mb-2"
+                              style={{ fontFamily: "Cabin Sketch, cursive" }}
+                            >
                               Second Last Name
                             </label>
                             <input
                               type="text"
                               value={formData.secondLastName}
-                              onChange={(e) => handleChange('secondLastName', e.target.value)}
+                              onChange={(e) =>
+                                handleChange("secondLastName", e.target.value)
+                              }
                               className="w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
-                              style={{ fontFamily: 'Patrick Hand, cursive' }}
+                              style={{ fontFamily: "Patrick Hand, cursive" }}
                             />
                           </div>
 
                           {/* Date of Birth */}
                           <div>
-                            <label className="block text-sm font-medium text-[#5D4E37] mb-2" style={{ fontFamily: 'Cabin Sketch, cursive' }}>
+                            <label
+                              className="block text-sm font-medium text-[#5D4E37] mb-2"
+                              style={{ fontFamily: "Cabin Sketch, cursive" }}
+                            >
                               <Calendar className="w-4 h-4 inline mr-1" />
-                              Date of Birth <span className="text-[#ED1C24]">*</span>
+                              Date of Birth{" "}
+                              <span className="text-[#ED1C24]">*</span>
                             </label>
                             <input
                               type="date"
                               value={formData.dateOfBirth}
-                              onChange={(e) => handleChange('dateOfBirth', e.target.value)}
+                              onChange={(e) =>
+                                handleChange("dateOfBirth", e.target.value)
+                              }
                               className={`w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 ${
-                                errors.dateOfBirth ? 'focus:ring-[#ED1C24] border-[#ED1C24]' : 'focus:ring-[#00AB39]'
+                                errors.dateOfBirth
+                                  ? "focus:ring-[#ED1C24] border-[#ED1C24]"
+                                  : "focus:ring-[#00AB39]"
                               }`}
-                              style={{ fontFamily: 'Patrick Hand, cursive' }}
+                              style={{ fontFamily: "Patrick Hand, cursive" }}
                             />
                             {errors.dateOfBirth && (
-                              <p className="text-xs text-[#ED1C24] mt-1">{errors.dateOfBirth}</p>
+                              <p className="text-xs text-[#ED1C24] mt-1">
+                                {errors.dateOfBirth}
+                              </p>
                             )}
                           </div>
 
                           {/* Nationality */}
                           <div>
-                            <label className="block text-sm font-medium text-[#5D4E37] mb-2" style={{ fontFamily: 'Cabin Sketch, cursive' }}>
+                            <label
+                              className="block text-sm font-medium text-[#5D4E37] mb-2"
+                              style={{ fontFamily: "Cabin Sketch, cursive" }}
+                            >
                               <Flag className="w-4 h-4 inline mr-1" />
-                              Nationality <span className="text-[#ED1C24]">*</span>
+                              Nationality{" "}
+                              <span className="text-[#ED1C24]">*</span>
                             </label>
                             <input
                               type="text"
                               value={formData.nationality}
-                              onChange={(e) => handleChange('nationality', e.target.value)}
+                              onChange={(e) =>
+                                handleChange("nationality", e.target.value)
+                              }
                               className={`w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 ${
-                                errors.nationality ? 'focus:ring-[#ED1C24] border-[#ED1C24]' : 'focus:ring-[#00AB39]'
+                                errors.nationality
+                                  ? "focus:ring-[#ED1C24] border-[#ED1C24]"
+                                  : "focus:ring-[#00AB39]"
                               }`}
-                              style={{ fontFamily: 'Patrick Hand, cursive' }}
+                              style={{ fontFamily: "Patrick Hand, cursive" }}
                               placeholder="e.g., Spain, France, UK"
                             />
                             {errors.nationality && (
-                              <p className="text-xs text-[#ED1C24] mt-1">{errors.nationality}</p>
+                              <p className="text-xs text-[#ED1C24] mt-1">
+                                {errors.nationality}
+                              </p>
                             )}
                           </div>
 
                           {/* Phone */}
                           <div>
-                            <label className="block text-sm font-medium text-[#5D4E37] mb-2" style={{ fontFamily: 'Cabin Sketch, cursive' }}>
+                            <label
+                              className="block text-sm font-medium text-[#5D4E37] mb-2"
+                              style={{ fontFamily: "Cabin Sketch, cursive" }}
+                            >
                               <Phone className="w-4 h-4 inline mr-1" />
                               Phone <span className="text-[#ED1C24]">*</span>
                             </label>
                             <PhoneInput
                               value={formData.phone}
-                              onChange={(value) => handleChange('phone', value)}
+                              onChange={(value) => handleChange("phone", value)}
                               error={errors.phone}
                             />
                           </div>
 
                           {/* Email */}
                           <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-[#5D4E37] mb-2" style={{ fontFamily: 'Cabin Sketch, cursive' }}>
+                            <label
+                              className="block text-sm font-medium text-[#5D4E37] mb-2"
+                              style={{ fontFamily: "Cabin Sketch, cursive" }}
+                            >
                               <Mail className="w-4 h-4 inline mr-1" />
                               Email
                             </label>
                             <input
                               type="email"
                               value={formData.email}
-                              onChange={(e) => handleChange('email', e.target.value)}
+                              onChange={(e) =>
+                                handleChange("email", e.target.value)
+                              }
                               className="w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
-                              style={{ fontFamily: 'Patrick Hand, cursive' }}
+                              style={{ fontFamily: "Patrick Hand, cursive" }}
                               placeholder="pilgrim@caminodesantiago.com"
                             />
                           </div>
@@ -668,7 +810,7 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
                           rx="16"
                         />
                       </svg>
-                      
+
                       <div className="relative z-10 p-6 space-y-4">
                         <h4 className="text-xl sketch-title text-[#0071BC] mb-4 flex items-center gap-2">
                           <MapPin className="w-5 h-5" />
@@ -678,31 +820,46 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
                         <div className="grid grid-cols-1 gap-4">
                           {/* Country */}
                           <div>
-                            <label className="block text-sm font-medium text-[#5D4E37] mb-2" style={{ fontFamily: 'Cabin Sketch, cursive' }}>
+                            <label
+                              className="block text-sm font-medium text-[#5D4E37] mb-2"
+                              style={{ fontFamily: "Cabin Sketch, cursive" }}
+                            >
                               Country <span className="text-[#ED1C24]">*</span>
                             </label>
                             <input
                               type="text"
                               value={formData.country}
-                              onChange={(e) => handleChange('country', e.target.value)}
+                              onChange={(e) =>
+                                handleChange("country", e.target.value)
+                              }
                               className={`w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 ${
-                                errors.country ? 'focus:ring-[#ED1C24] border-[#ED1C24]' : 'focus:ring-[#0071BC]'
+                                errors.country
+                                  ? "focus:ring-[#ED1C24] border-[#ED1C24]"
+                                  : "focus:ring-[#0071BC]"
                               }`}
-                              style={{ fontFamily: 'Patrick Hand, cursive' }}
+                              style={{ fontFamily: "Patrick Hand, cursive" }}
                             />
                             {errors.country && (
-                              <p className="text-xs text-[#ED1C24] mt-1">{errors.country}</p>
+                              <p className="text-xs text-[#ED1C24] mt-1">
+                                {errors.country}
+                              </p>
                             )}
                           </div>
 
                           {/* Address Line 1 */}
                           <div>
-                            <label className="block text-sm font-medium text-[#5D4E37] mb-2" style={{ fontFamily: 'Cabin Sketch, cursive' }}>
-                              Address Line 1 <span className="text-[#ED1C24]">*</span>
+                            <label
+                              className="block text-sm font-medium text-[#5D4E37] mb-2"
+                              style={{ fontFamily: "Cabin Sketch, cursive" }}
+                            >
+                              Address Line 1{" "}
+                              <span className="text-[#ED1C24]">*</span>
                             </label>
                             <AddressAutocomplete
                               value={formData.addressLine1}
-                              onChange={(value) => handleChange('addressLine1', value)}
+                              onChange={(value) =>
+                                handleChange("addressLine1", value)
+                              }
                               onSelect={handleAddressSelect}
                               error={errors.addressLine1}
                             />
@@ -710,15 +867,20 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
 
                           {/* Address Line 2 */}
                           <div>
-                            <label className="block text-sm font-medium text-[#5D4E37] mb-2" style={{ fontFamily: 'Cabin Sketch, cursive' }}>
+                            <label
+                              className="block text-sm font-medium text-[#5D4E37] mb-2"
+                              style={{ fontFamily: "Cabin Sketch, cursive" }}
+                            >
                               Address Line 2
                             </label>
                             <input
                               type="text"
                               value={formData.addressLine2}
-                              onChange={(e) => handleChange('addressLine2', e.target.value)}
+                              onChange={(e) =>
+                                handleChange("addressLine2", e.target.value)
+                              }
                               className="w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 focus:ring-[#0071BC]"
-                              style={{ fontFamily: 'Patrick Hand, cursive' }}
+                              style={{ fontFamily: "Patrick Hand, cursive" }}
                               placeholder="Apartment, suite, etc."
                             />
                           </div>
@@ -726,39 +888,58 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
                           <div className="grid grid-cols-2 gap-4">
                             {/* Postal Code */}
                             <div>
-                              <label className="block text-sm font-medium text-[#5D4E37] mb-2" style={{ fontFamily: 'Cabin Sketch, cursive' }}>
-                                Postal Code <span className="text-[#ED1C24]">*</span>
+                              <label
+                                className="block text-sm font-medium text-[#5D4E37] mb-2"
+                                style={{ fontFamily: "Cabin Sketch, cursive" }}
+                              >
+                                Postal Code{" "}
+                                <span className="text-[#ED1C24]">*</span>
                               </label>
                               <input
                                 type="text"
                                 value={formData.postalCode}
-                                onChange={(e) => handlePostalCodeChange(e.target.value)}
+                                onChange={(e) =>
+                                  handlePostalCodeChange(e.target.value)
+                                }
                                 className={`w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 ${
-                                  errors.postalCode ? 'focus:ring-[#ED1C24] border-[#ED1C24]' : 'focus:ring-[#0071BC]'
+                                  errors.postalCode
+                                    ? "focus:ring-[#ED1C24] border-[#ED1C24]"
+                                    : "focus:ring-[#0071BC]"
                                 }`}
-                                style={{ fontFamily: 'Patrick Hand, cursive' }}
+                                style={{ fontFamily: "Patrick Hand, cursive" }}
                               />
                               {errors.postalCode && (
-                                <p className="text-xs text-[#ED1C24] mt-1">{errors.postalCode}</p>
+                                <p className="text-xs text-[#ED1C24] mt-1">
+                                  {errors.postalCode}
+                                </p>
                               )}
                             </div>
 
                             {/* City */}
                             <div>
-                              <label className="block text-sm font-medium text-[#5D4E37] mb-2" style={{ fontFamily: 'Cabin Sketch, cursive' }}>
+                              <label
+                                className="block text-sm font-medium text-[#5D4E37] mb-2"
+                                style={{ fontFamily: "Cabin Sketch, cursive" }}
+                              >
                                 City <span className="text-[#ED1C24]">*</span>
                               </label>
                               <input
                                 type="text"
                                 value={formData.city}
-                                onChange={(e) => handleChange('city', e.target.value)}
+                                onChange={(e) =>
+                                  handleChange("city", e.target.value)
+                                }
                                 className={`w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 ${
-                                  errors.city ? 'focus:ring-[#ED1C24] border-[#ED1C24]' : 'focus:ring-[#0071BC]'
+                                  errors.city
+                                    ? "focus:ring-[#ED1C24] border-[#ED1C24]"
+                                    : "focus:ring-[#0071BC]"
                                 }`}
-                                style={{ fontFamily: 'Patrick Hand, cursive' }}
+                                style={{ fontFamily: "Patrick Hand, cursive" }}
                               />
                               {errors.city && (
-                                <p className="text-xs text-[#ED1C24] mt-1">{errors.city}</p>
+                                <p className="text-xs text-[#ED1C24] mt-1">
+                                  {errors.city}
+                                </p>
                               )}
                             </div>
                           </div>
@@ -780,7 +961,7 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
                           rx="16"
                         />
                       </svg>
-                      
+
                       <div className="relative z-10 p-6 space-y-4">
                         <h4 className="text-xl sketch-title text-[#D4A574] mb-4 flex items-center gap-2">
                           <Heart className="w-5 h-5" />
@@ -790,26 +971,36 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {/* Emergency Contact Name */}
                           <div>
-                            <label className="block text-sm font-medium text-[#5D4E37] mb-2" style={{ fontFamily: 'Cabin Sketch, cursive' }}>
+                            <label
+                              className="block text-sm font-medium text-[#5D4E37] mb-2"
+                              style={{ fontFamily: "Cabin Sketch, cursive" }}
+                            >
                               Contact Name
                             </label>
                             <input
                               type="text"
                               value={formData.emergencyContact}
-                              onChange={(e) => handleChange('emergencyContact', e.target.value)}
+                              onChange={(e) =>
+                                handleChange("emergencyContact", e.target.value)
+                              }
                               className="w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 focus:ring-[#FFC837]"
-                              style={{ fontFamily: 'Patrick Hand, cursive' }}
+                              style={{ fontFamily: "Patrick Hand, cursive" }}
                             />
                           </div>
 
                           {/* Emergency Phone */}
                           <div>
-                            <label className="block text-sm font-medium text-[#5D4E37] mb-2" style={{ fontFamily: 'Cabin Sketch, cursive' }}>
+                            <label
+                              className="block text-sm font-medium text-[#5D4E37] mb-2"
+                              style={{ fontFamily: "Cabin Sketch, cursive" }}
+                            >
                               Emergency Phone
                             </label>
                             <PhoneInput
                               value={formData.emergencyPhone}
-                              onChange={(value) => handleChange('emergencyPhone', value)}
+                              onChange={(value) =>
+                                handleChange("emergencyPhone", value)
+                              }
                             />
                           </div>
                         </div>
@@ -823,7 +1014,7 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
                   <motion.div
                     initial={{ opacity: 0, x: 50, rotateY: -20 }}
                     animate={{ opacity: 1, x: 0, rotateY: 0 }}
-                    transition={{ delay: 0.5, type: 'spring', stiffness: 80 }}
+                    transition={{ delay: 0.5, type: "spring", stiffness: 80 }}
                     className="sticky top-8 h-[600px]"
                   >
                     <PhotoCard3D />
@@ -863,19 +1054,11 @@ export function PilgrimCard({ onNext, onBack, prefillData }: PilgrimCardProps) {
             transition={{ delay: 1 }}
             className="flex gap-4 justify-between mt-8"
           >
-            <WiredButton
-              variant="outline"
-              size="lg"
-              onClick={onBack}
-            >
+            <WiredButton variant="outline" size="lg" onClick={onBack}>
               ← Back to ID Upload
             </WiredButton>
-            
-            <WiredButton
-              variant="primary"
-              size="lg"
-              onClick={handleSubmit}
-            >
+
+            <WiredButton variant="primary" size="lg" onClick={handleSubmit}>
               Continue to Bed Selection →
             </WiredButton>
           </motion.div>

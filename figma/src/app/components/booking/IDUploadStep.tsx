@@ -1,8 +1,8 @@
-import { motion, AnimatePresence } from 'motion/react';
-import { WiredButton } from '../doodle/WiredButton';
-import { useState, useEffect, useRef } from 'react';
-import { Tween, Easing } from '@tweenjs/tween.js';
-import { DoodlePatterns } from '../doodle/DoodlePattern';
+import { motion, AnimatePresence } from "motion/react";
+import { WiredButton } from "../doodle/WiredButton";
+import { useState, useEffect, useRef } from "react";
+import { Tween, Easing } from "@tweenjs/tween.js";
+import { DoodlePatterns } from "../doodle/DoodlePattern";
 
 interface IDUploadStepProps {
   onNext: (data: {
@@ -16,11 +16,16 @@ interface IDUploadStepProps {
   onBack: () => void;
 }
 
-type IDType = 'dni' | 'passport' | null;
-type UploadStatus = 'idle' | 'uploading' | 'processing' | 'success' | 'error';
+type IDType = "dni" | "passport" | null;
+type UploadStatus = "idle" | "uploading" | "processing" | "success" | "error";
 
 // TweenJS animation hook
-function useTweenAnimation(isActive: boolean, startValue: number, endValue: number, duration: number = 1000) {
+function useTweenAnimation(
+  isActive: boolean,
+  startValue: number,
+  endValue: number,
+  duration: number = 1000,
+) {
   const [value, setValue] = useState(startValue);
   const tweenRef = useRef<Tween<{ value: number }> | null>(null);
 
@@ -68,7 +73,7 @@ function DoodleUploadIcon({ className = "" }: { className?: string }) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      
+
       {/* Arrow pointing up - wobbly */}
       <motion.path
         d="M 48 70 Q 49 62 48 55 Q 48.5 48 49 42"
@@ -76,16 +81,16 @@ function DoodleUploadIcon({ className = "" }: { className?: string }) {
         strokeWidth="3.5"
         strokeLinecap="round"
         fill="none"
-        animate={{ 
+        animate={{
           d: [
             "M 48 70 Q 49 62 48 55 Q 48.5 48 49 42",
             "M 48 70 Q 47 62 48 55 Q 47.5 48 48 42",
-            "M 48 70 Q 49 62 48 55 Q 48.5 48 49 42"
-          ]
+            "M 48 70 Q 49 62 48 55 Q 48.5 48 49 42",
+          ],
         }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
       />
-      
+
       {/* Arrow head - sketchy */}
       <motion.path
         d="M 38 48 Q 43 43 49 42 Q 55 43 60 48"
@@ -93,37 +98,43 @@ function DoodleUploadIcon({ className = "" }: { className?: string }) {
         strokeWidth="3.5"
         strokeLinecap="round"
         fill="none"
-        animate={{ 
-          y: [-2, 2, -2]
+        animate={{
+          y: [-2, 2, -2],
         }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
       />
-      
+
       {/* Decorative sparkles */}
       <motion.circle
-        cx="22" cy="40" r="1.5"
+        cx="22"
+        cy="40"
+        r="1.5"
         fill="currentColor"
-        animate={{ 
+        animate={{
           scale: [1, 1.5, 1],
-          opacity: [0.5, 1, 0.5]
+          opacity: [0.5, 1, 0.5],
         }}
         transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
       />
       <motion.circle
-        cx="75" cy="38" r="1.5"
+        cx="75"
+        cy="38"
+        r="1.5"
         fill="currentColor"
-        animate={{ 
+        animate={{
           scale: [1, 1.5, 1],
-          opacity: [0.5, 1, 0.5]
+          opacity: [0.5, 1, 0.5],
         }}
         transition={{ duration: 1.5, repeat: Infinity, delay: 0.5 }}
       />
       <motion.circle
-        cx="50" cy="28" r="1.5"
+        cx="50"
+        cy="28"
+        r="1.5"
         fill="currentColor"
-        animate={{ 
+        animate={{
           scale: [1, 1.5, 1],
-          opacity: [0.5, 1, 0.5]
+          opacity: [0.5, 1, 0.5],
         }}
         transition={{ duration: 1.5, repeat: Infinity, delay: 1 }}
       />
@@ -137,7 +148,9 @@ function DoodleCheckIcon({ className = "" }: { className?: string }) {
     <svg viewBox="0 0 100 100" className={className} fill="none">
       {/* Circle - hand drawn */}
       <motion.circle
-        cx="50" cy="50" r="45"
+        cx="50"
+        cy="50"
+        r="45"
         fill="currentColor"
         opacity="0.15"
       />
@@ -151,7 +164,7 @@ function DoodleCheckIcon({ className = "" }: { className?: string }) {
         animate={{ pathLength: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       />
-      
+
       {/* Checkmark - wobbly */}
       <motion.path
         d="M 30 52 Q 35 58 42 62 Q 48 58 65 38"
@@ -205,14 +218,16 @@ function DoodleLoader({ className = "" }: { className?: string }) {
         transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
         style={{ transformOrigin: "50px 50px" }}
       />
-      
+
       {/* Inner dots */}
       <motion.circle
-        cx="50" cy="50" r="3"
+        cx="50"
+        cy="50"
+        r="3"
         fill="currentColor"
-        animate={{ 
+        animate={{
           scale: [1, 1.5, 1],
-          opacity: [0.5, 1, 0.5]
+          opacity: [0.5, 1, 0.5],
         }}
         transition={{ duration: 1, repeat: Infinity }}
       />
@@ -233,15 +248,15 @@ function DoodleAlertIcon({ className = "" }: { className?: string }) {
         fill="currentColor"
         fillOpacity="0.15"
       />
-      
+
       {/* Exclamation mark */}
       <motion.path
         d="M 50 30 Q 51 40 50 55"
         stroke="currentColor"
         strokeWidth="5"
         strokeLinecap="round"
-        animate={{ 
-          scaleY: [1, 1.1, 1]
+        animate={{
+          scaleY: [1, 1.1, 1],
         }}
         transition={{ duration: 0.5, repeat: Infinity }}
         style={{ transformOrigin: "50px 42px" }}
@@ -263,14 +278,14 @@ function RippleEffect({ color }: { color: string }) {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{
             scale: [0.8, 1.5, 2],
-            opacity: [0.6, 0.3, 0]
+            opacity: [0.6, 0.3, 0],
           }}
           transition={{
             duration: 1.5,
             delay: i * 0.2,
             repeat: Infinity,
             repeatDelay: 0.5,
-            ease: "easeOut"
+            ease: "easeOut",
           }}
         />
       ))}
@@ -279,37 +294,54 @@ function RippleEffect({ color }: { color: string }) {
 }
 
 // Hand-drawn DNI/Passport illustration component
-function IDCardIllustration({ type, isSelected }: { type: 'dni' | 'passport', isSelected: boolean }) {
+function IDCardIllustration({
+  type,
+  isSelected,
+}: {
+  type: "dni" | "passport";
+  isSelected: boolean;
+}) {
   const [isHovered, setIsHovered] = useState(false);
-  const colors = type === 'dni' 
-    ? { primary: '#00AB39', light: '#E8F5E9', dark: '#006b24' }
-    : { primary: '#0071BC', light: '#E3F2FD', dark: '#005a94' };
+  const colors =
+    type === "dni"
+      ? { primary: "#00AB39", light: "#E8F5E9", dark: "#006b24" }
+      : { primary: "#0071BC", light: "#E3F2FD", dark: "#005a94" };
 
   return (
     <motion.div
       className="relative w-full h-32 sm:h-40 md:h-48 cursor-pointer"
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      animate={isHovered ? {
-        rotateY: 360,
-        scale: 1.15,
-        z: 100
-      } : isSelected ? {
-        rotateY: [0, 3, -3, 0],
-        rotateX: [0, 2, -2, 0],
-        scale: [1, 1.02, 1]
-      } : {}}
-      transition={isHovered ? {
-        rotateY: { duration: 2, ease: "easeInOut" },
-        scale: { duration: 0.3 },
-        z: { duration: 0.3 }
-      } : {
-        duration: 3,
-        repeat: isSelected ? Infinity : 0,
-        repeatDelay: 2,
-        ease: "easeInOut"
-      }}
-      style={{ transformStyle: 'preserve-3d', perspective: 1200 }}
+      animate={
+        isHovered
+          ? {
+              rotateY: 360,
+              scale: 1.15,
+              z: 100,
+            }
+          : isSelected
+            ? {
+                rotateY: [0, 3, -3, 0],
+                rotateX: [0, 2, -2, 0],
+                scale: [1, 1.02, 1],
+              }
+            : {}
+      }
+      transition={
+        isHovered
+          ? {
+              rotateY: { duration: 2, ease: "easeInOut" },
+              scale: { duration: 0.3 },
+              z: { duration: 0.3 },
+            }
+          : {
+              duration: 3,
+              repeat: isSelected ? Infinity : 0,
+              repeatDelay: 2,
+              ease: "easeInOut",
+            }
+      }
+      style={{ transformStyle: "preserve-3d", perspective: 1200 }}
     >
       {/* Holographic glow effect on hover */}
       <AnimatePresence>
@@ -319,61 +351,65 @@ function IDCardIllustration({ type, isSelected }: { type: 'dni' | 'passport', is
             <motion.div
               className="absolute inset-0 rounded-3xl"
               initial={{ opacity: 0, scale: 1 }}
-              animate={{ 
+              animate={{
                 opacity: [0.3, 0.6, 0.3],
                 scale: [1, 1.2, 1],
                 boxShadow: [
                   `0 0 20px ${colors.primary}`,
                   `0 0 60px ${colors.primary}`,
-                  `0 0 20px ${colors.primary}`
-                ]
+                  `0 0 20px ${colors.primary}`,
+                ],
               }}
               exit={{ opacity: 0 }}
               transition={{ duration: 2, repeat: Infinity }}
               style={{
                 background: `radial-gradient(circle, ${colors.primary}33 0%, transparent 70%)`,
-                filter: 'blur(15px)'
+                filter: "blur(15px)",
               }}
             />
-            
+
             {/* Particle explosion effect */}
             {[...Array(12)].map((_, i) => (
               <motion.div
                 key={i}
                 className="absolute top-1/2 left-1/2 w-2 h-2 rounded-full"
-                style={{ 
+                style={{
                   background: colors.primary,
-                  boxShadow: `0 0 10px ${colors.primary}`
+                  boxShadow: `0 0 10px ${colors.primary}`,
                 }}
-                initial={{ 
-                  x: 0, 
-                  y: 0, 
+                initial={{
+                  x: 0,
+                  y: 0,
                   scale: 0,
-                  opacity: 0
+                  opacity: 0,
                 }}
-                animate={{ 
-                  x: Math.cos(i * 30 * Math.PI / 180) * 100,
-                  y: Math.sin(i * 30 * Math.PI / 180) * 100,
+                animate={{
+                  x: Math.cos((i * 30 * Math.PI) / 180) * 100,
+                  y: Math.sin((i * 30 * Math.PI) / 180) * 100,
                   scale: [0, 1.5, 0],
-                  opacity: [0, 1, 0]
+                  opacity: [0, 1, 0],
                 }}
-                transition={{ 
+                transition={{
                   duration: 1.5,
                   delay: i * 0.05,
                   repeat: Infinity,
-                  repeatDelay: 1
+                  repeatDelay: 1,
                 }}
               />
             ))}
           </>
         )}
       </AnimatePresence>
-      <svg viewBox="0 0 400 240" className="w-full h-full" style={{ 
-        filter: isHovered 
-          ? `drop-shadow(0 20px 60px ${colors.primary}66) brightness(1.2)`
-          : 'drop-shadow(4px 6px 12px rgba(0,0,0,0.15))'
-      }}>
-        {type === 'dni' ? (
+      <svg
+        viewBox="0 0 400 240"
+        className="w-full h-full"
+        style={{
+          filter: isHovered
+            ? `drop-shadow(0 20px 60px ${colors.primary}66) brightness(1.2)`
+            : "drop-shadow(4px 6px 12px rgba(0,0,0,0.15))",
+        }}
+      >
+        {type === "dni" ? (
           <>
             {/* Hand-drawn card background - sketchy edges */}
             <motion.path
@@ -383,12 +419,16 @@ function IDCardIllustration({ type, isSelected }: { type: 'dni' | 'passport', is
               strokeWidth={isHovered ? "4" : "3"}
               strokeLinecap="round"
               strokeLinejoin="round"
-              animate={isHovered ? {
-                fill: [colors.light, '#ffffff', colors.light]
-              } : {}}
+              animate={
+                isHovered
+                  ? {
+                      fill: [colors.light, "#ffffff", colors.light],
+                    }
+                  : {}
+              }
               transition={{ duration: 2, repeat: Infinity }}
             />
-            
+
             {/* Double border for sketchy effect */}
             <motion.path
               d="M 50 38 Q 52 36 58 36 L 342 36 Q 348 36 350 38 L 350 202 Q 348 204 342 204 L 58 204 Q 52 204 50 202 Z"
@@ -401,7 +441,15 @@ function IDCardIllustration({ type, isSelected }: { type: 'dni' | 'passport', is
             />
 
             {/* DNI text at top */}
-            <text x="200" y="60" textAnchor="middle" fill={colors.dark} fontSize="28" fontWeight="bold" fontFamily="'Cabin Sketch', cursive">
+            <text
+              x="200"
+              y="60"
+              textAnchor="middle"
+              fill={colors.dark}
+              fontSize="28"
+              fontWeight="bold"
+              fontFamily="'Cabin Sketch', cursive"
+            >
               DNI
             </text>
 
@@ -412,14 +460,24 @@ function IDCardIllustration({ type, isSelected }: { type: 'dni' | 'passport', is
               stroke={colors.dark}
               strokeWidth="2.5"
               strokeLinecap="round"
-              animate={isSelected ? {
-                strokeDasharray: ["0, 0", "4, 4", "0, 0"]
-              } : {}}
+              animate={
+                isSelected
+                  ? {
+                      strokeDasharray: ["0, 0", "4, 4", "0, 0"],
+                    }
+                  : {}
+              }
               transition={{ duration: 2, repeat: Infinity }}
             />
-            
+
             {/* Doodle person in photo */}
-            <circle cx="295" cy="115" r="18" fill={colors.primary} opacity="0.3" />
+            <circle
+              cx="295"
+              cy="115"
+              r="18"
+              fill={colors.primary}
+              opacity="0.3"
+            />
             <motion.path
               d="M 270 155 Q 282 145 295 145 Q 308 145 320 155"
               stroke={colors.primary}
@@ -436,12 +494,24 @@ function IDCardIllustration({ type, isSelected }: { type: 'dni' | 'passport', is
               stroke="#D4A017"
               strokeWidth="2"
               strokeLinecap="round"
-              animate={isHovered ? {
-                fill: ['#FFD700', '#FFED4E', '#FFD700']
-              } : {}}
+              animate={
+                isHovered
+                  ? {
+                      fill: ["#FFD700", "#FFED4E", "#FFD700"],
+                    }
+                  : {}
+              }
               transition={{ duration: 0.5, repeat: Infinity }}
             />
-            <rect x="77" y="100" width="26" height="20" fill="#D4A017" opacity="0.3" rx="2" />
+            <rect
+              x="77"
+              y="100"
+              width="26"
+              height="20"
+              fill="#D4A017"
+              opacity="0.3"
+              rx="2"
+            />
 
             {/* Wobbly text lines */}
             <motion.path
@@ -482,19 +552,25 @@ function IDCardIllustration({ type, isSelected }: { type: 'dni' | 'passport', is
             {(isSelected || isHovered) && (
               <>
                 <motion.circle
-                  cx="60" cy="50" r="2"
+                  cx="60"
+                  cy="50"
+                  r="2"
                   fill={colors.primary}
                   animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
                   transition={{ duration: 2, repeat: Infinity, delay: 0 }}
                 />
                 <motion.circle
-                  cx="340" cy="60" r="2"
+                  cx="340"
+                  cy="60"
+                  r="2"
                   fill={colors.primary}
                   animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
                   transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
                 />
                 <motion.circle
-                  cx="200" cy="220" r="2"
+                  cx="200"
+                  cy="220"
+                  r="2"
                   fill={colors.primary}
                   animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
                   transition={{ duration: 2, repeat: Infinity, delay: 1 }}
@@ -512,9 +588,13 @@ function IDCardIllustration({ type, isSelected }: { type: 'dni' | 'passport', is
               strokeWidth={isHovered ? "5" : "4"}
               strokeLinecap="round"
               strokeLinejoin="round"
-              animate={isHovered ? {
-                fill: [colors.light, '#ffffff', colors.light]
-              } : {}}
+              animate={
+                isHovered
+                  ? {
+                      fill: [colors.light, "#ffffff", colors.light],
+                    }
+                  : {}
+              }
               transition={{ duration: 2, repeat: Infinity }}
             />
 
@@ -546,15 +626,21 @@ function IDCardIllustration({ type, isSelected }: { type: 'dni' | 'passport', is
 
             {/* Doodle globe/world icon */}
             <motion.circle
-              cx="200" cy="95" r="35"
+              cx="200"
+              cy="95"
+              r="35"
               fill="none"
               stroke={colors.dark}
               strokeWidth="3"
               strokeLinecap="round"
               opacity="0.4"
-              animate={isHovered ? {
-                rotate: 360
-              } : {}}
+              animate={
+                isHovered
+                  ? {
+                      rotate: 360,
+                    }
+                  : {}
+              }
               transition={{ duration: 2, ease: "linear" }}
               style={{ transformOrigin: "200px 95px" }}
             />
@@ -575,7 +661,10 @@ function IDCardIllustration({ type, isSelected }: { type: 'dni' | 'passport', is
               opacity="0.4"
             />
             <motion.line
-              x1="200" y1="60" x2="200" y2="130"
+              x1="200"
+              y1="60"
+              x2="200"
+              y2="130"
               stroke={colors.dark}
               strokeWidth="2"
               strokeLinecap="round"
@@ -583,7 +672,15 @@ function IDCardIllustration({ type, isSelected }: { type: 'dni' | 'passport', is
             />
 
             {/* PASSPORT text - hand written style */}
-            <text x="200" y="155" textAnchor="middle" fill={colors.dark} fontSize="24" fontFamily="'Cabin Sketch', cursive" fontWeight="bold">
+            <text
+              x="200"
+              y="155"
+              textAnchor="middle"
+              fill={colors.dark}
+              fontSize="24"
+              fontFamily="'Cabin Sketch', cursive"
+              fontWeight="bold"
+            >
               PASSPORT
             </text>
 
@@ -609,19 +706,25 @@ function IDCardIllustration({ type, isSelected }: { type: 'dni' | 'passport', is
             {(isSelected || isHovered) && (
               <>
                 <motion.circle
-                  cx="95" cy="60" r="2"
+                  cx="95"
+                  cy="60"
+                  r="2"
                   fill={colors.primary}
                   animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
                   transition={{ duration: 2, repeat: Infinity, delay: 0 }}
                 />
                 <motion.circle
-                  cx="305" cy="70" r="2"
+                  cx="305"
+                  cy="70"
+                  r="2"
                   fill={colors.primary}
                   animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
                   transition={{ duration: 2, repeat: Infinity, delay: 0.7 }}
                 />
                 <motion.circle
-                  cx="200" cy="215" r="2"
+                  cx="200"
+                  cy="215"
+                  r="2"
                   fill={colors.primary}
                   animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
                   transition={{ duration: 2, repeat: Infinity, delay: 1.3 }}
@@ -637,40 +740,62 @@ function IDCardIllustration({ type, isSelected }: { type: 'dni' | 'passport', is
             <>
               {/* Main scanning laser beam */}
               <motion.defs>
-                <linearGradient id={`laserGradient-${type}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor={colors.primary} stopOpacity="0" />
-                  <stop offset="30%" stopColor={colors.primary} stopOpacity="0.8" />
+                <linearGradient
+                  id={`laserGradient-${type}`}
+                  x1="0%"
+                  y1="0%"
+                  x2="0%"
+                  y2="100%"
+                >
+                  <stop
+                    offset="0%"
+                    stopColor={colors.primary}
+                    stopOpacity="0"
+                  />
+                  <stop
+                    offset="30%"
+                    stopColor={colors.primary}
+                    stopOpacity="0.8"
+                  />
                   <stop offset="50%" stopColor="#ffffff" stopOpacity="1" />
-                  <stop offset="70%" stopColor={colors.primary} stopOpacity="0.8" />
-                  <stop offset="100%" stopColor={colors.primary} stopOpacity="0" />
+                  <stop
+                    offset="70%"
+                    stopColor={colors.primary}
+                    stopOpacity="0.8"
+                  />
+                  <stop
+                    offset="100%"
+                    stopColor={colors.primary}
+                    stopOpacity="0"
+                  />
                 </linearGradient>
-                
+
                 {/* Glow filter for laser */}
                 <filter id={`laserGlow-${type}`}>
-                  <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                  <feGaussianBlur stdDeviation="3" result="coloredBlur" />
                   <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
+                    <feMergeNode in="coloredBlur" />
+                    <feMergeNode in="SourceGraphic" />
                   </feMerge>
                 </filter>
               </motion.defs>
 
               {/* Primary laser beam */}
               <motion.rect
-                x={type === 'dni' ? '45' : '80'}
-                width={type === 'dni' ? '310' : '240'}
+                x={type === "dni" ? "45" : "80"}
+                width={type === "dni" ? "310" : "240"}
                 height="8"
                 fill={`url(#laserGradient-${type})`}
                 filter={`url(#laserGlow-${type})`}
                 initial={{ y: 35 }}
-                animate={{ 
+                animate={{
                   y: [35, 205, 35],
-                  opacity: [0.8, 1, 0.8]
+                  opacity: [0.8, 1, 0.8],
                 }}
-                transition={{ 
+                transition={{
                   duration: isHovered ? 1.5 : 3,
                   repeat: Infinity,
-                  ease: "linear"
+                  ease: "linear",
                 }}
               />
 
@@ -683,21 +808,21 @@ function IDCardIllustration({ type, isSelected }: { type: 'dni' | 'passport', is
                 {[...Array(5)].map((_, i) => (
                   <motion.line
                     key={i}
-                    x1={type === 'dni' ? '45' : '80'}
-                    x2={type === 'dni' ? '355' : '320'}
+                    x1={type === "dni" ? "45" : "80"}
+                    x2={type === "dni" ? "355" : "320"}
                     stroke={colors.primary}
                     strokeWidth="0.5"
                     opacity="0.4"
                     initial={{ y1: 35 + i * 40, y2: 35 + i * 40 }}
-                    animate={{ 
+                    animate={{
                       y1: [35 + i * 40, 205, 35 + i * 40],
-                      y2: [35 + i * 40, 205, 35 + i * 40]
+                      y2: [35 + i * 40, 205, 35 + i * 40],
                     }}
-                    transition={{ 
+                    transition={{
                       duration: isHovered ? 1.5 : 3,
                       repeat: Infinity,
                       ease: "linear",
-                      delay: i * 0.1
+                      delay: i * 0.1,
                     }}
                   />
                 ))}
@@ -709,30 +834,30 @@ function IDCardIllustration({ type, isSelected }: { type: 'dni' | 'passport', is
                   key={`particle-${i}`}
                   r="1.5"
                   fill={colors.primary}
-                  initial={{ 
-                    cx: 50 + (i * 15),
+                  initial={{
+                    cx: 50 + i * 15,
                     cy: 35,
-                    opacity: 0
+                    opacity: 0,
                   }}
-                  animate={{ 
+                  animate={{
                     cy: [35, 205],
-                    opacity: [0, 1, 1, 0]
+                    opacity: [0, 1, 1, 0],
                   }}
-                  transition={{ 
+                  transition={{
                     duration: isHovered ? 1.5 : 3,
                     repeat: Infinity,
                     ease: "linear",
-                    delay: i * 0.05
+                    delay: i * 0.05,
                   }}
                 />
               ))}
 
               {/* Corner scanning indicators */}
               {[
-                { x: type === 'dni' ? 45 : 80, y: 35 },
-                { x: type === 'dni' ? 355 : 320, y: 35 },
-                { x: type === 'dni' ? 45 : 80, y: 205 },
-                { x: type === 'dni' ? 355 : 320, y: 205 }
+                { x: type === "dni" ? 45 : 80, y: 35 },
+                { x: type === "dni" ? 355 : 320, y: 35 },
+                { x: type === "dni" ? 45 : 80, y: 205 },
+                { x: type === "dni" ? 355 : 320, y: 205 },
               ].map((corner, i) => (
                 <motion.g key={`corner-${i}`}>
                   <motion.circle
@@ -744,12 +869,12 @@ function IDCardIllustration({ type, isSelected }: { type: 'dni' | 'passport', is
                     strokeWidth="2"
                     animate={{
                       r: [4, 8, 4],
-                      opacity: [1, 0.3, 1]
+                      opacity: [1, 0.3, 1],
                     }}
                     transition={{
                       duration: 1,
                       repeat: Infinity,
-                      delay: i * 0.2
+                      delay: i * 0.2,
                     }}
                   />
                   <circle
@@ -772,29 +897,30 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
   const [selectedType, setSelectedType] = useState<IDType>(null);
   const [frontFile, setFrontFile] = useState<File | null>(null);
   const [backFile, setBackFile] = useState<File | null>(null);
-  const [uploadStatus, setUploadStatus] = useState<UploadStatus>('idle');
+  const [uploadStatus, setUploadStatus] = useState<UploadStatus>("idle");
   const [extractedData, setExtractedData] = useState<any>(null);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
 
   const handleTypeSelect = (type: IDType) => {
     setSelectedType(type);
     setFrontFile(null);
     setBackFile(null);
     setExtractedData(null);
-    setUploadStatus('idle');
-    setError('');
+    setUploadStatus("idle");
+    setError("");
   };
 
-  const handleFileUpload = async (file: File, side: 'front' | 'back') => {
-    if (side === 'front') {
+  const handleFileUpload = async (file: File, side: "front" | "back") => {
+    if (side === "front") {
       setFrontFile(file);
     } else {
       setBackFile(file);
     }
 
     // Check if we have all required files
-    const hasFront = side === 'front' ? file : frontFile;
-    const hasBack = selectedType === 'dni' ? (side === 'back' ? file : backFile) : true;
+    const hasFront = side === "front" ? file : frontFile;
+    const hasBack =
+      selectedType === "dni" ? (side === "back" ? file : backFile) : true;
 
     if (hasFront && hasBack) {
       await processOCR();
@@ -802,29 +928,31 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
   };
 
   const processOCR = async () => {
-    setUploadStatus('processing');
-    setError('');
+    setUploadStatus("processing");
+    setError("");
 
     // Simulate OCR processing
-    await new Promise(resolve => setTimeout(resolve, 2500));
+    await new Promise((resolve) => setTimeout(resolve, 2500));
 
     // Simulate random success/error
     const success = Math.random() > 0.1; // 90% success rate
 
     if (success) {
       const mockData = {
-        firstName: 'MARÍA',
-        lastName: 'GARCÍA',
-        secondLastName: 'LÓPEZ',
-        idNumber: selectedType === 'dni' ? '51503381X' : 'AAA123456',
-        dateOfBirth: '1990-05-15',
-        nationality: selectedType === 'dni' ? 'ESP' : 'FRA'
+        firstName: "MARÍA",
+        lastName: "GARCÍA",
+        secondLastName: "LÓPEZ",
+        idNumber: selectedType === "dni" ? "51503381X" : "AAA123456",
+        dateOfBirth: "1990-05-15",
+        nationality: selectedType === "dni" ? "ESP" : "FRA",
       };
       setExtractedData(mockData);
-      setUploadStatus('success');
+      setUploadStatus("success");
     } else {
-      setError('Failed to extract data. Please ensure the image is clear and try again.');
-      setUploadStatus('error');
+      setError(
+        "Failed to extract data. Please ensure the image is clear and try again.",
+      );
+      setUploadStatus("error");
     }
   };
 
@@ -832,19 +960,19 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
     setFrontFile(null);
     setBackFile(null);
     setExtractedData(null);
-    setUploadStatus('idle');
-    setError('');
+    setUploadStatus("idle");
+    setError("");
   };
 
-  const handleRemoveFile = (side: 'front' | 'back') => {
-    if (side === 'front') {
+  const handleRemoveFile = (side: "front" | "back") => {
+    if (side === "front") {
       setFrontFile(null);
     } else {
       setBackFile(null);
     }
     setExtractedData(null);
-    setUploadStatus('idle');
-    setError('');
+    setUploadStatus("idle");
+    setError("");
   };
 
   const handleContinue = () => {
@@ -894,27 +1022,27 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
               {/* Progress fill with doodle effect */}
               <motion.div
                 initial={{ width: 0 }}
-                animate={{ width: '28.57%' }} // 2/7 = 28.57%
+                animate={{ width: "28.57%" }} // 2/7 = 28.57%
                 transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
                 className="h-full bg-gradient-to-r from-[#00AB39] to-[#66BB6A] relative"
                 style={{
-                  borderRadius: '255px 15px 225px 15px/15px 225px 15px 255px',
+                  borderRadius: "255px 15px 225px 15px/15px 225px 15px 255px",
                 }}
               >
                 {/* Animated shimmer */}
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30"
                   animate={{
-                    x: ['-100%', '200%']
+                    x: ["-100%", "200%"],
                   }}
                   transition={{
                     duration: 2,
                     repeat: Infinity,
-                    ease: "linear"
+                    ease: "linear",
                   }}
                 />
               </motion.div>
-              
+
               {/* Hand-drawn border */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none">
                 <rect
@@ -931,11 +1059,13 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                 />
               </svg>
             </div>
-            
+
             {/* Progress text */}
             <div className="flex items-center justify-between mt-2 text-xs sm:text-sm">
               <span className="text-gray-600 hand-drawn">Step 2 of 7</span>
-              <span className="text-[#00AB39] sketch-title font-semibold">29% Complete</span>
+              <span className="text-[#00AB39] sketch-title font-semibold">
+                29% Complete
+              </span>
             </div>
           </motion.div>
         </div>
@@ -955,12 +1085,12 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
           >
             ← Back to Dates
           </WiredButton>
-          
+
           <WiredButton
             variant="primary"
             size="lg"
             onClick={handleContinue}
-            disabled={!extractedData || uploadStatus !== 'success'}
+            disabled={!extractedData || uploadStatus !== "success"}
             className="w-full sm:w-auto sm:ml-auto"
           >
             Continue to Your Info →
@@ -976,15 +1106,15 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                 key="selection"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ 
-                  opacity: 0, 
-                  x: -200, 
+                exit={{
+                  opacity: 0,
+                  x: -200,
                   scale: 0.8,
-                  rotateY: -15
+                  rotateY: -15,
                 }}
                 transition={{ duration: 0.5, ease: [0.43, 0.13, 0.23, 0.96] }}
                 className="absolute inset-0 grid grid-cols-1 md:grid-cols-2 gap-8"
-                style={{ transformStyle: 'preserve-3d' }}
+                style={{ transformStyle: "preserve-3d" }}
               >
                 {/* DNI Option */}
                 <motion.div
@@ -994,29 +1124,30 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                   transition={{ delay: 0.1 }}
                 >
                   <motion.button
-                    whileHover={{ 
-                      scale: 1.03, 
+                    whileHover={{
+                      scale: 1.03,
                       y: -8,
                       rotateY: 5,
-                      rotateX: 5
+                      rotateX: 5,
                     }}
                     whileTap={{ scale: 0.97 }}
-                    onClick={() => handleTypeSelect('dni')}
+                    onClick={() => handleTypeSelect("dni")}
                     className="relative text-left w-full"
-                    style={{ 
-                      transformStyle: 'preserve-3d',
-                      perspective: '1000px'
+                    style={{
+                      transformStyle: "preserve-3d",
+                      perspective: "1000px",
                     }}
                   >
                     {/* Ripple effect when selected */}
-                    {selectedType === 'dni' && <RippleEffect color="#00AB39" />}
-                    
+                    {selectedType === "dni" && <RippleEffect color="#00AB39" />}
+
                     <svg
                       className="absolute inset-0 w-full h-full pointer-events-none"
-                      style={{ 
-                        filter: selectedType === 'dni' 
-                          ? 'drop-shadow(0 20px 40px rgba(0, 171, 57, 0.3))' 
-                          : 'drop-shadow(3px 4px 6px rgba(0,0,0,0.1))'
+                      style={{
+                        filter:
+                          selectedType === "dni"
+                            ? "drop-shadow(0 20px 40px rgba(0, 171, 57, 0.3))"
+                            : "drop-shadow(3px 4px 6px rgba(0,0,0,0.1))",
                       }}
                     >
                       <rect
@@ -1024,12 +1155,12 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                         y="4"
                         width="calc(100% - 8px)"
                         height="calc(100% - 8px)"
-                        fill={selectedType === 'dni' ? '#E8F5E9' : 'white'}
-                        stroke={selectedType === 'dni' ? '#00AB39' : '#D4A574'}
-                        strokeWidth={selectedType === 'dni' ? '4' : '3'}
+                        fill={selectedType === "dni" ? "#E8F5E9" : "white"}
+                        stroke={selectedType === "dni" ? "#00AB39" : "#D4A574"}
+                        strokeWidth={selectedType === "dni" ? "4" : "3"}
                         rx="24"
                       />
-                      {selectedType === 'dni' && (
+                      {selectedType === "dni" && (
                         <>
                           <rect
                             x="8"
@@ -1057,16 +1188,23 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                       )}
                     </svg>
 
-                    <motion.div 
+                    <motion.div
                       className="relative z-10 p-4 sm:p-6 md:p-8"
-                      animate={selectedType === 'dni' ? {
-                        scale: [1, 1.02, 1],
-                      } : {}}
+                      animate={
+                        selectedType === "dni"
+                          ? {
+                              scale: [1, 1.02, 1],
+                            }
+                          : {}
+                      }
                       transition={{ duration: 1.5, repeat: Infinity }}
                     >
                       {/* 3D Card Illustration */}
-                      <IDCardIllustration type="dni" isSelected={selectedType === 'dni'} />
-                      
+                      <IDCardIllustration
+                        type="dni"
+                        isSelected={selectedType === "dni"}
+                      />
+
                       <div className="text-center mt-4 sm:mt-6">
                         <h3 className="text-xl sm:text-2xl sketch-title text-[#5D4E37] mb-2">
                           DNI / ID Card
@@ -1081,12 +1219,12 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                           </p>
                         </div>
                       </div>
-                      
-                      {selectedType === 'dni' && (
+
+                      {selectedType === "dni" && (
                         <motion.div
                           initial={{ scale: 0, rotate: -180 }}
                           animate={{ scale: 1, rotate: 0 }}
-                          transition={{ type: 'spring', stiffness: 200 }}
+                          transition={{ type: "spring", stiffness: 200 }}
                           className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center"
                         >
                           <DoodleCheckIcon className="w-12 h-12 text-[#00AB39]" />
@@ -1104,29 +1242,32 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                   transition={{ delay: 0.2 }}
                 >
                   <motion.button
-                    whileHover={{ 
-                      scale: 1.03, 
+                    whileHover={{
+                      scale: 1.03,
                       y: -8,
                       rotateY: -5,
-                      rotateX: 5
+                      rotateX: 5,
                     }}
                     whileTap={{ scale: 0.97 }}
-                    onClick={() => handleTypeSelect('passport')}
+                    onClick={() => handleTypeSelect("passport")}
                     className="relative text-left w-full"
-                    style={{ 
-                      transformStyle: 'preserve-3d',
-                      perspective: '1000px'
+                    style={{
+                      transformStyle: "preserve-3d",
+                      perspective: "1000px",
                     }}
                   >
                     {/* Ripple effect when selected */}
-                    {selectedType === 'passport' && <RippleEffect color="#0071BC" />}
-                    
+                    {selectedType === "passport" && (
+                      <RippleEffect color="#0071BC" />
+                    )}
+
                     <svg
                       className="absolute inset-0 w-full h-full pointer-events-none"
-                      style={{ 
-                        filter: selectedType === 'passport' 
-                          ? 'drop-shadow(0 20px 40px rgba(0, 113, 188, 0.3))' 
-                          : 'drop-shadow(3px 4px 6px rgba(0,0,0,0.1))'
+                      style={{
+                        filter:
+                          selectedType === "passport"
+                            ? "drop-shadow(0 20px 40px rgba(0, 113, 188, 0.3))"
+                            : "drop-shadow(3px 4px 6px rgba(0,0,0,0.1))",
                       }}
                     >
                       <rect
@@ -1134,12 +1275,14 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                         y="4"
                         width="calc(100% - 8px)"
                         height="calc(100% - 8px)"
-                        fill={selectedType === 'passport' ? '#E3F2FD' : 'white'}
-                        stroke={selectedType === 'passport' ? '#0071BC' : '#D4A574'}
-                        strokeWidth={selectedType === 'passport' ? '4' : '3'}
+                        fill={selectedType === "passport" ? "#E3F2FD" : "white"}
+                        stroke={
+                          selectedType === "passport" ? "#0071BC" : "#D4A574"
+                        }
+                        strokeWidth={selectedType === "passport" ? "4" : "3"}
                         rx="24"
                       />
-                      {selectedType === 'passport' && (
+                      {selectedType === "passport" && (
                         <>
                           <rect
                             x="8"
@@ -1167,16 +1310,23 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                       )}
                     </svg>
 
-                    <motion.div 
+                    <motion.div
                       className="relative z-10 p-4 sm:p-6 md:p-8"
-                      animate={selectedType === 'passport' ? {
-                        scale: [1, 1.02, 1],
-                      } : {}}
+                      animate={
+                        selectedType === "passport"
+                          ? {
+                              scale: [1, 1.02, 1],
+                            }
+                          : {}
+                      }
                       transition={{ duration: 1.5, repeat: Infinity }}
                     >
                       {/* 3D Card Illustration */}
-                      <IDCardIllustration type="passport" isSelected={selectedType === 'passport'} />
-                      
+                      <IDCardIllustration
+                        type="passport"
+                        isSelected={selectedType === "passport"}
+                      />
+
                       <div className="text-center mt-4 sm:mt-6">
                         <h3 className="text-xl sm:text-2xl sketch-title text-[#5D4E37] mb-2">
                           Passport
@@ -1191,12 +1341,12 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                           </p>
                         </div>
                       </div>
-                      
-                      {selectedType === 'passport' && (
+
+                      {selectedType === "passport" && (
                         <motion.div
                           initial={{ scale: 0, rotate: -180 }}
                           animate={{ scale: 1, rotate: 0 }}
-                          transition={{ type: 'spring', stiffness: 200 }}
+                          transition={{ type: "spring", stiffness: 200 }}
                           className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center"
                         >
                           <DoodleCheckIcon className="w-12 h-12 text-[#0071BC]" />
@@ -1219,11 +1369,11 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                 exit={{ opacity: 0, x: 200, scale: 0.8, rotateY: 15 }}
                 transition={{ duration: 0.5, ease: [0.43, 0.13, 0.23, 0.96] }}
                 className="absolute inset-0"
-                style={{ transformStyle: 'preserve-3d' }}
+                style={{ transformStyle: "preserve-3d" }}
               >
                 <svg
                   className="absolute inset-0 w-full h-full pointer-events-none"
-                  style={{ filter: 'drop-shadow(3px 4px 6px rgba(0,0,0,0.1))' }}
+                  style={{ filter: "drop-shadow(3px 4px 6px rgba(0,0,0,0.1))" }}
                 >
                   <rect
                     x="4"
@@ -1231,7 +1381,7 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                     width="calc(100% - 8px)"
                     height="calc(100% - 8px)"
                     fill="white"
-                    stroke={selectedType === 'dni' ? '#00AB39' : '#0071BC'}
+                    stroke={selectedType === "dni" ? "#00AB39" : "#0071BC"}
                     strokeWidth="3.5"
                     rx="24"
                   />
@@ -1241,9 +1391,10 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                   {/* Header with Cancel Button */}
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-2xl sketch-title text-[#5D4E37]">
-                      Upload {selectedType === 'dni' ? 'DNI' : 'Passport'} Photo{selectedType === 'dni' ? 's' : ''}
+                      Upload {selectedType === "dni" ? "DNI" : "Passport"} Photo
+                      {selectedType === "dni" ? "s" : ""}
                     </h3>
-                    
+
                     {/* Cancel Button */}
                     <motion.button
                       whileHover={{ scale: 1.1, rotate: 90 }}
@@ -1256,26 +1407,36 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                     </motion.button>
                   </div>
 
-                  <div className={`grid ${selectedType === 'dni' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'} gap-6`}>
+                  <div
+                    className={`grid ${selectedType === "dni" ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"} gap-6`}
+                  >
                     {/* Front / Main Upload */}
                     <FileUploadBox
-                      label={selectedType === 'dni' ? 'Front Side' : 'Photo Page'}
+                      label={
+                        selectedType === "dni" ? "Front Side" : "Photo Page"
+                      }
                       file={frontFile}
-                      onUpload={(file) => handleFileUpload(file, 'front')}
-                      onRemove={() => handleRemoveFile('front')}
-                      color={selectedType === 'dni' ? '#00AB39' : '#0071BC'}
-                      isProcessing={uploadStatus === 'processing' || uploadStatus === 'uploading'}
+                      onUpload={(file) => handleFileUpload(file, "front")}
+                      onRemove={() => handleRemoveFile("front")}
+                      color={selectedType === "dni" ? "#00AB39" : "#0071BC"}
+                      isProcessing={
+                        uploadStatus === "processing" ||
+                        uploadStatus === "uploading"
+                      }
                     />
 
                     {/* Back Upload - DNI only */}
-                    {selectedType === 'dni' && (
+                    {selectedType === "dni" && (
                       <FileUploadBox
                         label="Back Side"
                         file={backFile}
-                        onUpload={(file) => handleFileUpload(file, 'back')}
-                        onRemove={() => handleRemoveFile('back')}
+                        onUpload={(file) => handleFileUpload(file, "back")}
+                        onRemove={() => handleRemoveFile("back")}
                         color="#00AB39"
-                        isProcessing={uploadStatus === 'processing' || uploadStatus === 'uploading'}
+                        isProcessing={
+                          uploadStatus === "processing" ||
+                          uploadStatus === "uploading"
+                        }
                         disabled={!frontFile}
                       />
                     )}
@@ -1283,7 +1444,7 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
 
                   {/* Processing Status */}
                   <AnimatePresence>
-                    {uploadStatus === 'processing' && (
+                    {uploadStatus === "processing" && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -1300,7 +1461,7 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                       </motion.div>
                     )}
 
-                    {uploadStatus === 'success' && extractedData && (
+                    {uploadStatus === "success" && extractedData && (
                       <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -1309,7 +1470,9 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                       >
                         <div className="flex items-center gap-3 mb-4">
                           <DoodleCheckIcon className="w-6 h-6 text-[#00AB39]" />
-                          <h4 className="text-lg sketch-title text-[#00AB39]">Data Extracted Successfully!</h4>
+                          <h4 className="text-lg sketch-title text-[#00AB39]">
+                            Data Extracted Successfully!
+                          </h4>
                         </div>
                         <div className="grid grid-cols-2 gap-4 text-sm">
                           <div>
@@ -1320,21 +1483,27 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                           </div>
                           <div>
                             <p className="text-gray-600">ID Number:</p>
-                            <p className="font-medium text-[#5D4E37] hand-drawn">{extractedData.idNumber}</p>
+                            <p className="font-medium text-[#5D4E37] hand-drawn">
+                              {extractedData.idNumber}
+                            </p>
                           </div>
                           <div>
                             <p className="text-gray-600">Date of Birth:</p>
-                            <p className="font-medium text-[#5D4E37] hand-drawn">{extractedData.dateOfBirth}</p>
+                            <p className="font-medium text-[#5D4E37] hand-drawn">
+                              {extractedData.dateOfBirth}
+                            </p>
                           </div>
                           <div>
                             <p className="text-gray-600">Nationality:</p>
-                            <p className="font-medium text-[#5D4E37] hand-drawn">{extractedData.nationality}</p>
+                            <p className="font-medium text-[#5D4E37] hand-drawn">
+                              {extractedData.nationality}
+                            </p>
                           </div>
                         </div>
                       </motion.div>
                     )}
 
-                    {uploadStatus === 'error' && (
+                    {uploadStatus === "error" && (
                       <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -1344,8 +1513,12 @@ export function IDUploadStep({ onNext, onBack }: IDUploadStepProps) {
                         <div className="flex items-start gap-3">
                           <DoodleAlertIcon className="w-6 h-6 text-[#ED1C24] flex-shrink-0 mt-1" />
                           <div className="flex-1">
-                            <h4 className="text-lg sketch-title text-[#ED1C24] mb-2">Processing Failed</h4>
-                            <p className="text-sm text-gray-700 hand-drawn mb-4">{error}</p>
+                            <h4 className="text-lg sketch-title text-[#ED1C24] mb-2">
+                              Processing Failed
+                            </h4>
+                            <p className="text-sm text-gray-700 hand-drawn mb-4">
+                              {error}
+                            </p>
                             <button
                               onClick={handleRetry}
                               className="px-4 py-2 doodle-border bg-white hover:bg-gray-50 text-sm sketch-title"
@@ -1378,7 +1551,15 @@ interface FileUploadBoxProps {
   disabled?: boolean;
 }
 
-function FileUploadBox({ label, file, onUpload, onRemove, color, isProcessing, disabled }: FileUploadBoxProps) {
+function FileUploadBox({
+  label,
+  file,
+  onUpload,
+  onRemove,
+  color,
+  isProcessing,
+  disabled,
+}: FileUploadBoxProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
@@ -1387,21 +1568,23 @@ function FileUploadBox({ label, file, onUpload, onRemove, color, isProcessing, d
   };
 
   return (
-    <div className={`relative ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+    <div
+      className={`relative ${disabled ? "opacity-50 pointer-events-none" : ""}`}
+    >
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
-        style={{ filter: 'drop-shadow(2px 3px 4px rgba(0,0,0,0.08))' }}
+        style={{ filter: "drop-shadow(2px 3px 4px rgba(0,0,0,0.08))" }}
       >
         <rect
           x="3"
           y="3"
           width="calc(100% - 6px)"
           height="calc(100% - 6px)"
-          fill={file ? '#F5F5F5' : '#FFF9F0'}
+          fill={file ? "#F5F5F5" : "#FFF9F0"}
           stroke={color}
           strokeWidth="2.5"
           rx="16"
-          strokeDasharray={file ? '0' : '6, 6'}
+          strokeDasharray={file ? "0" : "6, 6"}
         />
       </svg>
 
@@ -1420,18 +1603,30 @@ function FileUploadBox({ label, file, onUpload, onRemove, color, isProcessing, d
               disabled={isProcessing || disabled}
             />
             <div className="flex flex-col items-center py-8 hover:bg-gray-50 transition-colors rounded-lg">
-              <DoodleUploadIcon className="w-12 h-12 text-gray-400 mb-3" style={{ color }} />
+              <DoodleUploadIcon
+                className="w-12 h-12 text-gray-400 mb-3"
+                style={{ color }}
+              />
               <p className="text-sm text-gray-600 text-center hand-drawn">
-                Click to upload<br />or drag and drop
+                Click to upload
+                <br />
+                or drag and drop
               </p>
               <p className="text-xs text-gray-500 mt-2">PNG, JPG up to 10MB</p>
             </div>
           </label>
         ) : (
-          <div className="flex items-center justify-between bg-white p-4 rounded-lg border-2 border-dashed" style={{ borderColor: color }}>
+          <div
+            className="flex items-center justify-between bg-white p-4 rounded-lg border-2 border-dashed"
+            style={{ borderColor: color }}
+          >
             <div className="flex items-center gap-3 flex-1 min-w-0">
               {/* Doodle checkmark icon */}
-              <svg viewBox="0 0 24 24" className="w-6 h-6 flex-shrink-0" fill="none">
+              <svg
+                viewBox="0 0 24 24"
+                className="w-6 h-6 flex-shrink-0"
+                fill="none"
+              >
                 <motion.path
                   d="M 5 13 Q 7 15 9 16 Q 11 14 18 6"
                   stroke={color}

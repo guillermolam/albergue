@@ -42,11 +42,11 @@ export async function createBed(input: InsertBed): Promise<Bed> {
       updatedAt: new Date(),
     })
     .returning();
-  
+
   if (!result) {
     throw new Error('Failed to create bed');
   }
-  
+
   return result;
 }
 
@@ -71,7 +71,7 @@ export async function createBedsBatch(inputs: InsertBed[]): Promise<Bed[]> {
       }))
     )
     .returning();
-  
+
   return results;
 }
 
@@ -84,11 +84,11 @@ export async function updateBed(id: number, input: UpdateBedInput): Promise<Bed 
     .from(beds)
     .where(eq(beds.id, id))
     .limit(1);
-  
+
   if (!existing) {
     return null;
   }
-  
+
   const [result] = await db
     .update(beds)
     .set({
@@ -118,7 +118,7 @@ export async function updateBedAvailability(
     })
     .where(eq(beds.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -141,7 +141,7 @@ export async function reserveBed(
     })
     .where(and(eq(beds.id, id), eq(beds.isAvailable, true)))
     .returning();
-  
+
   return !!result;
 }
 
@@ -160,7 +160,7 @@ export async function releaseBed(id: number): Promise<boolean> {
     })
     .where(eq(beds.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -183,7 +183,7 @@ export async function updateBedMaintenance(
     })
     .where(eq(beds.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -204,7 +204,7 @@ export async function updateBedPricing(
     })
     .where(eq(beds.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -224,7 +224,7 @@ export async function softDeleteBed(id: number): Promise<boolean> {
     })
     .where(eq(beds.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -237,7 +237,7 @@ export async function deleteBed(id: number): Promise<boolean> {
     .delete(beds)
     .where(eq(beds.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -257,7 +257,7 @@ export async function bulkUpdateBeds(
     })
     .where(inArray(beds.id, ids))
     .returning();
-  
+
   return results.length;
 }
 
@@ -266,7 +266,7 @@ export async function bulkUpdateBeds(
  */
 export async function cleanupExpiredReservations(): Promise<number> {
   const now = new Date();
-  
+
   const results = await db
     .update(beds)
     .set({
@@ -286,6 +286,6 @@ export async function cleanupExpiredReservations(): Promise<number> {
       )
     )
     .returning();
-  
+
   return results.length;
 }

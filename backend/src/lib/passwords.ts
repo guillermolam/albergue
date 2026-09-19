@@ -3,7 +3,7 @@
  * Stored format: scrypt$N$r$p$saltB64$hashB64
  */
 
-import { randomBytes, scrypt, timingSafeEqual } from 'node:crypto';
+import { randomBytes, scrypt, timingSafeEqual } from "node:crypto";
 
 const N = 16384;
 const R = 8;
@@ -21,11 +21,11 @@ function scryptAsync(
   password: string,
   salt: Buffer,
   keylen: number,
-  options: ScryptOptions
+  options: ScryptOptions,
 ): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     scrypt(password, salt, keylen, options, (err, derivedKey) =>
-      err ? reject(err) : resolve(derivedKey)
+      err ? reject(err) : resolve(derivedKey),
     );
   });
 }
@@ -33,16 +33,19 @@ function scryptAsync(
 export async function hashPassword(password: string): Promise<string> {
   const salt = randomBytes(16);
   const hash = await scryptAsync(password, salt, KEYLEN, { N, r: R, p: P });
-  return `scrypt$${N}$${R}$${P}$${salt.toString('base64')}$${hash.toString('base64')}`;
+  return `scrypt$${N}$${R}$${P}$${salt.toString("base64")}$${hash.toString("base64")}`;
 }
 
-export async function verifyPassword(password: string, stored: string): Promise<boolean> {
-  const parts = stored.split('$');
-  if (parts.length !== 6 || parts[0] !== 'scrypt') return false;
+export async function verifyPassword(
+  password: string,
+  stored: string,
+): Promise<boolean> {
+  const parts = stored.split("$");
+  if (parts.length !== 6 || parts[0] !== "scrypt") return false;
 
   const [, nStr, rStr, pStr, saltB64, hashB64] = parts;
-  const salt = Buffer.from(saltB64, 'base64');
-  const expected = Buffer.from(hashB64, 'base64');
+  const salt = Buffer.from(saltB64, "base64");
+  const expected = Buffer.from(hashB64, "base64");
 
   const hash = await scryptAsync(password, salt, expected.length, {
     N: Number(nStr),
@@ -62,10 +65,10 @@ let dummyHash: string | null = null;
  */
 export async function verifyPasswordOrDummy(
   password: string,
-  stored: string | null
+  stored: string | null,
 ): Promise<boolean> {
   if (stored !== null) return verifyPassword(password, stored);
-  dummyHash ??= await hashPassword('timing-equalization-dummy');
+  dummyHash ??= await hashPassword("timing-equalization-dummy");
   await verifyPassword(password, dummyHash);
   return false;
 }

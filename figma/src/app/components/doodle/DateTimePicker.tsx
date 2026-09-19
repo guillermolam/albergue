@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Calendar, Clock } from 'lucide-react';
-import { HandDrawnCalendar } from './HandDrawnCalendar';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Calendar, Clock } from "lucide-react";
+import { HandDrawnCalendar } from "./HandDrawnCalendar";
 
 interface DateTimePickerProps {
   value?: Date;
@@ -11,20 +11,20 @@ interface DateTimePickerProps {
   required?: boolean;
 }
 
-export function DateTimePicker({ 
-  value, 
-  onChange, 
+export function DateTimePicker({
+  value,
+  onChange,
   label = "Select Date & Time",
   minDate,
-  required = false 
+  required = false,
 }: DateTimePickerProps) {
-  const [selectedDate, setSelectedDate] = useState<string>('');
-  const [selectedTime, setSelectedTime] = useState<string>('');
-  const [focused, setFocused] = useState<'date' | 'time' | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedTime, setSelectedTime] = useState<string>("");
+  const [focused, setFocused] = useState<"date" | "time" | null>(null);
 
   useEffect(() => {
     if (value) {
-      const dateStr = value.toISOString().split('T')[0];
+      const dateStr = value.toISOString().split("T")[0];
       const timeStr = value.toTimeString().slice(0, 5);
       setSelectedDate(dateStr);
       setSelectedTime(timeStr);
@@ -34,7 +34,7 @@ export function DateTimePicker({
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
     setSelectedDate(newDate);
-    
+
     if (newDate && selectedTime) {
       const dateTime = new Date(`${newDate}T${selectedTime}`);
       onChange(dateTime);
@@ -44,7 +44,7 @@ export function DateTimePicker({
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = e.target.value;
     setSelectedTime(newTime);
-    
+
     if (selectedDate && newTime) {
       const dateTime = new Date(`${selectedDate}T${newTime}`);
       onChange(dateTime);
@@ -52,26 +52,26 @@ export function DateTimePicker({
   };
 
   const formatDisplayDate = () => {
-    if (!selectedDate) return '';
+    if (!selectedDate) return "";
     const date = new Date(selectedDate);
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'short',
-      month: 'short', 
-      day: 'numeric',
-      year: 'numeric' 
+    return date.toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
     });
   };
 
   const formatDisplayTime = () => {
-    if (!selectedTime) return '';
-    const [hours, minutes] = selectedTime.split(':');
+    if (!selectedTime) return "";
+    const [hours, minutes] = selectedTime.split(":");
     const hour = parseInt(hours);
-    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const ampm = hour >= 12 ? "PM" : "AM";
     const displayHour = hour % 12 || 12;
     return `${displayHour}:${minutes} ${ampm}`;
   };
 
-  const minDateStr = minDate?.toISOString().split('T')[0];
+  const minDateStr = minDate?.toISOString().split("T")[0];
 
   return (
     <div className="w-full">
@@ -86,7 +86,7 @@ export function DateTimePicker({
         <div className="relative">
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none"
-            style={{ filter: 'drop-shadow(2px 3px 4px rgba(0,0,0,0.08))' }}
+            style={{ filter: "drop-shadow(2px 3px 4px rgba(0,0,0,0.08))" }}
           >
             <rect
               x="3"
@@ -94,11 +94,11 @@ export function DateTimePicker({
               width="calc(100% - 6px)"
               height="calc(100% - 6px)"
               fill="#FFF9F0"
-              stroke={focused === 'date' ? '#00AB39' : '#D4A574'}
-              strokeWidth={focused === 'date' ? '3' : '2.5'}
+              stroke={focused === "date" ? "#00AB39" : "#D4A574"}
+              strokeWidth={focused === "date" ? "3" : "2.5"}
               rx="12"
             />
-            {focused === 'date' && (
+            {focused === "date" && (
               <rect
                 x="5"
                 y="5"
@@ -120,11 +120,11 @@ export function DateTimePicker({
               type="date"
               value={selectedDate}
               onChange={handleDateChange}
-              onFocus={() => setFocused('date')}
+              onFocus={() => setFocused("date")}
               onBlur={() => setFocused(null)}
               min={minDateStr}
               className="w-full pl-11 pr-3 py-3 bg-transparent focus:outline-none text-[#5D4E37] cursor-pointer"
-              style={{ fontFamily: 'Patrick Hand, cursive', fontSize: '16px' }}
+              style={{ fontFamily: "Patrick Hand, cursive", fontSize: "16px" }}
             />
           </div>
 
@@ -147,7 +147,7 @@ export function DateTimePicker({
         <div className="relative">
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none"
-            style={{ filter: 'drop-shadow(2px 3px 4px rgba(0,0,0,0.08))' }}
+            style={{ filter: "drop-shadow(2px 3px 4px rgba(0,0,0,0.08))" }}
           >
             <rect
               x="3"
@@ -155,11 +155,11 @@ export function DateTimePicker({
               width="calc(100% - 6px)"
               height="calc(100% - 6px)"
               fill="#FFF9F0"
-              stroke={focused === 'time' ? '#0071BC' : '#D4A574'}
-              strokeWidth={focused === 'time' ? '3' : '2.5'}
+              stroke={focused === "time" ? "#0071BC" : "#D4A574"}
+              strokeWidth={focused === "time" ? "3" : "2.5"}
               rx="12"
             />
-            {focused === 'time' && (
+            {focused === "time" && (
               <rect
                 x="5"
                 y="5"
@@ -181,10 +181,10 @@ export function DateTimePicker({
               type="time"
               value={selectedTime}
               onChange={handleTimeChange}
-              onFocus={() => setFocused('time')}
+              onFocus={() => setFocused("time")}
               onBlur={() => setFocused(null)}
               className="w-full pl-11 pr-3 py-3 bg-transparent focus:outline-none text-[#5D4E37] cursor-pointer"
-              style={{ fontFamily: 'Patrick Hand, cursive', fontSize: '16px' }}
+              style={{ fontFamily: "Patrick Hand, cursive", fontSize: "16px" }}
             />
           </div>
 
@@ -215,7 +215,7 @@ export function DateTimePicker({
           >
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none"
-              style={{ filter: 'drop-shadow(2px 3px 4px rgba(0,0,0,0.08))' }}
+              style={{ filter: "drop-shadow(2px 3px 4px rgba(0,0,0,0.08))" }}
             >
               <rect
                 x="3"
@@ -230,7 +230,9 @@ export function DateTimePicker({
             </svg>
 
             <div className="relative z-10 p-4 text-center">
-              <p className="text-sm text-gray-600 mb-1">Estimated Time of Arrival</p>
+              <p className="text-sm text-gray-600 mb-1">
+                Estimated Time of Arrival
+              </p>
               <p className="text-lg font-medium text-[#00AB39] sketch-title">
                 {formatDisplayDate()} at {formatDisplayTime()}
               </p>

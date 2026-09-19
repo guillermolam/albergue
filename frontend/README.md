@@ -6,7 +6,7 @@ Astro SSR frontend with Solid.js islands and selectable deployment targets.
 
 - Astro (Vite-powered)
 - pnpm
-- Client-side progressive enhancement via Astro, Solid.js islands, RoughJS, and Nano Stores
+- Client-side progressive enhancement via Astro, UnoCSS, webcoreui, and Nano Stores
 
 ## Quick start
 

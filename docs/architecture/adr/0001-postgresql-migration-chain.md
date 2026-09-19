@@ -14,8 +14,8 @@ Files `001_init_schema.sql` through `005_seed_pricing.sql` are legacy,
 unjournaled SQL. They must not run in CI or production. They conflict with the
 current schema and include PostgreSQL-invalid inline `INDEX` declarations.
 `schemas/postgres.sql` is a reference snapshot, not an executable chain.
-The SeaORM migrations and `schemas/sqlite.sql` target SQLite/Turso and remain
-experimental pending ADR-RUST.
+SQLite/Turso migration experiments are not part of the repository’s active
+migration path.
 
 ## Enforcement
 

@@ -29,7 +29,7 @@
 
 - Astro 7.3.2 (server output: `output: 'server'`)
 - @swup/astro (globalInstance: true, theme: 'fade')
-- RoughJS: Activated via `data-rough-frame` on canvas; alias in vite config
+- UI styling: UnoCSS utilities with webcoreui primitives and Vite integration
 - webcoreui: Integrated via `webcore()` integration
 - UnoCSS: Atomic CSS (configured via uno.config.ts)
 - Icons: astro-icon (configured in astro.config.shared.mjs)

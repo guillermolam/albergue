@@ -23,7 +23,6 @@
     "src/lib/healthchecks.ts",
     "src/lib/booking-draft.ts",
     "src/scripts/runtime.ts",
-    "src/scripts/runtime_rough.ts",
     "src/scripts/runtime_stores_bridge.ts"
   ],
   "exclude": ["node_modules", "dist"]

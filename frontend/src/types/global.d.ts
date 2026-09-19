@@ -9,8 +9,6 @@ declare module '*.astro' {
   export default Component;
 }
 
-declare module 'roughjs/bundled/rough.esm.js';
-
 // Astro-specific types
 interface ImportMetaEnv {
   readonly MODE: string;

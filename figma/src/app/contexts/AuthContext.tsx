@@ -1,11 +1,17 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 
 interface User {
   id: string;
   email: string;
   name: string;
   avatar?: string;
-  role: 'guest' | 'admin';
+  role: "guest" | "admin";
 }
 
 interface AuthContextType {
@@ -21,7 +27,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
     // Check localStorage for saved user session
-    const saved = localStorage.getItem('user');
+    const saved = localStorage.getItem("user");
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -35,9 +41,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Save user to localStorage whenever it changes
   useEffect(() => {
     if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem("user", JSON.stringify(user));
     } else {
-      localStorage.removeItem('user');
+      localStorage.removeItem("user");
     }
   }, [user]);
 
@@ -50,14 +56,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const mockUser: User = {
             id: Math.random().toString(36).substr(2, 9),
             email,
-            name: email.split('@')[0],
-            avatar: `https://ui-avatars.com/api/?name=${email.split('@')[0]}&background=00AB39&color=fff`,
-            role: email.includes('admin') ? 'admin' : 'guest',
+            name: email.split("@")[0],
+            avatar: `https://ui-avatars.com/api/?name=${email.split("@")[0]}&background=00AB39&color=fff`,
+            role: email.includes("admin") ? "admin" : "guest",
           };
           setUser(mockUser);
           resolve();
         } else {
-          reject(new Error('Invalid credentials'));
+          reject(new Error("Invalid credentials"));
         }
       }, 800); // Simulate network delay
     });
@@ -87,7 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+    throw new Error("useAuth must be used within AuthProvider");
   }
   return context;
 }

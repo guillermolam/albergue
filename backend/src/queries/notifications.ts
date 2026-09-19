@@ -3,32 +3,30 @@
  * Read operations for notifications
  */
 
-import { db } from '../lib/db.js';
-import { notifications, bookings, pilgrims } from '@albergue/domain-model';
-import { eq, and, or, like, count, desc, asc, gte, lte } from 'drizzle-orm';
-import type { Notification } from '../types/index.js';
-import type { PaginatedResponse, PaginationParams } from '../types/index.js';
+import { db } from "../lib/db.js";
+import { notifications, bookings, pilgrims } from "@albergue/domain-model";
+import { eq, and, or, like, count, desc, asc, gte, lte } from "drizzle-orm";
+import type { Notification } from "../types/index.js";
+import type { PaginatedResponse, PaginationParams } from "../types/index.js";
 
 /**
  * Get all notifications with pagination
  */
 export async function getAllNotifications(
-  params: PaginationParams = {}
+  params: PaginationParams = {},
 ): Promise<PaginatedResponse<Notification>> {
   const {
     page = 1,
     pageSize = 20,
-    orderBy = 'createdAt',
-    orderDirection = 'desc',
+    orderBy = "createdAt",
+    orderDirection = "desc",
   } = params;
 
   const offset = (page - 1) * pageSize;
-  const orderFn = orderDirection === 'asc' ? asc : desc;
+  const orderFn = orderDirection === "asc" ? asc : desc;
 
   // Get total count
-  const [countResult] = await db
-    .select({ count: count() })
-    .from(notifications);
+  const [countResult] = await db.select({ count: count() }).from(notifications);
 
   const total = countResult?.count || 0;
 
@@ -37,8 +35,12 @@ export async function getAllNotifications(
     .select()
     .from(notifications)
     .orderBy(
-      orderFn(orderBy in notifications ? (notifications as any)[orderBy] : notifications.createdAt)
-      )
+      orderFn(
+        orderBy in notifications
+          ? (notifications as any)[orderBy]
+          : notifications.createdAt,
+      ),
+    )
     .limit(pageSize)
     .offset(offset);
 
@@ -56,65 +58,75 @@ export async function getAllNotifications(
 /**
  * Get notification by ID
  */
-export async function getNotificationById(id: number): Promise<Notification | null> {
+export async function getNotificationById(
+  id: number,
+): Promise<Notification | null> {
   const [result] = await db
     .select()
     .from(notifications)
     .where(eq(notifications.id, id))
     .limit(1);
-  
+
   return result || null;
 }
 
 /**
  * Get notifications by booking ID
  */
-export async function getNotificationsByBooking(bookingId: number): Promise<Notification[]> {
+export async function getNotificationsByBooking(
+  bookingId: number,
+): Promise<Notification[]> {
   const results = await db
     .select()
     .from(notifications)
     .where(eq(notifications.bookingId, bookingId))
     .orderBy(desc(notifications.createdAt));
-  
+
   return results;
 }
 
 /**
  * Get notifications by pilgrim ID
  */
-export async function getNotificationsByPilgrim(pilgrimId: number): Promise<Notification[]> {
+export async function getNotificationsByPilgrim(
+  pilgrimId: number,
+): Promise<Notification[]> {
   const results = await db
     .select()
     .from(notifications)
     .where(eq(notifications.pilgrimId, pilgrimId))
     .orderBy(desc(notifications.createdAt));
-  
+
   return results;
 }
 
 /**
  * Get notifications by channel
  */
-export async function getNotificationsByChannel(channel: string): Promise<Notification[]> {
+export async function getNotificationsByChannel(
+  channel: string,
+): Promise<Notification[]> {
   const results = await db
     .select()
     .from(notifications)
     .where(eq(notifications.channel, channel))
     .orderBy(desc(notifications.createdAt));
-  
+
   return results;
 }
 
 /**
  * Get notifications by status
  */
-export async function getNotificationsByStatus(status: string): Promise<Notification[]> {
+export async function getNotificationsByStatus(
+  status: string,
+): Promise<Notification[]> {
   const results = await db
     .select()
     .from(notifications)
     .where(eq(notifications.status, status))
     .orderBy(desc(notifications.createdAt));
-  
+
   return results;
 }
 
@@ -127,12 +139,12 @@ export async function getPendingNotifications(): Promise<Notification[]> {
     .from(notifications)
     .where(
       or(
-        eq(notifications.status, 'pending'),
-        eq(notifications.status, 'pending_retry')
-      )
+        eq(notifications.status, "pending"),
+        eq(notifications.status, "pending_retry"),
+      ),
     )
     .orderBy(asc(notifications.createdAt));
-  
+
   return results;
 }
 
@@ -143,9 +155,9 @@ export async function getFailedNotifications(): Promise<Notification[]> {
   const results = await db
     .select()
     .from(notifications)
-    .where(eq(notifications.status, 'failed'))
+    .where(eq(notifications.status, "failed"))
     .orderBy(desc(notifications.createdAt));
-  
+
   return results;
 }
 
@@ -156,9 +168,9 @@ export async function getSentNotifications(): Promise<Notification[]> {
   const results = await db
     .select()
     .from(notifications)
-    .where(eq(notifications.status, 'sent'))
+    .where(eq(notifications.status, "sent"))
     .orderBy(desc(notifications.sentAt));
-  
+
   return results;
 }
 
@@ -167,7 +179,7 @@ export async function getSentNotifications(): Promise<Notification[]> {
  */
 export async function getNotificationsByDateRange(
   startDate: Date,
-  endDate: Date
+  endDate: Date,
 ): Promise<Notification[]> {
   const results = await db
     .select()
@@ -177,11 +189,11 @@ export async function getNotificationsByDateRange(
         // @ts-ignore
         gte(notifications.createdAt, startDate),
         // @ts-ignore
-        lte(notifications.createdAt, endDate)
-      )
+        lte(notifications.createdAt, endDate),
+      ),
     )
     .orderBy(desc(notifications.createdAt));
-  
+
   return results;
 }
 
@@ -200,14 +212,17 @@ export async function getNotificationWithDetails(id: number) {
     .leftJoin(pilgrims, eq(notifications.pilgrimId, pilgrims.id))
     .where(eq(notifications.id, id))
     .limit(1);
-  
+
   return result || null;
 }
 
 /**
  * Search notifications
  */
-export async function searchNotifications(query: string, limit: number = 10): Promise<Notification[]> {
+export async function searchNotifications(
+  query: string,
+  limit: number = 10,
+): Promise<Notification[]> {
   const results = await db
     .select({
       notification: notifications,
@@ -227,47 +242,45 @@ export async function searchNotifications(query: string, limit: number = 10): Pr
         like(notifications.subject, `%${query}%`),
         like(notifications.message, `%${query}%`),
         like(notifications.recipient, `%${query}%`),
-        like(bookings.referenceNumber, `%${query}%`)
-      )
+        like(bookings.referenceNumber, `%${query}%`),
+      ),
     )
     .orderBy(desc(notifications.createdAt))
     .limit(limit);
-  
-  return results.map(r => r.notification);
+
+  return results.map((r) => r.notification);
 }
 
 /**
  * Get notification statistics
  */
 export async function getNotificationStats() {
-  const [total] = await db
-    .select({ count: count() })
-    .from(notifications);
+  const [total] = await db.select({ count: count() }).from(notifications);
 
   const [pending] = await db
     .select({ count: count() })
     .from(notifications)
     .where(
       or(
-        eq(notifications.status, 'pending'),
-        eq(notifications.status, 'pending_retry')
-      )
+        eq(notifications.status, "pending"),
+        eq(notifications.status, "pending_retry"),
+      ),
     );
 
   const [sent] = await db
     .select({ count: count() })
     .from(notifications)
-    .where(eq(notifications.status, 'sent'));
+    .where(eq(notifications.status, "sent"));
 
   const [delivered] = await db
     .select({ count: count() })
     .from(notifications)
-    .where(eq(notifications.status, 'delivered'));
+    .where(eq(notifications.status, "delivered"));
 
   const [failed] = await db
     .select({ count: count() })
     .from(notifications)
-    .where(eq(notifications.status, 'failed'));
+    .where(eq(notifications.status, "failed"));
 
   // By channel
   const byChannel = await db
@@ -294,10 +307,10 @@ export async function getNotificationStats() {
     deliveredCount: delivered?.count || 0,
     failedCount: failed?.count || 0,
     byChannel: Object.fromEntries(
-      byChannel.map(c => [c.channel || 'unknown', c.count || 0])
+      byChannel.map((c) => [c.channel || "unknown", c.count || 0]),
     ),
     byStatus: Object.fromEntries(
-      byStatus.map(s => [s.status || 'unknown', s.count || 0])
+      byStatus.map((s) => [s.status || "unknown", s.count || 0]),
     ),
   };
 }
@@ -305,33 +318,39 @@ export async function getNotificationStats() {
 /**
  * Get recent notifications
  */
-export async function getRecentNotifications(limit: number = 10): Promise<Notification[]> {
+export async function getRecentNotifications(
+  limit: number = 10,
+): Promise<Notification[]> {
   const results = await db
     .select()
     .from(notifications)
     .orderBy(desc(notifications.createdAt))
     .limit(limit);
-  
+
   return results;
 }
 
 /**
  * Get notifications by recipient
  */
-export async function getNotificationsByRecipient(recipient: string): Promise<Notification[]> {
+export async function getNotificationsByRecipient(
+  recipient: string,
+): Promise<Notification[]> {
   const results = await db
     .select()
     .from(notifications)
     .where(eq(notifications.recipient, recipient))
     .orderBy(desc(notifications.createdAt));
-  
+
   return results;
 }
 
 /**
  * Get unread notifications count for a pilgrim
  */
-export async function getUnreadNotificationsCount(pilgrimId: number): Promise<number> {
+export async function getUnreadNotificationsCount(
+  pilgrimId: number,
+): Promise<number> {
   const [result] = await db
     .select({ count: count() })
     .from(notifications)
@@ -339,12 +358,12 @@ export async function getUnreadNotificationsCount(pilgrimId: number): Promise<nu
       and(
         eq(notifications.pilgrimId, pilgrimId),
         or(
-          eq(notifications.status, 'pending'),
-          eq(notifications.status, 'sent'),
-          eq(notifications.status, 'delivered')
-        )
-      )
+          eq(notifications.status, "pending"),
+          eq(notifications.status, "sent"),
+          eq(notifications.status, "delivered"),
+        ),
+      ),
     );
-  
+
   return result?.count || 0;
 }

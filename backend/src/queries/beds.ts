@@ -3,23 +3,41 @@
  * Read operations for beds
  */
 
-import { db } from '../lib/db.js';
-import { beds, bookings } from '@albergue/domain-model';
-import { eq, and, or, like, count, desc, asc, gte, lte, gt, lt, isNull } from 'drizzle-orm';
-import type { Bed } from '../types/index.js';
-import type { PaginatedResponse, PaginationParams, BedFilter, BedStats } from '../types/index.js';
+import { db } from "../lib/db.js";
+import { beds, bookings } from "@albergue/domain-model";
+import {
+  eq,
+  and,
+  or,
+  like,
+  count,
+  desc,
+  asc,
+  gte,
+  lte,
+  gt,
+  lt,
+  isNull,
+} from "drizzle-orm";
+import type { Bed } from "../types/index.js";
+import type {
+  PaginatedResponse,
+  PaginationParams,
+  BedFilter,
+  BedStats,
+} from "../types/index.js";
 
 /**
  * Get all beds with pagination
  */
 export async function getAllBeds(
-  params: PaginationParams & BedFilter = {}
+  params: PaginationParams & BedFilter = {},
 ): Promise<PaginatedResponse<Bed>> {
   const {
     page = 1,
     pageSize = 20,
-    orderBy = 'roomNumber',
-    orderDirection = 'asc',
+    orderBy = "roomNumber",
+    orderDirection = "asc",
     roomType,
     roomNumber,
     isAvailable,
@@ -27,7 +45,7 @@ export async function getAllBeds(
   } = params;
 
   const offset = (page - 1) * pageSize;
-  const orderFn = orderDirection === 'asc' ? asc : desc;
+  const orderFn = orderDirection === "asc" ? asc : desc;
 
   // Build where conditions
   const whereConditions = [];
@@ -62,7 +80,7 @@ export async function getAllBeds(
     .from(beds)
     .where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
     .orderBy(
-      orderFn(orderBy in beds ? (beds as any)[orderBy] : beds.roomNumber)
+      orderFn(orderBy in beds ? (beds as any)[orderBy] : beds.roomNumber),
     )
     .limit(pageSize)
     .offset(offset);
@@ -82,11 +100,7 @@ export async function getAllBeds(
  * Get bed by ID
  */
 export async function getBedById(id: number): Promise<Bed | null> {
-  const [result] = await db
-    .select()
-    .from(beds)
-    .where(eq(beds.id, id))
-    .limit(1);
+  const [result] = await db.select().from(beds).where(eq(beds.id, id)).limit(1);
 
   return result || null;
 }
@@ -96,17 +110,12 @@ export async function getBedById(id: number): Promise<Bed | null> {
  */
 export async function getBedByRoomAndNumber(
   roomNumber: number,
-  bedNumber: number
+  bedNumber: number,
 ): Promise<Bed | null> {
   const [result] = await db
     .select()
     .from(beds)
-    .where(
-      and(
-        eq(beds.roomNumber, roomNumber),
-        eq(beds.bedNumber, bedNumber)
-      )
-    )
+    .where(and(eq(beds.roomNumber, roomNumber), eq(beds.bedNumber, bedNumber)))
     .limit(1);
 
   return result || null;
@@ -122,11 +131,8 @@ export async function getAvailableBeds(): Promise<Bed[]> {
     .where(
       and(
         eq(beds.isAvailable, true),
-        or(
-          eq(beds.status, 'available'),
-          eq(beds.status, 'cleaned')
-        )
-      )
+        or(eq(beds.status, "available"), eq(beds.status, "cleaned")),
+      ),
     )
     .orderBy(asc(beds.roomNumber));
 
@@ -143,11 +149,8 @@ export async function getOccupiedBeds(): Promise<Bed[]> {
     .where(
       and(
         eq(beds.isAvailable, false),
-        or(
-          eq(beds.status, 'reserved'),
-          eq(beds.status, 'occupied')
-        )
-      )
+        or(eq(beds.status, "reserved"), eq(beds.status, "occupied")),
+      ),
     )
     .orderBy(asc(beds.roomNumber));
 
@@ -161,7 +164,7 @@ export async function getBedsInMaintenance(): Promise<Bed[]> {
   const results = await db
     .select()
     .from(beds)
-    .where(eq(beds.status, 'maintenance'))
+    .where(eq(beds.status, "maintenance"))
     .orderBy(asc(beds.roomNumber));
 
   return results;
@@ -196,13 +199,14 @@ export async function getBedsByRoomNumber(roomNumber: number): Promise<Bed[]> {
 /**
  * Search beds by room name
  */
-export async function searchBeds(query: string, limit: number = 10): Promise<Bed[]> {
+export async function searchBeds(
+  query: string,
+  limit: number = 10,
+): Promise<Bed[]> {
   const results = await db
     .select()
     .from(beds)
-    .where(
-      like(beds.roomName, `%${query}%`)
-    )
+    .where(like(beds.roomName, `%${query}%`))
     .orderBy(asc(beds.roomNumber))
     .limit(limit);
 
@@ -213,9 +217,7 @@ export async function searchBeds(query: string, limit: number = 10): Promise<Bed
  * Get bed statistics
  */
 export async function getBedStats(): Promise<BedStats> {
-  const [total] = await db
-    .select({ count: count() })
-    .from(beds);
+  const [total] = await db.select({ count: count() }).from(beds);
 
   const [available] = await db
     .select({ count: count() })
@@ -223,11 +225,8 @@ export async function getBedStats(): Promise<BedStats> {
     .where(
       and(
         eq(beds.isAvailable, true),
-        or(
-          eq(beds.status, 'available'),
-          eq(beds.status, 'cleaned')
-        )
-      )
+        or(eq(beds.status, "available"), eq(beds.status, "cleaned")),
+      ),
     );
 
   const [occupied] = await db
@@ -236,11 +235,8 @@ export async function getBedStats(): Promise<BedStats> {
     .where(
       and(
         eq(beds.isAvailable, false),
-        or(
-          eq(beds.status, 'reserved'),
-          eq(beds.status, 'occupied')
-        )
-      )
+        or(eq(beds.status, "reserved"), eq(beds.status, "occupied")),
+      ),
     );
 
   const roomTypeStats = await db
@@ -250,11 +246,8 @@ export async function getBedStats(): Promise<BedStats> {
       available: count(
         and(
           eq(beds.isAvailable, true),
-          or(
-            eq(beds.status, 'available'),
-            eq(beds.status, 'cleaned')
-          )
-        )
+          or(eq(beds.status, "available"), eq(beds.status, "cleaned")),
+        ),
       ),
     })
     .from(beds)
@@ -265,13 +258,13 @@ export async function getBedStats(): Promise<BedStats> {
     availableBeds: available?.count || 0,
     occupiedBeds: occupied?.count || 0,
     byRoomType: Object.fromEntries(
-      roomTypeStats.map(s => [
-        s.roomType || 'unknown',
+      roomTypeStats.map((s) => [
+        s.roomType || "unknown",
         {
           total: s.total || 0,
           available: s.available || 0,
-        }
-      ])
+        },
+      ]),
     ),
   };
 }
@@ -299,7 +292,7 @@ export async function getBedsWithBookings(): Promise<Bed[]> {
     .innerJoin(bookings, eq(bookings.bedAssignmentId, beds.id))
     .groupBy(beds.id);
 
-  return results.map(r => r.bed);
+  return results.map((r) => r.bed);
 }
 
 /**
@@ -318,15 +311,15 @@ export async function getBedsAvailableOnDate(date: Date): Promise<Bed[]> {
       bookings,
       and(
         eq(bookings.bedAssignmentId, beds.id),
-        eq(bookings.status, 'reserved'),
+        eq(bookings.status, "reserved"),
         or(
           isNull(bookings.reservationExpiresAt),
-          gte(bookings.reservationExpiresAt, now)
+          gte(bookings.reservationExpiresAt, now),
         ),
         // Night of `dateStr` is occupied when checkIn <= dateStr <= checkOut
         lte(bookings.checkInDate, dateStr),
-        gte(bookings.checkOutDate, dateStr)
-      )
+        gte(bookings.checkOutDate, dateStr),
+      ),
     )
     // A joined row is an active overlapping reservation; no row means the bed
     // is free. (Joined rows always have bed_assignment_id = beds.id, so any
@@ -334,5 +327,5 @@ export async function getBedsAvailableOnDate(date: Date): Promise<Bed[]> {
     .where(isNull(bookings.id))
     .orderBy(asc(beds.roomNumber));
 
-  return results.map(r => r.bed);
+  return results.map((r) => r.bed);
 }

@@ -61,7 +61,7 @@ export const sharedConfig = {
     }),
     icon({
       include: {
-        logos: ['astro', 'unocss', 'threejs', 'roughjs', 'animejs'],
+        logos: ['astro', 'unocss', 'threejs', 'animejs'],
         uil: ['football', 'heart'],
         ph: ['footprints-duotone'],
       },
@@ -97,14 +97,7 @@ export const sharedConfig = {
         '@/styles': '/src/styles',
         '@/assets': '/src/assets',
         '@/public': '/public',
-        // Stable ESM entry — avoids stale Vite prebundle 404s for deep bundled path
-        'roughjs/bundled/rough.esm.js': fileURLToPath(
-          new URL('./node_modules/roughjs/bundled/rough.esm.js', import.meta.url)
-        ),
       },
-    },
-    optimizeDeps: {
-      include: ['roughjs', 'roughjs/bundled/rough.esm.js'],
     },
     css: {
       preprocessorOptions: {
@@ -114,7 +107,7 @@ export const sharedConfig = {
       },
     },
     ssr: {
-      noExternal: ['@unocss/vite', 'unocss', 'roughjs', 'webcoreui'],
+      noExternal: ['@unocss/vite', 'unocss', 'webcoreui'],
     },
     plugins: [
       unocss({

@@ -1,5 +1,5 @@
-import { motion, AnimatePresence } from 'motion/react';
-import { Calendar, Bed, Euro } from 'lucide-react';
+import { motion, AnimatePresence } from "motion/react";
+import { Calendar, Bed, Euro } from "lucide-react";
 
 interface PriceSummaryModalProps {
   checkInDate?: Date;
@@ -18,13 +18,19 @@ export function PriceSummaryModal({
   pricePerNight,
   selectedBed,
   isExpanded,
-  onClose
+  onClose,
 }: PriceSummaryModalProps) {
   const totalCost = nights * pricePerNight;
 
   // Determine dorm number and bunk position based on bed number
   const getBunkInfo = (bedNum?: number) => {
-    if (!bedNum) return { dormNumber: undefined, isBottom: undefined, position: undefined, bunkNumber: undefined };
+    if (!bedNum)
+      return {
+        dormNumber: undefined,
+        isBottom: undefined,
+        position: undefined,
+        bunkNumber: undefined,
+      };
     const dormNumber = bedNum <= 12 ? 1 : 2;
     const isBottom = bedNum % 2 === 1;
     const bunkNumber = Math.ceil(bedNum / 2);
@@ -32,8 +38,8 @@ export function PriceSummaryModal({
     return {
       dormNumber,
       isBottom,
-      position: isBottom ? 'Bottom' : 'Top',
-      bunkNumber: bunkNumberInDorm
+      position: isBottom ? "Bottom" : "Top",
+      bunkNumber: bunkNumberInDorm,
     };
   };
 
@@ -47,7 +53,7 @@ export function PriceSummaryModal({
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+          transition={{ type: "spring", stiffness: 200, damping: 25 }}
           className="fixed inset-0 z-100 flex items-center justify-center p-4"
         >
           {/* Backdrop */}
@@ -63,7 +69,7 @@ export function PriceSummaryModal({
           <div className="relative w-full max-w-2xl z-10">
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none"
-              style={{ filter: 'drop-shadow(4px 6px 12px rgba(0,0,0,0.2))' }}
+              style={{ filter: "drop-shadow(4px 6px 12px rgba(0,0,0,0.2))" }}
             >
               <rect
                 x="4"
@@ -81,7 +87,9 @@ export function PriceSummaryModal({
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <Euro className="w-8 h-8 text-[#00AB39]" />
-                  <h2 className="text-3xl sketch-title text-[#5D4E37]">Booking Summary</h2>
+                  <h2 className="text-3xl sketch-title text-[#5D4E37]">
+                    Booking Summary
+                  </h2>
                 </div>
               </div>
 
@@ -91,10 +99,19 @@ export function PriceSummaryModal({
                     <Calendar className="w-6 h-6 text-[#00AB39] flex-shrink-0" />
                     <div className="flex-1">
                       <p className="text-sm text-gray-600 mb-1">Stay Period</p>
-                      <p className="font-medium text-[#5D4E37]" style={{ fontFamily: 'Patrick Hand, cursive' }}>
-                        {checkInDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                        {' → '}
-                        {checkOutDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      <p
+                        className="font-medium text-[#5D4E37]"
+                        style={{ fontFamily: "Patrick Hand, cursive" }}
+                      >
+                        {checkInDate.toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })}
+                        {" → "}
+                        {checkOutDate.toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })}
                       </p>
                     </div>
                   </div>
@@ -105,8 +122,12 @@ export function PriceSummaryModal({
                     <Bed className="w-6 h-6 text-[#0071BC] flex-shrink-0" />
                     <div className="flex-1">
                       <p className="text-sm text-gray-600 mb-1">Selected Bed</p>
-                      <p className="font-medium text-[#5D4E37]" style={{ fontFamily: 'Patrick Hand, cursive' }}>
-                        Bed #{selectedBed} (Dorm {bunkInfo.dormNumber}, {bunkInfo.position} bunk {bunkInfo.bunkNumber})
+                      <p
+                        className="font-medium text-[#5D4E37]"
+                        style={{ fontFamily: "Patrick Hand, cursive" }}
+                      >
+                        Bed #{selectedBed} (Dorm {bunkInfo.dormNumber},{" "}
+                        {bunkInfo.position} bunk {bunkInfo.bunkNumber})
                       </p>
                     </div>
                   </div>
@@ -115,13 +136,21 @@ export function PriceSummaryModal({
                 <div className="pt-4 border-t-2 border-dashed border-gray-300">
                   <div className="space-y-3">
                     <div className="flex justify-between items-baseline">
-                      <span className="text-gray-600" style={{ fontFamily: 'Patrick Hand, cursive' }}>
-                        {nights} night{nights > 1 ? 's' : ''} × €{pricePerNight}
+                      <span
+                        className="text-gray-600"
+                        style={{ fontFamily: "Patrick Hand, cursive" }}
+                      >
+                        {nights} night{nights > 1 ? "s" : ""} × €{pricePerNight}
                       </span>
-                      <span className="font-medium text-[#5D4E37]">€{nights * pricePerNight}</span>
+                      <span className="font-medium text-[#5D4E37]">
+                        €{nights * pricePerNight}
+                      </span>
                     </div>
                     <div className="flex justify-between items-baseline">
-                      <span className="text-gray-600" style={{ fontFamily: 'Patrick Hand, cursive' }}>
+                      <span
+                        className="text-gray-600"
+                        style={{ fontFamily: "Patrick Hand, cursive" }}
+                      >
                         Service fee
                       </span>
                       <span className="font-medium text-[#5D4E37]">€0</span>
@@ -130,8 +159,12 @@ export function PriceSummaryModal({
 
                   <div className="mt-4 pt-4 border-t-2 border-[#00AB39]">
                     <div className="flex justify-between items-center">
-                      <span className="text-2xl sketch-title text-[#5D4E37]">Total</span>
-                      <span className="text-3xl sketch-title text-[#00AB39]">€{totalCost}</span>
+                      <span className="text-2xl sketch-title text-[#5D4E37]">
+                        Total
+                      </span>
+                      <span className="text-3xl sketch-title text-[#00AB39]">
+                        €{totalCost}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -158,14 +191,14 @@ export function PriceSummaryModal({
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: -100, opacity: 0 }}
-      transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+      transition={{ type: "spring", stiffness: 200, damping: 25 }}
       className="fixed top-2 lg:top-4 left-0 lg:left-80 right-0 z-40 px-4 lg:px-8"
     >
-      <div className="relative max-w-full mx-auto" style={{ height: '60px' }}>
+      <div className="relative max-w-full mx-auto" style={{ height: "60px" }}>
         {/* Hand-drawn border */}
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none"
-          style={{ filter: 'drop-shadow(2px 3px 6px rgba(0,0,0,0.12))' }}
+          style={{ filter: "drop-shadow(2px 3px 6px rgba(0,0,0,0.12))" }}
         >
           <rect
             x="3"
@@ -186,7 +219,10 @@ export function PriceSummaryModal({
             <div className="w-8 h-8 rounded-full bg-[#00AB39] flex items-center justify-center flex-shrink-0">
               <Euro className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-base font-medium text-gray-600 hidden sm:block" style={{ fontFamily: 'Patrick Hand, cursive' }}>
+            <h3
+              className="text-base font-medium text-gray-600 hidden sm:block"
+              style={{ fontFamily: "Patrick Hand, cursive" }}
+            >
               Booking Summary
             </h3>
           </div>
@@ -197,10 +233,19 @@ export function PriceSummaryModal({
             {checkInDate && checkOutDate && (
               <div className="flex items-center gap-2 flex-shrink-0">
                 <Calendar className="w-4 h-4 text-[#00AB39]" />
-                <span className="text-sm text-[#5D4E37] whitespace-nowrap" style={{ fontFamily: 'Patrick Hand, cursive' }}>
-                  {checkInDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                  {' → '}
-                  {checkOutDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                <span
+                  className="text-sm text-[#5D4E37] whitespace-nowrap"
+                  style={{ fontFamily: "Patrick Hand, cursive" }}
+                >
+                  {checkInDate.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })}
+                  {" → "}
+                  {checkOutDate.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })}
                 </span>
               </div>
             )}
@@ -213,8 +258,11 @@ export function PriceSummaryModal({
             {/* Nights */}
             {nights > 0 && (
               <div className="flex items-center gap-1.5 flex-shrink-0">
-                <span className="text-sm text-[#5D4E37] whitespace-nowrap" style={{ fontFamily: 'Patrick Hand, cursive' }}>
-                  🌙 {nights} night{nights > 1 ? 's' : ''}
+                <span
+                  className="text-sm text-[#5D4E37] whitespace-nowrap"
+                  style={{ fontFamily: "Patrick Hand, cursive" }}
+                >
+                  🌙 {nights} night{nights > 1 ? "s" : ""}
                 </span>
               </div>
             )}
@@ -226,50 +274,51 @@ export function PriceSummaryModal({
 
             {/* Bed */}
             {selectedBed && (
-              <motion.div 
+              <motion.div
                 className="flex items-center gap-2 flex-shrink-0 hidden lg:flex"
                 initial={{ scale: 0 }}
-                animate={{ 
+                animate={{
                   scale: 1,
-                  y: [0, -4, 0, -2, 0]
+                  y: [0, -4, 0, -2, 0],
                 }}
                 transition={{
-                  scale: { type: 'spring', stiffness: 300, damping: 15 },
+                  scale: { type: "spring", stiffness: 300, damping: 15 },
                   y: {
                     duration: 1.2,
                     repeat: Infinity,
                     repeatDelay: 0.5,
-                    ease: "easeInOut"
-                  }
+                    ease: "easeInOut",
+                  },
                 }}
               >
                 <motion.div
                   animate={{
-                    y: [0, -6, 0, -3, 0]
+                    y: [0, -6, 0, -3, 0],
                   }}
                   transition={{
                     duration: 1.2,
                     repeat: Infinity,
                     repeatDelay: 0.5,
-                    ease: "easeInOut"
+                    ease: "easeInOut",
                   }}
                 >
                   <Bed className="w-4 h-4 text-[#0071BC]" />
                 </motion.div>
-                <motion.span 
-                  className="text-sm text-[#5D4E37] whitespace-nowrap font-medium" 
-                  style={{ fontFamily: 'Patrick Hand, cursive' }}
+                <motion.span
+                  className="text-sm text-[#5D4E37] whitespace-nowrap font-medium"
+                  style={{ fontFamily: "Patrick Hand, cursive" }}
                   animate={{
-                    scale: [1, 1.05, 1, 1.03, 1]
+                    scale: [1, 1.05, 1, 1.03, 1],
                   }}
                   transition={{
                     duration: 1.2,
                     repeat: Infinity,
                     repeatDelay: 0.5,
-                    ease: "easeInOut"
+                    ease: "easeInOut",
                   }}
                 >
-                  Bed #{selectedBed} • Dorm {bunkInfo.dormNumber}, {bunkInfo.position} bunk {bunkInfo.bunkNumber}
+                  Bed #{selectedBed} • Dorm {bunkInfo.dormNumber},{" "}
+                  {bunkInfo.position} bunk {bunkInfo.bunkNumber}
                 </motion.span>
               </motion.div>
             )}
@@ -277,10 +326,16 @@ export function PriceSummaryModal({
 
           {/* Right: Total */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
-            <span className="text-xs text-gray-500 hidden md:inline" style={{ fontFamily: 'Patrick Hand, cursive' }}>
+            <span
+              className="text-xs text-gray-500 hidden md:inline"
+              style={{ fontFamily: "Patrick Hand, cursive" }}
+            >
               Total
             </span>
-            <span className="text-xl font-bold text-[#00AB39]" style={{ fontFamily: 'Patrick Hand, cursive' }}>
+            <span
+              className="text-xl font-bold text-[#00AB39]"
+              style={{ fontFamily: "Patrick Hand, cursive" }}
+            >
               €{totalCost}
             </span>
           </div>

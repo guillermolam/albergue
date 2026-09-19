@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
-import { 
-  Home, 
-  Calendar, 
-  Users, 
-  Settings, 
-  LogOut, 
-  Menu, 
+import { useState } from "react";
+import { Link, Outlet, useLocation } from "react-router-dom";
+import {
+  Home,
+  Calendar,
+  Users,
+  Settings,
+  LogOut,
+  Menu,
   X,
   BarChart3,
-  Bed
-} from 'lucide-react';
-import { Button } from '../ui/button';
+  Bed,
+} from "lucide-react";
+import { Button } from "../ui/button";
 
 export function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -20,12 +20,12 @@ export function AdminLayout() {
   const isActive = (path: string) => location.pathname === path;
 
   const navigation = [
-    { name: 'Dashboard', href: '/admin', icon: Home },
-    { name: 'Bookings', href: '/admin/bookings', icon: Calendar },
-    { name: 'Bed Management', href: '/admin/beds', icon: Bed },
-    { name: 'Guests', href: '/admin/guests', icon: Users },
-    { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
-    { name: 'Settings', href: '/admin/settings', icon: Settings },
+    { name: "Dashboard", href: "/admin", icon: Home },
+    { name: "Bookings", href: "/admin/bookings", icon: Calendar },
+    { name: "Bed Management", href: "/admin/beds", icon: Bed },
+    { name: "Guests", href: "/admin/guests", icon: Users },
+    { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+    { name: "Settings", href: "/admin/settings", icon: Settings },
   ];
 
   return (
@@ -34,14 +34,18 @@ export function AdminLayout() {
       <div className="lg:hidden fixed top-0 left-0 right-0 bg-[#006b24] text-white p-4 flex items-center justify-between z-50">
         <h2 className="text-white">Admin Panel</h2>
         <button onClick={() => setSidebarOpen(!sidebarOpen)}>
-          {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {sidebarOpen ? (
+            <X className="w-6 h-6" />
+          ) : (
+            <Menu className="w-6 h-6" />
+          )}
         </button>
       </div>
 
       {/* Sidebar */}
       <div
         className={`fixed inset-y-0 left-0 z-40 w-64 bg-[#006b24] text-white transform transition-transform duration-300 ease-in-out ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0`}
       >
         <div className="flex flex-col h-full">
@@ -60,8 +64,8 @@ export function AdminLayout() {
                 onClick={() => setSidebarOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   isActive(item.href)
-                    ? 'bg-[#00AB39] text-white'
-                    : 'text-white/80 hover:bg-[#008c2f] hover:text-white'
+                    ? "bg-[#00AB39] text-white"
+                    : "text-white/80 hover:bg-[#008c2f] hover:text-white"
                 }`}
               >
                 <item.icon className="w-5 h-5" />
@@ -110,11 +114,11 @@ export function AdminLayout() {
             <div>
               <h3>Welcome back, Admin</h3>
               <p className="text-sm text-gray-500">
-                {new Date().toLocaleDateString('en-US', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
+                {new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
                 })}
               </p>
             </div>

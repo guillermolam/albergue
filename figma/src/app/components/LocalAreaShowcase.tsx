@@ -1,12 +1,21 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { MapPin, Mountain, Landmark, Trees, Sun, Compass, ChevronLeft, ChevronRight } from 'lucide-react';
-import { unsplash_tool } from '../tools';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  MapPin,
+  Mountain,
+  Landmark,
+  Trees,
+  Sun,
+  Compass,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { unsplash_tool } from "../tools";
 
 interface LocalSpot {
   name: string;
   distance: string;
-  type: 'nature' | 'historic' | 'town' | 'camino';
+  type: "nature" | "historic" | "town" | "camino";
   description: string;
   icon: any;
   image?: string;
@@ -14,40 +23,45 @@ interface LocalSpot {
 
 const localSpots: LocalSpot[] = [
   {
-    name: 'Vía de la Plata',
-    distance: '0 km',
-    type: 'camino',
-    description: 'Ancient Roman road, now a major Camino de Santiago route through Extremadura',
+    name: "Vía de la Plata",
+    distance: "0 km",
+    type: "camino",
+    description:
+      "Ancient Roman road, now a major Camino de Santiago route through Extremadura",
     icon: Compass,
   },
   {
-    name: 'Mérida',
-    distance: '35 km',
-    type: 'historic',
-    description: 'UNESCO World Heritage Site with spectacular Roman ruins and amphitheater',
+    name: "Mérida",
+    distance: "35 km",
+    type: "historic",
+    description:
+      "UNESCO World Heritage Site with spectacular Roman ruins and amphitheater",
     icon: Landmark,
   },
   {
-    name: 'Montánchez',
-    distance: '18 km',
-    type: 'town',
-    description: 'Historic medieval town famous for Iberian ham and stunning mountain views',
+    name: "Montánchez",
+    distance: "18 km",
+    type: "town",
+    description:
+      "Historic medieval town famous for Iberian ham and stunning mountain views",
     icon: Mountain,
   },
   {
-    name: 'Sierra de Montánchez',
-    distance: '12 km',
-    type: 'nature',
-    description: 'Protected natural park with oak forests, hiking trails, and wildlife',
+    name: "Sierra de Montánchez",
+    distance: "12 km",
+    type: "nature",
+    description:
+      "Protected natural park with oak forests, hiking trails, and wildlife",
     icon: Trees,
   },
   {
-    name: 'Cáceres',
-    distance: '42 km',
-    type: 'historic',
-    description: 'Medieval walled city, UNESCO World Heritage Site, Game of Thrones filming location',
+    name: "Cáceres",
+    distance: "42 km",
+    type: "historic",
+    description:
+      "Medieval walled city, UNESCO World Heritage Site, Game of Thrones filming location",
     icon: Landmark,
-  }
+  },
 ];
 
 export function LocalAreaShowcase() {
@@ -73,26 +87,38 @@ export function LocalAreaShowcase() {
 
   const goToPrev = () => {
     setDirection(-1);
-    setActiveIndex((prev) => (prev - 1 + localSpots.length) % localSpots.length);
+    setActiveIndex(
+      (prev) => (prev - 1 + localSpots.length) % localSpots.length,
+    );
   };
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'camino': return '#00AB39';
-      case 'historic': return '#8B4513';
-      case 'town': return '#4A90E2';
-      case 'nature': return '#2E7D32';
-      default: return '#00AB39';
+      case "camino":
+        return "#00AB39";
+      case "historic":
+        return "#8B4513";
+      case "town":
+        return "#4A90E2";
+      case "nature":
+        return "#2E7D32";
+      default:
+        return "#00AB39";
     }
   };
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'camino': return 'Camino Route';
-      case 'historic': return 'Historic Site';
-      case 'town': return 'Town';
-      case 'nature': return 'Nature';
-      default: return type;
+      case "camino":
+        return "Camino Route";
+      case "historic":
+        return "Historic Site";
+      case "town":
+        return "Town";
+      case "nature":
+        return "Nature";
+      default:
+        return type;
     }
   };
 
@@ -106,13 +132,26 @@ export function LocalAreaShowcase() {
         {/* Border */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none z-30">
           <rect
-            x="3" y="3" width="calc(100% - 6px)" height="calc(100% - 6px)"
-            fill="none" stroke="#1A1A1A" strokeWidth="3" rx="20"
+            x="3"
+            y="3"
+            width="calc(100% - 6px)"
+            height="calc(100% - 6px)"
+            fill="none"
+            stroke="#1A1A1A"
+            strokeWidth="3"
+            rx="20"
           />
           <rect
-            x="6" y="6" width="calc(100% - 12px)" height="calc(100% - 12px)"
-            fill="none" stroke="#00AB39" strokeWidth="1.5" rx="17"
-            opacity="0.6" strokeDasharray="6, 6"
+            x="6"
+            y="6"
+            width="calc(100% - 12px)"
+            height="calc(100% - 12px)"
+            fill="none"
+            stroke="#00AB39"
+            strokeWidth="1.5"
+            rx="17"
+            opacity="0.6"
+            strokeDasharray="6, 6"
           >
             <animateTransform
               attributeName="transform"
@@ -134,21 +173,32 @@ export function LocalAreaShowcase() {
               initial={{ opacity: 0, x: direction > 0 ? 100 : -100 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: direction > 0 ? -100 : 100 }}
-              transition={{ duration: 0.5, ease: 'easeInOut' }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
               className="absolute inset-0 flex flex-col"
             >
               {/* Image background with gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#00AB39]/20 via-transparent to-[#1A1A1A]/30" />
-              
+
               {/* Decorative background pattern */}
               <div className="absolute inset-0 opacity-5">
                 <svg className="w-full h-full">
                   <defs>
-                    <pattern id={`dots-${activeIndex}`} x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+                    <pattern
+                      id={`dots-${activeIndex}`}
+                      x="0"
+                      y="0"
+                      width="30"
+                      height="30"
+                      patternUnits="userSpaceOnUse"
+                    >
                       <circle cx="15" cy="15" r="2" fill="#00AB39" />
                     </pattern>
                   </defs>
-                  <rect width="100%" height="100%" fill={`url(#dots-${activeIndex})`} />
+                  <rect
+                    width="100%"
+                    height="100%"
+                    fill={`url(#dots-${activeIndex})`}
+                  />
                 </svg>
               </div>
 
@@ -159,28 +209,47 @@ export function LocalAreaShowcase() {
                   <motion.div
                     initial={{ scale: 0, rotate: -180 }}
                     animate={{ scale: 1, rotate: 0 }}
-                    transition={{ type: 'spring', stiffness: 200, delay: 0.2 }}
+                    transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
                     className="relative"
                   >
                     <motion.div
-                      animate={{ 
+                      animate={{
                         rotate: [0, 5, -5, 0],
-                        y: [0, -5, 0]
+                        y: [0, -5, 0],
                       }}
-                      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
                       className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center relative"
                     >
                       {/* Shadow */}
                       <div className="absolute inset-0 bg-black/20 blur-md rounded-full transform translate-y-1" />
-                      
+
                       {/* Background */}
                       <svg className="absolute inset-0 w-full h-full">
-                        <circle cx="50%" cy="50%" r="45%" fill="white" stroke="#1A1A1A" strokeWidth="2.5" />
-                        <circle cx="50%" cy="50%" r="40%" fill="none" stroke={getTypeColor(activeSpot.type)} strokeWidth="2" opacity="0.6" />
+                        <circle
+                          cx="50%"
+                          cy="50%"
+                          r="45%"
+                          fill="white"
+                          stroke="#1A1A1A"
+                          strokeWidth="2.5"
+                        />
+                        <circle
+                          cx="50%"
+                          cy="50%"
+                          r="40%"
+                          fill="none"
+                          stroke={getTypeColor(activeSpot.type)}
+                          strokeWidth="2"
+                          opacity="0.6"
+                        />
                       </svg>
-                      
-                      <activeSpot.icon 
-                        className="relative z-10 w-7 h-7 sm:w-8 sm:h-8" 
+
+                      <activeSpot.icon
+                        className="relative z-10 w-7 h-7 sm:w-8 sm:h-8"
                         style={{ color: getTypeColor(activeSpot.type) }}
                         strokeWidth={2.5}
                       />
@@ -191,21 +260,27 @@ export function LocalAreaShowcase() {
                   <motion.div
                     initial={{ scale: 0, x: 20 }}
                     animate={{ scale: 1, x: 0 }}
-                    transition={{ type: 'spring', delay: 0.3 }}
+                    transition={{ type: "spring", delay: 0.3 }}
                     className="relative"
                   >
                     <svg className="absolute inset-0 w-full h-full">
-                      <rect 
-                        x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)"
-                        fill="white" stroke="#1A1A1A" strokeWidth="2" rx="12"
+                      <rect
+                        x="1"
+                        y="1"
+                        width="calc(100% - 2px)"
+                        height="calc(100% - 2px)"
+                        fill="white"
+                        stroke="#1A1A1A"
+                        strokeWidth="2"
+                        rx="12"
                       />
                     </svg>
                     <div className="relative px-3 py-1.5">
-                      <p 
+                      <p
                         className="text-xs sm:text-sm uppercase tracking-wide"
-                        style={{ 
-                          fontFamily: 'Cabin Sketch, cursive',
-                          color: getTypeColor(activeSpot.type)
+                        style={{
+                          fontFamily: "Cabin Sketch, cursive",
+                          color: getTypeColor(activeSpot.type),
                         }}
                       >
                         {getTypeLabel(activeSpot.type)}
@@ -218,17 +293,20 @@ export function LocalAreaShowcase() {
               {/* Middle section - Big rotating icon */}
               <div className="relative flex-1 flex items-center justify-center">
                 <motion.div
-                  animate={{ 
+                  animate={{
                     rotate: 360,
-                    scale: [1, 1.05, 1]
+                    scale: [1, 1.05, 1],
                   }}
-                  transition={{ 
-                    rotate: { duration: 20, repeat: Infinity, ease: 'linear' },
-                    scale: { duration: 4, repeat: Infinity, ease: 'easeInOut' }
+                  transition={{
+                    rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+                    scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
                   }}
                   className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 opacity-10"
                 >
-                  <activeSpot.icon className="w-full h-full" style={{ color: getTypeColor(activeSpot.type) }} />
+                  <activeSpot.icon
+                    className="w-full h-full"
+                    style={{ color: getTypeColor(activeSpot.type) }}
+                  />
                 </motion.div>
               </div>
 
@@ -242,17 +320,20 @@ export function LocalAreaShowcase() {
                 >
                   {/* Name and distance */}
                   <div className="flex items-baseline justify-between gap-3 flex-wrap">
-                    <h3 
+                    <h3
                       className="text-2xl sm:text-3xl md:text-4xl text-[#1A1A1A]"
-                      style={{ fontFamily: 'Shadows Into Light, cursive' }}
+                      style={{ fontFamily: "Shadows Into Light, cursive" }}
                     >
                       {activeSpot.name}
                     </h3>
                     <div className="flex items-center gap-1.5">
-                      <MapPin className="w-4 h-4 text-[#00AB39]" strokeWidth={2.5} />
-                      <span 
+                      <MapPin
+                        className="w-4 h-4 text-[#00AB39]"
+                        strokeWidth={2.5}
+                      />
+                      <span
                         className="text-lg sm:text-xl text-[#00AB39]"
-                        style={{ fontFamily: 'Cabin Sketch, cursive' }}
+                        style={{ fontFamily: "Cabin Sketch, cursive" }}
                       >
                         {activeSpot.distance}
                       </span>
@@ -260,7 +341,7 @@ export function LocalAreaShowcase() {
                   </div>
 
                   {/* Squiggle divider */}
-                  <motion.svg 
+                  <motion.svg
                     className="w-full h-1.5"
                     initial={{ pathLength: 0 }}
                     animate={{ pathLength: 1 }}
@@ -268,18 +349,18 @@ export function LocalAreaShowcase() {
                     viewBox="0 0 100 4"
                     preserveAspectRatio="none"
                   >
-                    <path 
-                      d="M0,2 Q10,0 20,2 T40,2 T60,2 T80,2 T100,2" 
-                      stroke={getTypeColor(activeSpot.type)} 
-                      strokeWidth="2" 
-                      fill="none" 
+                    <path
+                      d="M0,2 Q10,0 20,2 T40,2 T60,2 T80,2 T100,2"
+                      stroke={getTypeColor(activeSpot.type)}
+                      strokeWidth="2"
+                      fill="none"
                     />
                   </motion.svg>
 
                   {/* Description */}
-                  <p 
+                  <p
                     className="text-sm sm:text-base text-gray-700 leading-relaxed"
-                    style={{ fontFamily: 'Patrick Hand, cursive' }}
+                    style={{ fontFamily: "Patrick Hand, cursive" }}
                   >
                     {activeSpot.description}
                   </p>
@@ -296,9 +377,19 @@ export function LocalAreaShowcase() {
             whileTap={{ scale: 0.95 }}
           >
             <svg className="absolute inset-0 w-full h-full">
-              <circle cx="50%" cy="50%" r="45%" fill="white" stroke="#1A1A1A" strokeWidth="2.5" />
+              <circle
+                cx="50%"
+                cy="50%"
+                r="45%"
+                fill="white"
+                stroke="#1A1A1A"
+                strokeWidth="2.5"
+              />
             </svg>
-            <ChevronLeft className="relative w-6 h-6 sm:w-7 sm:h-7 text-[#00AB39] mx-auto" strokeWidth={3} />
+            <ChevronLeft
+              className="relative w-6 h-6 sm:w-7 sm:h-7 text-[#00AB39] mx-auto"
+              strokeWidth={3}
+            />
           </motion.button>
 
           <motion.button
@@ -308,9 +399,19 @@ export function LocalAreaShowcase() {
             whileTap={{ scale: 0.95 }}
           >
             <svg className="absolute inset-0 w-full h-full">
-              <circle cx="50%" cy="50%" r="45%" fill="white" stroke="#1A1A1A" strokeWidth="2.5" />
+              <circle
+                cx="50%"
+                cy="50%"
+                r="45%"
+                fill="white"
+                stroke="#1A1A1A"
+                strokeWidth="2.5"
+              />
             </svg>
-            <ChevronRight className="relative w-6 h-6 sm:w-7 sm:h-7 text-[#00AB39] mx-auto" strokeWidth={3} />
+            <ChevronRight
+              className="relative w-6 h-6 sm:w-7 sm:h-7 text-[#00AB39] mx-auto"
+              strokeWidth={3}
+            />
           </motion.button>
 
           {/* Dots indicator */}
@@ -324,9 +425,9 @@ export function LocalAreaShowcase() {
               >
                 {/* Active indicator - filled when active */}
                 <motion.div
-                  className={`w-3 h-3 rounded-full border-2 ${i === activeIndex ? 'bg-[#00AB39] border-[#00AB39]' : 'bg-transparent border-[#00AB39]'}`}
+                  className={`w-3 h-3 rounded-full border-2 ${i === activeIndex ? "bg-[#00AB39] border-[#00AB39]" : "bg-transparent border-[#00AB39]"}`}
                   animate={{
-                    scale: i === activeIndex ? 1.2 : 1
+                    scale: i === activeIndex ? 1.2 : 1,
                   }}
                   transition={{ duration: 0.3 }}
                 />
@@ -337,10 +438,10 @@ export function LocalAreaShowcase() {
 
         {/* Corner decorations */}
         {[
-          { top: '10px', left: '10px', rotate: 0 },
-          { top: '10px', right: '10px', rotate: 90 },
-          { bottom: '10px', left: '10px', rotate: -90 },
-          { bottom: '10px', right: '10px', rotate: 180 }
+          { top: "10px", left: "10px", rotate: 0 },
+          { top: "10px", right: "10px", rotate: 90 },
+          { bottom: "10px", left: "10px", rotate: -90 },
+          { bottom: "10px", right: "10px", rotate: 180 },
         ].map((pos, i) => (
           <motion.div
             key={i}
@@ -348,12 +449,17 @@ export function LocalAreaShowcase() {
             style={pos}
             animate={{
               rotate: [pos.rotate, pos.rotate + 8, pos.rotate],
-              scale: [1, 1.08, 1]
+              scale: [1, 1.08, 1],
             }}
             transition={{ duration: 2, repeat: Infinity, delay: i * 0.15 }}
           >
             <svg width="20" height="20" viewBox="0 0 20 20">
-              <path d="M2,2 L6,2 M2,2 L2,6" stroke="#00AB39" strokeWidth="2.5" strokeLinecap="round" />
+              <path
+                d="M2,2 L6,2 M2,2 L2,6"
+                stroke="#00AB39"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
             </svg>
           </motion.div>
         ))}

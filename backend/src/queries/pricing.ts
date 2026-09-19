@@ -3,11 +3,11 @@
  * Read operations for pricing
  */
 
-import { db } from '../lib/db.js';
-import { beds, pricing } from '@albergue/domain-model';
-import { eq, and, or, like, count, desc, asc, sql } from 'drizzle-orm';
-import type { Pricing } from '../types/index.js';
-import type { PaginatedResponse, PaginationParams } from '../types/index.js';
+import { db } from "../lib/db.js";
+import { beds, pricing } from "@albergue/domain-model";
+import { eq, and, or, like, count, desc, asc, sql } from "drizzle-orm";
+import type { Pricing } from "../types/index.js";
+import type { PaginatedResponse, PaginationParams } from "../types/index.js";
 
 export interface BookingQuote {
   bedId: number;
@@ -25,7 +25,7 @@ export interface BookingQuote {
 export async function computeBookingQuote(
   bedId: number,
   checkInDate: string,
-  checkOutDate: string
+  checkOutDate: string,
 ): Promise<BookingQuote | null> {
   const [bed] = await db
     .select({
@@ -40,7 +40,8 @@ export async function computeBookingQuote(
   if (!bed) return null;
 
   const numberOfNights = Math.round(
-    (new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) / (24 * 60 * 60 * 1000)
+    (new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) /
+      (24 * 60 * 60 * 1000),
   );
   if (numberOfNights < 1) return null;
 
@@ -49,7 +50,7 @@ export async function computeBookingQuote(
     numberOfNights,
     pricePerNight: bed.pricePerNight,
     totalAmount: (Number(bed.pricePerNight) * numberOfNights).toFixed(2),
-    currency: bed.currency ?? 'EUR',
+    currency: bed.currency ?? "EUR",
   };
 }
 
@@ -57,22 +58,20 @@ export async function computeBookingQuote(
  * Get all pricing entries with pagination
  */
 export async function getAllPricing(
-  params: PaginationParams = {}
+  params: PaginationParams = {},
 ): Promise<PaginatedResponse<Pricing>> {
   const {
     page = 1,
     pageSize = 20,
-    orderBy = 'createdAt',
-    orderDirection = 'desc',
+    orderBy = "createdAt",
+    orderDirection = "desc",
   } = params;
 
   const offset = (page - 1) * pageSize;
-  const orderFn = orderDirection === 'asc' ? asc : desc;
+  const orderFn = orderDirection === "asc" ? asc : desc;
 
   // Get total count
-  const [countResult] = await db
-    .select({ count: count() })
-    .from(pricing);
+  const [countResult] = await db.select({ count: count() }).from(pricing);
 
   const total = countResult?.count || 0;
 
@@ -81,8 +80,10 @@ export async function getAllPricing(
     .select()
     .from(pricing)
     .orderBy(
-      orderFn(orderBy in pricing ? (pricing as any)[orderBy] : pricing.createdAt)
-      )
+      orderFn(
+        orderBy in pricing ? (pricing as any)[orderBy] : pricing.createdAt,
+      ),
+    )
     .limit(pageSize)
     .offset(offset);
 
@@ -106,7 +107,7 @@ export async function getPricingById(id: number): Promise<Pricing | null> {
     .from(pricing)
     .where(eq(pricing.id, id))
     .limit(1);
-  
+
   return result || null;
 }
 
@@ -119,20 +120,22 @@ export async function getActivePricing(): Promise<Pricing[]> {
     .from(pricing)
     .where(eq(pricing.isActive, true))
     .orderBy(asc(pricing.roomType));
-  
+
   return results;
 }
 
 /**
  * Get pricing by room type
  */
-export async function getPricingByRoomType(roomType: string): Promise<Pricing[]> {
+export async function getPricingByRoomType(
+  roomType: string,
+): Promise<Pricing[]> {
   const results = await db
     .select()
     .from(pricing)
     .where(eq(pricing.roomType, roomType))
     .orderBy(asc(pricing.bedType));
-  
+
   return results;
 }
 
@@ -141,19 +144,14 @@ export async function getPricingByRoomType(roomType: string): Promise<Pricing[]>
  */
 export async function getPricingByRoomAndBedType(
   roomType: string,
-  bedType: string
+  bedType: string,
 ): Promise<Pricing | null> {
   const [result] = await db
     .select()
     .from(pricing)
-    .where(
-      and(
-        eq(pricing.roomType, roomType),
-        eq(pricing.bedType, bedType)
-      )
-    )
+    .where(and(eq(pricing.roomType, roomType), eq(pricing.bedType, bedType)))
     .limit(1);
-  
+
   return result || null;
 }
 
@@ -166,20 +164,22 @@ export async function getPricingByBedType(bedType: string): Promise<Pricing[]> {
     .from(pricing)
     .where(eq(pricing.bedType, bedType))
     .orderBy(asc(pricing.roomType));
-  
+
   return results;
 }
 
 /**
  * Get pricing by currency
  */
-export async function getPricingByCurrency(currency: string): Promise<Pricing[]> {
+export async function getPricingByCurrency(
+  currency: string,
+): Promise<Pricing[]> {
   const results = await db
     .select()
     .from(pricing)
     .where(eq(pricing.currency, currency))
     .orderBy(asc(pricing.roomType));
-  
+
   return results;
 }
 
@@ -192,26 +192,29 @@ export async function getInactivePricing(): Promise<Pricing[]> {
     .from(pricing)
     .where(eq(pricing.isActive, false))
     .orderBy(desc(pricing.updatedAt));
-  
+
   return results;
 }
 
 /**
  * Search pricing
  */
-export async function searchPricing(query: string, limit: number = 10): Promise<Pricing[]> {
+export async function searchPricing(
+  query: string,
+  limit: number = 10,
+): Promise<Pricing[]> {
   const results = await db
     .select()
     .from(pricing)
     .where(
       or(
         like(pricing.roomType, `%${query}%`),
-        like(pricing.bedType, `%${query}%`)
-      )
+        like(pricing.bedType, `%${query}%`),
+      ),
     )
     .orderBy(asc(pricing.roomType))
     .limit(limit);
-  
+
   return results;
 }
 
@@ -224,7 +227,7 @@ export async function getRecentPricing(limit: number = 5): Promise<Pricing[]> {
     .from(pricing)
     .orderBy(desc(pricing.createdAt))
     .limit(limit);
-  
+
   return results;
 }
 
@@ -232,9 +235,7 @@ export async function getRecentPricing(limit: number = 5): Promise<Pricing[]> {
  * Get pricing statistics
  */
 export async function getPricingStats() {
-  const [total] = await db
-    .select({ count: count() })
-    .from(pricing);
+  const [total] = await db.select({ count: count() }).from(pricing);
 
   const [active] = await db
     .select({ count: count() })
@@ -264,28 +265,25 @@ export async function getPricingStats() {
     inactivePricing: inactive?.count || 0,
     roomTypeCount: roomTypes.length,
     bedTypeCount: bedTypes.length,
-    roomTypes: roomTypes.map(r => r.roomType),
-    bedTypes: bedTypes.map(r => r.bedType),
+    roomTypes: roomTypes.map((r) => r.roomType),
+    bedTypes: bedTypes.map((r) => r.bedType),
   };
 }
 
 /**
  * Get average price by room type
  */
-export async function getAveragePriceByRoomType(roomType: string): Promise<string | null> {
+export async function getAveragePriceByRoomType(
+  roomType: string,
+): Promise<string | null> {
   const [result] = await db
     .select({
       // @ts-ignore
-      avg: avg(pricing.pricePerNight)
+      avg: avg(pricing.pricePerNight),
     })
     .from(pricing)
-    .where(
-      and(
-        eq(pricing.roomType, roomType),
-        eq(pricing.isActive, true)
-      )
-    );
-  
+    .where(and(eq(pricing.roomType, roomType), eq(pricing.isActive, true)));
+
   return result?.avg != null ? String(result.avg) : null;
 }
 

@@ -51,11 +51,11 @@ export async function getAllPilgrims(
   if (language) {
     whereConditions.push(eq(pilgrims.language, language));
   }
-  
+
   if (nationality) {
     whereConditions.push(eq(pilgrims.nationality, nationality));
   }
-  
+
   // Join with bookings for date filtering
   let query = db
     .select({
@@ -161,7 +161,7 @@ export async function getPilgrimByDocumentNumber(
       )
     )
     .limit(1);
-  
+
   return result || null;
 }
 
@@ -184,7 +184,7 @@ export async function searchPilgrims(query: string, limit: number = 10): Promise
     )
     .orderBy(asc(pilgrims.lastName1))
     .limit(limit);
-  
+
   return results;
 }
 
@@ -248,7 +248,7 @@ export async function getPilgrimStats() {
     .from(pilgrims)
     .where(getLifecyclePredicate())
     .groupBy(pilgrims.gender);
-  
+
   return {
     totalPilgrims: total?.count || 0,
     byNationality: Object.fromEntries(nationalityStats.map(s => [s.nationality, s.count])),

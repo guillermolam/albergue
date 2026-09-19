@@ -22,7 +22,7 @@ Pilgrim Management System & Booking Platform for the Camino de Santiago (Vía de
 The application combines a lightweight, hand-drawn design system for pilgrims with a resilient API and compliance engine that automates check-ins, bed allocations, encrypted identity verification, and mandatory government traveller submissions (Guardia Civil / Hospederías XML reports).
 
 > [!NOTE]
-> The frontend UI incorporates custom hand-drawn canvas components via **RoughJS** and **webcoreui**, creating a warm, organic experience designed for pilgrims on desktop and mobile devices.
+> The frontend UI uses Astro, **webcoreui**, UnoCSS, and inline SVG components for a fast, accessible experience designed for pilgrims on desktop and mobile devices.
 
 ---
 
@@ -53,7 +53,7 @@ This project is structured as a **pnpm workspace monorepo**:
 
 | Layer             | Technologies                                                                   |
 | :---------------- | :----------------------------------------------------------------------------- |
-| **Frontend**      | Astro 7.3, RoughJS, webcoreui, UnoCSS, Swup, Nanostores, Playwright, Vitest    |
+| **Frontend**      | Astro 7.3, webcoreui, UnoCSS, Vite, Swup, Nanostores, Playwright, Vitest       |
 | **Backend**       | Hono 4.13, Node.js (`@hono/node-server`), Drizzle ORM, Zod, Vitest             |
 | **Domain & Data** | PostgreSQL, Drizzle ORM schemas, Drizzle-Zod validation models, SQL migrations |
 | **Deployment**    | Cloudflare Workers / Pages, Netlify, Stormkit                                  |
@@ -205,7 +205,7 @@ The backend is built with Hono and can be deployed as a standard Node.js server 
         ├── astro.config.*.mjs # Cloudflare, Netlify, Stormkit Astro configs
         ├── scripts/           # Deployment & locale build utility scripts
         ├── src/
-        │   ├── components/    # UI components, RoughJS doodles, stats widgets
+      │   ├── components/    # UI components, inline SVG icons, stats widgets
         │   ├── layouts/       # Main, Figma, and page layouts
         │   ├── locales/       # PO translation files for multi-language support
         │   ├── pages/         # Astro route pages (booking, admin, info)

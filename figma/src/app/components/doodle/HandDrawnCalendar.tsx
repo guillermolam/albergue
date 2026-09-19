@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { motion } from "motion/react";
 
 interface HandDrawnCalendarProps {
   className?: string;
@@ -6,15 +6,21 @@ interface HandDrawnCalendarProps {
   animate?: boolean;
 }
 
-export function HandDrawnCalendar({ className = '', size = 24, animate = false }: HandDrawnCalendarProps) {
-  const WrapperComponent = animate ? motion.svg : 'svg';
-  const animationProps = animate ? {
-    animate: { 
-      rotate: [0, -5, 5, -3, 3, 0],
-      y: [0, -2, 0, -1, 0]
-    },
-    transition: { duration: 3, repeat: Infinity, ease: "easeInOut" }
-  } : {};
+export function HandDrawnCalendar({
+  className = "",
+  size = 24,
+  animate = false,
+}: HandDrawnCalendarProps) {
+  const WrapperComponent = animate ? motion.svg : "svg";
+  const animationProps = animate
+    ? {
+        animate: {
+          rotate: [0, -5, 5, -3, 3, 0],
+          y: [0, -2, 0, -1, 0],
+        },
+        transition: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+      }
+    : {};
 
   return (
     <WrapperComponent
@@ -34,7 +40,7 @@ export function HandDrawnCalendar({ className = '', size = 24, animate = false }
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      
+
       {/* Calendar header - darker section */}
       <path
         d="M15,18 C15,15 17,13 20,13 L80,13 C83,13 85,15 85,18 L85,30 L15,30 Z"
@@ -54,12 +60,7 @@ export function HandDrawnCalendar({ className = '', size = 24, animate = false }
         stroke="#006b24"
         strokeWidth="2.5"
       />
-      <circle
-        cx="30"
-        cy="18"
-        r="2"
-        fill="#006b24"
-      />
+      <circle cx="30" cy="18" r="2" fill="#006b24" />
 
       {/* Right binding ring - sketchy circle */}
       <circle
@@ -70,12 +71,7 @@ export function HandDrawnCalendar({ className = '', size = 24, animate = false }
         stroke="#006b24"
         strokeWidth="2.5"
       />
-      <circle
-        cx="70"
-        cy="18"
-        r="2"
-        fill="#006b24"
-      />
+      <circle cx="70" cy="18" r="2" fill="#006b24" />
 
       {/* Grid dots representing calendar days - hand-drawn style */}
       {/* Row 1 */}
@@ -97,7 +93,14 @@ export function HandDrawnCalendar({ className = '', size = 24, animate = false }
       <circle cx="70" cy="71" r="2.5" fill="#00AB39" opacity="0.4" />
 
       {/* Highlight one day - today */}
-      <circle cx="55" cy="71" r="5" fill="none" stroke="#00AB39" strokeWidth="2.5" />
+      <circle
+        cx="55"
+        cy="71"
+        r="5"
+        fill="none"
+        stroke="#00AB39"
+        strokeWidth="2.5"
+      />
 
       {/* Hand-drawn decorative scribbles on header */}
       <path

@@ -27,7 +27,7 @@ export interface Props {
   class?: string;
 }
 
-import RoughIcon from '../components/core/RoughIcon.astro';
+import Icon from '../components/core/Icon.astro';
 import Button from './Button.astro';
 
 const {
@@ -118,7 +118,7 @@ const backgroundStyles = {
               animationDuration: `${3 + Math.random() * 2}s`,
             }}
           >
-            <RoughIcon name={['star', 'dot', 'circle', 'star'][i % 4]} size="sm" />
+            <Icon name={['star', 'dot', 'circle', 'star'][i % 4]} size="sm" />
           </div>
         ))}
       </div>
@@ -128,16 +128,16 @@ const backgroundStyles = {
   <!-- Decorative doodle elements -->
   <div class="absolute inset-0 pointer-events-none">
     <div class={`absolute top-10 left-10 w-20 h-20 ${animated ? 'animate-float' : ''}`}>
-      <RoughIcon name="shell" size="xl" color="primary" animated />
+      <Icon name="shell" size="xl" color="primary" animated />
     </div>
     <div
       class={`absolute bottom-10 right-10 w-16 h-16 ${animated ? 'animate-float' : ''}`}
       style="animation-delay: 1s;"
     >
-      <RoughIcon name="star" size="lg" color="secondary" animated />
+      <Icon name="star" size="lg" color="secondary" animated />
     </div>
     <div class={`absolute top-1/2 left-10 w-12 h-12 ${animated ? 'animate-pulse' : ''}`}>
-      <RoughIcon name="circle" size="md" color="error" animated />
+      <Icon name="circle" size="md" color="error" animated />
     </div>
   </div>
 
@@ -208,7 +208,7 @@ const backgroundStyles = {
 <!-- Scroll indicator -->
 {animated && (
   <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-    <RoughIcon name="arrow-down" size="lg" />
+    <Icon name="arrow-down" size="lg" />
   </div>
 )}
 

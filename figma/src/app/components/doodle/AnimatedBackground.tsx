@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { motion } from "motion/react";
 
 export function AnimatedBackground() {
   return (
@@ -11,22 +11,27 @@ export function AnimatedBackground() {
       <defs>
         {/* Sketch filter for organic feel */}
         <filter id="sketch">
-          <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" result="noise" />
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.05"
+            numOctaves="2"
+            result="noise"
+          />
           <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" />
         </filter>
       </defs>
 
       {/* Animated Sun */}
       <motion.g
-        animate={{ 
+        animate={{
           rotate: [0, 360],
-          scale: [1, 1.1, 1]
+          scale: [1, 1.1, 1],
         }}
-        transition={{ 
+        transition={{
           rotate: { duration: 120, repeat: Infinity, ease: "linear" },
-          scale: { duration: 8, repeat: Infinity, ease: "easeInOut" }
+          scale: { duration: 8, repeat: Infinity, ease: "easeInOut" },
         }}
-        style={{ originX: '150px', originY: '150px' }}
+        style={{ originX: "150px", originY: "150px" }}
       >
         <circle
           cx="150"
@@ -71,11 +76,11 @@ export function AnimatedBackground() {
           key={`bird-${i}`}
           animate={{
             x: [-100, 2000],
-            y: [200 + i * 80, 150 + i * 80, 200 + i * 80]
+            y: [200 + i * 80, 150 + i * 80, 200 + i * 80],
           }}
           transition={{
             x: { duration: 40 + i * 10, repeat: Infinity, ease: "linear" },
-            y: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+            y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
           }}
         >
           <motion.path
@@ -84,12 +89,12 @@ export function AnimatedBackground() {
             stroke="#5D4E37"
             strokeWidth="2.5"
             strokeLinecap="round"
-            animate={{ 
+            animate={{
               d: [
                 "M0,0 Q-10,-8 -20,0 Q-10,2 0,0 Q10,2 20,0 Q10,-8 0,0",
                 "M0,0 Q-10,-12 -20,-2 Q-10,0 0,0 Q10,0 20,-2 Q10,-12 0,0",
-                "M0,0 Q-10,-8 -20,0 Q-10,2 0,0 Q10,2 20,0 Q10,-8 0,0"
-              ]
+                "M0,0 Q-10,-8 -20,0 Q-10,2 0,0 Q10,2 20,0 Q10,-8 0,0",
+              ],
             }}
             transition={{ duration: 0.6, repeat: Infinity }}
           />
@@ -107,7 +112,7 @@ export function AnimatedBackground() {
             duration: 60 + i * 15,
             repeat: Infinity,
             ease: "linear",
-            delay: i * 5
+            delay: i * 5,
           }}
         >
           <motion.path
@@ -117,14 +122,14 @@ export function AnimatedBackground() {
             strokeWidth="2.5"
             filter="url(#sketch)"
             opacity="0.7"
-            animate={{ 
+            animate={{
               y: [0, -10, 0],
-              scale: [1, 1.05, 1]
+              scale: [1, 1.05, 1],
             }}
-            transition={{ 
+            transition={{
               duration: 6 + i,
               repeat: Infinity,
-              ease: "easeInOut"
+              ease: "easeInOut",
             }}
           />
         </motion.g>
@@ -132,7 +137,7 @@ export function AnimatedBackground() {
 
       {/* Mountains - Background */}
       <motion.g
-        animate={{ 
+        animate={{
           x: [0, -20, 0],
         }}
         transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
@@ -153,15 +158,15 @@ export function AnimatedBackground() {
           key={`tree-${i}`}
           animate={{
             rotate: [0, 2, 0, -2, 0],
-            y: [0, -5, 0]
+            y: [0, -5, 0],
           }}
           transition={{
             duration: 4 + i * 0.5,
             repeat: Infinity,
             ease: "easeInOut",
-            delay: i * 0.3
+            delay: i * 0.3,
           }}
-          style={{ originX: `${x}px`, originY: '900px' }}
+          style={{ originX: `${x}px`, originY: "900px" }}
         >
           {/* Tree trunk */}
           <rect
@@ -185,15 +190,15 @@ export function AnimatedBackground() {
             strokeWidth="3"
             filter="url(#sketch)"
             opacity="0.8"
-            animate={{ 
+            animate={{
               rx: [50, 55, 50],
-              ry: [60, 65, 60]
+              ry: [60, 65, 60],
             }}
-            transition={{ 
+            transition={{
               duration: 3,
               repeat: Infinity,
               ease: "easeInOut",
-              delay: i * 0.2
+              delay: i * 0.2,
             }}
           />
           <motion.ellipse
@@ -230,12 +235,12 @@ export function AnimatedBackground() {
         strokeDasharray="10, 5"
         filter="url(#sketch)"
         opacity="0.4"
-        animate={{ 
+        animate={{
           d: [
             "M0,950 Q400,920 800,950 T1600,950 L1920,950 L1920,1080 L0,1080 Z",
             "M0,950 Q400,940 800,930 T1600,950 L1920,950 L1920,1080 L0,1080 Z",
-            "M0,950 Q400,920 800,950 T1600,950 L1920,950 L1920,1080 L0,1080 Z"
-          ]
+            "M0,950 Q400,920 800,950 T1600,950 L1920,950 L1920,1080 L0,1080 Z",
+          ],
         }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
@@ -251,15 +256,15 @@ export function AnimatedBackground() {
           stroke="#8B956D"
           strokeWidth="2"
           strokeLinecap="round"
-          animate={{ 
+          animate={{
             y2: [930, 920, 930],
-            opacity: [0.6, 1, 0.6]
+            opacity: [0.6, 1, 0.6],
           }}
-          transition={{ 
+          transition={{
             duration: 2 + (i % 5) * 0.3,
             repeat: Infinity,
             ease: "easeInOut",
-            delay: i * 0.1
+            delay: i * 0.1,
           }}
         />
       ))}
@@ -269,9 +274,21 @@ export function AnimatedBackground() {
         <motion.g
           key={`butterfly-${i}`}
           animate={{
-            x: [100 + i * 600, 200 + i * 600, 300 + i * 600, 200 + i * 600, 100 + i * 600],
-            y: [400 + i * 150, 350 + i * 150, 400 + i * 150, 450 + i * 150, 400 + i * 150],
-            rotate: [0, 10, -10, 5, 0]
+            x: [
+              100 + i * 600,
+              200 + i * 600,
+              300 + i * 600,
+              200 + i * 600,
+              100 + i * 600,
+            ],
+            y: [
+              400 + i * 150,
+              350 + i * 150,
+              400 + i * 150,
+              450 + i * 150,
+              400 + i * 150,
+            ],
+            rotate: [0, 10, -10, 5, 0],
           }}
           transition={{
             duration: 8 + i * 2,
@@ -284,7 +301,7 @@ export function AnimatedBackground() {
             fill="#EAC102"
             stroke="#5D4E37"
             strokeWidth="1.5"
-            animate={{ 
+            animate={{
               scaleX: [1, 1.3, 1],
             }}
             transition={{ duration: 0.3, repeat: Infinity }}
@@ -294,7 +311,7 @@ export function AnimatedBackground() {
             fill="#EAC102"
             stroke="#5D4E37"
             strokeWidth="1.5"
-            animate={{ 
+            animate={{
               scaleX: [1, 1.3, 1],
             }}
             transition={{ duration: 0.3, repeat: Infinity }}
@@ -313,9 +330,9 @@ export function AnimatedBackground() {
             duration: 3 + (i % 4),
             repeat: Infinity,
             ease: "easeInOut",
-            delay: i * 0.2
+            delay: i * 0.2,
           }}
-          style={{ originX: `${150 + i * 120}px`, originY: '920px' }}
+          style={{ originX: `${150 + i * 120}px`, originY: "920px" }}
         >
           <line
             x1={150 + i * 120}

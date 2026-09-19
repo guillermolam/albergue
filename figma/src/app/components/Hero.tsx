@@ -1,32 +1,32 @@
-import { motion, useScroll, useTransform } from 'motion/react';
-import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { useRef } from 'react';
-import { WiredButton } from './doodle/WiredButton';
-import { DoodleBadge } from './doodle/DoodleBadge';
-import { AnimatedBackground } from './doodle/AnimatedBackground';
-import hostelSketch from 'figma:asset/1c53bfff60bdfdf08f71d2beb25d013a5bd9e8ac.png';
+import { motion, useScroll, useTransform } from "motion/react";
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useRef } from "react";
+import { WiredButton } from "./doodle/WiredButton";
+import { DoodleBadge } from "./doodle/DoodleBadge";
+import { AnimatedBackground } from "./doodle/AnimatedBackground";
+import hostelSketch from "figma:asset/1c53bfff60bdfdf08f71d2beb25d013a5bd9e8ac.png";
 
 export function Hero() {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end start"]
+    offset: ["start start", "end start"],
   });
-  
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
+
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0]);
 
   return (
-    <div ref={ref} className="relative h-[100vh] flex items-center justify-center overflow-hidden paper-texture bg-gradient-to-b from-[#87CEEB] via-[#E8F5E9] to-[#FFF9F0]">
+    <div
+      ref={ref}
+      className="relative h-[100vh] flex items-center justify-center overflow-hidden paper-texture bg-gradient-to-b from-[#87CEEB] via-[#E8F5E9] to-[#FFF9F0]"
+    >
       {/* Animated Doodle Background */}
-      <motion.div 
-        style={{ y }}
-        className="absolute inset-0"
-      >
+      <motion.div style={{ y }} className="absolute inset-0">
         <AnimatedBackground />
       </motion.div>
-      
+
       {/* Hostel Sketch Image */}
       <motion.div
         style={{ y, opacity }}
@@ -39,21 +39,21 @@ export function Hero() {
           src={hostelSketch}
           alt="Albergue Municipal de Carrascalejo sketch"
           className="w-full h-full object-cover"
-          style={{ 
-            mixBlendMode: 'multiply',
-            filter: 'contrast(1.1) brightness(1.05)'
+          style={{
+            mixBlendMode: "multiply",
+            filter: "contrast(1.1) brightness(1.05)",
           }}
-          animate={{ 
+          animate={{
             filter: [
-              'contrast(1.1) brightness(1.05)',
-              'contrast(1.15) brightness(1.1)',
-              'contrast(1.1) brightness(1.05)'
-            ]
+              "contrast(1.1) brightness(1.05)",
+              "contrast(1.15) brightness(1.1)",
+              "contrast(1.1) brightness(1.05)",
+            ],
           }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         />
       </motion.div>
-      
+
       {/* Gradient Overlay for text readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40" />
 
@@ -65,36 +65,28 @@ export function Hero() {
         className="absolute top-24 left-8 md:left-16 z-10"
       >
         <div className="flex flex-wrap gap-3">
-          <DoodleBadge color="#D4A574">
-            📍 Mérida, Extremadura
-          </DoodleBadge>
-          <DoodleBadge color="#00AB39">
-            🛏️ 24 beds
-          </DoodleBadge>
-          <DoodleBadge color="#0071BC">
-            🏠 2 dorms
-          </DoodleBadge>
+          <DoodleBadge color="#D4A574">📍 Mérida, Extremadura</DoodleBadge>
+          <DoodleBadge color="#00AB39">🛏️ 24 beds</DoodleBadge>
+          <DoodleBadge color="#0071BC">🏠 2 dorms</DoodleBadge>
         </div>
       </motion.div>
 
       {/* Content */}
-      <motion.div 
-        className="relative z-10 max-w-5xl mx-auto px-4 text-center"
-      >
+      <motion.div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ 
-            duration: 1, 
+          transition={{
+            duration: 1,
             delay: 0.4,
             type: "spring",
-            stiffness: 80
+            stiffness: 80,
           }}
         >
           <motion.div
             className="relative inline-block"
-            animate={{ 
-              y: [0, -5, 0]
+            animate={{
+              y: [0, -5, 0],
             }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           >
@@ -106,31 +98,40 @@ export function Hero() {
             animate={{ rotate: [-1, 1, -1] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           >
-            <h1 className="hand-drawn text-6xl md:text-8xl lg:text-9xl text-[#00AB39] mb-6 inline-block drop-shadow-xl" style={{ textShadow: '3px 3px 0px rgba(255,255,255,0.8)' }}>
+            <h1
+              className="hand-drawn text-6xl md:text-8xl lg:text-9xl text-[#00AB39] mb-6 inline-block drop-shadow-xl"
+              style={{ textShadow: "3px 3px 0px rgba(255,255,255,0.8)" }}
+            >
               Carrascalejo
             </h1>
           </motion.div>
         </motion.div>
-        
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
           className="relative inline-block"
         >
-          <p className="text-2xl md:text-4xl text-[#5D4E37] mb-4 italic sketch-underline drop-shadow-lg" style={{ textShadow: '2px 2px 0px rgba(255,255,255,0.9)' }}>
+          <p
+            className="text-2xl md:text-4xl text-[#5D4E37] mb-4 italic sketch-underline drop-shadow-lg"
+            style={{ textShadow: "2px 2px 0px rgba(255,255,255,0.9)" }}
+          >
             Your rest on the Camino de Santiago
           </p>
         </motion.div>
 
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1 }}
-          className="text-lg md:text-xl text-[#5D4E37] mb-10 max-w-2xl mx-auto drop-shadow" style={{ textShadow: '1px 1px 0px rgba(255,255,255,0.9)' }}
+          className="text-lg md:text-xl text-[#5D4E37] mb-10 max-w-2xl mx-auto drop-shadow"
+          style={{ textShadow: "1px 1px 0px rgba(255,255,255,0.9)" }}
         >
-          Welcome to our pilgrim hostel in <span className="highlight-doodle">Extremadura, Spain</span>. 
-          Comfortable beds, warm hospitality, and a peaceful stop on your journey.
+          Welcome to our pilgrim hostel in{" "}
+          <span className="highlight-doodle">Extremadura, Spain</span>.
+          Comfortable beds, warm hospitality, and a peaceful stop on your
+          journey.
         </motion.p>
 
         <motion.div
@@ -151,22 +152,22 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 1.4 }}
           className="mt-8 flex flex-wrap items-center justify-center gap-6 text-[#5D4E37]"
         >
-          <motion.div 
-            whileHover={{ y: -2 }} 
+          <motion.div
+            whileHover={{ y: -2 }}
             className="flex items-center gap-2 bg-white/80 px-4 py-2 rounded-full doodle-border"
           >
-            <motion.div 
+            <motion.div
               className="w-3 h-3 bg-[#00AB39] rounded-full"
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
             <span className="font-medium">Traditional hospitality</span>
           </motion.div>
-          <motion.div 
-            whileHover={{ y: -2 }} 
+          <motion.div
+            whileHover={{ y: -2 }}
             className="flex items-center gap-2 bg-white/80 px-4 py-2 rounded-full doodle-border"
           >
-            <motion.div 
+            <motion.div
               className="w-3 h-3 bg-[#00AB39] rounded-full"
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 2, repeat: Infinity, delay: 1 }}

@@ -3,23 +3,42 @@
  * Read operations for bookings
  */
 
-import { db } from '../lib/db.js';
-import { bookings, pilgrims, beds, payments } from '@albergue/domain-model';
-import { eq, and, or, isNull, like, count, sum, desc, asc, gte, lte, between, gt, sql } from 'drizzle-orm';
-import type { Booking, Bed } from '../types/index.js';
-import type { PaginatedResponse, PaginationParams, BookingFilter } from '../types/index.js';
+import { db } from "../lib/db.js";
+import { bookings, pilgrims, beds, payments } from "@albergue/domain-model";
+import {
+  eq,
+  and,
+  or,
+  isNull,
+  like,
+  count,
+  sum,
+  desc,
+  asc,
+  gte,
+  lte,
+  between,
+  gt,
+  sql,
+} from "drizzle-orm";
+import type { Booking, Bed } from "../types/index.js";
+import type {
+  PaginatedResponse,
+  PaginationParams,
+  BookingFilter,
+} from "../types/index.js";
 
 /**
  * Get all bookings with pagination
  */
 export async function getAllBookings(
-  params: PaginationParams & BookingFilter = {}
+  params: PaginationParams & BookingFilter = {},
 ): Promise<PaginatedResponse<Booking>> {
   const {
     page = 1,
     pageSize = 20,
-    orderBy = 'createdAt',
-    orderDirection = 'desc',
+    orderBy = "createdAt",
+    orderDirection = "desc",
     status,
     checkInDateFrom,
     checkInDateTo,
@@ -28,29 +47,29 @@ export async function getAllBookings(
   } = params;
 
   const offset = (page - 1) * pageSize;
-  const orderFn = orderDirection === 'asc' ? asc : desc;
+  const orderFn = orderDirection === "asc" ? asc : desc;
 
   // Build where conditions
   const whereConditions = [];
-  
+
   if (status) {
     whereConditions.push(eq(bookings.status, status));
   }
-  
+
   if (checkInDateFrom) {
     whereConditions.push(
       // @ts-ignore
-      gte(bookings.checkInDate, new Date(checkInDateFrom))
+      gte(bookings.checkInDate, new Date(checkInDateFrom)),
     );
   }
-  
+
   if (checkInDateTo) {
     whereConditions.push(
       // @ts-ignore
-      lte(bookings.checkInDate, new Date(checkInDateTo))
+      lte(bookings.checkInDate, new Date(checkInDateTo)),
     );
   }
-  
+
   if (pilgrimId) {
     whereConditions.push(eq(bookings.pilgrimId, pilgrimId));
   }
@@ -93,27 +112,29 @@ export async function getAllBookings(
     .from(bookings)
     .leftJoin(pilgrims, eq(bookings.pilgrimId, pilgrims.id))
     .leftJoin(beds, eq(bookings.bedAssignmentId, beds.id));
-  
+
   if (whereConditions.length > 0) {
     // @ts-ignore
     countQuery.where(and(...whereConditions));
   }
-  
+
   const [countResult] = await countQuery;
   const total = countResult?.count || 0;
 
   // Get paginated results
   const results = await query
     .orderBy(
-      orderFn(orderBy in bookings ? (bookings as any)[orderBy] : bookings.createdAt)
-      )
+      orderFn(
+        orderBy in bookings ? (bookings as any)[orderBy] : bookings.createdAt,
+      ),
+    )
     .limit(pageSize)
     .offset(offset);
 
   const totalPages = Math.ceil(total / pageSize);
 
   return {
-    data: results.map(r => r.booking),
+    data: results.map((r) => r.booking),
     total,
     page,
     pageSize,
@@ -130,33 +151,37 @@ export async function getBookingById(id: number): Promise<Booking | null> {
     .from(bookings)
     .where(eq(bookings.id, id))
     .limit(1);
-  
+
   return result || null;
 }
 
 /**
  * Get booking by reference number
  */
-export async function getBookingByReference(referenceNumber: string): Promise<Booking | null> {
+export async function getBookingByReference(
+  referenceNumber: string,
+): Promise<Booking | null> {
   const [result] = await db
     .select()
     .from(bookings)
     .where(eq(bookings.referenceNumber, referenceNumber))
     .limit(1);
-  
+
   return result || null;
 }
 
 /**
  * Get bookings for a pilgrim
  */
-export async function getBookingsByPilgrim(pilgrimId: number): Promise<Booking[]> {
+export async function getBookingsByPilgrim(
+  pilgrimId: number,
+): Promise<Booking[]> {
   const results = await db
     .select()
     .from(bookings)
     .where(eq(bookings.pilgrimId, pilgrimId))
     .orderBy(desc(bookings.createdAt));
-  
+
   return results;
 }
 
@@ -165,22 +190,22 @@ export async function getBookingsByPilgrim(pilgrimId: number): Promise<Booking[]
  */
 export async function getActiveBookings(): Promise<Booking[]> {
   const now = new Date();
-  
+
   const results = await db
     .select()
     .from(bookings)
     .where(
       and(
-        eq(bookings.status, 'reserved'),
+        eq(bookings.status, "reserved"),
         or(
           isNull(bookings.reservationExpiresAt),
           // @ts-ignore
-          gte(bookings.reservationExpiresAt, now)
-        )
-      )
+          gte(bookings.reservationExpiresAt, now),
+        ),
+      ),
     )
     .orderBy(asc(bookings.checkInDate));
-  
+
   return results;
 }
 
@@ -189,7 +214,7 @@ export async function getActiveBookings(): Promise<Booking[]> {
  */
 export async function getBookingsByDateRange(
   startDate: Date,
-  endDate: Date
+  endDate: Date,
 ): Promise<Booking[]> {
   const results = await db
     .select()
@@ -199,22 +224,24 @@ export async function getBookingsByDateRange(
         // @ts-ignore
         gte(bookings.checkInDate, startDate),
         // @ts-ignore
-        lte(bookings.checkInDate, endDate)
-      )
+        lte(bookings.checkInDate, endDate),
+      ),
     )
     .orderBy(asc(bookings.checkInDate));
-  
+
   return results;
 }
 
 /**
  * Get upcoming check-ins
  */
-export async function getUpcomingCheckIns(days: number = 7): Promise<Booking[]> {
+export async function getUpcomingCheckIns(
+  days: number = 7,
+): Promise<Booking[]> {
   const today = new Date();
   const endDate = new Date();
   endDate.setDate(endDate.getDate() + days);
-  
+
   const results = await db
     .select({
       booking: bookings,
@@ -232,12 +259,12 @@ export async function getUpcomingCheckIns(days: number = 7): Promise<Booking[]> 
       and(
         // @ts-ignore
         between(bookings.checkInDate, today, endDate),
-        eq(bookings.status, 'reserved')
-      )
+        eq(bookings.status, "reserved"),
+      ),
     )
     .orderBy(asc(bookings.checkInDate));
-  
-  return results.map(r => r.booking);
+
+  return results.map((r) => r.booking);
 }
 
 /**
@@ -245,7 +272,7 @@ export async function getUpcomingCheckIns(days: number = 7): Promise<Booking[]> 
  */
 export async function getOverdueReservations(): Promise<Booking[]> {
   const now = new Date();
-  
+
   const results = await db
     .select({
       booking: bookings,
@@ -261,14 +288,14 @@ export async function getOverdueReservations(): Promise<Booking[]> {
     .innerJoin(pilgrims, eq(bookings.pilgrimId, pilgrims.id))
     .where(
       and(
-        eq(bookings.status, 'reserved'),
+        eq(bookings.status, "reserved"),
         // @ts-ignore
-        lte(bookings.reservationExpiresAt, now)
-      )
+        lte(bookings.reservationExpiresAt, now),
+      ),
     )
     .orderBy(asc(bookings.reservationExpiresAt));
-  
-  return results.map(r => r.booking);
+
+  return results.map((r) => r.booking);
 }
 
 /**
@@ -277,65 +304,57 @@ export async function getOverdueReservations(): Promise<Booking[]> {
 export async function getBookingStats() {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  
+
   // Total bookings
-  const [total] = await db
-    .select({ count: count() })
-    .from(bookings);
-  
+  const [total] = await db.select({ count: count() }).from(bookings);
+
   // Active bookings
   const [active] = await db
     .select({ count: count() })
     .from(bookings)
     .where(
       and(
-        eq(bookings.status, 'reserved'),
+        eq(bookings.status, "reserved"),
         or(
           isNull(bookings.reservationExpiresAt),
           // @ts-ignore
-          gte(bookings.reservationExpiresAt, now)
-        )
-      )
+          gte(bookings.reservationExpiresAt, now),
+        ),
+      ),
     );
-  
+
   // Completed bookings
   const [completed] = await db
     .select({ count: count() })
     .from(bookings)
-    .where(eq(bookings.status, 'completed'));
-  
+    .where(eq(bookings.status, "completed"));
+
   // Cancelled bookings
   const [cancelled] = await db
     .select({ count: count() })
     .from(bookings)
-    .where(eq(bookings.status, 'cancelled'));
-  
+    .where(eq(bookings.status, "cancelled"));
+
   // Total revenue
   const [revenue] = await db
     .select({ total: sum(bookings.totalAmount) })
     .from(bookings)
     .where(
-      or(
-        eq(bookings.status, 'completed'),
-        eq(bookings.status, 'reserved')
-      )
+      or(eq(bookings.status, "completed"), eq(bookings.status, "reserved")),
     );
-  
+
   // Average stay
   const [avgStay] = await db
     .select({ avg: avg(bookings.numberOfNights) })
     // @ts-ignore
     .from(bookings);
-  
+
   // Monthly bookings
-  const [monthly] = await db
-    .select({ count: count() })
-    .from(bookings)
-    .where(
-      // @ts-ignore
-      gte(bookings.createdAt, startOfMonth)
-    );
-  
+  const [monthly] = await db.select({ count: count() }).from(bookings).where(
+    // @ts-ignore
+    gte(bookings.createdAt, startOfMonth),
+  );
+
   // Bed occupancy by room type
   const roomTypeStats = await db
     .select({
@@ -344,23 +363,26 @@ export async function getBookingStats() {
       total: count(beds.id),
     })
     .from(beds)
-    .leftJoin(bookings, and(
-      eq(bookings.bedAssignmentId, beds.id),
-      eq(bookings.status, 'reserved'),
-      or(
-        isNull(bookings.reservationExpiresAt),
-        // @ts-ignore
-        gte(bookings.reservationExpiresAt, now)
-      )
-    ))
+    .leftJoin(
+      bookings,
+      and(
+        eq(bookings.bedAssignmentId, beds.id),
+        eq(bookings.status, "reserved"),
+        or(
+          isNull(bookings.reservationExpiresAt),
+          // @ts-ignore
+          gte(bookings.reservationExpiresAt, now),
+        ),
+      ),
+    )
     .groupBy(beds.roomType);
-  
-  const byRoomType = roomTypeStats.map(s => ({
-      roomType: s.roomType || 'unknown',
-      occupied: s.occupied || 0,
-      total: s.total || 0,
-      occupancyRate: s.total > 0 ? Math.round((s.occupied / s.total) * 100) : 0,
-    }));
+
+  const byRoomType = roomTypeStats.map((s) => ({
+    roomType: s.roomType || "unknown",
+    occupied: s.occupied || 0,
+    total: s.total || 0,
+    occupancyRate: s.total > 0 ? Math.round((s.occupied / s.total) * 100) : 0,
+  }));
 
   const occupiedBeds = byRoomType.reduce((sum, s) => sum + s.occupied, 0);
   const totalBeds = byRoomType.reduce((sum, s) => sum + s.total, 0);
@@ -370,9 +392,12 @@ export async function getBookingStats() {
     activeBookings: active?.count || 0,
     completedBookings: completed?.count || 0,
     cancelledBookings: cancelled?.count || 0,
-    totalRevenue: revenue?.total || '0',
-    averageStay: avgStay?.avg ? Math.round(parseFloat(String(avgStay.avg)) * 100) / 100 : 0,
-    occupancyRate: totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0,
+    totalRevenue: revenue?.total || "0",
+    averageStay: avgStay?.avg
+      ? Math.round(parseFloat(String(avgStay.avg)) * 100) / 100
+      : 0,
+    occupancyRate:
+      totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0,
     monthlyBookings: monthly?.count || 0,
     byRoomType,
   };
@@ -381,13 +406,15 @@ export async function getBookingStats() {
 /**
  * Get recent bookings
  */
-export async function getRecentBookings(limit: number = 10): Promise<Booking[]> {
+export async function getRecentBookings(
+  limit: number = 10,
+): Promise<Booking[]> {
   const results = await db
     .select()
     .from(bookings)
     .orderBy(desc(bookings.createdAt))
     .limit(limit);
-  
+
   return results;
 }
 
@@ -408,14 +435,17 @@ export async function getBookingWithDetails(id: number) {
     .leftJoin(payments, eq(payments.bookingId, bookings.id))
     .where(eq(bookings.id, id))
     .limit(1);
-  
+
   return result || null;
 }
 
 /**
  * Search bookings
  */
-export async function searchBookings(query: string, limit: number = 10): Promise<Booking[]> {
+export async function searchBookings(
+  query: string,
+  limit: number = 10,
+): Promise<Booking[]> {
   const results = await db
     .select({
       booking: bookings,
@@ -432,13 +462,13 @@ export async function searchBookings(query: string, limit: number = 10): Promise
         like(bookings.referenceNumber, `%${query}%`),
         like(pilgrims.firstName, `%${query}%`),
         like(pilgrims.lastName1, `%${query}%`),
-        like(pilgrims.lastName2, `%${query}%`)
-      )
+        like(pilgrims.lastName2, `%${query}%`),
+      ),
     )
     .orderBy(desc(bookings.createdAt))
     .limit(limit);
-  
-  return results.map(r => r.booking);
+
+  return results.map((r) => r.booking);
 }
 
 /**
@@ -447,7 +477,7 @@ export async function searchBookings(query: string, limit: number = 10): Promise
 export async function getAvailableBedsForDates(
   checkInDate: Date,
   checkOutDate: Date,
-  roomType?: string
+  roomType?: string,
 ): Promise<Bed[]> {
   const checkInStr = checkInDate.toISOString().slice(0, 10);
   const checkOutStr = checkOutDate.toISOString().slice(0, 10);
@@ -458,28 +488,31 @@ export async function getAvailableBedsForDates(
       hasBooking: gt(count(bookings.id), 0),
     })
     .from(beds)
-    .leftJoin(bookings, and(
-      eq(bookings.bedAssignmentId, beds.id),
-      eq(bookings.status, 'reserved'),
-      or(
-        isNull(bookings.reservationExpiresAt),
-        gte(bookings.reservationExpiresAt, new Date())
+    .leftJoin(
+      bookings,
+      and(
+        eq(bookings.bedAssignmentId, beds.id),
+        eq(bookings.status, "reserved"),
+        or(
+          isNull(bookings.reservationExpiresAt),
+          gte(bookings.reservationExpiresAt, new Date()),
+        ),
+        // Check for date overlap
+        or(
+          and(
+            lte(bookings.checkInDate, checkOutStr),
+            gte(bookings.checkOutDate, checkInStr),
+          ),
+        ),
       ),
-      // Check for date overlap
-      or(
-        and(
-          lte(bookings.checkInDate, checkOutStr),
-          gte(bookings.checkOutDate, checkInStr)
-        )
-      )
-    ))
+    )
     .groupBy(beds.id)
     .having(eq(count(bookings.id), 0))
     .orderBy(asc(beds.roomNumber));
-  
+
   return results
-    .filter(r => roomType ? r.bed.roomType === roomType : true)
-    .map(r => r.bed);
+    .filter((r) => (roomType ? r.bed.roomType === roomType : true))
+    .map((r) => r.bed);
 }
 
 // Helper for average
