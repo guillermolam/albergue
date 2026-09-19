@@ -3,15 +3,17 @@
  * Write operations for audit_log
  */
 
-import { db } from '../lib/db.js';
-import { auditLog } from '@albergue/domain-model';
-import { eq, and, or, lt, inArray } from 'drizzle-orm';
-import type { InsertAuditLog, AuditLog } from '../types/index.js';
+import { db } from "../lib/db.js";
+import { auditLog } from "@albergue/domain-model";
+import { eq, and, or, lt, inArray } from "drizzle-orm";
+import type { InsertAuditLog, AuditLog } from "../types/index.js";
 
 /**
  * Create a new audit log entry
  */
-export async function createAuditLogEntry(input: InsertAuditLog): Promise<AuditLog> {
+export async function createAuditLogEntry(
+  input: InsertAuditLog,
+): Promise<AuditLog> {
   const [result] = await db
     .insert(auditLog)
     .values({
@@ -19,11 +21,11 @@ export async function createAuditLogEntry(input: InsertAuditLog): Promise<AuditL
       createdAt: new Date(),
     })
     .returning();
-  
+
   if (!result) {
-    throw new Error('Failed to create audit log entry');
+    throw new Error("Failed to create audit log entry");
   }
-  
+
   return result;
 }
 
@@ -31,18 +33,18 @@ export async function createAuditLogEntry(input: InsertAuditLog): Promise<AuditL
  * Create multiple audit log entries (batch)
  */
 export async function createAuditLogEntriesBatch(
-  inputs: InsertAuditLog[]
+  inputs: InsertAuditLog[],
 ): Promise<AuditLog[]> {
   const results = await db
     .insert(auditLog)
     .values(
-      inputs.map(input => ({
+      inputs.map((input) => ({
         ...input,
         createdAt: new Date(),
-      }))
+      })),
     )
     .returning();
-  
+
   return results;
 }
 
@@ -55,12 +57,12 @@ export async function logCreateAction(
   newValues: any,
   userId?: number,
   ipAddress?: string,
-  userAgent?: string
+  userAgent?: string,
 ): Promise<AuditLog> {
   return createAuditLogEntry({
     tableName,
     recordId: String(recordId),
-    action: 'create',
+    action: "create",
     oldValues: null,
     newValues,
     userId,
@@ -79,12 +81,12 @@ export async function logUpdateAction(
   newValues: any,
   userId?: number,
   ipAddress?: string,
-  userAgent?: string
+  userAgent?: string,
 ): Promise<AuditLog> {
   return createAuditLogEntry({
     tableName,
     recordId: String(recordId),
-    action: 'update',
+    action: "update",
     oldValues,
     newValues,
     userId,
@@ -102,12 +104,12 @@ export async function logDeleteAction(
   oldValues: any,
   userId?: number,
   ipAddress?: string,
-  userAgent?: string
+  userAgent?: string,
 ): Promise<AuditLog> {
   return createAuditLogEntry({
     tableName,
     recordId: String(recordId),
-    action: 'delete',
+    action: "delete",
     oldValues,
     newValues: null,
     userId,
@@ -125,7 +127,7 @@ export async function deleteAuditLogEntry(id: number): Promise<boolean> {
     .delete(auditLog)
     .where(eq(auditLog.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -133,13 +135,15 @@ export async function deleteAuditLogEntry(id: number): Promise<boolean> {
  * Bulk delete audit log entries
  * WARNING: Only use when absolutely necessary
  */
-export async function bulkDeleteAuditLogEntries(ids: number[]): Promise<number> {
+export async function bulkDeleteAuditLogEntries(
+  ids: number[],
+): Promise<number> {
   if (ids.length === 0) return 0;
   const results = await db
     .delete(auditLog)
     .where(inArray(auditLog.id, ids))
     .returning();
-  
+
   return results.length;
 }
 
@@ -150,16 +154,12 @@ export async function bulkDeleteAuditLogEntries(ids: number[]): Promise<number> 
 export async function cleanupOldAuditLogs(days: number = 365): Promise<number> {
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - days);
-  
+
   const results = await db
     .delete(auditLog)
-    .where(
-      and(
-        lt(auditLog.createdAt, cutoffDate)
-      )
-    )
+    .where(and(lt(auditLog.createdAt, cutoffDate)))
     .returning();
-  
+
   return results.length;
 }
 
@@ -167,7 +167,7 @@ export async function cleanupOldAuditLogs(days: number = 365): Promise<number> {
  * Anonymize audit log entries for GDPR compliance
  */
 export async function anonymizeAuditLogEntries(
-  userId: number
+  userId: number,
 ): Promise<number> {
   const results = await db
     .update(auditLog)
@@ -178,6 +178,6 @@ export async function anonymizeAuditLogEntries(
     })
     .where(eq(auditLog.userId, userId))
     .returning();
-  
+
   return results.length;
 }

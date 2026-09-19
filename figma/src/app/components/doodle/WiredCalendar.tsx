@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface WiredCalendarProps {
   onSelectRange: (startDate: Date, endDate: Date) => void;
@@ -11,16 +11,20 @@ interface WiredCalendarProps {
   onContinue?: () => void;
 }
 
-export function WiredCalendar({ 
-  onSelectRange, 
-  selectedStartDate, 
-  selectedEndDate, 
-  minDate, 
+export function WiredCalendar({
+  onSelectRange,
+  selectedStartDate,
+  selectedEndDate,
+  minDate,
   label,
-  onContinue
+  onContinue,
 }: WiredCalendarProps) {
-  const [currentMonth, setCurrentMonth] = useState(selectedStartDate || new Date());
-  const [startDate, setStartDate] = useState<Date | undefined>(selectedStartDate);
+  const [currentMonth, setCurrentMonth] = useState(
+    selectedStartDate || new Date(),
+  );
+  const [startDate, setStartDate] = useState<Date | undefined>(
+    selectedStartDate,
+  );
   const [endDate, setEndDate] = useState<Date | undefined>(selectedEndDate);
   const [hoverDate, setHoverDate] = useState<Date | undefined>();
   const [isSelectingEnd, setIsSelectingEnd] = useState(false);
@@ -28,11 +32,21 @@ export function WiredCalendar({
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
@@ -61,13 +75,17 @@ export function WiredCalendar({
 
   const handlePrevMonth = () => {
     setIsTransitioning(true);
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1),
+    );
     setTimeout(() => setIsTransitioning(false), 300);
   };
 
   const handleNextMonth = () => {
     setIsTransitioning(true);
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1),
+    );
     setTimeout(() => setIsTransitioning(false), 300);
   };
 
@@ -80,7 +98,7 @@ export function WiredCalendar({
       setEndDate(undefined);
       setIsSelectingEnd(true);
       setShowContinueButton(false);
-    } 
+    }
     // If we have a start date and clicking on the same date
     else if (isSameDay(startDate, date)) {
       setStartDate(undefined);
@@ -138,7 +156,7 @@ export function WiredCalendar({
 
   const isInRange = (date: Date | null) => {
     if (!date || !startDate) return false;
-    
+
     const effectiveEndDate = endDate || hoverDate;
     if (!effectiveEndDate) return false;
 
@@ -156,7 +174,9 @@ export function WiredCalendar({
 
   const isRangeEnd = (date: Date | null) => {
     if (!date) return false;
-    const effectiveEndDate = endDate || (hoverDate && startDate && hoverDate > startDate ? hoverDate : undefined);
+    const effectiveEndDate =
+      endDate ||
+      (hoverDate && startDate && hoverDate > startDate ? hoverDate : undefined);
     if (!effectiveEndDate) return false;
     return isSameDay(effectiveEndDate, date);
   };
@@ -169,9 +189,13 @@ export function WiredCalendar({
     setShowContinueButton(false);
   };
 
-  const nights = startDate && (endDate || hoverDate)
-    ? Math.ceil(((endDate || hoverDate)!.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
-    : 0;
+  const nights =
+    startDate && (endDate || hoverDate)
+      ? Math.ceil(
+          ((endDate || hoverDate)!.getTime() - startDate.getTime()) /
+            (1000 * 60 * 60 * 24),
+        )
+      : 0;
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -190,18 +214,25 @@ export function WiredCalendar({
                 {/* Check-in */}
                 <div className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#E8F5E9] doodle-radius flex-shrink-0">
                   <div>
-                    <p className="text-xs text-gray-600" style={{ fontFamily: 'Patrick Hand, cursive' }}>Check-in</p>
+                    <p
+                      className="text-xs text-gray-600"
+                      style={{ fontFamily: "Patrick Hand, cursive" }}
+                    >
+                      Check-in
+                    </p>
                     <p className="text-lg sm:text-xl text-[#00AB39] sketch-title">
-                      {startDate.toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric'
+                      {startDate.toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
                       })}
                     </p>
                   </div>
                 </div>
 
                 {/* Arrow */}
-                <div className="text-xl sm:text-2xl text-[#00AB39] flex-shrink-0">→</div>
+                <div className="text-xl sm:text-2xl text-[#00AB39] flex-shrink-0">
+                  →
+                </div>
 
                 {/* Check-out */}
                 {(endDate || hoverDate) && (
@@ -209,18 +240,26 @@ export function WiredCalendar({
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className="flex items-center gap-2 px-3 sm:px-4 py-2 doodle-radius flex-shrink-0"
-                    style={{ 
-                      backgroundColor: endDate ? '#E8F5E9' : '#F5F5F5' 
+                    style={{
+                      backgroundColor: endDate ? "#E8F5E9" : "#F5F5F5",
                     }}
                   >
                     <div>
-                      <p className="text-xs text-gray-600" style={{ fontFamily: 'Patrick Hand, cursive' }}>Check-out</p>
-                      <p className="text-lg sm:text-xl sketch-title" style={{
-                        color: endDate ? '#00AB39' : '#999'
-                      }}>
-                        {(endDate || hoverDate)!.toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric'
+                      <p
+                        className="text-xs text-gray-600"
+                        style={{ fontFamily: "Patrick Hand, cursive" }}
+                      >
+                        Check-out
+                      </p>
+                      <p
+                        className="text-lg sm:text-xl sketch-title"
+                        style={{
+                          color: endDate ? "#00AB39" : "#999",
+                        }}
+                      >
+                        {(endDate || hoverDate)!.toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
                         })}
                       </p>
                     </div>
@@ -236,7 +275,12 @@ export function WiredCalendar({
                       animate={{ scale: 1 }}
                       className="px-3 sm:px-4 py-2 bg-[#00AB39] doodle-radius text-white flex-shrink-0"
                     >
-                      <p className="text-xs sm:text-sm" style={{ fontFamily: 'Patrick Hand, cursive' }}>Total Nights</p>
+                      <p
+                        className="text-xs sm:text-sm"
+                        style={{ fontFamily: "Patrick Hand, cursive" }}
+                      >
+                        Total Nights
+                      </p>
                       <p className="text-xl sm:text-2xl sketch-title">
                         🌙 {nights}
                       </p>
@@ -248,7 +292,10 @@ export function WiredCalendar({
               {/* Right: Clear + Info + Continue */}
               <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
                 {/* Info text */}
-                <p className="text-xs sm:text-sm text-gray-500 hidden md:block" style={{ fontFamily: 'Patrick Hand, cursive' }}>
+                <p
+                  className="text-xs sm:text-sm text-gray-500 hidden md:block"
+                  style={{ fontFamily: "Patrick Hand, cursive" }}
+                >
                   ✨ Check-in: 2:00 PM | Check-out: 10:00 AM
                 </p>
 
@@ -256,7 +303,7 @@ export function WiredCalendar({
                 <button
                   onClick={clearSelection}
                   className="px-3 py-1 text-sm text-gray-500 hover:text-[#ED1C24] underline transition-colors flex-shrink-0"
-                  style={{ fontFamily: 'Patrick Hand, cursive' }}
+                  style={{ fontFamily: "Patrick Hand, cursive" }}
                 >
                   Clear
                 </button>
@@ -270,7 +317,7 @@ export function WiredCalendar({
                   >
                     <button
                       className="px-4 sm:px-6 py-2 bg-[#00AB39] text-white doodle-radius border-2 border-[#006b24] hover:bg-[#006b24] transition-colors doodle-shadow text-sm sm:text-base"
-                      style={{ fontFamily: 'Patrick Hand, cursive' }}
+                      style={{ fontFamily: "Patrick Hand, cursive" }}
                       onClick={onContinue}
                     >
                       Continue to ID Upload →
@@ -287,7 +334,7 @@ export function WiredCalendar({
       <div className="relative">
         {/* Extra padding for arrows on larger screens */}
         <div className="hidden lg:block absolute inset-0 -left-24 -right-24 pointer-events-none" />
-        
+
         <div className="relative overflow-visible">
           {/* Background Video Texturizer */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -298,18 +345,21 @@ export function WiredCalendar({
               playsInline
               className="absolute inset-0 w-full h-full object-cover opacity-10"
               style={{
-                mixBlendMode: 'multiply',
-                filter: 'blur(1px) contrast(1.2) saturate(0.3)',
+                mixBlendMode: "multiply",
+                filter: "blur(1px) contrast(1.2) saturate(0.3)",
               }}
             >
-              <source src="https://assets.mixkit.co/videos/preview/mixkit-paper-texture-close-up-4356-large.mp4" type="video/mp4" />
+              <source
+                src="https://assets.mixkit.co/videos/preview/mixkit-paper-texture-close-up-4356-large.mp4"
+                type="video/mp4"
+              />
             </video>
           </div>
 
           {/* Hand-drawn border */}
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none z-10"
-            style={{ filter: 'drop-shadow(3px 4px 6px rgba(0,0,0,0.1))' }}
+            style={{ filter: "drop-shadow(3px 4px 6px rgba(0,0,0,0.1))" }}
           >
             <rect
               x="4"
@@ -321,7 +371,7 @@ export function WiredCalendar({
               stroke="#00AB39"
               strokeWidth="3.5"
               rx="20"
-              style={{ strokeLinecap: 'round' }}
+              style={{ strokeLinecap: "round" }}
             />
             <rect
               x="6"
@@ -337,32 +387,40 @@ export function WiredCalendar({
             />
           </svg>
 
-          <div className="relative z-20 p-3 sm:p-4 lg:p-6">{/* Month Header with Floating Doodle Arrows */}
+          <div className="relative z-20 p-3 sm:p-4 lg:p-6">
+            {/* Month Header with Floating Doodle Arrows */}
             <div className="relative flex items-center justify-center mb-8">
               {/* Left Arrow - Doodle Style with Bounce - Responsive positioning */}
               <motion.div
                 className="absolute left-0 sm:-left-16 lg:-left-20 z-30"
-                style={{ top: '50%', transform: 'translateY(-50%)' }}
+                style={{ top: "50%", transform: "translateY(-50%)" }}
                 animate={{ y: [0, -5, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
               >
                 <motion.button
-                  whileHover={{ 
-                    scale: 1.2, 
+                  whileHover={{
+                    scale: 1.2,
                     rotate: -10,
                     y: [-5, -15, -5],
-                    transition: { y: { duration: 0.5, repeat: Infinity } }
+                    transition: { y: { duration: 0.5, repeat: Infinity } },
                   }}
                   whileTap={{ scale: 0.85 }}
                   onClick={handlePrevMonth}
                   className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 flex items-center justify-center bg-white border-3 border-[#00AB39] text-[#00AB39] hover:bg-[#E8F5E9] transition-colors doodle-shadow-md relative"
                   style={{
-                    borderRadius: '50% 45% 48% 52% / 52% 48% 52% 48%',
+                    borderRadius: "50% 45% 48% 52% / 52% 48% 52% 48%",
                   }}
                   aria-label="Previous month"
                 >
                   {/* Hand-drawn circle border */}
-                  <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100">
+                  <svg
+                    className="absolute inset-0 w-full h-full pointer-events-none"
+                    viewBox="0 0 100 100"
+                  >
                     <circle
                       cx="50"
                       cy="50"
@@ -374,7 +432,10 @@ export function WiredCalendar({
                       opacity="0.3"
                     />
                   </svg>
-                  <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 relative z-10" strokeWidth={3} />
+                  <ChevronLeft
+                    className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 relative z-10"
+                    strokeWidth={3}
+                  />
                 </motion.button>
               </motion.div>
 
@@ -388,34 +449,43 @@ export function WiredCalendar({
                   transition={{ duration: 0.3 }}
                   className="text-2xl sm:text-3xl lg:text-4xl sketch-title text-[#00AB39] px-12 sm:px-0"
                 >
-                  {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+                  {monthNames[currentMonth.getMonth()]}{" "}
+                  {currentMonth.getFullYear()}
                 </motion.h3>
               </AnimatePresence>
 
               {/* Right Arrow - Doodle Style with Bounce - Responsive positioning */}
               <motion.div
                 className="absolute right-0 sm:-right-16 lg:-right-20 z-30"
-                style={{ top: '50%', transform: 'translateY(-50%)' }}
+                style={{ top: "50%", transform: "translateY(-50%)" }}
                 animate={{ y: [0, -5, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1,
+                }}
               >
                 <motion.button
-                  whileHover={{ 
-                    scale: 1.2, 
+                  whileHover={{
+                    scale: 1.2,
                     rotate: 10,
                     y: [-5, -15, -5],
-                    transition: { y: { duration: 0.5, repeat: Infinity } }
+                    transition: { y: { duration: 0.5, repeat: Infinity } },
                   }}
                   whileTap={{ scale: 0.85 }}
                   onClick={handleNextMonth}
                   className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 flex items-center justify-center bg-white border-3 border-[#00AB39] text-[#00AB39] hover:bg-[#E8F5E9] transition-colors doodle-shadow-md relative"
                   style={{
-                    borderRadius: '48% 52% 50% 50% / 50% 50% 48% 52%',
+                    borderRadius: "48% 52% 50% 50% / 50% 50% 48% 52%",
                   }}
                   aria-label="Next month"
                 >
                   {/* Hand-drawn circle border */}
-                  <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100">
+                  <svg
+                    className="absolute inset-0 w-full h-full pointer-events-none"
+                    viewBox="0 0 100 100"
+                  >
                     <circle
                       cx="50"
                       cy="50"
@@ -427,7 +497,10 @@ export function WiredCalendar({
                       opacity="0.3"
                     />
                   </svg>
-                  <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 relative z-10" strokeWidth={3} />
+                  <ChevronRight
+                    className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 relative z-10"
+                    strokeWidth={3}
+                  />
                 </motion.button>
               </motion.div>
             </div>
@@ -487,10 +560,10 @@ export function WiredCalendar({
                       onClick={() => !disabled && handleDateClick(date)}
                       onMouseEnter={() => handleDateHover(date)}
                       disabled={disabled}
-                      className={`relative w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center transition-all ${ 
+                      className={`relative w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex items-center justify-center transition-all ${
                         disabled
-                          ? 'text-gray-300 cursor-not-allowed'
-                          : 'cursor-pointer'
+                          ? "text-gray-300 cursor-not-allowed"
+                          : "cursor-pointer"
                       }`}
                     >
                       {/* Hand-drawn cell border */}
@@ -503,33 +576,35 @@ export function WiredCalendar({
                           y="5"
                           width="90"
                           height="90"
-                          rx={isStart || isEnd ? '20' : inRange ? '8' : '15'}
+                          rx={isStart || isEnd ? "20" : inRange ? "8" : "15"}
                           fill={
                             isStart || isEnd
-                              ? '#00AB39'
+                              ? "#00AB39"
                               : inRange
-                              ? isHovering && !endDate
-                                ? 'rgba(0, 171, 57, 0.2)'
-                                : 'rgba(0, 171, 57, 0.15)'
-                              : isTodayDate
-                              ? '#EAC102'
-                              : disabled
-                              ? '#f5f5f5'
-                              : '#FFF9F0'
+                                ? isHovering && !endDate
+                                  ? "rgba(0, 171, 57, 0.2)"
+                                  : "rgba(0, 171, 57, 0.15)"
+                                : isTodayDate
+                                  ? "#EAC102"
+                                  : disabled
+                                    ? "#f5f5f5"
+                                    : "#FFF9F0"
                           }
                           stroke={
                             isStart || isEnd
-                              ? '#005a1e'
+                              ? "#005a1e"
                               : inRange
-                              ? 'rgba(0, 171, 57, 0.3)'
-                              : isTodayDate
-                              ? '#D4A574'
-                              : disabled
-                              ? '#e0e0e0'
-                              : '#D4A574'
+                                ? "rgba(0, 171, 57, 0.3)"
+                                : isTodayDate
+                                  ? "#D4A574"
+                                  : disabled
+                                    ? "#e0e0e0"
+                                    : "#D4A574"
                           }
-                          strokeWidth={isStart || isEnd ? '4' : inRange ? '2' : '2.5'}
-                          style={{ strokeLinecap: 'round' }}
+                          strokeWidth={
+                            isStart || isEnd ? "4" : inRange ? "2" : "2.5"
+                          }
+                          style={{ strokeLinecap: "round" }}
                         />
                         {(isStart || isEnd) && (
                           <rect
@@ -548,18 +623,18 @@ export function WiredCalendar({
                       </svg>
 
                       <span
-                        className={`relative z-10 text-lg ${ 
+                        className={`relative z-10 text-lg ${
                           isStart || isEnd
-                            ? 'text-white sketch-title'
+                            ? "text-white sketch-title"
                             : isTodayDate && !inRange
-                            ? 'text-white sketch-title'
-                            : inRange
-                            ? 'text-[#00AB39] sketch-title'
-                            : disabled
-                            ? 'text-gray-300'
-                            : 'text-[#5D4E37]'
+                              ? "text-white sketch-title"
+                              : inRange
+                                ? "text-[#00AB39] sketch-title"
+                                : disabled
+                                  ? "text-gray-300"
+                                  : "text-[#5D4E37]"
                         }`}
-                        style={{ fontFamily: 'Patrick Hand, cursive' }}
+                        style={{ fontFamily: "Patrick Hand, cursive" }}
                       >
                         {date.getDate()}
                       </span>

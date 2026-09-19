@@ -3,31 +3,15 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@/components/*": [
-        "./src/components/*"
-      ],
-      "@/layouts/*": [
-        "./src/layouts/*"
-      ],
-      "@/pages/*": [
-        "./src/pages/*"
-      ],
-      "@/styles/*": [
-        "./src/styles/*"
-      ],
-      "@/assets/*": [
-        "./src/assets/*"
-      ],
-      "@/public/*": [
-        "./public/*"
-      ]
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/layouts/*": ["./src/layouts/*"],
+      "@/pages/*": ["./src/pages/*"],
+      "@/styles/*": ["./src/styles/*"],
+      "@/assets/*": ["./src/assets/*"],
+      "@/public/*": ["./public/*"]
     },
-    "types": [
-      "astro/client"
-    ],
+    "types": ["astro/client"],
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
@@ -45,11 +29,5 @@
     "src/**/*.tsx",
     "./worker-configuration.d.ts"
   ],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "tests",
-    "tests/**/*",
-    "src/**/*.test.tsx"
-  ]
+  "exclude": ["dist", "node_modules", "tests", "tests/**/*", "src/**/*.test.tsx"]
 }

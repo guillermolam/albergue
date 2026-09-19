@@ -1,10 +1,17 @@
-import { motion } from 'motion/react';
-import { FileText, Clock, CreditCard, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
-import { useI18n } from '../contexts/I18nContext';
-import { useNavigate } from 'react-router-dom';
-import { DoodleCard } from './doodle/DoodleCard';
-import { CONTACT_INFO, LEGAL_INFO } from '../constants/footerData';
-import logoImage from 'figma:asset/6340c39809bbb6dce9c21e3fed2ac80a388b79b7.png';
+import { motion } from "motion/react";
+import {
+  FileText,
+  Clock,
+  CreditCard,
+  AlertTriangle,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
+import { useI18n } from "../contexts/I18nContext";
+import { useNavigate } from "react-router-dom";
+import { DoodleCard } from "./doodle/DoodleCard";
+import { CONTACT_INFO, LEGAL_INFO } from "../constants/footerData";
+import logoImage from "figma:asset/6340c39809bbb6dce9c21e3fed2ac80a388b79b7.png";
 
 export function TermsAndConditions() {
   const { language } = useI18n();
@@ -12,12 +19,12 @@ export function TermsAndConditions() {
 
   const content = {
     es: {
-      title: 'Términos y Condiciones',
-      lastUpdated: 'Última actualización: 20 de Diciembre de 2025',
+      title: "Términos y Condiciones",
+      lastUpdated: "Última actualización: 20 de Diciembre de 2025",
       sections: [
         {
           icon: FileText,
-          title: '1. Información General',
+          title: "1. Información General",
           content: `
             Estos Términos y Condiciones regulan el uso de la plataforma de reservas online y los servicios de alojamiento del ${CONTACT_INFO.name}.
             
@@ -27,11 +34,11 @@ export function TermsAndConditions() {
             Compañía Aseguradora: ${LEGAL_INFO.insuranceCompany}
             
             Al realizar una reserva, aceptas estos términos en su totalidad.
-          `
+          `,
         },
         {
           icon: Clock,
-          title: '2. Reservas y Confirmación',
+          title: "2. Reservas y Confirmación",
           content: `
             • Las reservas se confirman al recibir el pago completo o señal del 30%
             • Recibirás un email de confirmación en un plazo máximo de 24 horas
@@ -41,11 +48,11 @@ export function TermsAndConditions() {
             • Llegadas fuera de horario deben coordinarse previamente (sin coste adicional)
             
             Conforme al Real Decreto 933/2021 sobre alojamientos turísticos, todas las reservas están sujetas a verificación de identidad.
-          `
+          `,
         },
         {
           icon: CreditCard,
-          title: '3. Precios y Pago',
+          title: "3. Precios y Pago",
           content: `
             • Tarifa estándar: 10€ por noche y persona
             • Tarifas especiales para grupos (consultar disponibilidad)
@@ -54,11 +61,11 @@ export function TermsAndConditions() {
             • Pasarela de pago segura con certificado SSL
             
             Facturación: Conforme a normativa fiscal española, se emitirá factura completa para todas las estancias.
-          `
+          `,
         },
         {
           icon: XCircle,
-          title: '4. Cancelaciones y Reembolsos',
+          title: "4. Cancelaciones y Reembolsos",
           content: `
             Política de cancelación según Ley 7/1998 de Turismo de Extremadura:
             
@@ -69,11 +76,11 @@ export function TermsAndConditions() {
             
             Excepciones por causa de fuerza mayor se valorarán individualmente.
             Los reembolsos se procesarán en un plazo máximo de 14 días hábiles.
-          `
+          `,
         },
         {
           icon: CheckCircle,
-          title: '5. Obligaciones del Huésped',
+          title: "5. Obligaciones del Huésped",
           content: `
             El huésped se compromete a:
             
@@ -85,11 +92,11 @@ export function TermsAndConditions() {
             • Cumplir con las medidas de seguridad e higiene
             
             El incumplimiento puede resultar en la expulsión sin derecho a reembolso.
-          `
+          `,
         },
         {
           icon: AlertTriangle,
-          title: '6. Responsabilidad y Limitaciones',
+          title: "6. Responsabilidad y Limitaciones",
           content: `
             • El albergue no se responsabiliza de objetos personales no depositados en consigna
             • Póliza de RC cubriente de daños según legislación vigente
@@ -100,8 +107,8 @@ export function TermsAndConditions() {
             - Hoja de reclamaciones disponible en recepción
             - Junta Arbitral de Consumo: ${LEGAL_INFO.arbitrationUrl}
             - Plataforma ODR de la UE: ${LEGAL_INFO.odrPlatform}
-          `
-        }
+          `,
+        },
       ],
       footer: `
         Estos términos se rigen por la legislación española. Para cualquier disputa, serán competentes los Juzgados y Tribunales de ${CONTACT_INFO.address.region}.
@@ -111,15 +118,15 @@ export function TermsAndConditions() {
         • Real Decreto 933/2021 sobre alojamientos turísticos
         • Ley General para la Defensa de Consumidores y Usuarios
         • Código Civil español
-      `
+      `,
     },
     en: {
-      title: 'Terms and Conditions',
-      lastUpdated: 'Last updated: December 20, 2025',
+      title: "Terms and Conditions",
+      lastUpdated: "Last updated: December 20, 2025",
       sections: [
         {
           icon: FileText,
-          title: '1. General Information',
+          title: "1. General Information",
           content: `
             These Terms and Conditions govern the use of the online booking platform and accommodation services at ${CONTACT_INFO.name}.
             
@@ -129,11 +136,11 @@ export function TermsAndConditions() {
             Insurance Company: ${LEGAL_INFO.insuranceCompany}
             
             By making a reservation, you accept these terms in full.
-          `
+          `,
         },
         {
           icon: Clock,
-          title: '2. Bookings and Confirmation',
+          title: "2. Bookings and Confirmation",
           content: `
             • Bookings are confirmed upon receipt of full payment or 30% deposit
             • You will receive a confirmation email within 24 hours
@@ -143,11 +150,11 @@ export function TermsAndConditions() {
             • Late arrivals must be coordinated in advance (no additional cost)
             
             According to Royal Decree 933/2021 on tourist accommodations, all bookings are subject to identity verification.
-          `
+          `,
         },
         {
           icon: CreditCard,
-          title: '3. Prices and Payment',
+          title: "3. Prices and Payment",
           content: `
             • Standard rate: €10 per night per person
             • Special group rates (check availability)
@@ -156,11 +163,11 @@ export function TermsAndConditions() {
             • Secure payment gateway with SSL certificate
             
             Invoicing: In accordance with Spanish tax regulations, a complete invoice will be issued for all stays.
-          `
+          `,
         },
         {
           icon: XCircle,
-          title: '4. Cancellations and Refunds',
+          title: "4. Cancellations and Refunds",
           content: `
             Cancellation policy according to Extremadura Tourism Law 7/1998:
             
@@ -171,11 +178,11 @@ export function TermsAndConditions() {
             
             Force majeure exceptions will be evaluated individually.
             Refunds will be processed within a maximum of 14 business days.
-          `
+          `,
         },
         {
           icon: CheckCircle,
-          title: '5. Guest Obligations',
+          title: "5. Guest Obligations",
           content: `
             The guest agrees to:
             
@@ -187,11 +194,11 @@ export function TermsAndConditions() {
             • Comply with safety and hygiene measures
             
             Non-compliance may result in expulsion without refund.
-          `
+          `,
         },
         {
           icon: AlertTriangle,
-          title: '6. Liability and Limitations',
+          title: "6. Liability and Limitations",
           content: `
             • The hostel is not responsible for personal items not deposited in storage
             • Liability insurance covering damages according to current legislation
@@ -202,8 +209,8 @@ export function TermsAndConditions() {
             - Complaint forms available at reception
             - Consumer Arbitration Board: ${LEGAL_INFO.arbitrationUrl}
             - EU ODR Platform: ${LEGAL_INFO.odrPlatform}
-          `
-        }
+          `,
+        },
       ],
       footer: `
         These terms are governed by Spanish law. For any dispute, the Courts of ${CONTACT_INFO.address.region} will have jurisdiction.
@@ -213,8 +220,8 @@ export function TermsAndConditions() {
         • Royal Decree 933/2021 on tourist accommodations
         • General Law for Consumer Protection
         • Spanish Civil Code
-      `
-    }
+      `,
+    },
   };
 
   const data = content[language];
@@ -230,14 +237,18 @@ export function TermsAndConditions() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <motion.div
             className="flex items-center gap-4 cursor-pointer"
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
             whileHover={{ scale: 1.05 }}
           >
             <img src={logoImage} alt="Logo" className="w-16 h-16" />
             <div>
-              <h1 className="text-white sketch-title text-2xl">{CONTACT_INFO.name}</h1>
+              <h1 className="text-white sketch-title text-2xl">
+                {CONTACT_INFO.name}
+              </h1>
               <p className="text-[#E8F5E9] text-sm hand-drawn">
-                {language === 'es' ? 'Camino de Santiago' : 'Camino de Santiago'}
+                {language === "es"
+                  ? "Camino de Santiago"
+                  : "Camino de Santiago"}
               </p>
             </div>
           </motion.div>
@@ -296,12 +307,12 @@ export function TermsAndConditions() {
 
         {/* Back Button */}
         <motion.button
-          onClick={() => navigate('/')}
+          onClick={() => navigate("/")}
           className="mt-12 px-8 py-4 bg-[#0071BC] text-white rounded-2xl border-5 border-[#004d80] sketch-title text-xl"
           whileHover={{ scale: 1.05, y: -3 }}
-          style={{ boxShadow: '5px 7px 0px rgba(0, 77, 128, 0.5)' }}
+          style={{ boxShadow: "5px 7px 0px rgba(0, 77, 128, 0.5)" }}
         >
-          {language === 'es' ? '← Volver al Inicio' : '← Back to Home'}
+          {language === "es" ? "← Volver al Inicio" : "← Back to Home"}
         </motion.button>
       </div>
     </div>

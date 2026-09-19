@@ -1,9 +1,9 @@
-import { motion } from 'motion/react';
-import { useState } from 'react';
-import { WiredButton } from '../doodle/WiredButton';
-import { WiredCalendar } from '../doodle/WiredCalendar';
-import { WritingEffect } from '../doodle/WritingEffect';
-import { HandDrawnCalendar } from '../doodle/HandDrawnCalendar';
+import { motion } from "motion/react";
+import { useState } from "react";
+import { WiredButton } from "../doodle/WiredButton";
+import { WiredCalendar } from "../doodle/WiredCalendar";
+import { WritingEffect } from "../doodle/WritingEffect";
+import { HandDrawnCalendar } from "../doodle/HandDrawnCalendar";
 
 interface DatePickerStepProps {
   onNext: (checkIn: Date, checkOut: Date) => void;
@@ -11,38 +11,50 @@ interface DatePickerStepProps {
   initialCheckOut?: Date;
 }
 
-export function DatePickerStep({ onNext, initialCheckIn, initialCheckOut }: DatePickerStepProps) {
+export function DatePickerStep({
+  onNext,
+  initialCheckIn,
+  initialCheckOut,
+}: DatePickerStepProps) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  
-  const [checkInDate, setCheckInDate] = useState<Date | undefined>(initialCheckIn);
-  const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(initialCheckOut);
-  const [error, setError] = useState('');
+
+  const [checkInDate, setCheckInDate] = useState<Date | undefined>(
+    initialCheckIn,
+  );
+  const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(
+    initialCheckOut,
+  );
+  const [error, setError] = useState("");
 
   const handleRangeSelect = (startDate: Date, endDate: Date) => {
     setCheckInDate(startDate);
     setCheckOutDate(endDate);
-    setError('');
+    setError("");
   };
 
   const handleContinue = () => {
     if (!checkInDate || !checkOutDate) {
-      setError('Please select both check-in and check-out dates');
+      setError("Please select both check-in and check-out dates");
       return;
     }
-    
+
     if (checkOutDate <= checkInDate) {
-      setError('Check-out date must be after check-in date');
+      setError("Check-out date must be after check-in date");
       return;
     }
-    
-    setError('');
+
+    setError("");
     onNext(checkInDate, checkOutDate);
   };
 
-  const nights = checkInDate && checkOutDate
-    ? Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24))
-    : 0;
+  const nights =
+    checkInDate && checkOutDate
+      ? Math.ceil(
+          (checkOutDate.getTime() - checkInDate.getTime()) /
+            (1000 * 60 * 60 * 24),
+        )
+      : 0;
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -60,7 +72,10 @@ export function DatePickerStep({ onNext, initialCheckIn, initialCheckOut }: Date
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 150, delay: 0.2 }}
             >
-              <HandDrawnCalendar className="w-12 h-12 text-[#00AB39]" strokeWidth={2} />
+              <HandDrawnCalendar
+                className="w-12 h-12 text-[#00AB39]"
+                strokeWidth={2}
+              />
             </motion.div>
             <div className="text-left">
               <h1 className="text-4xl md:text-5xl sketch-title text-[#5D4E37] leading-none">

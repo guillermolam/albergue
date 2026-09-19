@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDown, Search, Check, Phone } from 'lucide-react';
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { ChevronDown, Search, Check, Phone } from "lucide-react";
 
 interface Country {
   code: string;
@@ -10,25 +10,25 @@ interface Country {
 }
 
 const countries: Country[] = [
-  { code: 'ES', name: 'Spain', dialCode: '+34', flag: '🇪🇸' },
-  { code: 'FR', name: 'France', dialCode: '+33', flag: '🇫🇷' },
-  { code: 'IT', name: 'Italy', dialCode: '+39', flag: '🇮🇹' },
-  { code: 'PT', name: 'Portugal', dialCode: '+351', flag: '🇵🇹' },
-  { code: 'DE', name: 'Germany', dialCode: '+49', flag: '🇩🇪' },
-  { code: 'GB', name: 'United Kingdom', dialCode: '+44', flag: '🇬🇧' },
-  { code: 'US', name: 'United States', dialCode: '+1', flag: '🇺🇸' },
-  { code: 'IE', name: 'Ireland', dialCode: '+353', flag: '🇮🇪' },
-  { code: 'NL', name: 'Netherlands', dialCode: '+31', flag: '🇳🇱' },
-  { code: 'BE', name: 'Belgium', dialCode: '+32', flag: '🇧🇪' },
-  { code: 'CH', name: 'Switzerland', dialCode: '+41', flag: '🇨🇭' },
-  { code: 'AT', name: 'Austria', dialCode: '+43', flag: '🇦🇹' },
-  { code: 'PL', name: 'Poland', dialCode: '+48', flag: '🇵🇱' },
-  { code: 'CZ', name: 'Czech Republic', dialCode: '+420', flag: '🇨🇿' },
-  { code: 'MX', name: 'Mexico', dialCode: '+52', flag: '🇲🇽' },
-  { code: 'BR', name: 'Brazil', dialCode: '+55', flag: '🇧🇷' },
-  { code: 'AR', name: 'Argentina', dialCode: '+54', flag: '🇦🇷' },
-  { code: 'CA', name: 'Canada', dialCode: '+1', flag: '🇨🇦' },
-  { code: 'AU', name: 'Australia', dialCode: '+61', flag: '🇦🇺' },
+  { code: "ES", name: "Spain", dialCode: "+34", flag: "🇪🇸" },
+  { code: "FR", name: "France", dialCode: "+33", flag: "🇫🇷" },
+  { code: "IT", name: "Italy", dialCode: "+39", flag: "🇮🇹" },
+  { code: "PT", name: "Portugal", dialCode: "+351", flag: "🇵🇹" },
+  { code: "DE", name: "Germany", dialCode: "+49", flag: "🇩🇪" },
+  { code: "GB", name: "United Kingdom", dialCode: "+44", flag: "🇬🇧" },
+  { code: "US", name: "United States", dialCode: "+1", flag: "🇺🇸" },
+  { code: "IE", name: "Ireland", dialCode: "+353", flag: "🇮🇪" },
+  { code: "NL", name: "Netherlands", dialCode: "+31", flag: "🇳🇱" },
+  { code: "BE", name: "Belgium", dialCode: "+32", flag: "🇧🇪" },
+  { code: "CH", name: "Switzerland", dialCode: "+41", flag: "🇨🇭" },
+  { code: "AT", name: "Austria", dialCode: "+43", flag: "🇦🇹" },
+  { code: "PL", name: "Poland", dialCode: "+48", flag: "🇵🇱" },
+  { code: "CZ", name: "Czech Republic", dialCode: "+420", flag: "🇨🇿" },
+  { code: "MX", name: "Mexico", dialCode: "+52", flag: "🇲🇽" },
+  { code: "BR", name: "Brazil", dialCode: "+55", flag: "🇧🇷" },
+  { code: "AR", name: "Argentina", dialCode: "+54", flag: "🇦🇷" },
+  { code: "CA", name: "Canada", dialCode: "+1", flag: "🇨🇦" },
+  { code: "AU", name: "Australia", dialCode: "+61", flag: "🇦🇺" },
 ];
 
 interface PhoneInputProps {
@@ -40,42 +40,47 @@ interface PhoneInputProps {
   required?: boolean;
 }
 
-export function PhoneInput({ 
-  value, 
-  onChange, 
+export function PhoneInput({
+  value,
+  onChange,
   label = "Phone Number",
   placeholder = "123 456 789",
   defaultCountry = "ES",
-  required = false
+  required = false,
 }: PhoneInputProps) {
   const [selectedCountry, setSelectedCountry] = useState<Country>(
-    countries.find(c => c.code === defaultCountry) || countries[0]
+    countries.find((c) => c.code === defaultCountry) || countries[0],
   );
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [focused, setFocused] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setDropdownOpen(false);
-        setSearchQuery('');
+        setSearchQuery("");
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
     // Parse existing value if provided
     if (value && !phoneNumber) {
-      const matchedCountry = countries.find(c => value.startsWith(c.dialCode));
+      const matchedCountry = countries.find((c) =>
+        value.startsWith(c.dialCode),
+      );
       if (matchedCountry) {
         setSelectedCountry(matchedCountry);
-        setPhoneNumber(value.replace(matchedCountry.dialCode, '').trim());
+        setPhoneNumber(value.replace(matchedCountry.dialCode, "").trim());
       }
     }
   }, [value]);
@@ -83,25 +88,26 @@ export function PhoneInput({
   const handleCountrySelect = (country: Country) => {
     setSelectedCountry(country);
     setDropdownOpen(false);
-    setSearchQuery('');
+    setSearchQuery("");
     const fullNumber = `${country.dialCode} ${phoneNumber}`.trim();
     onChange(fullNumber);
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const cleaned = e.target.value.replace(/[^\d\s]/g, '');
+    const cleaned = e.target.value.replace(/[^\d\s]/g, "");
     setPhoneNumber(cleaned);
     const fullNumber = `${selectedCountry.dialCode} ${cleaned}`.trim();
     onChange(fullNumber);
   };
 
-  const filteredCountries = countries.filter(country =>
-    country.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    country.dialCode.includes(searchQuery) ||
-    country.code.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredCountries = countries.filter(
+    (country) =>
+      country.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      country.dialCode.includes(searchQuery) ||
+      country.code.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const isValid = phoneNumber.replace(/\s/g, '').length >= 6;
+  const isValid = phoneNumber.replace(/\s/g, "").length >= 6;
 
   return (
     <div className="w-full">
@@ -115,7 +121,7 @@ export function PhoneInput({
         {/* Hand-drawn border */}
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none"
-          style={{ filter: 'drop-shadow(2px 3px 4px rgba(0,0,0,0.08))' }}
+          style={{ filter: "drop-shadow(2px 3px 4px rgba(0,0,0,0.08))" }}
         >
           <rect
             x="3"
@@ -123,10 +129,10 @@ export function PhoneInput({
             width="calc(100% - 6px)"
             height="calc(100% - 6px)"
             fill="#FFF9F0"
-            stroke={focused ? '#00AB39' : '#D4A574'}
-            strokeWidth={focused ? '3' : '2.5'}
+            stroke={focused ? "#00AB39" : "#D4A574"}
+            strokeWidth={focused ? "3" : "2.5"}
             rx="12"
-            style={{ strokeLinecap: 'round' }}
+            style={{ strokeLinecap: "round" }}
           />
           {focused && (
             <rect
@@ -154,8 +160,17 @@ export function PhoneInput({
               whileTap={{ scale: 0.98 }}
               className="flex items-center gap-2 px-3 py-3 border-r-2 border-[#D4A574]/30 hover:bg-[#E8F5E9] transition-colors"
             >
-              <span className="text-2xl leading-none" role="img" aria-label={selectedCountry.name}>{selectedCountry.flag}</span>
-              <span className="text-sm font-medium text-[#5D4E37]" style={{ fontFamily: 'Patrick Hand, cursive' }}>
+              <span
+                className="text-2xl leading-none"
+                role="img"
+                aria-label={selectedCountry.name}
+              >
+                {selectedCountry.flag}
+              </span>
+              <span
+                className="text-sm font-medium text-[#5D4E37]"
+                style={{ fontFamily: "Patrick Hand, cursive" }}
+              >
                 {selectedCountry.dialCode}
               </span>
               <motion.div
@@ -179,7 +194,9 @@ export function PhoneInput({
                   {/* Dropdown border */}
                   <svg
                     className="absolute inset-0 w-full h-full pointer-events-none"
-                    style={{ filter: 'drop-shadow(4px 6px 8px rgba(0,0,0,0.15))' }}
+                    style={{
+                      filter: "drop-shadow(4px 6px 8px rgba(0,0,0,0.15))",
+                    }}
                   >
                     <rect
                       x="4"
@@ -203,28 +220,38 @@ export function PhoneInput({
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search countries..."
                         className="w-full pl-10 pr-3 py-2 text-sm doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
-                        style={{ fontFamily: 'Patrick Hand, cursive' }}
+                        style={{ fontFamily: "Patrick Hand, cursive" }}
                       />
                     </div>
 
                     {/* Country List */}
-                    <div className="overflow-y-auto flex-1 space-y-1 pr-2" style={{ maxHeight: '250px' }}>
+                    <div
+                      className="overflow-y-auto flex-1 space-y-1 pr-2"
+                      style={{ maxHeight: "250px" }}
+                    >
                       {filteredCountries.map((country) => (
                         <motion.button
                           key={country.code}
                           type="button"
                           onClick={() => handleCountrySelect(country)}
-                          whileHover={{ x: 4, backgroundColor: '#E8F5E9' }}
+                          whileHover={{ x: 4, backgroundColor: "#E8F5E9" }}
                           className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors ${
-                            selectedCountry.code === country.code ? 'bg-[#E8F5E9]' : ''
+                            selectedCountry.code === country.code
+                              ? "bg-[#E8F5E9]"
+                              : ""
                           }`}
                         >
                           <span className="text-2xl">{country.flag}</span>
                           <div className="flex-1">
-                            <p className="text-sm font-medium text-[#5D4E37]" style={{ fontFamily: 'Patrick Hand, cursive' }}>
+                            <p
+                              className="text-sm font-medium text-[#5D4E37]"
+                              style={{ fontFamily: "Patrick Hand, cursive" }}
+                            >
                               {country.name}
                             </p>
-                            <p className="text-xs text-gray-500">{country.dialCode}</p>
+                            <p className="text-xs text-gray-500">
+                              {country.dialCode}
+                            </p>
                           </div>
                           {selectedCountry.code === country.code && (
                             <Check className="w-4 h-4 text-[#00AB39]" />
@@ -248,7 +275,7 @@ export function PhoneInput({
               onBlur={() => setFocused(false)}
               placeholder={placeholder}
               className="w-full px-4 py-3 bg-transparent focus:outline-none text-[#5D4E37]"
-              style={{ fontFamily: 'Patrick Hand, cursive', fontSize: '16px' }}
+              style={{ fontFamily: "Patrick Hand, cursive", fontSize: "16px" }}
             />
 
             {/* Validation Icon */}

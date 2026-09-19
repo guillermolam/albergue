@@ -1,5 +1,14 @@
-import { motion } from 'motion/react';
-import { Calendar, CreditCard, FileText, Bed, User, Upload, CheckCircle, Home } from 'lucide-react';
+import { motion } from "motion/react";
+import {
+  Calendar,
+  CreditCard,
+  FileText,
+  Bed,
+  User,
+  Upload,
+  CheckCircle,
+  Home,
+} from "lucide-react";
 
 interface Step {
   number: number;
@@ -14,50 +23,54 @@ interface BookingStepperProps {
   onStepClick: (step: number) => void;
 }
 
-export function BookingStepper({ currentStep, completedSteps, onStepClick }: BookingStepperProps) {
+export function BookingStepper({
+  currentStep,
+  completedSteps,
+  onStepClick,
+}: BookingStepperProps) {
   const steps: Step[] = [
     {
       number: 1,
-      title: 'Dates',
-      subtitle: 'Check-in & out',
-      icon: <Calendar className="w-5 h-5" />
+      title: "Dates",
+      subtitle: "Check-in & out",
+      icon: <Calendar className="w-5 h-5" />,
     },
     {
       number: 2,
-      title: 'ID Upload',
-      subtitle: 'OCR scan',
-      icon: <Upload className="w-5 h-5" />
+      title: "ID Upload",
+      subtitle: "OCR scan",
+      icon: <Upload className="w-5 h-5" />,
     },
     {
       number: 3,
-      title: 'Your Info',
-      subtitle: 'Pilgrim details',
-      icon: <User className="w-5 h-5" />
+      title: "Your Info",
+      subtitle: "Pilgrim details",
+      icon: <User className="w-5 h-5" />,
     },
     {
       number: 4,
-      title: 'Select Bed',
-      subtitle: '3D dorm view',
-      icon: <Bed className="w-5 h-5" />
+      title: "Select Bed",
+      subtitle: "3D dorm view",
+      icon: <Bed className="w-5 h-5" />,
     },
     {
       number: 5,
-      title: 'Payment',
-      subtitle: 'Secure checkout',
-      icon: <CreditCard className="w-5 h-5" />
+      title: "Payment",
+      subtitle: "Secure checkout",
+      icon: <CreditCard className="w-5 h-5" />,
     },
     {
       number: 6,
-      title: 'Summary',
-      subtitle: 'Review booking',
-      icon: <FileText className="w-5 h-5" />
+      title: "Summary",
+      subtitle: "Review booking",
+      icon: <FileText className="w-5 h-5" />,
     },
     {
       number: 7,
-      title: 'Dashboard',
-      subtitle: 'Your portal',
-      icon: <Home className="w-5 h-5" />
-    }
+      title: "Dashboard",
+      subtitle: "Your portal",
+      icon: <Home className="w-5 h-5" />,
+    },
   ];
 
   const isStepClickable = (stepNumber: number) => {
@@ -108,7 +121,7 @@ export function BookingStepper({ currentStep, completedSteps, onStepClick }: Boo
                 whileHover={isClickable ? { x: 4, scale: 1.02 } : {}}
                 whileTap={isClickable ? { scale: 0.98 } : {}}
                 className={`flex items-center gap-4 w-full text-left transition-all ${
-                  isClickable ? 'cursor-pointer' : 'cursor-default'
+                  isClickable ? "cursor-pointer" : "cursor-default"
                 }`}
               >
                 {/* Step Circle */}
@@ -121,19 +134,19 @@ export function BookingStepper({ currentStep, completedSteps, onStepClick }: Boo
                       r="26"
                       fill={
                         isActive
-                          ? '#00AB39'
+                          ? "#00AB39"
                           : isCompleted
-                          ? '#0071BC'
-                          : '#FFF9F0'
+                            ? "#0071BC"
+                            : "#FFF9F0"
                       }
                       stroke={
                         isActive
-                          ? '#005a1e'
+                          ? "#005a1e"
                           : isCompleted
-                          ? '#003d66'
-                          : '#D4A574'
+                            ? "#003d66"
+                            : "#D4A574"
                       }
-                      strokeWidth={isActive ? '3.5' : '2.5'}
+                      strokeWidth={isActive ? "3.5" : "2.5"}
                     />
                     {/* Inner dashed circle */}
                     {isActive && (
@@ -154,17 +167,17 @@ export function BookingStepper({ currentStep, completedSteps, onStepClick }: Boo
                   <div
                     className={`absolute inset-0 flex items-center justify-center ${
                       isActive || isCompleted
-                        ? 'text-white'
+                        ? "text-white"
                         : isPast
-                        ? 'text-gray-400'
-                        : 'text-[#5D4E37]'
+                          ? "text-gray-400"
+                          : "text-[#5D4E37]"
                     }`}
                   >
                     {isCompleted ? (
                       <motion.div
                         initial={{ scale: 0, rotate: -180 }}
                         animate={{ scale: 1, rotate: 0 }}
-                        transition={{ type: 'spring', stiffness: 200 }}
+                        transition={{ type: "spring", stiffness: 200 }}
                       >
                         <CheckCircle className="w-6 h-6" />
                       </motion.div>
@@ -180,12 +193,12 @@ export function BookingStepper({ currentStep, completedSteps, onStepClick }: Boo
                     <span
                       className={`text-xs font-medium uppercase tracking-wider ${
                         isActive
-                          ? 'text-[#00AB39]'
+                          ? "text-[#00AB39]"
                           : isPast
-                          ? 'text-gray-400'
-                          : 'text-gray-500'
+                            ? "text-gray-400"
+                            : "text-gray-500"
                       }`}
-                      style={{ fontFamily: 'Cabin Sketch, cursive' }}
+                      style={{ fontFamily: "Cabin Sketch, cursive" }}
                     >
                       Step {step.number}
                     </span>
@@ -193,19 +206,17 @@ export function BookingStepper({ currentStep, completedSteps, onStepClick }: Boo
                   <p
                     className={`text-lg font-medium transition-colors ${
                       isActive
-                        ? 'text-[#5D4E37] sketch-title'
+                        ? "text-[#5D4E37] sketch-title"
                         : isPast
-                        ? 'text-gray-500'
-                        : 'text-gray-600'
+                          ? "text-gray-500"
+                          : "text-gray-600"
                     }`}
                   >
                     {step.title}
                   </p>
                   <p
-                    className={`text-sm ${
-                      isActive ? 'text-gray-600' : 'text-gray-400'
-                    }`}
-                    style={{ fontFamily: 'Patrick Hand, cursive' }}
+                    className={`text-sm ${isActive ? "text-gray-600" : "text-gray-400"}`}
+                    style={{ fontFamily: "Patrick Hand, cursive" }}
                   >
                     {step.subtitle}
                   </p>

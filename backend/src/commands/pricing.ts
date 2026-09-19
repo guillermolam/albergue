@@ -3,10 +3,14 @@
  * Write operations for pricing
  */
 
-import { db } from '../lib/db.js';
-import { pricing } from '@albergue/domain-model';
-import { eq, and, inArray } from 'drizzle-orm';
-import type { InsertPricing, UpdatePricingInput, Pricing } from '../types/index.js';
+import { db } from "../lib/db.js";
+import { pricing } from "@albergue/domain-model";
+import { eq, and, inArray } from "drizzle-orm";
+import type {
+  InsertPricing,
+  UpdatePricingInput,
+  Pricing,
+} from "../types/index.js";
 
 /**
  * Create a new pricing entry
@@ -17,53 +21,58 @@ export async function createPricing(input: InsertPricing): Promise<Pricing> {
     .values({
       ...input,
       isActive: input.isActive !== undefined ? input.isActive : true,
-      currency: input.currency || 'EUR',
+      currency: input.currency || "EUR",
       createdAt: new Date(),
       updatedAt: new Date(),
     })
     .returning();
-  
+
   if (!result) {
-    throw new Error('Failed to create pricing');
+    throw new Error("Failed to create pricing");
   }
-  
+
   return result;
 }
 
 /**
  * Create multiple pricing entries (batch)
  */
-export async function createPricingBatch(inputs: InsertPricing[]): Promise<Pricing[]> {
+export async function createPricingBatch(
+  inputs: InsertPricing[],
+): Promise<Pricing[]> {
   const results = await db
     .insert(pricing)
     .values(
-      inputs.map(input => ({
+      inputs.map((input) => ({
         ...input,
         isActive: input.isActive !== undefined ? input.isActive : true,
-        currency: input.currency || 'EUR',
+        currency: input.currency || "EUR",
         createdAt: new Date(),
         updatedAt: new Date(),
-      }))
+      })),
     )
     .returning();
-  
+
   return results;
 }
 
 /**
  * Update a pricing entry
  */
-export async function updatePricing(id: number, input: UpdatePricingInput): Promise<Pricing | null> {
+export async function updatePricing(
+  id: number,
+  input: UpdatePricingInput,
+): Promise<Pricing | null> {
   const [existing] = await db
     .select()
     .from(pricing)
     .where(eq(pricing.id, id))
     .limit(1);
-  
+
   if (!existing) {
     return null;
   }
-  
+
   const [result] = await db
     .update(pricing)
     .set({
@@ -72,7 +81,7 @@ export async function updatePricing(id: number, input: UpdatePricingInput): Prom
     })
     .where(eq(pricing.id, id))
     .returning();
-  
+
   return result || null;
 }
 
@@ -88,7 +97,7 @@ export async function activatePricing(id: number): Promise<boolean> {
     })
     .where(eq(pricing.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -104,7 +113,7 @@ export async function deactivatePricing(id: number): Promise<boolean> {
     })
     .where(eq(pricing.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -114,18 +123,18 @@ export async function deactivatePricing(id: number): Promise<boolean> {
 export async function updatePricingAmount(
   id: number,
   pricePerNight: string,
-  currency?: string
+  currency?: string,
 ): Promise<boolean> {
   const [result] = await db
     .update(pricing)
     .set({
       pricePerNight,
-      currency: currency || 'EUR',
+      currency: currency || "EUR",
       updatedAt: new Date(),
     })
     .where(eq(pricing.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -137,14 +146,14 @@ export async function softDeletePricing(id: number): Promise<boolean> {
     .update(pricing)
     .set({
       isActive: false,
-      roomType: '(DELETED)',
-      bedType: '(DELETED)',
-      pricePerNight: '0.00',
+      roomType: "(DELETED)",
+      bedType: "(DELETED)",
+      pricePerNight: "0.00",
       updatedAt: new Date(),
     })
     .where(eq(pricing.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -157,7 +166,7 @@ export async function deletePricing(id: number): Promise<boolean> {
     .delete(pricing)
     .where(eq(pricing.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -166,7 +175,7 @@ export async function deletePricing(id: number): Promise<boolean> {
  */
 export async function bulkUpdatePricing(
   ids: number[],
-  updates: Partial<UpdatePricingInput>
+  updates: Partial<UpdatePricingInput>,
 ): Promise<number> {
   if (ids.length === 0) return 0;
   const results = await db
@@ -177,7 +186,7 @@ export async function bulkUpdatePricing(
     })
     .where(inArray(pricing.id, ids))
     .returning();
-  
+
   return results.length;
 }
 
@@ -187,7 +196,7 @@ export async function bulkUpdatePricing(
 export async function setDefaultPricingForRoomType(
   roomType: string,
   pricePerNight: string,
-  bedType?: string
+  bedType?: string,
 ): Promise<Pricing> {
   // Deactivate existing pricing for this room type
   await db
@@ -196,10 +205,10 @@ export async function setDefaultPricingForRoomType(
     .where(
       and(
         eq(pricing.roomType, roomType),
-        bedType ? eq(pricing.bedType, bedType) : undefined
-      )
+        bedType ? eq(pricing.bedType, bedType) : undefined,
+      ),
     );
-  
+
   // Create new pricing
   const [result] = await db
     .insert(pricing)
@@ -207,16 +216,16 @@ export async function setDefaultPricingForRoomType(
       roomType,
       bedType: bedType || roomType,
       pricePerNight,
-      currency: 'EUR',
+      currency: "EUR",
       isActive: true,
       createdAt: new Date(),
       updatedAt: new Date(),
     })
     .returning();
-  
+
   if (!result) {
-    throw new Error('Failed to set default pricing');
+    throw new Error("Failed to set default pricing");
   }
-  
+
   return result;
 }

@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { motion } from 'motion/react';
-import { Calendar } from 'lucide-react';
-import { DoodleBed } from './doodle/DoodleBed';
-import { DoodleCard } from './doodle/DoodleCard';
+import { useState } from "react";
+import { motion } from "motion/react";
+import { Calendar } from "lucide-react";
+import { DoodleBed } from "./doodle/DoodleBed";
+import { DoodleCard } from "./doodle/DoodleCard";
 
-type BedStatus = 'available' | 'selected' | 'reserved' | 'occupied';
+type BedStatus = "available" | "selected" | "reserved" | "occupied";
 
 interface Bed {
   id: string;
@@ -21,43 +21,53 @@ export function AvailabilityGrid({ onBedsSelected }: AvailabilityGridProps) {
     Array.from({ length: 12 }, (_, i) => ({
       id: `dorm1-bed-${i + 1}`,
       number: i + 1,
-      status: i === 4 ? 'reserved' : i === 7 ? 'occupied' : 'available',
-    }))
+      status: i === 4 ? "reserved" : i === 7 ? "occupied" : "available",
+    })),
   );
 
   const [dormitory2Beds, setDormitory2Beds] = useState<Bed[]>(
     Array.from({ length: 12 }, (_, i) => ({
       id: `dorm2-bed-${i + 1}`,
       number: i + 1,
-      status: i === 2 ? 'reserved' : i === 9 ? 'occupied' : 'available',
-    }))
+      status: i === 2 ? "reserved" : i === 9 ? "occupied" : "available",
+    })),
   );
 
-  const [checkInDate, setCheckInDate] = useState<string>('');
+  const [checkInDate, setCheckInDate] = useState<string>("");
 
-  const handleBedClick = (dormitory: 'dorm1' | 'dorm2', bedId: string) => {
-    if (dormitory === 'dorm1') {
+  const handleBedClick = (dormitory: "dorm1" | "dorm2", bedId: string) => {
+    if (dormitory === "dorm1") {
       setDormitory1Beds((prev) =>
         prev.map((bed) =>
-          bed.id === bedId && bed.status !== 'reserved' && bed.status !== 'occupied'
-            ? { ...bed, status: bed.status === 'selected' ? 'available' : 'selected' }
-            : bed
-        )
+          bed.id === bedId &&
+          bed.status !== "reserved" &&
+          bed.status !== "occupied"
+            ? {
+                ...bed,
+                status: bed.status === "selected" ? "available" : "selected",
+              }
+            : bed,
+        ),
       );
     } else {
       setDormitory2Beds((prev) =>
         prev.map((bed) =>
-          bed.id === bedId && bed.status !== 'reserved' && bed.status !== 'occupied'
-            ? { ...bed, status: bed.status === 'selected' ? 'available' : 'selected' }
-            : bed
-        )
+          bed.id === bedId &&
+          bed.status !== "reserved" &&
+          bed.status !== "occupied"
+            ? {
+                ...bed,
+                status: bed.status === "selected" ? "available" : "selected",
+              }
+            : bed,
+        ),
       );
     }
   };
 
   const selectedBeds = [
-    ...dormitory1Beds.filter((b) => b.status === 'selected').map((b) => b.id),
-    ...dormitory2Beds.filter((b) => b.status === 'selected').map((b) => b.id),
+    ...dormitory1Beds.filter((b) => b.status === "selected").map((b) => b.id),
+    ...dormitory2Beds.filter((b) => b.status === "selected").map((b) => b.id),
   ];
 
   // Update parent component when selection changes
@@ -85,9 +95,9 @@ export function AvailabilityGrid({ onBedsSelected }: AvailabilityGridProps) {
             type="date"
             value={checkInDate}
             onChange={handleDateChange}
-            min={new Date().toISOString().split('T')[0]}
+            min={new Date().toISOString().split("T")[0]}
             className="w-full px-4 py-3 doodle-border bg-white focus:outline-none focus:ring-2 focus:ring-[#0071BC] text-lg"
-            style={{ fontFamily: 'Patrick Hand, cursive' }}
+            style={{ fontFamily: "Patrick Hand, cursive" }}
           />
         </div>
       </DoodleCard>
@@ -96,10 +106,10 @@ export function AvailabilityGrid({ onBedsSelected }: AvailabilityGridProps) {
       <DoodleCard color="#5D4E37">
         <div className="flex flex-wrap gap-6 justify-center">
           {[
-            { status: 'available', label: 'Available', color: '#00AB39' },
-            { status: 'selected', label: 'Your Selection', color: '#0071BC' },
-            { status: 'reserved', label: 'Reserved', color: '#EAC102' },
-            { status: 'occupied', label: 'Occupied', color: '#ED1C24' },
+            { status: "available", label: "Available", color: "#00AB39" },
+            { status: "selected", label: "Your Selection", color: "#0071BC" },
+            { status: "reserved", label: "Reserved", color: "#EAC102" },
+            { status: "occupied", label: "Occupied", color: "#ED1C24" },
           ].map((item) => (
             <motion.div
               key={item.status}
@@ -114,11 +124,14 @@ export function AvailabilityGrid({ onBedsSelected }: AvailabilityGridProps) {
                   fill="none"
                   stroke={item.color}
                   strokeWidth="3"
-                  style={{ strokeDasharray: '2, 2' }}
+                  style={{ strokeDasharray: "2, 2" }}
                 />
                 <circle cx="16" cy="16" r="8" fill={item.color} opacity="0.3" />
               </svg>
-              <span className="text-gray-700" style={{ fontFamily: 'Patrick Hand, cursive' }}>
+              <span
+                className="text-gray-700"
+                style={{ fontFamily: "Patrick Hand, cursive" }}
+              >
                 {item.label}
               </span>
             </motion.div>
@@ -135,11 +148,19 @@ export function AvailabilityGrid({ onBedsSelected }: AvailabilityGridProps) {
         <DoodleCard color="#00AB39">
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-3xl sketch-title text-[#00AB39]">🏠 Dormitory 1</h3>
+              <h3 className="text-3xl sketch-title text-[#00AB39]">
+                🏠 Dormitory 1
+              </h3>
               <div className="text-right hand-drawn text-lg text-gray-600">
                 <div>12 beds total</div>
                 <div className="text-[#00AB39] font-semibold">
-                  {dormitory1Beds.filter(b => b.status === 'available' || b.status === 'selected').length} available
+                  {
+                    dormitory1Beds.filter(
+                      (b) =>
+                        b.status === "available" || b.status === "selected",
+                    ).length
+                  }{" "}
+                  available
                 </div>
               </div>
             </div>
@@ -154,7 +175,7 @@ export function AvailabilityGrid({ onBedsSelected }: AvailabilityGridProps) {
                   <DoodleBed
                     bedNumber={bed.number}
                     status={bed.status}
-                    onClick={() => handleBedClick('dorm1', bed.id)}
+                    onClick={() => handleBedClick("dorm1", bed.id)}
                   />
                 </motion.div>
               ))}
@@ -172,11 +193,19 @@ export function AvailabilityGrid({ onBedsSelected }: AvailabilityGridProps) {
         <DoodleCard color="#D4A574">
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-3xl sketch-title text-[#D4A574]">🏠 Dormitory 2</h3>
+              <h3 className="text-3xl sketch-title text-[#D4A574]">
+                🏠 Dormitory 2
+              </h3>
               <div className="text-right hand-drawn text-lg text-gray-600">
                 <div>12 beds total</div>
                 <div className="text-[#D4A574] font-semibold">
-                  {dormitory2Beds.filter(b => b.status === 'available' || b.status === 'selected').length} available
+                  {
+                    dormitory2Beds.filter(
+                      (b) =>
+                        b.status === "available" || b.status === "selected",
+                    ).length
+                  }{" "}
+                  available
                 </div>
               </div>
             </div>
@@ -191,7 +220,7 @@ export function AvailabilityGrid({ onBedsSelected }: AvailabilityGridProps) {
                   <DoodleBed
                     bedNumber={bed.number}
                     status={bed.status}
-                    onClick={() => handleBedClick('dorm2', bed.id)}
+                    onClick={() => handleBedClick("dorm2", bed.id)}
                   />
                 </motion.div>
               ))}
@@ -209,12 +238,13 @@ export function AvailabilityGrid({ onBedsSelected }: AvailabilityGridProps) {
           <DoodleCard color="#0071BC">
             <div className="text-center">
               <p className="text-2xl sketch-title text-[#0071BC] mb-2">
-                ✨ {selectedBeds.length} bed{selectedBeds.length > 1 ? 's' : ''} selected
+                ✨ {selectedBeds.length} bed{selectedBeds.length > 1 ? "s" : ""}{" "}
+                selected
               </p>
               <p className="text-gray-600 hand-drawn">
-                {checkInDate 
-                  ? `Check-in: ${new Date(checkInDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`
-                  : 'Please select a check-in date'}
+                {checkInDate
+                  ? `Check-in: ${new Date(checkInDate).toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}`
+                  : "Please select a check-in date"}
               </p>
             </div>
           </DoodleCard>

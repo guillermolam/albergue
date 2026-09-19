@@ -1,27 +1,33 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Globe } from 'lucide-react';
-import { WiredButton } from './doodle/WiredButton';
-import { motion, AnimatePresence } from 'motion/react';
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, Globe } from "lucide-react";
+import { WiredButton } from "./doodle/WiredButton";
+import { motion, AnimatePresence } from "motion/react";
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const [language, setLanguage] = useState('EN');
+  const [language, setLanguage] = useState("EN");
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
 
   const navLinks = [
-    { path: '/', label: language === 'EN' ? 'Home' : 'Inicio' },
-    { path: '/book', label: language === 'EN' ? 'Book Now' : 'Reservar' },
-    { path: '/restaurants', label: language === 'EN' ? 'Restaurants' : 'Restaurantes' },
-    { path: '/visits', label: language === 'EN' ? 'Visits' : 'Visitas' },
-    { path: '/tourism', label: language === 'EN' ? 'Tourism' : 'Turismo' },
-    { path: '/emergencies', label: language === 'EN' ? 'Emergencies' : 'Emergencias' },
+    { path: "/", label: language === "EN" ? "Home" : "Inicio" },
+    { path: "/book", label: language === "EN" ? "Book Now" : "Reservar" },
+    {
+      path: "/restaurants",
+      label: language === "EN" ? "Restaurants" : "Restaurantes",
+    },
+    { path: "/visits", label: language === "EN" ? "Visits" : "Visitas" },
+    { path: "/tourism", label: language === "EN" ? "Tourism" : "Turismo" },
+    {
+      path: "/emergencies",
+      label: language === "EN" ? "Emergencies" : "Emergencias",
+    },
   ];
 
   return (
-    <motion.nav 
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 20 }}
@@ -31,7 +37,7 @@ export function Navigation() {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 group">
-            <motion.div 
+            <motion.div
               whileHover={{ rotate: [0, -8, 8, -8, 0], scale: 1.1 }}
               transition={{ duration: 0.5 }}
               className="relative"
@@ -45,7 +51,7 @@ export function Navigation() {
                   fill="#00AB39"
                   stroke="#005a1e"
                   strokeWidth="3"
-                  style={{ filter: 'drop-shadow(2px 2px 2px rgba(0,0,0,0.2))' }}
+                  style={{ filter: "drop-shadow(2px 2px 2px rgba(0,0,0,0.2))" }}
                 />
                 <circle
                   cx="28"
@@ -55,7 +61,7 @@ export function Navigation() {
                   stroke="#005a1e"
                   strokeWidth="2"
                   opacity="0.3"
-                  style={{ strokeDasharray: '4, 4' }}
+                  style={{ strokeDasharray: "4, 4" }}
                 />
                 <text
                   x="28"
@@ -69,21 +75,26 @@ export function Navigation() {
                   AC
                 </text>
               </svg>
-              
+
               {/* Doodle stars */}
-              <motion.svg 
+              <motion.svg
                 className="absolute -top-1 -right-1 w-4 h-4 text-[#EAC102]"
                 animate={{ rotate: [0, 180, 360] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
               >
-                <path d="M2,2 L2.5,1 L3,2 L4,2.5 L3,3 L2.5,4 L2,3 L1,2.5 Z" fill="currentColor" />
+                <path
+                  d="M2,2 L2.5,1 L3,2 L4,2.5 L3,3 L2.5,4 L2,3 L1,2.5 Z"
+                  fill="currentColor"
+                />
               </motion.svg>
             </motion.div>
             <div>
               <span className="font-bold text-xl hidden sm:block sketch-title">
                 Albergue Carrascalejo
               </span>
-              <span className="text-xs text-[#8B956D] hidden md:block hand-drawn">~ Camino de Santiago ~</span>
+              <span className="text-xs text-[#8B956D] hidden md:block hand-drawn">
+                ~ Camino de Santiago ~
+              </span>
             </div>
           </Link>
 
@@ -99,17 +110,17 @@ export function Navigation() {
                   whileHover={{ y: -2, scale: 1.05 }}
                   className={`transition-colors ${
                     isActive(link.path)
-                      ? 'text-[#00AB39] font-semibold'
-                      : 'text-gray-700 group-hover:text-[#00AB39]'
+                      ? "text-[#00AB39] font-semibold"
+                      : "text-gray-700 group-hover:text-[#00AB39]"
                   }`}
                 >
                   {link.label}
                 </motion.span>
                 {isActive(link.path) && (
-                  <motion.svg 
+                  <motion.svg
                     layoutId="activeUnderline"
                     className="absolute bottom-0 left-2 right-2 h-1"
-                    style={{ overflow: 'visible' }}
+                    style={{ overflow: "visible" }}
                   >
                     <motion.path
                       d="M0,2 Q5,0 10,2 T20,2 T30,2 T40,2 T50,2"
@@ -133,10 +144,14 @@ export function Navigation() {
             <motion.button
               whileHover={{ scale: 1.1, rotate: 8 }}
               whileTap={{ scale: 0.9 }}
-              onClick={() => setLanguage(language === 'EN' ? 'ES' : 'EN')}
+              onClick={() => setLanguage(language === "EN" ? "ES" : "EN")}
               className="relative"
             >
-              <svg width="48" height="36" className="hover:drop-shadow-lg transition-all">
+              <svg
+                width="48"
+                height="36"
+                className="hover:drop-shadow-lg transition-all"
+              >
                 <ellipse
                   cx="24"
                   cy="18"
@@ -155,7 +170,7 @@ export function Navigation() {
                   stroke="#5D4E37"
                   strokeWidth="2"
                   opacity="0.2"
-                  style={{ strokeDasharray: '2, 2' }}
+                  style={{ strokeDasharray: "2, 2" }}
                 />
                 <text
                   x="24"
@@ -174,7 +189,7 @@ export function Navigation() {
             {/* Login Button */}
             <Link to="/admin" className="hidden sm:block">
               <WiredButton variant="outline" size="sm">
-                {language === 'EN' ? 'Login' : 'Entrar'}
+                {language === "EN" ? "Login" : "Entrar"}
               </WiredButton>
             </Link>
 
@@ -198,11 +213,21 @@ export function Navigation() {
                 />
                 {isOpen ? (
                   <g transform="translate(20, 20)">
-                    <path d="M-6,-6 L6,6 M-6,6 L6,-6" stroke="#5D4E37" strokeWidth="2.5" strokeLinecap="round" />
+                    <path
+                      d="M-6,-6 L6,6 M-6,6 L6,-6"
+                      stroke="#5D4E37"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                    />
                   </g>
                 ) : (
                   <g transform="translate(12, 14)">
-                    <path d="M0,0 L16,0 M0,6 L16,6 M0,12 L16,12" stroke="#5D4E37" strokeWidth="2.5" strokeLinecap="round" />
+                    <path
+                      d="M0,0 L16,0 M0,6 L16,6 M0,12 L16,12"
+                      stroke="#5D4E37"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                    />
                   </g>
                 )}
               </svg>
@@ -215,7 +240,7 @@ export function Navigation() {
           {isOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
+              animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
               className="md:hidden overflow-hidden pb-4"
@@ -233,8 +258,8 @@ export function Navigation() {
                       onClick={() => setIsOpen(false)}
                       className={`block px-4 py-3 doodle-border transition-all ${
                         isActive(link.path)
-                          ? 'bg-[#00AB39] text-white doodle-shadow'
-                          : 'bg-white text-gray-700 hover:bg-[#F5E6D3]'
+                          ? "bg-[#00AB39] text-white doodle-shadow"
+                          : "bg-white text-gray-700 hover:bg-[#F5E6D3]"
                       }`}
                     >
                       {link.label}
@@ -248,7 +273,7 @@ export function Navigation() {
                 >
                   <Link to="/admin" onClick={() => setIsOpen(false)}>
                     <WiredButton variant="primary" className="w-full">
-                      {language === 'EN' ? 'Admin Login' : 'Acceso Admin'}
+                      {language === "EN" ? "Admin Login" : "Acceso Admin"}
                     </WiredButton>
                   </Link>
                 </motion.div>

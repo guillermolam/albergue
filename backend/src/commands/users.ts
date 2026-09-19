@@ -3,11 +3,11 @@
  * Write operations for users
  */
 
-import { db } from '../lib/db.js';
-import { users } from '@albergue/domain-model';
-import { eq, inArray } from 'drizzle-orm';
-import { hashPassword } from '../lib/passwords.js';
-import type { InsertUser, User } from '../types/index.js';
+import { db } from "../lib/db.js";
+import { users } from "@albergue/domain-model";
+import { eq, inArray } from "drizzle-orm";
+import { hashPassword } from "../lib/passwords.js";
+import type { InsertUser, User } from "../types/index.js";
 
 /**
  * Create a new user (password hashed with scrypt — AUTH-001)
@@ -22,7 +22,7 @@ export async function createUser(input: InsertUser): Promise<User> {
     })
     .returning();
 
-  if (!result) throw new Error('Failed to create user');
+  if (!result) throw new Error("Failed to create user");
   return result;
 }
 
@@ -36,7 +36,7 @@ export async function createUsersBatch(inputs: InsertUser[]): Promise<User[]> {
       username: input.username,
       password: await hashPassword(input.password),
       createdAt: new Date(),
-    }))
+    })),
   );
   return db.insert(users).values(values).returning();
 }
@@ -46,7 +46,7 @@ export async function createUsersBatch(inputs: InsertUser[]): Promise<User[]> {
  */
 export async function updateUserPassword(
   id: number,
-  password: string
+  password: string,
 ): Promise<boolean> {
   const [result] = await db
     .update(users)
@@ -62,7 +62,7 @@ export async function updateUserPassword(
  */
 export async function updateUserUsername(
   id: number,
-  username: string
+  username: string,
 ): Promise<boolean> {
   const [result] = await db
     .update(users)
@@ -71,7 +71,7 @@ export async function updateUserUsername(
     })
     .where(eq(users.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -80,11 +80,8 @@ export async function updateUserUsername(
  * WARNING: Only use when absolutely necessary
  */
 export async function deleteUser(id: number): Promise<boolean> {
-  const [result] = await db
-    .delete(users)
-    .where(eq(users.id, id))
-    .returning();
-  
+  const [result] = await db.delete(users).where(eq(users.id, id)).returning();
+
   return !!result;
 }
 
@@ -98,6 +95,6 @@ export async function bulkDeleteUsers(ids: number[]): Promise<number> {
     .delete(users)
     .where(inArray(users.id, ids))
     .returning();
-  
+
   return results.length;
 }

@@ -3,11 +3,15 @@
  * Write operations for payments
  */
 
-import { db } from '../lib/db.js';
-import { payments } from '@albergue/domain-model';
-import { eq, inArray } from 'drizzle-orm';
-import { ValidationError } from '../lib/errors.js';
-import type { InsertPayment, UpdatePaymentInput, Payment } from '../types/index.js';
+import { db } from "../lib/db.js";
+import { payments } from "@albergue/domain-model";
+import { eq, inArray } from "drizzle-orm";
+import { ValidationError } from "../lib/errors.js";
+import type {
+  InsertPayment,
+  UpdatePaymentInput,
+  Payment,
+} from "../types/index.js";
 
 /**
  * payment_deadline is a timestamp column — Drizzle expects a Date on write.
@@ -30,15 +34,15 @@ export async function createPayment(input: InsertPayment): Promise<Payment> {
     .insert(payments)
     .values({
       ...input,
-      paymentStatus: input.paymentStatus || 'awaiting_payment',
-      currency: input.currency || 'EUR',
+      paymentStatus: input.paymentStatus || "awaiting_payment",
+      currency: input.currency || "EUR",
       createdAt: new Date(),
       updatedAt: new Date(),
     })
     .returning();
 
   if (!result) {
-    throw new Error('Failed to create payment');
+    throw new Error("Failed to create payment");
   }
 
   return result;
@@ -47,17 +51,19 @@ export async function createPayment(input: InsertPayment): Promise<Payment> {
 /**
  * Create multiple payments (batch)
  */
-export async function createPaymentsBatch(inputs: InsertPayment[]): Promise<Payment[]> {
+export async function createPaymentsBatch(
+  inputs: InsertPayment[],
+): Promise<Payment[]> {
   const results = await db
     .insert(payments)
     .values(
-      inputs.map(input => ({
+      inputs.map((input) => ({
         ...input,
-        paymentStatus: input.paymentStatus || 'awaiting_payment',
-        currency: input.currency || 'EUR',
+        paymentStatus: input.paymentStatus || "awaiting_payment",
+        currency: input.currency || "EUR",
         createdAt: new Date(),
         updatedAt: new Date(),
-      }))
+      })),
     )
     .returning();
 
@@ -67,7 +73,10 @@ export async function createPaymentsBatch(inputs: InsertPayment[]): Promise<Paym
 /**
  * Update a payment
  */
-export async function updatePayment(id: number, input: UpdatePaymentInput): Promise<Payment | null> {
+export async function updatePayment(
+  id: number,
+  input: UpdatePaymentInput,
+): Promise<Payment | null> {
   const [existing] = await db
     .select()
     .from(payments)
@@ -83,10 +92,16 @@ export async function updatePayment(id: number, input: UpdatePaymentInput): Prom
     .set({
       ...(input.bookingId !== undefined ? { bookingId: input.bookingId } : {}),
       ...(input.amount !== undefined ? { amount: String(input.amount) } : {}),
-      ...(input.paymentType !== undefined ? { paymentType: input.paymentType } : {}),
+      ...(input.paymentType !== undefined
+        ? { paymentType: input.paymentType }
+        : {}),
       ...(input.currency !== undefined ? { currency: input.currency } : {}),
-      ...(input.paymentDeadline !== undefined ? { paymentDeadline: parsePaymentDeadline(input.paymentDeadline) } : {}),
-      ...(input.transactionId !== undefined ? { transactionId: input.transactionId } : {}),
+      ...(input.paymentDeadline !== undefined
+        ? { paymentDeadline: parsePaymentDeadline(input.paymentDeadline) }
+        : {}),
+      ...(input.transactionId !== undefined
+        ? { transactionId: input.transactionId }
+        : {}),
       updatedAt: new Date(),
     })
     .where(eq(payments.id, id))
@@ -102,12 +117,12 @@ export async function markPaymentAsPaid(
   id: number,
   transactionId?: string,
   receiptNumber?: string,
-  gatewayResponse?: any
+  gatewayResponse?: any,
 ): Promise<boolean> {
   const [result] = await db
     .update(payments)
     .set({
-      paymentStatus: 'paid',
+      paymentStatus: "paid",
       paymentDate: new Date(),
       transactionId,
       receiptNumber,
@@ -125,13 +140,16 @@ export async function markPaymentAsPaid(
  */
 export async function markPaymentAsFailed(
   id: number,
-  errorMessage?: string
+  errorMessage?: string,
 ): Promise<boolean> {
   const [result] = await db
     .update(payments)
     .set({
-      paymentStatus: 'failed',
-      gatewayResponse: { error: errorMessage, failedAt: new Date().toISOString() },
+      paymentStatus: "failed",
+      gatewayResponse: {
+        error: errorMessage,
+        failedAt: new Date().toISOString(),
+      },
       updatedAt: new Date(),
     })
     .where(eq(payments.id, id))
@@ -147,7 +165,7 @@ export async function markPaymentAsCancelled(id: number): Promise<boolean> {
   const [result] = await db
     .update(payments)
     .set({
-      paymentStatus: 'cancelled',
+      paymentStatus: "cancelled",
       updatedAt: new Date(),
     })
     .where(eq(payments.id, id))
@@ -161,12 +179,12 @@ export async function markPaymentAsCancelled(id: number): Promise<boolean> {
  */
 export async function markPaymentAsRefunded(
   id: number,
-  reason?: string
+  reason?: string,
 ): Promise<boolean> {
   const [result] = await db
     .update(payments)
     .set({
-      paymentStatus: 'refunded',
+      paymentStatus: "refunded",
       gatewayResponse: { reason, refundedAt: new Date().toISOString() },
       updatedAt: new Date(),
     })
@@ -181,7 +199,7 @@ export async function markPaymentAsRefunded(
  */
 export async function updatePaymentDeadline(
   id: number,
-  deadline: Date
+  deadline: Date,
 ): Promise<boolean> {
   const [result] = await db
     .update(payments)
@@ -201,13 +219,13 @@ export async function updatePaymentDeadline(
 export async function updatePaymentAmount(
   id: number,
   amount: number,
-  currency?: string
+  currency?: string,
 ): Promise<boolean> {
   const [result] = await db
     .update(payments)
     .set({
       amount: String(amount),
-      currency: currency || 'EUR',
+      currency: currency || "EUR",
       updatedAt: new Date(),
     })
     .where(eq(payments.id, id))
@@ -223,8 +241,8 @@ export async function softDeletePayment(id: number): Promise<boolean> {
   const [result] = await db
     .update(payments)
     .set({
-      paymentStatus: 'deleted',
-      amount: '0',
+      paymentStatus: "deleted",
+      amount: "0",
       transactionId: null,
       gatewayResponse: null,
       updatedAt: new Date(),
@@ -253,18 +271,28 @@ export async function deletePayment(id: number): Promise<boolean> {
  */
 export async function bulkUpdatePayments(
   ids: number[],
-  updates: Partial<UpdatePaymentInput>
+  updates: Partial<UpdatePaymentInput>,
 ): Promise<number> {
   if (ids.length === 0) return 0;
   const results = await db
     .update(payments)
     .set({
-      ...(updates.bookingId !== undefined ? { bookingId: updates.bookingId } : {}),
-      ...(updates.amount !== undefined ? { amount: String(updates.amount) } : {}),
-      ...(updates.paymentType !== undefined ? { paymentType: updates.paymentType } : {}),
+      ...(updates.bookingId !== undefined
+        ? { bookingId: updates.bookingId }
+        : {}),
+      ...(updates.amount !== undefined
+        ? { amount: String(updates.amount) }
+        : {}),
+      ...(updates.paymentType !== undefined
+        ? { paymentType: updates.paymentType }
+        : {}),
       ...(updates.currency !== undefined ? { currency: updates.currency } : {}),
-      ...(updates.paymentDeadline !== undefined ? { paymentDeadline: parsePaymentDeadline(updates.paymentDeadline) } : {}),
-      ...(updates.transactionId !== undefined ? { transactionId: updates.transactionId } : {}),
+      ...(updates.paymentDeadline !== undefined
+        ? { paymentDeadline: parsePaymentDeadline(updates.paymentDeadline) }
+        : {}),
+      ...(updates.transactionId !== undefined
+        ? { transactionId: updates.transactionId }
+        : {}),
       updatedAt: new Date(),
     })
     .where(inArray(payments.id, ids))
@@ -278,7 +306,7 @@ export async function bulkUpdatePayments(
  */
 export async function recordGatewayResponse(
   id: number,
-  response: any
+  response: any,
 ): Promise<boolean> {
   const [result] = await db
     .update(payments)

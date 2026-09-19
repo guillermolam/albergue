@@ -3,10 +3,10 @@
  * Write operations for beds
  */
 
-import { db } from '../lib/db.js';
-import { beds } from '@albergue/domain-model';
-import { eq, and, or, isNull, lte, inArray } from 'drizzle-orm';
-import type { InsertBed, UpdateBedInput, Bed } from '../types/index.js';
+import { db } from "../lib/db.js";
+import { beds } from "@albergue/domain-model";
+import { eq, and, or, isNull, lte, inArray } from "drizzle-orm";
+import type { InsertBed, UpdateBedInput, Bed } from "../types/index.js";
 
 /**
  * Create a new bed
@@ -18,20 +18,20 @@ export async function createBed(input: InsertBed): Promise<Bed> {
       ...input,
       bedNumber: input.bedNumber || 1,
       roomNumber: input.roomNumber || 1,
-      roomName: input.roomName || 'Unknown',
-      pricePerNight: input.pricePerNight || '15.00',
-      currency: input.currency || 'EUR',
+      roomName: input.roomName || "Unknown",
+      pricePerNight: input.pricePerNight || "15.00",
+      currency: input.currency || "EUR",
       isAvailable: input.isAvailable !== undefined ? input.isAvailable : true,
-      status: input.status || 'available',
+      status: input.status || "available",
       createdAt: new Date(),
       updatedAt: new Date(),
     })
     .returning();
-  
+
   if (!result) {
-    throw new Error('Failed to create bed');
+    throw new Error("Failed to create bed");
   }
-  
+
   return result;
 }
 
@@ -42,38 +42,41 @@ export async function createBedsBatch(inputs: InsertBed[]): Promise<Bed[]> {
   const results = await db
     .insert(beds)
     .values(
-      inputs.map(input => ({
+      inputs.map((input) => ({
         ...input,
         bedNumber: input.bedNumber || 1,
         roomNumber: input.roomNumber || 1,
-        roomName: input.roomName || 'Unknown',
-        pricePerNight: input.pricePerNight || '15.00',
-        currency: input.currency || 'EUR',
+        roomName: input.roomName || "Unknown",
+        pricePerNight: input.pricePerNight || "15.00",
+        currency: input.currency || "EUR",
         isAvailable: input.isAvailable !== undefined ? input.isAvailable : true,
-        status: input.status || 'available',
+        status: input.status || "available",
         createdAt: new Date(),
         updatedAt: new Date(),
-      }))
+      })),
     )
     .returning();
-  
+
   return results;
 }
 
 /**
  * Update a bed
  */
-export async function updateBed(id: number, input: UpdateBedInput): Promise<Bed | null> {
+export async function updateBed(
+  id: number,
+  input: UpdateBedInput,
+): Promise<Bed | null> {
   const [existing] = await db
     .select()
     .from(beds)
     .where(eq(beds.id, id))
     .limit(1);
-  
+
   if (!existing) {
     return null;
   }
-  
+
   const [result] = await db
     .update(beds)
     .set({
@@ -82,7 +85,7 @@ export async function updateBed(id: number, input: UpdateBedInput): Promise<Bed 
     })
     .where(eq(beds.id, id))
     .returning();
-  
+
   return result || null;
 }
 
@@ -92,18 +95,18 @@ export async function updateBed(id: number, input: UpdateBedInput): Promise<Bed 
 export async function updateBedAvailability(
   id: number,
   isAvailable: boolean,
-  status?: string
+  status?: string,
 ): Promise<boolean> {
   const [result] = await db
     .update(beds)
     .set({
       isAvailable,
-      status: status || (isAvailable ? 'available' : 'unavailable'),
+      status: status || (isAvailable ? "available" : "unavailable"),
       updatedAt: new Date(),
     })
     .where(eq(beds.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -113,7 +116,7 @@ export async function updateBedAvailability(
 export async function reserveBed(
   id: number,
   reservedUntil: Date,
-  status: string = 'reserved'
+  status: string = "reserved",
 ): Promise<boolean> {
   // Atomic claim: only an available bed can be reserved.
   const [result] = await db
@@ -126,7 +129,7 @@ export async function reserveBed(
     })
     .where(and(eq(beds.id, id), eq(beds.isAvailable, true)))
     .returning();
-  
+
   return !!result;
 }
 
@@ -138,14 +141,14 @@ export async function releaseBed(id: number): Promise<boolean> {
     .update(beds)
     .set({
       isAvailable: true,
-      status: 'available',
+      status: "available",
       reservedUntil: null,
       lastCleanedAt: new Date(),
       updatedAt: new Date(),
     })
     .where(eq(beds.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -155,20 +158,20 @@ export async function releaseBed(id: number): Promise<boolean> {
 export async function updateBedMaintenance(
   id: number,
   notes: string,
-  lastCleanedAt?: Date
+  lastCleanedAt?: Date,
 ): Promise<boolean> {
   const [result] = await db
     .update(beds)
     .set({
       maintenanceNotes: notes,
       lastCleanedAt: lastCleanedAt || new Date(),
-      status: 'maintenance',
+      status: "maintenance",
       isAvailable: false,
       updatedAt: new Date(),
     })
     .where(eq(beds.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -178,18 +181,18 @@ export async function updateBedMaintenance(
 export async function updateBedPricing(
   id: number,
   pricePerNight: string,
-  currency?: string
+  currency?: string,
 ): Promise<boolean> {
   const [result] = await db
     .update(beds)
     .set({
       pricePerNight,
-      currency: currency || 'EUR',
+      currency: currency || "EUR",
       updatedAt: new Date(),
     })
     .where(eq(beds.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -200,16 +203,16 @@ export async function softDeleteBed(id: number): Promise<boolean> {
   const [result] = await db
     .update(beds)
     .set({
-      roomName: '(DELETED)',
+      roomName: "(DELETED)",
       roomNumber: -1,
       bedNumber: -1,
       isAvailable: false,
-      status: 'deleted',
+      status: "deleted",
       updatedAt: new Date(),
     })
     .where(eq(beds.id, id))
     .returning();
-  
+
   return !!result;
 }
 
@@ -218,11 +221,8 @@ export async function softDeleteBed(id: number): Promise<boolean> {
  * WARNING: Only use when absolutely necessary
  */
 export async function deleteBed(id: number): Promise<boolean> {
-  const [result] = await db
-    .delete(beds)
-    .where(eq(beds.id, id))
-    .returning();
-  
+  const [result] = await db.delete(beds).where(eq(beds.id, id)).returning();
+
   return !!result;
 }
 
@@ -231,7 +231,7 @@ export async function deleteBed(id: number): Promise<boolean> {
  */
 export async function bulkUpdateBeds(
   ids: number[],
-  updates: Partial<UpdateBedInput>
+  updates: Partial<UpdateBedInput>,
 ): Promise<number> {
   if (ids.length === 0) return 0;
   const results = await db
@@ -242,7 +242,7 @@ export async function bulkUpdateBeds(
     })
     .where(inArray(beds.id, ids))
     .returning();
-  
+
   return results.length;
 }
 
@@ -251,27 +251,24 @@ export async function bulkUpdateBeds(
  */
 export async function cleanupExpiredReservations(): Promise<number> {
   const now = new Date();
-  
+
   const results = await db
     .update(beds)
     .set({
       isAvailable: true,
-      status: 'available',
+      status: "available",
       reservedUntil: null,
       updatedAt: new Date(),
     })
     .where(
       and(
         eq(beds.isAvailable, false),
-        eq(beds.status, 'reserved'),
+        eq(beds.status, "reserved"),
         // @ts-ignore
-        or(
-          isNull(beds.reservedUntil),
-          lte(beds.reservedUntil, now)
-        )
-      )
+        or(isNull(beds.reservedUntil), lte(beds.reservedUntil, now)),
+      ),
     )
     .returning();
-  
+
   return results.length;
 }

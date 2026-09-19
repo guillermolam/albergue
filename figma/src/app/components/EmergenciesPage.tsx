@@ -1,89 +1,96 @@
-import { motion } from 'motion/react';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Phone, AlertCircle, MapPin, Clock, Hospital, Shield } from 'lucide-react';
+import { motion } from "motion/react";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import {
+  Phone,
+  AlertCircle,
+  MapPin,
+  Clock,
+  Hospital,
+  Shield,
+} from "lucide-react";
 
 export function EmergenciesPage() {
   const emergencyContacts = [
     {
       icon: AlertCircle,
-      title: 'General Emergency',
-      number: '112',
-      description: 'All emergencies (Police, Fire, Medical)',
-      available: '24/7',
-      color: 'bg-red-50 border-red-200',
-      iconColor: 'text-[#ED1C24]',
+      title: "General Emergency",
+      number: "112",
+      description: "All emergencies (Police, Fire, Medical)",
+      available: "24/7",
+      color: "bg-red-50 border-red-200",
+      iconColor: "text-[#ED1C24]",
     },
     {
       icon: Hospital,
-      title: 'Medical Emergency',
-      number: '061',
-      description: 'Ambulance and urgent medical assistance',
-      available: '24/7',
-      color: 'bg-red-50 border-red-200',
-      iconColor: 'text-[#ED1C24]',
+      title: "Medical Emergency",
+      number: "061",
+      description: "Ambulance and urgent medical assistance",
+      available: "24/7",
+      color: "bg-red-50 border-red-200",
+      iconColor: "text-[#ED1C24]",
     },
     {
       icon: Shield,
-      title: 'Local Police',
-      number: '+34 924 XXX XXX',
-      description: 'Carrascalejo Municipal Police',
-      available: '24/7',
-      color: 'bg-blue-50 border-blue-200',
-      iconColor: 'text-[#0071BC]',
+      title: "Local Police",
+      number: "+34 924 XXX XXX",
+      description: "Carrascalejo Municipal Police",
+      available: "24/7",
+      color: "bg-blue-50 border-blue-200",
+      iconColor: "text-[#0071BC]",
     },
     {
       icon: Hospital,
-      title: 'Health Center',
-      number: '+34 924 XXX XXX',
-      description: 'Centro de Salud Carrascalejo',
-      available: 'Mon-Fri: 9am-9pm',
-      color: 'bg-green-50 border-green-200',
-      iconColor: 'text-[#00AB39]',
+      title: "Health Center",
+      number: "+34 924 XXX XXX",
+      description: "Centro de Salud Carrascalejo",
+      available: "Mon-Fri: 9am-9pm",
+      color: "bg-green-50 border-green-200",
+      iconColor: "text-[#00AB39]",
     },
     {
       icon: Phone,
-      title: 'Pharmacy',
-      number: '+34 924 XXX XXX',
-      description: 'Farmacia Central',
-      available: 'Mon-Sat: 9am-10pm',
-      color: 'bg-green-50 border-green-200',
-      iconColor: 'text-[#00AB39]',
+      title: "Pharmacy",
+      number: "+34 924 XXX XXX",
+      description: "Farmacia Central",
+      available: "Mon-Sat: 9am-10pm",
+      color: "bg-green-50 border-green-200",
+      iconColor: "text-[#00AB39]",
     },
     {
       icon: MapPin,
-      title: 'Albergue Reception',
-      number: '+34 987 654 321',
-      description: 'For albergue-related assistance',
-      available: '8am-10pm',
-      color: 'bg-green-50 border-green-200',
-      iconColor: 'text-[#00AB39]',
+      title: "Albergue Reception",
+      number: "+34 987 654 321",
+      description: "For albergue-related assistance",
+      available: "8am-10pm",
+      color: "bg-green-50 border-green-200",
+      iconColor: "text-[#00AB39]",
     },
   ];
 
   const importantLocations = [
     {
-      name: 'Hospital Regional',
-      address: 'Calle Hospital, 15, Cáceres',
-      distance: '45 km',
-      description: 'Nearest major hospital with full emergency services',
+      name: "Hospital Regional",
+      address: "Calle Hospital, 15, Cáceres",
+      distance: "45 km",
+      description: "Nearest major hospital with full emergency services",
     },
     {
-      name: 'Centro de Salud',
-      address: 'Calle de la Salud, 8, Carrascalejo',
-      distance: '0.5 km',
-      description: 'Local health center for non-emergency medical care',
+      name: "Centro de Salud",
+      address: "Calle de la Salud, 8, Carrascalejo",
+      distance: "0.5 km",
+      description: "Local health center for non-emergency medical care",
     },
     {
-      name: 'Farmacia Central',
-      address: 'Plaza Mayor, 3, Carrascalejo',
-      distance: '0.3 km',
-      description: 'Main pharmacy in town center',
+      name: "Farmacia Central",
+      address: "Plaza Mayor, 3, Carrascalejo",
+      distance: "0.3 km",
+      description: "Main pharmacy in town center",
     },
     {
-      name: 'Police Station',
-      address: 'Calle Policía, 12, Carrascalejo',
-      distance: '0.4 km',
-      description: 'Local police headquarters',
+      name: "Police Station",
+      address: "Calle Policía, 12, Carrascalejo",
+      distance: "0.4 km",
+      description: "Local police headquarters",
     },
   ];
 
@@ -113,15 +120,25 @@ export function EmergenciesPage() {
               <h2 className="text-[#ED1C24] mb-4">In Case of Emergency</h2>
               <div className="flex flex-col md:flex-row items-center justify-center gap-8">
                 <div>
-                  <p className="text-sm text-gray-600 mb-2">General Emergency</p>
-                  <a href="tel:112" className="text-5xl text-[#ED1C24] hover:underline">
+                  <p className="text-sm text-gray-600 mb-2">
+                    General Emergency
+                  </p>
+                  <a
+                    href="tel:112"
+                    className="text-5xl text-[#ED1C24] hover:underline"
+                  >
                     112
                   </a>
                 </div>
                 <div className="hidden md:block w-px h-16 bg-red-200" />
                 <div>
-                  <p className="text-sm text-gray-600 mb-2">Medical Emergency</p>
-                  <a href="tel:061" className="text-5xl text-[#ED1C24] hover:underline">
+                  <p className="text-sm text-gray-600 mb-2">
+                    Medical Emergency
+                  </p>
+                  <a
+                    href="tel:061"
+                    className="text-5xl text-[#ED1C24] hover:underline"
+                  >
                     061
                   </a>
                 </div>
@@ -145,19 +162,23 @@ export function EmergenciesPage() {
                   <CardHeader>
                     <div className="flex items-center gap-3 mb-2">
                       <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-                        <contact.icon className={`w-6 h-6 ${contact.iconColor}`} />
+                        <contact.icon
+                          className={`w-6 h-6 ${contact.iconColor}`}
+                        />
                       </div>
                       <CardTitle className="text-lg">{contact.title}</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <a 
-                      href={`tel:${contact.number.replace(/\s/g, '')}`}
+                    <a
+                      href={`tel:${contact.number.replace(/\s/g, "")}`}
                       className={`text-2xl block hover:underline ${contact.iconColor}`}
                     >
                       {contact.number}
                     </a>
-                    <p className="text-sm text-gray-600">{contact.description}</p>
+                    <p className="text-sm text-gray-600">
+                      {contact.description}
+                    </p>
                     <div className="flex items-center gap-2 text-sm text-gray-500">
                       <Clock className="w-4 h-4" />
                       <span>{contact.available}</span>
@@ -188,10 +209,16 @@ export function EmergenciesPage() {
                   >
                     <div className="flex justify-between items-start mb-2">
                       <h4>{location.name}</h4>
-                      <span className="text-sm text-[#00AB39]">{location.distance}</span>
+                      <span className="text-sm text-[#00AB39]">
+                        {location.distance}
+                      </span>
                     </div>
-                    <p className="text-sm text-gray-600 mb-1">{location.address}</p>
-                    <p className="text-sm text-gray-500">{location.description}</p>
+                    <p className="text-sm text-gray-600 mb-1">
+                      {location.address}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {location.description}
+                    </p>
                   </motion.div>
                 ))}
               </div>
@@ -211,7 +238,8 @@ export function EmergenciesPage() {
                 <li className="flex items-start gap-3">
                   <span className="text-[#0071BC] mt-1">•</span>
                   <span className="text-sm text-gray-700">
-                    Always carry your Pilgrim Credential, ID, and emergency contacts
+                    Always carry your Pilgrim Credential, ID, and emergency
+                    contacts
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
@@ -223,19 +251,22 @@ export function EmergenciesPage() {
                 <li className="flex items-start gap-3">
                   <span className="text-[#0071BC] mt-1">•</span>
                   <span className="text-sm text-gray-700">
-                    Inform albergue staff of your planned route and expected arrival at next stop
+                    Inform albergue staff of your planned route and expected
+                    arrival at next stop
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-[#0071BC] mt-1">•</span>
                   <span className="text-sm text-gray-700">
-                    Stay hydrated and take breaks, especially during hot summer months
+                    Stay hydrated and take breaks, especially during hot summer
+                    months
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-[#0071BC] mt-1">•</span>
                   <span className="text-sm text-gray-700">
-                    If you feel unwell, seek medical attention immediately - don't continue walking
+                    If you feel unwell, seek medical attention immediately -
+                    don't continue walking
                   </span>
                 </li>
               </ul>

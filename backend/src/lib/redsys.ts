@@ -14,7 +14,12 @@
  * timing-safe comparison after normalisation.
  */
 
-import { createCipheriv, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
+import {
+  createCipheriv,
+  createHmac,
+  randomBytes,
+  timingSafeEqual,
+} from "node:crypto";
 
 export interface RedsysConfig {
   merchantCode: string;
@@ -30,7 +35,9 @@ export interface RedsysConfig {
 }
 
 /** Fail closed: null unless every required variable is configured. */
-export function getRedsysConfig(env: NodeJS.ProcessEnv = process.env): RedsysConfig | null {
+export function getRedsysConfig(
+  env: NodeJS.ProcessEnv = process.env,
+): RedsysConfig | null {
   const {
     REDSYS_MERCHANT_CODE,
     REDSYS_TERMINAL,
@@ -38,7 +45,12 @@ export function getRedsysConfig(env: NodeJS.ProcessEnv = process.env): RedsysCon
     REDSYS_GATEWAY_URL,
     PUBLIC_APP_URL,
   } = env;
-  if (!REDSYS_MERCHANT_CODE || !REDSYS_TERMINAL || !REDSYS_SECRET_KEY || !PUBLIC_APP_URL) {
+  if (
+    !REDSYS_MERCHANT_CODE ||
+    !REDSYS_TERMINAL ||
+    !REDSYS_SECRET_KEY ||
+    !PUBLIC_APP_URL
+  ) {
     return null;
   }
   return {
@@ -46,26 +58,29 @@ export function getRedsysConfig(env: NodeJS.ProcessEnv = process.env): RedsysCon
     terminal: REDSYS_TERMINAL,
     secretKey: REDSYS_SECRET_KEY,
     gatewayUrl:
-      REDSYS_GATEWAY_URL ?? 'https://sis-t.redsys.es:25443/sis/realizarPago',
+      REDSYS_GATEWAY_URL ?? "https://sis-t.redsys.es:25443/sis/realizarPago",
     merchantUrl: `${PUBLIC_APP_URL}/api/payments/redsys/notification`,
     urlOk: `${PUBLIC_APP_URL}/booking-confirmed`,
     urlKo: `${PUBLIC_APP_URL}/booking?payment=failed`,
   };
 }
 
-const EUR_NUMERIC = '978';
+const EUR_NUMERIC = "978";
 
 /** Redsys order numbers: 4–12 chars, first four numeric. Unique per attempt. */
 export function buildOrderNumber(bookingId: number): string {
-  const numericPrefix = String(bookingId % 10000).padStart(4, '0');
-  return `${numericPrefix}${randomBytes(4).toString('hex')}`;
+  const numericPrefix = String(bookingId % 10000).padStart(4, "0");
+  return `${numericPrefix}${randomBytes(4).toString("hex")}`;
 }
 
-function deriveTransactionKey(secretKeyB64: string, orderNumber: string): Buffer {
-  const key = Buffer.from(secretKeyB64, 'base64');
+function deriveTransactionKey(
+  secretKeyB64: string,
+  orderNumber: string,
+): Buffer {
+  const key = Buffer.from(secretKeyB64, "base64");
   const padded = Buffer.alloc(Math.ceil(orderNumber.length / 8) * 8);
-  Buffer.from(orderNumber, 'utf8').copy(padded);
-  const cipher = createCipheriv('des-ede3-cbc', key, Buffer.alloc(8));
+  Buffer.from(orderNumber, "utf8").copy(padded);
+  const cipher = createCipheriv("des-ede3-cbc", key, Buffer.alloc(8));
   cipher.setAutoPadding(false);
   return Buffer.concat([cipher.update(padded), cipher.final()]);
 }
@@ -73,11 +88,11 @@ function deriveTransactionKey(secretKeyB64: string, orderNumber: string): Buffer
 export function signParameters(
   secretKeyB64: string,
   orderNumber: string,
-  paramsBase64: string
+  paramsBase64: string,
 ): string {
-  return createHmac('sha256', deriveTransactionKey(secretKeyB64, orderNumber))
+  return createHmac("sha256", deriveTransactionKey(secretKeyB64, orderNumber))
     .update(paramsBase64)
-    .digest('base64');
+    .digest("base64");
 }
 
 export interface RedsysPaymentRequest {
@@ -97,7 +112,7 @@ export function buildPaymentRequest(
     amount: string;
     locale?: string;
     bookingReference?: string;
-  }
+  },
 ): RedsysPaymentRequest {
   const orderNumber = buildOrderNumber(input.bookingId);
   const amountCents = String(Math.round(Number(input.amount) * 100));
@@ -107,17 +122,19 @@ export function buildPaymentRequest(
     Ds_Merchant_Order: orderNumber,
     Ds_Merchant_MerchantCode: config.merchantCode,
     Ds_Merchant_Currency: EUR_NUMERIC,
-    Ds_Merchant_TransactionType: '0', // authorization
+    Ds_Merchant_TransactionType: "0", // authorization
     Ds_Merchant_Terminal: config.terminal,
     Ds_Merchant_MerchantURL: config.merchantUrl,
     Ds_Merchant_UrlOK: input.bookingReference
       ? `${config.urlOk}?ref=${encodeURIComponent(input.bookingReference)}`
       : config.urlOk,
     Ds_Merchant_UrlKO: config.urlKo,
-    Ds_Merchant_ConsumerLanguage: input.locale === 'en' ? '002' : '001',
+    Ds_Merchant_ConsumerLanguage: input.locale === "en" ? "002" : "001",
   };
 
-  const paramsBase64 = Buffer.from(JSON.stringify(params), 'utf8').toString('base64');
+  const paramsBase64 = Buffer.from(JSON.stringify(params), "utf8").toString(
+    "base64",
+  );
   return {
     paramsBase64,
     signature: signParameters(config.secretKey, orderNumber, paramsBase64),
@@ -138,11 +155,11 @@ export interface RedsysNotification {
 export function verifyNotification(
   config: RedsysConfig,
   paramsBase64: string,
-  signatureUrlSafe: string
+  signatureUrlSafe: string,
 ): RedsysNotification | null {
   let params: Record<string, string>;
   try {
-    params = JSON.parse(Buffer.from(paramsBase64, 'base64').toString('utf8'));
+    params = JSON.parse(Buffer.from(paramsBase64, "base64").toString("utf8"));
   } catch {
     return null;
   }
@@ -151,16 +168,21 @@ export function verifyNotification(
   if (!orderNumber) return null;
 
   const expected = signParameters(config.secretKey, orderNumber, paramsBase64);
-  const received = Buffer.from(signatureUrlSafe.replace(/-/g, '+').replace(/_/g, '/'));
+  const received = Buffer.from(
+    signatureUrlSafe.replace(/-/g, "+").replace(/_/g, "/"),
+  );
   const expectedBuf = Buffer.from(expected);
-  if (received.length !== expectedBuf.length || !timingSafeEqual(received, expectedBuf)) {
+  if (
+    received.length !== expectedBuf.length ||
+    !timingSafeEqual(received, expectedBuf)
+  ) {
     return null;
   }
 
   return {
     orderNumber,
-    responseCode: params.Ds_Response ?? '',
-    amountCents: params.Ds_Merchant_Amount ?? '',
+    responseCode: params.Ds_Response ?? "",
+    amountCents: params.Ds_Merchant_Amount ?? "",
     raw: params,
   };
 }

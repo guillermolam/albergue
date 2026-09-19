@@ -3,22 +3,25 @@
  * Write operations for government_submissions
  */
 
-import { db } from '../lib/db.js';
-import { governmentSubmissions } from '@albergue/domain-model';
-import { eq, and, sql, inArray } from 'drizzle-orm';
-import type { InsertGovernmentSubmission, GovernmentSubmission } from '../types/index.js';
+import { db } from "../lib/db.js";
+import { governmentSubmissions } from "@albergue/domain-model";
+import { eq, and, sql, inArray } from "drizzle-orm";
+import type {
+  InsertGovernmentSubmission,
+  GovernmentSubmission,
+} from "../types/index.js";
 
 /**
  * Create a new government submission
  */
 export async function createGovernmentSubmission(
-  input: InsertGovernmentSubmission
+  input: InsertGovernmentSubmission,
 ): Promise<GovernmentSubmission> {
   const [result] = await db
     .insert(governmentSubmissions)
     .values({
       ...input,
-      submissionStatus: input.submissionStatus || 'pending',
+      submissionStatus: input.submissionStatus || "pending",
       attempts: input.attempts || 0,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -26,7 +29,7 @@ export async function createGovernmentSubmission(
     .returning();
 
   if (!result) {
-    throw new Error('Failed to create government submission');
+    throw new Error("Failed to create government submission");
   }
 
   return result;
@@ -36,18 +39,18 @@ export async function createGovernmentSubmission(
  * Create multiple government submissions (batch)
  */
 export async function createGovernmentSubmissionsBatch(
-  inputs: InsertGovernmentSubmission[]
+  inputs: InsertGovernmentSubmission[],
 ): Promise<GovernmentSubmission[]> {
   const results = await db
     .insert(governmentSubmissions)
     .values(
-      inputs.map(input => ({
+      inputs.map((input) => ({
         ...input,
-        submissionStatus: input.submissionStatus || 'pending',
+        submissionStatus: input.submissionStatus || "pending",
         attempts: input.attempts || 0,
         createdAt: new Date(),
         updatedAt: new Date(),
-      }))
+      })),
     )
     .returning();
 
@@ -59,7 +62,7 @@ export async function createGovernmentSubmissionsBatch(
  */
 export async function updateGovernmentSubmission(
   id: number,
-  updates: Partial<InsertGovernmentSubmission>
+  updates: Partial<InsertGovernmentSubmission>,
 ): Promise<GovernmentSubmission | null> {
   const [existing] = await db
     .select()
@@ -88,12 +91,12 @@ export async function updateGovernmentSubmission(
  */
 export async function markSubmissionAsSuccessful(
   id: number,
-  responseData?: any
+  responseData?: any,
 ): Promise<boolean> {
   const [result] = await db
     .update(governmentSubmissions)
     .set({
-      submissionStatus: 'success',
+      submissionStatus: "success",
       responseData,
       lastAttempt: new Date(),
       updatedAt: new Date(),
@@ -109,7 +112,7 @@ export async function markSubmissionAsSuccessful(
  */
 export async function markSubmissionAsFailed(
   id: number,
-  errorMessage?: string
+  errorMessage?: string,
 ): Promise<boolean> {
   const [existing] = await db
     .select({ attempts: governmentSubmissions.attempts })
@@ -124,7 +127,7 @@ export async function markSubmissionAsFailed(
   const [result] = await db
     .update(governmentSubmissions)
     .set({
-      submissionStatus: 'failed',
+      submissionStatus: "failed",
       attempts: (existing.attempts ?? 0) + 1,
       lastAttempt: new Date(),
       responseData: { error: errorMessage },
@@ -139,7 +142,9 @@ export async function markSubmissionAsFailed(
 /**
  * Increment attempt count
  */
-export async function incrementSubmissionAttempts(id: number): Promise<boolean> {
+export async function incrementSubmissionAttempts(
+  id: number,
+): Promise<boolean> {
   const [result] = await db
     .update(governmentSubmissions)
     .set({
@@ -156,11 +161,13 @@ export async function incrementSubmissionAttempts(id: number): Promise<boolean> 
 /**
  * Mark submission as pending retry
  */
-export async function markSubmissionAsPendingRetry(id: number): Promise<boolean> {
+export async function markSubmissionAsPendingRetry(
+  id: number,
+): Promise<boolean> {
   const [result] = await db
     .update(governmentSubmissions)
     .set({
-      submissionStatus: 'pending_retry',
+      submissionStatus: "pending_retry",
       updatedAt: new Date(),
     })
     .where(eq(governmentSubmissions.id, id))
@@ -174,13 +181,13 @@ export async function markSubmissionAsPendingRetry(id: number): Promise<boolean>
  */
 export async function updateSubmissionXmlContent(
   id: number,
-  xmlContent: string
+  xmlContent: string,
 ): Promise<boolean> {
   const [result] = await db
     .update(governmentSubmissions)
     .set({
       xmlContent,
-      submissionStatus: 'pending',
+      submissionStatus: "pending",
       attempts: 0,
       lastAttempt: null,
       responseData: null,
@@ -195,12 +202,14 @@ export async function updateSubmissionXmlContent(
 /**
  * Delete a government submission (soft delete)
  */
-export async function softDeleteGovernmentSubmission(id: number): Promise<boolean> {
+export async function softDeleteGovernmentSubmission(
+  id: number,
+): Promise<boolean> {
   const [result] = await db
     .update(governmentSubmissions)
     .set({
-      submissionStatus: 'deleted',
-      xmlContent: '(DELETED)',
+      submissionStatus: "deleted",
+      xmlContent: "(DELETED)",
       responseData: null,
       updatedAt: new Date(),
     })
@@ -226,7 +235,9 @@ export async function deleteGovernmentSubmission(id: number): Promise<boolean> {
 /**
  * Bulk delete government submissions
  */
-export async function bulkDeleteGovernmentSubmissions(ids: number[]): Promise<number> {
+export async function bulkDeleteGovernmentSubmissions(
+  ids: number[],
+): Promise<number> {
   if (ids.length === 0) return 0;
   const results = await db
     .delete(governmentSubmissions)
@@ -239,18 +250,20 @@ export async function bulkDeleteGovernmentSubmissions(ids: number[]): Promise<nu
 /**
  * Retry failed submissions
  */
-export async function retryFailedSubmissions(bookingId: number): Promise<number> {
+export async function retryFailedSubmissions(
+  bookingId: number,
+): Promise<number> {
   const results = await db
     .update(governmentSubmissions)
     .set({
-      submissionStatus: 'pending_retry',
+      submissionStatus: "pending_retry",
       updatedAt: new Date(),
     })
     .where(
       and(
         eq(governmentSubmissions.bookingId, bookingId),
-        eq(governmentSubmissions.submissionStatus, 'failed')
-      )
+        eq(governmentSubmissions.submissionStatus, "failed"),
+      ),
     )
     .returning();
 

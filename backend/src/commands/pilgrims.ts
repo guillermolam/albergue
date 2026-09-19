@@ -3,10 +3,14 @@
  * Write operations for pilgrims
  */
 
-import { db } from '../lib/db.js';
-import { pilgrims } from '@albergue/domain-model';
-import { eq, and, lte } from 'drizzle-orm';
-import type { InsertPilgrim, UpdatePilgrimInput, Pilgrim } from '../types/index.js';
+import { db } from "../lib/db.js";
+import { pilgrims } from "@albergue/domain-model";
+import { eq, and, lte } from "drizzle-orm";
+import type {
+  InsertPilgrim,
+  UpdatePilgrimInput,
+  Pilgrim,
+} from "../types/index.js";
 
 /**
  * Create a new pilgrim
@@ -17,15 +21,15 @@ export async function createPilgrim(input: InsertPilgrim): Promise<Pilgrim> {
     .values({
       ...input,
       // Ensure encrypted fields are properly handled
-      firstName: input.firstName || '',
-      lastName1: input.lastName1 || '',
+      firstName: input.firstName || "",
+      lastName1: input.lastName1 || "",
       createdAt: new Date(),
       updatedAt: new Date(),
     })
     .returning();
 
   if (!result) {
-    throw new Error('Failed to create pilgrim');
+    throw new Error("Failed to create pilgrim");
   }
 
   return result;
@@ -34,17 +38,19 @@ export async function createPilgrim(input: InsertPilgrim): Promise<Pilgrim> {
 /**
  * Create multiple pilgrims (batch)
  */
-export async function createPilgrimsBatch(inputs: InsertPilgrim[]): Promise<Pilgrim[]> {
+export async function createPilgrimsBatch(
+  inputs: InsertPilgrim[],
+): Promise<Pilgrim[]> {
   const results = await db
     .insert(pilgrims)
     .values(
-      inputs.map(input => ({
+      inputs.map((input) => ({
         ...input,
-        firstName: input.firstName || '',
-        lastName1: input.lastName1 || '',
+        firstName: input.firstName || "",
+        lastName1: input.lastName1 || "",
         createdAt: new Date(),
         updatedAt: new Date(),
-      }))
+      })),
     )
     .returning();
 
@@ -54,7 +60,10 @@ export async function createPilgrimsBatch(inputs: InsertPilgrim[]): Promise<Pilg
 /**
  * Update a pilgrim
  */
-export async function updatePilgrim(id: number, input: UpdatePilgrimInput): Promise<Pilgrim | null> {
+export async function updatePilgrim(
+  id: number,
+  input: UpdatePilgrimInput,
+): Promise<Pilgrim | null> {
   const [existing] = await db
     .select()
     .from(pilgrims)
@@ -86,10 +95,10 @@ export async function softDeletePilgrim(id: number): Promise<boolean> {
     .update(pilgrims)
     .set({
       // Mark fields that indicate deletion
-      firstName: '(DELETED)',
-      lastName1: '(DELETED)',
+      firstName: "(DELETED)",
+      lastName1: "(DELETED)",
       email: null, // nullable column — null marks erased data
-      phone: '(DELETED)', // NOT NULL column — tombstone marker, not ''
+      phone: "(DELETED)", // NOT NULL column — tombstone marker, not ''
       updatedAt: new Date(),
     })
     .where(eq(pilgrims.id, id))
@@ -147,7 +156,10 @@ export async function updatePilgrimLastAccess(id: number): Promise<boolean> {
 /**
  * Update pilgrim's language preference
  */
-export async function updatePilgrimLanguage(id: number, language: string): Promise<boolean> {
+export async function updatePilgrimLanguage(
+  id: number,
+  language: string,
+): Promise<boolean> {
   const [result] = await db
     .update(pilgrims)
     .set({
@@ -169,7 +181,7 @@ export async function updatePilgrimDocument(
     documentType?: string;
     documentNumber?: string;
     documentSupport?: string;
-  }
+  },
 ): Promise<boolean> {
   const [result] = await db
     .update(pilgrims)
@@ -188,7 +200,7 @@ export async function updatePilgrimDocument(
  */
 export async function bulkUpdatePilgrims(
   ids: number[],
-  updates: Partial<UpdatePilgrimInput>
+  updates: Partial<UpdatePilgrimInput>,
 ): Promise<number> {
   const results = await db
     .update(pilgrims)
@@ -196,10 +208,12 @@ export async function bulkUpdatePilgrims(
       ...updates,
       updatedAt: new Date(),
     })
-    .where(and(
-      // @ts-ignore
-      inArray(pilgrims.id, ids)
-    ))
+    .where(
+      and(
+        // @ts-ignore
+        inArray(pilgrims.id, ids),
+      ),
+    )
     .returning();
 
   return results.length;
@@ -217,8 +231,8 @@ export async function cleanupExpiredPilgrims(): Promise<number> {
     .where(
       and(
         eq(pilgrims.consentGiven, false),
-        lte(pilgrims.dataRetentionUntil, now)
-      )
+        lte(pilgrims.dataRetentionUntil, now),
+      ),
     )
     .returning();
 

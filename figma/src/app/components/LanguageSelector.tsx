@@ -1,18 +1,18 @@
-import { motion, AnimatePresence } from 'motion/react';
-import { Globe } from 'lucide-react';
-import { useI18n } from '../contexts/I18nContext';
-import { useState } from 'react';
+import { motion, AnimatePresence } from "motion/react";
+import { Globe } from "lucide-react";
+import { useI18n } from "../contexts/I18nContext";
+import { useState } from "react";
 
 export function LanguageSelector() {
   const { language, setLanguage } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
 
   const languages = [
-    { code: 'en' as const, label: 'English', flag: '🇬🇧' },
-    { code: 'es' as const, label: 'Español', flag: '🇪🇸' },
+    { code: "en" as const, label: "English", flag: "🇬🇧" },
+    { code: "es" as const, label: "Español", flag: "🇪🇸" },
   ];
 
-  const currentLanguage = languages.find(lang => lang.code === language);
+  const currentLanguage = languages.find((lang) => lang.code === language);
 
   return (
     <div className="relative">
@@ -26,28 +26,41 @@ export function LanguageSelector() {
         {/* Doodle background */}
         <svg className="absolute inset-0 w-full h-full">
           <rect
-            x="2" y="2" width="calc(100% - 4px)" height="calc(100% - 4px)"
+            x="2"
+            y="2"
+            width="calc(100% - 4px)"
+            height="calc(100% - 4px)"
             fill="white"
-            stroke="#00AB39" strokeWidth="2.5" rx="20"
+            stroke="#00AB39"
+            strokeWidth="2.5"
+            rx="20"
             className="transition-all group-hover:stroke-[#006b24]"
           />
           <rect
-            x="4" y="4" width="calc(100% - 8px)" height="calc(100% - 8px)"
+            x="4"
+            y="4"
+            width="calc(100% - 8px)"
+            height="calc(100% - 8px)"
             fill="none"
-            stroke="#1A1A1A" strokeWidth="1" rx="18"
+            stroke="#1A1A1A"
+            strokeWidth="1"
+            rx="18"
             opacity="0.3"
           />
         </svg>
 
         {/* Content */}
-        <Globe className="relative w-5 h-5 text-[#00AB39] group-hover:text-[#006b24] transition-colors" strokeWidth={2.5} />
-        <span 
+        <Globe
+          className="relative w-5 h-5 text-[#00AB39] group-hover:text-[#006b24] transition-colors"
+          strokeWidth={2.5}
+        />
+        <span
           className="relative text-lg text-[#1A1A1A] group-hover:text-[#006b24] transition-colors"
-          style={{ fontFamily: 'Patrick Hand, cursive' }}
+          style={{ fontFamily: "Patrick Hand, cursive" }}
         >
           {currentLanguage?.label}
         </span>
-        
+
         {/* Arrow indicator */}
         <motion.svg
           className="relative w-4 h-4 text-[#00AB39]"
@@ -96,14 +109,24 @@ export function LanguageSelector() {
               {/* Menu background */}
               <svg className="absolute inset-0 w-full h-full">
                 <rect
-                  x="3" y="3" width="calc(100% - 6px)" height="calc(100% - 6px)"
+                  x="3"
+                  y="3"
+                  width="calc(100% - 6px)"
+                  height="calc(100% - 6px)"
                   fill="white"
-                  stroke="#1A1A1A" strokeWidth="3" rx="16"
+                  stroke="#1A1A1A"
+                  strokeWidth="3"
+                  rx="16"
                 />
                 <rect
-                  x="6" y="6" width="calc(100% - 12px)" height="calc(100% - 12px)"
+                  x="6"
+                  y="6"
+                  width="calc(100% - 12px)"
+                  height="calc(100% - 12px)"
                   fill="none"
-                  stroke="#00AB39" strokeWidth="2" rx="14"
+                  stroke="#00AB39"
+                  strokeWidth="2"
+                  rx="14"
                   opacity="0.6"
                 />
               </svg>
@@ -129,7 +152,8 @@ export function LanguageSelector() {
                       initial={{ opacity: 0 }}
                       whileHover={{ opacity: 1 }}
                       style={{
-                        background: 'linear-gradient(135deg, rgba(0, 171, 57, 0.1) 0%, rgba(0, 171, 57, 0.05) 100%)',
+                        background:
+                          "linear-gradient(135deg, rgba(0, 171, 57, 0.1) 0%, rgba(0, 171, 57, 0.05) 100%)",
                       }}
                     />
 
@@ -138,7 +162,11 @@ export function LanguageSelector() {
                       <motion.div
                         className="absolute left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#00AB39] rounded-full"
                         layoutId="activeLanguage"
-                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 30,
+                        }}
                       />
                     )}
 
@@ -149,10 +177,10 @@ export function LanguageSelector() {
                     <span
                       className={`relative text-lg transition-colors ${
                         language === lang.code
-                          ? 'text-[#00AB39]'
-                          : 'text-[#1A1A1A] group-hover:text-[#00AB39]'
+                          ? "text-[#00AB39]"
+                          : "text-[#1A1A1A] group-hover:text-[#00AB39]"
                       }`}
-                      style={{ fontFamily: 'Patrick Hand, cursive' }}
+                      style={{ fontFamily: "Patrick Hand, cursive" }}
                     >
                       {lang.label}
                     </span>
@@ -163,7 +191,11 @@ export function LanguageSelector() {
                         className="relative ml-auto w-5 h-5 text-[#00AB39]"
                         initial={{ scale: 0, rotate: -180 }}
                         animate={{ scale: 1, rotate: 0 }}
-                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 20,
+                        }}
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -178,8 +210,8 @@ export function LanguageSelector() {
 
               {/* Decorative corner stars */}
               {[
-                { top: '8px', right: '8px' },
-                { bottom: '8px', left: '8px' }
+                { top: "8px", right: "8px" },
+                { bottom: "8px", left: "8px" },
               ].map((pos, i) => (
                 <motion.div
                   key={i}
@@ -187,7 +219,7 @@ export function LanguageSelector() {
                   style={pos}
                   animate={{
                     rotate: [0, 180, 360],
-                    scale: [1, 1.15, 1]
+                    scale: [1, 1.15, 1],
                   }}
                   transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 }}
                 >

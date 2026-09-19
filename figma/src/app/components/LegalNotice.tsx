@@ -1,10 +1,10 @@
-import { motion } from 'motion/react';
-import { Scale, Building, FileText, Mail } from 'lucide-react';
-import { useI18n } from '../contexts/I18nContext';
-import { useNavigate } from 'react-router-dom';
-import { DoodleCard } from './doodle/DoodleCard';
-import { CONTACT_INFO, LEGAL_INFO } from '../constants/footerData';
-import logoImage from 'figma:asset/6340c39809bbb6dce9c21e3fed2ac80a388b79b7.png';
+import { motion } from "motion/react";
+import { Scale, Building, FileText, Mail } from "lucide-react";
+import { useI18n } from "../contexts/I18nContext";
+import { useNavigate } from "react-router-dom";
+import { DoodleCard } from "./doodle/DoodleCard";
+import { CONTACT_INFO, LEGAL_INFO } from "../constants/footerData";
+import logoImage from "figma:asset/6340c39809bbb6dce9c21e3fed2ac80a388b79b7.png";
 
 export function LegalNotice() {
   const { language } = useI18n();
@@ -12,13 +12,14 @@ export function LegalNotice() {
 
   const content = {
     es: {
-      title: 'Aviso Legal',
-      lastUpdated: 'Última actualización: 20 de Diciembre de 2025',
-      intro: 'En cumplimiento de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI), se informa de los siguientes datos:',
+      title: "Aviso Legal",
+      lastUpdated: "Última actualización: 20 de Diciembre de 2025",
+      intro:
+        "En cumplimiento de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI), se informa de los siguientes datos:",
       sections: [
         {
           icon: Building,
-          title: 'Datos del Titular',
+          title: "Datos del Titular",
           content: `
             Denominación social: ${CONTACT_INFO.name}
             CIF: ${LEGAL_INFO.cif}
@@ -28,11 +29,11 @@ export function LegalNotice() {
             
             Registro Turístico: ${LEGAL_INFO.touristicRegistry}
             Licencia Turismo Rural: ${LEGAL_INFO.ruralTourismLicense}
-          `
+          `,
         },
         {
           icon: FileText,
-          title: 'Objeto y Ámbito de Aplicación',
+          title: "Objeto y Ámbito de Aplicación",
           content: `
             Este sitio web tiene como objeto proporcionar información sobre los servicios de alojamiento turístico ofrecidos por el ${CONTACT_INFO.name} y facilitar la realización de reservas online.
             
@@ -40,11 +41,11 @@ export function LegalNotice() {
             
             Ámbito territorial: España y Unión Europea
             Público objetivo: Peregrinos del Camino de Santiago y turistas
-          `
+          `,
         },
         {
           icon: Scale,
-          title: 'Propiedad Intelectual e Industrial',
+          title: "Propiedad Intelectual e Industrial",
           content: `
             Todos los contenidos del sitio web (textos, imágenes, diseño gráfico, código fuente, logotipos, marcas) son propiedad del ${CONTACT_INFO.name} o de terceros que han autorizado su uso.
             
@@ -57,11 +58,11 @@ export function LegalNotice() {
             Protección conforme a:
             • Ley de Propiedad Intelectual (Real Decreto Legislativo 1/1996)
             • Ley de Marcas (Ley 17/2001)
-          `
+          `,
         },
         {
           icon: Mail,
-          title: 'Responsabilidad y Garantías',
+          title: "Responsabilidad y Garantías",
           content: `
             El ${CONTACT_INFO.name} no garantiza:
             • La disponibilidad continua del sitio web (mantenimiento técnico)
@@ -75,8 +76,8 @@ export function LegalNotice() {
             • Contenidos generados por usuarios
             
             El usuario es responsable del uso que haga del sitio y de mantener la confidencialidad de sus credenciales de acceso.
-          `
-        }
+          `,
+        },
       ],
       legislation: `
         Legislación Aplicable y Jurisdicción:
@@ -101,16 +102,17 @@ export function LegalNotice() {
         • Plataforma ODR de la Comisión Europea: ${LEGAL_INFO.odrPlatform}
         
         Contacto para reclamaciones: ${CONTACT_INFO.email}
-      `
+      `,
     },
     en: {
-      title: 'Legal Notice',
-      lastUpdated: 'Last updated: December 20, 2025',
-      intro: 'In compliance with Law 34/2002, of July 11, on Information Society Services and Electronic Commerce (LSSI), the following information is provided:',
+      title: "Legal Notice",
+      lastUpdated: "Last updated: December 20, 2025",
+      intro:
+        "In compliance with Law 34/2002, of July 11, on Information Society Services and Electronic Commerce (LSSI), the following information is provided:",
       sections: [
         {
           icon: Building,
-          title: 'Owner Information',
+          title: "Owner Information",
           content: `
             Company name: ${CONTACT_INFO.name}
             Tax ID: ${LEGAL_INFO.cif}
@@ -120,11 +122,11 @@ export function LegalNotice() {
             
             Tourism Registry: ${LEGAL_INFO.touristicRegistry}
             Rural Tourism License: ${LEGAL_INFO.ruralTourismLicense}
-          `
+          `,
         },
         {
           icon: FileText,
-          title: 'Purpose and Scope',
+          title: "Purpose and Scope",
           content: `
             This website aims to provide information about tourist accommodation services offered by ${CONTACT_INFO.name} and facilitate online bookings.
             
@@ -132,11 +134,11 @@ export function LegalNotice() {
             
             Territorial scope: Spain and European Union
             Target audience: Camino de Santiago pilgrims and tourists
-          `
+          `,
         },
         {
           icon: Scale,
-          title: 'Intellectual and Industrial Property',
+          title: "Intellectual and Industrial Property",
           content: `
             All website contents (texts, images, graphic design, source code, logos, trademarks) are property of ${CONTACT_INFO.name} or third parties who have authorized their use.
             
@@ -149,11 +151,11 @@ export function LegalNotice() {
             Protection under:
             • Intellectual Property Law (Royal Legislative Decree 1/1996)
             • Trademark Law (Law 17/2001)
-          `
+          `,
         },
         {
           icon: Mail,
-          title: 'Liability and Warranties',
+          title: "Liability and Warranties",
           content: `
             ${CONTACT_INFO.name} does not guarantee:
             • Continuous availability of the website (technical maintenance)
@@ -167,8 +169,8 @@ export function LegalNotice() {
             • User-generated content
             
             The user is responsible for their use of the site and maintaining confidentiality of access credentials.
-          `
-        }
+          `,
+        },
       ],
       legislation: `
         Applicable Law and Jurisdiction:
@@ -193,8 +195,8 @@ export function LegalNotice() {
         • EU Commission ODR Platform: ${LEGAL_INFO.odrPlatform}
         
         Contact for complaints: ${CONTACT_INFO.email}
-      `
-    }
+      `,
+    },
   };
 
   const data = content[language];
@@ -209,13 +211,17 @@ export function LegalNotice() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <motion.div
             className="flex items-center gap-4 cursor-pointer"
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
             whileHover={{ scale: 1.05 }}
           >
             <img src={logoImage} alt="Logo" className="w-16 h-16" />
             <div>
-              <h1 className="text-white sketch-title text-2xl">{CONTACT_INFO.name}</h1>
-              <p className="text-[#E8F5E9] text-sm hand-drawn">Camino de Santiago</p>
+              <h1 className="text-white sketch-title text-2xl">
+                {CONTACT_INFO.name}
+              </h1>
+              <p className="text-[#E8F5E9] text-sm hand-drawn">
+                Camino de Santiago
+              </p>
             </div>
           </motion.div>
         </div>
@@ -230,8 +236,12 @@ export function LegalNotice() {
           <h1 className="text-5xl md:text-6xl sketch-title text-[#006b24] mb-4">
             {data.title}
           </h1>
-          <p className="text-gray-600 hand-drawn text-lg mb-6">{data.lastUpdated}</p>
-          <p className="text-gray-700 text-base leading-relaxed">{data.intro}</p>
+          <p className="text-gray-600 hand-drawn text-lg mb-6">
+            {data.lastUpdated}
+          </p>
+          <p className="text-gray-700 text-base leading-relaxed">
+            {data.intro}
+          </p>
         </motion.div>
 
         <div className="space-y-8">
@@ -281,12 +291,12 @@ export function LegalNotice() {
         </div>
 
         <motion.button
-          onClick={() => navigate('/')}
+          onClick={() => navigate("/")}
           className="mt-12 px-8 py-4 bg-[#8B6914] text-white rounded-2xl border-5 border-[#5D4E37] sketch-title text-xl"
           whileHover={{ scale: 1.05, y: -3 }}
-          style={{ boxShadow: '5px 7px 0px rgba(93, 78, 55, 0.5)' }}
+          style={{ boxShadow: "5px 7px 0px rgba(93, 78, 55, 0.5)" }}
         >
-          {language === 'es' ? '← Volver al Inicio' : '← Back to Home'}
+          {language === "es" ? "← Volver al Inicio" : "← Back to Home"}
         </motion.button>
       </div>
     </div>

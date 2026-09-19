@@ -1,10 +1,10 @@
-import { motion } from 'motion/react';
-import { Shield, Lock, Eye, FileText, Mail } from 'lucide-react';
-import { useI18n } from '../contexts/I18nContext';
-import { useNavigate } from 'react-router-dom';
-import { DoodleCard } from './doodle/DoodleCard';
-import { CONTACT_INFO, LEGAL_INFO } from '../constants/footerData';
-import logoImage from 'figma:asset/6340c39809bbb6dce9c21e3fed2ac80a388b79b7.png';
+import { motion } from "motion/react";
+import { Shield, Lock, Eye, FileText, Mail } from "lucide-react";
+import { useI18n } from "../contexts/I18nContext";
+import { useNavigate } from "react-router-dom";
+import { DoodleCard } from "./doodle/DoodleCard";
+import { CONTACT_INFO, LEGAL_INFO } from "../constants/footerData";
+import logoImage from "figma:asset/6340c39809bbb6dce9c21e3fed2ac80a388b79b7.png";
 
 export function PrivacyPolicy() {
   const { language } = useI18n();
@@ -12,12 +12,12 @@ export function PrivacyPolicy() {
 
   const content = {
     es: {
-      title: 'Política de Privacidad',
-      lastUpdated: 'Última actualización: 20 de Diciembre de 2025',
+      title: "Política de Privacidad",
+      lastUpdated: "Última actualización: 20 de Diciembre de 2025",
       sections: [
         {
           icon: Shield,
-          title: '1. Responsable del Tratamiento',
+          title: "1. Responsable del Tratamiento",
           content: `
             ${CONTACT_INFO.name}
             ${CONTACT_INFO.address.street}
@@ -28,11 +28,11 @@ export function PrivacyPolicy() {
             
             Delegado de Protección de Datos: ${LEGAL_INFO.dataProtectionOfficer}
             Registro RGPD: ${LEGAL_INFO.rgpdRegistry}
-          `
+          `,
         },
         {
           icon: FileText,
-          title: '2. Datos que Recopilamos',
+          title: "2. Datos que Recopilamos",
           content: `
             Para gestionar tu reserva en nuestro albergue, recopilamos los siguientes datos:
             
@@ -43,11 +43,11 @@ export function PrivacyPolicy() {
             • Datos de navegación: Cookies técnicas y analíticas
             
             Base legal: Ejecución de contrato (art. 6.1.b RGPD) y obligaciones legales del sector turístico.
-          `
+          `,
         },
         {
           icon: Lock,
-          title: '3. Finalidad del Tratamiento',
+          title: "3. Finalidad del Tratamiento",
           content: `
             Tus datos serán utilizados para:
             
@@ -57,11 +57,11 @@ export function PrivacyPolicy() {
             • Facturación y contabilidad
             • Mejora de nuestros servicios
             • Marketing (solo con tu consentimiento explícito)
-          `
+          `,
         },
         {
           icon: Eye,
-          title: '4. Conservación de Datos',
+          title: "4. Conservación de Datos",
           content: `
             • Datos de reserva: 6 años (obligación fiscal)
             • Datos de hospedaje: 3 años (Ley de Seguridad Ciudadana)
@@ -69,11 +69,11 @@ export function PrivacyPolicy() {
             • Consentimientos marketing: hasta revocación
             
             Transcurridos estos plazos, tus datos serán eliminados de forma segura.
-          `
+          `,
         },
         {
           icon: Mail,
-          title: '5. Tus Derechos',
+          title: "5. Tus Derechos",
           content: `
             Según el RGPD, tienes derecho a:
             
@@ -87,17 +87,17 @@ export function PrivacyPolicy() {
             Para ejercer estos derechos, contacta: ${LEGAL_INFO.dataProtectionOfficer}
             
             También puedes reclamar ante la Agencia Española de Protección de Datos (www.aepd.es)
-          `
-        }
-      ]
+          `,
+        },
+      ],
     },
     en: {
-      title: 'Privacy Policy',
-      lastUpdated: 'Last updated: December 20, 2025',
+      title: "Privacy Policy",
+      lastUpdated: "Last updated: December 20, 2025",
       sections: [
         {
           icon: Shield,
-          title: '1. Data Controller',
+          title: "1. Data Controller",
           content: `
             ${CONTACT_INFO.name}
             ${CONTACT_INFO.address.street}
@@ -108,11 +108,11 @@ export function PrivacyPolicy() {
             
             Data Protection Officer: ${LEGAL_INFO.dataProtectionOfficer}
             GDPR Registry: ${LEGAL_INFO.rgpdRegistry}
-          `
+          `,
         },
         {
           icon: FileText,
-          title: '2. Data We Collect',
+          title: "2. Data We Collect",
           content: `
             To manage your booking at our hostel, we collect:
             
@@ -123,11 +123,11 @@ export function PrivacyPolicy() {
             • Navigation data: Technical and analytical cookies
             
             Legal basis: Contract execution (art. 6.1.b GDPR) and legal obligations in tourism sector.
-          `
+          `,
         },
         {
           icon: Lock,
-          title: '3. Purpose of Processing',
+          title: "3. Purpose of Processing",
           content: `
             Your data will be used for:
             
@@ -137,11 +137,11 @@ export function PrivacyPolicy() {
             • Invoicing and accounting
             • Service improvement
             • Marketing (only with explicit consent)
-          `
+          `,
         },
         {
           icon: Eye,
-          title: '4. Data Retention',
+          title: "4. Data Retention",
           content: `
             • Booking data: 6 years (tax obligation)
             • Lodging data: 3 years (Public Security Law)
@@ -149,11 +149,11 @@ export function PrivacyPolicy() {
             • Marketing consents: until revocation
             
             After these periods, your data will be securely deleted.
-          `
+          `,
         },
         {
           icon: Mail,
-          title: '5. Your Rights',
+          title: "5. Your Rights",
           content: `
             Under GDPR, you have the right to:
             
@@ -167,10 +167,10 @@ export function PrivacyPolicy() {
             To exercise these rights, contact: ${LEGAL_INFO.dataProtectionOfficer}
             
             You can also file a complaint with the Spanish Data Protection Agency (www.aepd.es)
-          `
-        }
-      ]
-    }
+          `,
+        },
+      ],
+    },
   };
 
   const data = content[language];
@@ -186,14 +186,18 @@ export function PrivacyPolicy() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <motion.div
             className="flex items-center gap-4 cursor-pointer"
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
             whileHover={{ scale: 1.05 }}
           >
             <img src={logoImage} alt="Logo" className="w-16 h-16" />
             <div>
-              <h1 className="text-white sketch-title text-2xl">{CONTACT_INFO.name}</h1>
+              <h1 className="text-white sketch-title text-2xl">
+                {CONTACT_INFO.name}
+              </h1>
               <p className="text-[#E8F5E9] text-sm hand-drawn">
-                {language === 'es' ? 'Camino de Santiago' : 'Camino de Santiago'}
+                {language === "es"
+                  ? "Camino de Santiago"
+                  : "Camino de Santiago"}
               </p>
             </div>
           </motion.div>
@@ -243,12 +247,12 @@ export function PrivacyPolicy() {
 
         {/* Back Button */}
         <motion.button
-          onClick={() => navigate('/')}
+          onClick={() => navigate("/")}
           className="mt-12 px-8 py-4 bg-[#00AB39] text-white rounded-2xl border-5 border-[#006b24] sketch-title text-xl"
           whileHover={{ scale: 1.05, y: -3 }}
-          style={{ boxShadow: '5px 7px 0px rgba(0, 107, 36, 0.5)' }}
+          style={{ boxShadow: "5px 7px 0px rgba(0, 107, 36, 0.5)" }}
         >
-          {language === 'es' ? '← Volver al Inicio' : '← Back to Home'}
+          {language === "es" ? "← Volver al Inicio" : "← Back to Home"}
         </motion.button>
       </div>
     </div>

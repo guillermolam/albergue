@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { MapPin, Loader } from 'lucide-react';
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { MapPin, Loader } from "lucide-react";
 
 interface AddressSuggestion {
   placeId: string;
@@ -25,19 +25,54 @@ interface AddressAutocompleteProps {
 
 // Mock address suggestions (in production, connect to Google Maps API)
 const mockSuggestions: Record<string, AddressSuggestion[]> = {
-  'calle': [
-    { placeId: '1', description: 'Calle Mayor, 123, Madrid, Spain', mainText: 'Calle Mayor, 123', secondaryText: 'Madrid, Spain' },
-    { placeId: '2', description: 'Calle Gran Vía, 45, Madrid, Spain', mainText: 'Calle Gran Vía, 45', secondaryText: 'Madrid, Spain' },
-    { placeId: '3', description: 'Calle de Alcalá, 67, Madrid, Spain', mainText: 'Calle de Alcalá, 67', secondaryText: 'Madrid, Spain' },
+  calle: [
+    {
+      placeId: "1",
+      description: "Calle Mayor, 123, Madrid, Spain",
+      mainText: "Calle Mayor, 123",
+      secondaryText: "Madrid, Spain",
+    },
+    {
+      placeId: "2",
+      description: "Calle Gran Vía, 45, Madrid, Spain",
+      mainText: "Calle Gran Vía, 45",
+      secondaryText: "Madrid, Spain",
+    },
+    {
+      placeId: "3",
+      description: "Calle de Alcalá, 67, Madrid, Spain",
+      mainText: "Calle de Alcalá, 67",
+      secondaryText: "Madrid, Spain",
+    },
   ],
-  'main': [
-    { placeId: '4', description: '123 Main Street, London, UK', mainText: '123 Main Street', secondaryText: 'London, UK' },
-    { placeId: '5', description: '456 Main Avenue, New York, USA', mainText: '456 Main Avenue', secondaryText: 'New York, USA' },
+  main: [
+    {
+      placeId: "4",
+      description: "123 Main Street, London, UK",
+      mainText: "123 Main Street",
+      secondaryText: "London, UK",
+    },
+    {
+      placeId: "5",
+      description: "456 Main Avenue, New York, USA",
+      mainText: "456 Main Avenue",
+      secondaryText: "New York, USA",
+    },
   ],
-  'rue': [
-    { placeId: '6', description: '78 Rue de Rivoli, Paris, France', mainText: '78 Rue de Rivoli', secondaryText: 'Paris, France' },
-    { placeId: '7', description: '90 Rue Saint-Honoré, Paris, France', mainText: '90 Rue Saint-Honoré', secondaryText: 'Paris, France' },
-  ]
+  rue: [
+    {
+      placeId: "6",
+      description: "78 Rue de Rivoli, Paris, France",
+      mainText: "78 Rue de Rivoli",
+      secondaryText: "Paris, France",
+    },
+    {
+      placeId: "7",
+      description: "90 Rue Saint-Honoré, Paris, France",
+      mainText: "90 Rue Saint-Honoré",
+      secondaryText: "Paris, France",
+    },
+  ],
 };
 
 export function AddressAutocomplete({
@@ -46,7 +81,7 @@ export function AddressAutocomplete({
   onPlaceSelected,
   label = "Street Address",
   placeholder = "Start typing your address...",
-  required = false
+  required = false,
 }: AddressAutocompleteProps) {
   const [inputValue, setInputValue] = useState(value);
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
@@ -57,13 +92,16 @@ export function AddressAutocomplete({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setShowSuggestions(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -77,14 +115,14 @@ export function AddressAutocomplete({
 
     if (newValue.length >= 3) {
       setLoading(true);
-      
+
       // Simulate API call delay
       setTimeout(() => {
         const searchTerm = newValue.toLowerCase();
         let results: AddressSuggestion[] = [];
-        
+
         // Mock search through suggestions
-        Object.keys(mockSuggestions).forEach(key => {
+        Object.keys(mockSuggestions).forEach((key) => {
           if (searchTerm.includes(key)) {
             results = [...results, ...mockSuggestions[key]];
           }
@@ -114,12 +152,12 @@ export function AddressAutocomplete({
     // Extract city and postal code from mock data
     if (onPlaceSelected) {
       // Parse mock data (in production, use actual Google Places API response)
-      const parts = suggestion.description.split(', ');
+      const parts = suggestion.description.split(", ");
       onPlaceSelected({
         address: suggestion.mainText,
-        city: parts[parts.length - 2] || '',
-        postalCode: '28001', // Mock postal code
-        country: parts[parts.length - 1] || ''
+        city: parts[parts.length - 2] || "",
+        postalCode: "28001", // Mock postal code
+        country: parts[parts.length - 1] || "",
       });
     }
   };
@@ -136,7 +174,7 @@ export function AddressAutocomplete({
         {/* Hand-drawn border */}
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none"
-          style={{ filter: 'drop-shadow(2px 3px 4px rgba(0,0,0,0.08))' }}
+          style={{ filter: "drop-shadow(2px 3px 4px rgba(0,0,0,0.08))" }}
         >
           <rect
             x="3"
@@ -144,10 +182,10 @@ export function AddressAutocomplete({
             width="calc(100% - 6px)"
             height="calc(100% - 6px)"
             fill="#FFF9F0"
-            stroke={focused ? '#0071BC' : '#D4A574'}
-            strokeWidth={focused ? '3' : '2.5'}
+            stroke={focused ? "#0071BC" : "#D4A574"}
+            strokeWidth={focused ? "3" : "2.5"}
             rx="12"
-            style={{ strokeLinecap: 'round' }}
+            style={{ strokeLinecap: "round" }}
           />
           {focused && (
             <rect
@@ -178,7 +216,7 @@ export function AddressAutocomplete({
             onBlur={() => setFocused(false)}
             placeholder={placeholder}
             className="w-full pl-11 pr-10 py-3 bg-transparent focus:outline-none text-[#5D4E37]"
-            style={{ fontFamily: 'Patrick Hand, cursive', fontSize: '16px' }}
+            style={{ fontFamily: "Patrick Hand, cursive", fontSize: "16px" }}
           />
 
           {/* Loading Indicator */}
@@ -188,7 +226,9 @@ export function AddressAutocomplete({
                 initial={{ opacity: 0, rotate: 0 }}
                 animate={{ opacity: 1, rotate: 360 }}
                 exit={{ opacity: 0 }}
-                transition={{ rotate: { duration: 1, repeat: Infinity, ease: "linear" } }}
+                transition={{
+                  rotate: { duration: 1, repeat: Infinity, ease: "linear" },
+                }}
                 className="absolute right-3"
               >
                 <Loader className="w-5 h-5 text-[#0071BC]" />
@@ -210,7 +250,7 @@ export function AddressAutocomplete({
               {/* Dropdown border */}
               <svg
                 className="absolute inset-0 w-full h-full pointer-events-none"
-                style={{ filter: 'drop-shadow(4px 6px 8px rgba(0,0,0,0.15))' }}
+                style={{ filter: "drop-shadow(4px 6px 8px rgba(0,0,0,0.15))" }}
               >
                 <rect
                   x="4"
@@ -233,12 +273,15 @@ export function AddressAutocomplete({
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
                     onClick={() => handleSuggestionClick(suggestion)}
-                    whileHover={{ x: 4, backgroundColor: '#E3F2FD' }}
+                    whileHover={{ x: 4, backgroundColor: "#E3F2FD" }}
                     className="w-full flex items-start gap-3 px-3 py-3 rounded-lg text-left transition-colors"
                   >
                     <MapPin className="w-4 h-4 text-[#0071BC] mt-1 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-[#5D4E37] truncate" style={{ fontFamily: 'Patrick Hand, cursive' }}>
+                      <p
+                        className="text-sm font-medium text-[#5D4E37] truncate"
+                        style={{ fontFamily: "Patrick Hand, cursive" }}
+                      >
                         {suggestion.mainText}
                       </p>
                       <p className="text-xs text-gray-500 truncate">
@@ -250,7 +293,9 @@ export function AddressAutocomplete({
 
                 {/* Google Maps Attribution */}
                 <div className="mt-2 px-3 py-2 text-xs text-gray-400 text-center border-t border-gray-200">
-                  <p className="hand-drawn">🗺️ Powered by Google Maps API (Demo)</p>
+                  <p className="hand-drawn">
+                    🗺️ Powered by Google Maps API (Demo)
+                  </p>
                 </div>
               </div>
             </motion.div>

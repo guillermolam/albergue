@@ -3,27 +3,44 @@
  * Read operations for government_submissions
  */
 
-import { db } from '../lib/db.js';
-import { governmentSubmissions, bookings, pilgrims } from '@albergue/domain-model';
-import { eq, and, or, like, count, desc, asc, gte, lte, lt, sql, isNull } from 'drizzle-orm';
-import type { GovernmentSubmission } from '../types/index.js';
-import type { PaginatedResponse, PaginationParams } from '../types/index.js';
+import { db } from "../lib/db.js";
+import {
+  governmentSubmissions,
+  bookings,
+  pilgrims,
+} from "@albergue/domain-model";
+import {
+  eq,
+  and,
+  or,
+  like,
+  count,
+  desc,
+  asc,
+  gte,
+  lte,
+  lt,
+  sql,
+  isNull,
+} from "drizzle-orm";
+import type { GovernmentSubmission } from "../types/index.js";
+import type { PaginatedResponse, PaginationParams } from "../types/index.js";
 
 /**
  * Get all government submissions with pagination
  */
 export async function getAllGovernmentSubmissions(
-  params: PaginationParams = {}
+  params: PaginationParams = {},
 ): Promise<PaginatedResponse<GovernmentSubmission>> {
   const {
     page = 1,
     pageSize = 20,
-    orderBy = 'createdAt',
-    orderDirection = 'desc',
+    orderBy = "createdAt",
+    orderDirection = "desc",
   } = params;
 
   const offset = (page - 1) * pageSize;
-  const orderFn = orderDirection === 'asc' ? asc : desc;
+  const orderFn = orderDirection === "asc" ? asc : desc;
 
   // Get total count
   const [countResult] = await db
@@ -37,7 +54,11 @@ export async function getAllGovernmentSubmissions(
     .select()
     .from(governmentSubmissions)
     .orderBy(
-      orderFn(orderBy in governmentSubmissions ? (governmentSubmissions as any)[orderBy] : governmentSubmissions.createdAt)
+      orderFn(
+        orderBy in governmentSubmissions
+          ? (governmentSubmissions as any)[orderBy]
+          : governmentSubmissions.createdAt,
+      ),
     )
     .limit(pageSize)
     .offset(offset);
@@ -56,7 +77,9 @@ export async function getAllGovernmentSubmissions(
 /**
  * Get government submission by ID
  */
-export async function getGovernmentSubmissionById(id: number): Promise<GovernmentSubmission | null> {
+export async function getGovernmentSubmissionById(
+  id: number,
+): Promise<GovernmentSubmission | null> {
   const [result] = await db
     .select()
     .from(governmentSubmissions)
@@ -69,7 +92,9 @@ export async function getGovernmentSubmissionById(id: number): Promise<Governmen
 /**
  * Get government submissions by booking ID
  */
-export async function getGovernmentSubmissionsByBooking(bookingId: number): Promise<GovernmentSubmission[]> {
+export async function getGovernmentSubmissionsByBooking(
+  bookingId: number,
+): Promise<GovernmentSubmission[]> {
   const results = await db
     .select()
     .from(governmentSubmissions)
@@ -82,7 +107,9 @@ export async function getGovernmentSubmissionsByBooking(bookingId: number): Prom
 /**
  * Get government submissions by status
  */
-export async function getGovernmentSubmissionsByStatus(status: string): Promise<GovernmentSubmission[]> {
+export async function getGovernmentSubmissionsByStatus(
+  status: string,
+): Promise<GovernmentSubmission[]> {
   const results = await db
     .select()
     .from(governmentSubmissions)
@@ -95,15 +122,17 @@ export async function getGovernmentSubmissionsByStatus(status: string): Promise<
 /**
  * Get pending government submissions
  */
-export async function getPendingGovernmentSubmissions(): Promise<GovernmentSubmission[]> {
+export async function getPendingGovernmentSubmissions(): Promise<
+  GovernmentSubmission[]
+> {
   const results = await db
     .select()
     .from(governmentSubmissions)
     .where(
       or(
-        eq(governmentSubmissions.submissionStatus, 'pending'),
-        eq(governmentSubmissions.submissionStatus, 'pending_retry')
-      )
+        eq(governmentSubmissions.submissionStatus, "pending"),
+        eq(governmentSubmissions.submissionStatus, "pending_retry"),
+      ),
     )
     .orderBy(asc(governmentSubmissions.createdAt));
 
@@ -113,11 +142,13 @@ export async function getPendingGovernmentSubmissions(): Promise<GovernmentSubmi
 /**
  * Get successful government submissions
  */
-export async function getSuccessfulGovernmentSubmissions(): Promise<GovernmentSubmission[]> {
+export async function getSuccessfulGovernmentSubmissions(): Promise<
+  GovernmentSubmission[]
+> {
   const results = await db
     .select()
     .from(governmentSubmissions)
-    .where(eq(governmentSubmissions.submissionStatus, 'success'))
+    .where(eq(governmentSubmissions.submissionStatus, "success"))
     .orderBy(desc(governmentSubmissions.lastAttempt));
 
   return results;
@@ -126,11 +157,13 @@ export async function getSuccessfulGovernmentSubmissions(): Promise<GovernmentSu
 /**
  * Get failed government submissions
  */
-export async function getFailedGovernmentSubmissions(): Promise<GovernmentSubmission[]> {
+export async function getFailedGovernmentSubmissions(): Promise<
+  GovernmentSubmission[]
+> {
   const results = await db
     .select()
     .from(governmentSubmissions)
-    .where(eq(governmentSubmissions.submissionStatus, 'failed'))
+    .where(eq(governmentSubmissions.submissionStatus, "failed"))
     .orderBy(desc(governmentSubmissions.lastAttempt));
 
   return results;
@@ -141,7 +174,7 @@ export async function getFailedGovernmentSubmissions(): Promise<GovernmentSubmis
  */
 export async function getGovernmentSubmissionsByDateRange(
   startDate: Date,
-  endDate: Date
+  endDate: Date,
 ): Promise<GovernmentSubmission[]> {
   const results = await db
     .select()
@@ -151,8 +184,8 @@ export async function getGovernmentSubmissionsByDateRange(
         // @ts-ignore
         gte(governmentSubmissions.createdAt, startDate),
         // @ts-ignore
-        lte(governmentSubmissions.createdAt, endDate)
-      )
+        lte(governmentSubmissions.createdAt, endDate),
+      ),
     )
     .orderBy(desc(governmentSubmissions.createdAt));
 
@@ -181,7 +214,10 @@ export async function getGovernmentSubmissionWithDetails(id: number) {
 /**
  * Search government submissions
  */
-export async function searchGovernmentSubmissions(query: string, limit: number = 10): Promise<GovernmentSubmission[]> {
+export async function searchGovernmentSubmissions(
+  query: string,
+  limit: number = 10,
+): Promise<GovernmentSubmission[]> {
   const results = await db
     .select({
       submission: governmentSubmissions,
@@ -200,13 +236,13 @@ export async function searchGovernmentSubmissions(query: string, limit: number =
       or(
         like(bookings.referenceNumber, `%${query}%`),
         like(pilgrims.firstName, `%${query}%`),
-        like(pilgrims.lastName1, `%${query}%`)
-      )
+        like(pilgrims.lastName1, `%${query}%`),
+      ),
     )
     .orderBy(desc(governmentSubmissions.createdAt))
     .limit(limit);
 
-  return results.map(r => r.submission);
+  return results.map((r) => r.submission);
 }
 
 /**
@@ -222,26 +258,26 @@ export async function getGovernmentSubmissionStats() {
     .from(governmentSubmissions)
     .where(
       or(
-        eq(governmentSubmissions.submissionStatus, 'pending'),
-        eq(governmentSubmissions.submissionStatus, 'pending_retry')
-      )
+        eq(governmentSubmissions.submissionStatus, "pending"),
+        eq(governmentSubmissions.submissionStatus, "pending_retry"),
+      ),
     );
 
   const [success] = await db
     .select({ count: count() })
     .from(governmentSubmissions)
-    .where(eq(governmentSubmissions.submissionStatus, 'success'));
+    .where(eq(governmentSubmissions.submissionStatus, "success"));
 
   const [failed] = await db
     .select({ count: count() })
     .from(governmentSubmissions)
-    .where(eq(governmentSubmissions.submissionStatus, 'failed'));
+    .where(eq(governmentSubmissions.submissionStatus, "failed"));
 
   // Average attempts
   const [avgAttempts] = await db
     .select({
       // @ts-ignore
-      avg: avg(governmentSubmissions.attempts)
+      avg: avg(governmentSubmissions.attempts),
     })
     .from(governmentSubmissions);
 
@@ -261,15 +297,18 @@ export async function getGovernmentSubmissionStats() {
     successCount: success?.count || 0,
     failedCount: failed?.count || 0,
     averageAttempts: avgAttempts?.avg ? parseFloat(String(avgAttempts.avg)) : 0,
-    successRate: total?.count && total.count > 0 ? Math.round((success?.count || 0) / total.count * 100) : 0,
+    successRate:
+      total?.count && total.count > 0
+        ? Math.round(((success?.count || 0) / total.count) * 100)
+        : 0,
     byBooking: Object.fromEntries(
-      byBooking.map(b => [
+      byBooking.map((b) => [
         String(b.bookingId),
         {
           count: b.count || 0,
           lastStatus: b.lastStatus,
-        }
-      ])
+        },
+      ]),
     ),
   };
 }
@@ -277,7 +316,9 @@ export async function getGovernmentSubmissionStats() {
 /**
  * Get recent government submissions
  */
-export async function getRecentGovernmentSubmissions(limit: number = 10): Promise<GovernmentSubmission[]> {
+export async function getRecentGovernmentSubmissions(
+  limit: number = 10,
+): Promise<GovernmentSubmission[]> {
   const results = await db
     .select()
     .from(governmentSubmissions)
@@ -290,18 +331,20 @@ export async function getRecentGovernmentSubmissions(limit: number = 10): Promis
 /**
  * Get submissions needing retry
  */
-export async function getSubmissionsNeedingRetry(maxAttempts: number = 3): Promise<GovernmentSubmission[]> {
+export async function getSubmissionsNeedingRetry(
+  maxAttempts: number = 3,
+): Promise<GovernmentSubmission[]> {
   const results = await db
     .select()
     .from(governmentSubmissions)
     .where(
       and(
-        eq(governmentSubmissions.submissionStatus, 'failed'),
+        eq(governmentSubmissions.submissionStatus, "failed"),
         or(
           isNull(governmentSubmissions.attempts),
-          lt(governmentSubmissions.attempts, maxAttempts)
-        )
-      )
+          lt(governmentSubmissions.attempts, maxAttempts),
+        ),
+      ),
     )
     .orderBy(asc(governmentSubmissions.lastAttempt));
 

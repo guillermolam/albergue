@@ -73,11 +73,7 @@ function SketchyButton({
       <motion.svg
         className="absolute inset-0 w-full h-full pointer-events-none"
         style={{ filter: "blur(3px)" }}
-        animate={
-          isHovered
-            ? { y: 6, opacity: 0.3 }
-            : { y: 3, opacity: 0.15 }
-        }
+        animate={isHovered ? { y: 6, opacity: 0.3 } : { y: 3, opacity: 0.15 }}
       >
         <rect
           x="3"
@@ -100,11 +96,7 @@ function SketchyButton({
           stroke="#1A1A1A"
           strokeWidth="2.5"
           rx="10"
-          animate={
-            isHovered
-              ? { fill: "#00C843" }
-              : { fill: "#00AB39" }
-          }
+          animate={isHovered ? { fill: "#00C843" } : { fill: "#00AB39" }}
         />
       </svg>
 
@@ -179,8 +171,7 @@ export function HomePage() {
   const mouseY = useMotionValue(0);
 
   const handleGlobalMouseMove = (e: MouseEvent) => {
-    if (!containerRef.current || window.innerWidth < 768)
-      return;
+    if (!containerRef.current || window.innerWidth < 768) return;
     const { innerWidth, innerHeight } = window;
     mouseX.set((e.clientX - innerWidth / 2) / 50);
     mouseY.set((e.clientY - innerHeight / 2) / 50);
@@ -188,11 +179,7 @@ export function HomePage() {
 
   useEffect(() => {
     window.addEventListener("mousemove", handleGlobalMouseMove);
-    return () =>
-      window.removeEventListener(
-        "mousemove",
-        handleGlobalMouseMove,
-      );
+    return () => window.removeEventListener("mousemove", handleGlobalMouseMove);
   }, []);
 
   const { t } = useI18n();
@@ -370,9 +357,7 @@ export function HomePage() {
               transition={{ delay: 0.5 }}
             >
               Your resting place on the historic{" "}
-              <span className="text-[#00AB39] font-bold">
-                Vía de la Plata
-              </span>{" "}
+              <span className="text-[#00AB39] font-bold">Vía de la Plata</span>{" "}
               route through Extremadura.
             </motion.p>
 
@@ -455,11 +440,7 @@ export function HomePage() {
                       strokeWidth="2"
                       rx="10"
                       animate={{
-                        stroke: [
-                          "#1A1A1A",
-                          "#00AB39",
-                          "#1A1A1A",
-                        ],
+                        stroke: ["#1A1A1A", "#00AB39", "#1A1A1A"],
                       }}
                       transition={{
                         duration: 4,
@@ -482,8 +463,7 @@ export function HomePage() {
                     <motion.p
                       className="text-2xl md:text-3xl text-[#00AB39] my-0.5"
                       style={{
-                        fontFamily:
-                          "Shadows Into Light, cursive",
+                        fontFamily: "Shadows Into Light, cursive",
                       }}
                       animate={{ scale: [1, 1.04, 1] }}
                       transition={{
