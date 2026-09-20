@@ -29,8 +29,17 @@ function pickWeatherIcon(skyCode: string, precipProbability: number) {
   return CloudIcon;
 }
 
+/** AEMET's `fecha` is a date without a UTC offset ("YYYY-MM-DD" or
+ * "YYYY-MM-DDTHH:mm:ss"). `new Date(dateStr)` parses a bare date-only
+ * string as UTC midnight, which renders as the PREVIOUS calendar day
+ * in any timezone west of UTC -- Spain itself included, for part of
+ * the year. Parsing the y/m/d components explicitly and building the
+ * Date via the multi-arg constructor (always local time) avoids that. */
 function formatWeekday(dateStr: string, locale: string): string {
-  const date = new Date(dateStr);
+  const [datePart] = dateStr.split('T');
+  const [year, month, day] = datePart.split('-').map(Number);
+  if (!year || !month || !day) return dateStr;
+  const date = new Date(year, month - 1, day);
   if (Number.isNaN(date.getTime())) return dateStr;
   return date.toLocaleDateString(locale === 'en' ? 'en-US' : 'es-ES', { weekday: 'short' });
 }
@@ -39,39 +48,45 @@ export function WeatherWidget({ forecast, airQuality }: Readonly<WeatherWidgetPr
   const { locale } = useI18n();
   const isEs = locale !== 'en';
   const animateIcon = !usePrefersReducedMotion();
+  const hasForecast = forecast && forecast.length > 0;
 
-  if (!forecast || forecast.length === 0) {
-    return (
-      <div className="flex items-center gap-2 rounded-lg border border-[#5D4E37]/20 bg-white/60 px-3 py-2 text-xs text-[#5D4E37]/60">
-        <CloudIcon className="h-5 w-5 shrink-0" animate={false} aria-hidden="true" />
-        <span className="font-handwritten">
-          {isEs ? 'Previsión próximamente' : 'Forecast coming soon'}
-        </span>
-      </div>
-    );
-  }
-
+  // AEMET and OpenWeatherMap are configured independently -- one being
+  // unavailable must never hide the other (previously an early return
+  // on missing `forecast` discarded a perfectly valid `airQuality`).
   return (
     <div className="rounded-lg border border-[#5D4E37]/20 bg-white/60 px-3 py-2">
-      <div className="flex items-center justify-between gap-3">
-        {forecast.map((day) => {
-          const Icon = pickWeatherIcon(day.skyCode, day.precipProbability);
-          return (
-            <div key={day.date} className="flex flex-col items-center gap-0.5">
-              <span className="text-[10px] uppercase text-[#5D4E37]/60">
-                {formatWeekday(day.date, locale)}
-              </span>
-              <Icon className="h-6 w-6 shrink-0" animate={animateIcon} aria-hidden="true" />
-              <span className="text-xs font-semibold text-[#5D4E37]">
-                {Math.round(day.tempMax)}°/{Math.round(day.tempMin)}°
-              </span>
-            </div>
-          );
-        })}
-      </div>
+      {hasForecast ? (
+        <div className="flex items-center justify-between gap-3">
+          {forecast.map((day) => {
+            const Icon = pickWeatherIcon(day.skyCode, day.precipProbability);
+            return (
+              <div key={day.date} className="flex flex-col items-center gap-0.5">
+                <span className="text-[10px] uppercase text-[#5D4E37]/60">
+                  {formatWeekday(day.date, locale)}
+                </span>
+                <Icon className="h-6 w-6 shrink-0" animate={animateIcon} aria-hidden="true" />
+                <span className="text-xs font-semibold text-[#5D4E37]">
+                  {Math.round(day.tempMax)}°/{Math.round(day.tempMin)}°
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="flex items-center gap-2 text-xs text-[#5D4E37]/60">
+          <CloudIcon className="h-5 w-5 shrink-0" animate={false} aria-hidden="true" />
+          <span className="font-handwritten">
+            {isEs ? 'Previsión próximamente' : 'Forecast coming soon'}
+          </span>
+        </div>
+      )}
 
       {airQuality && (
-        <div className="mt-1.5 flex items-center justify-center gap-1.5 border-t border-[#5D4E37]/10 pt-1.5 text-[10px] text-[#5D4E37]/70">
+        <div
+          className={`flex items-center justify-center gap-1.5 text-[10px] text-[#5D4E37]/70 ${
+            hasForecast ? 'mt-1.5 border-t border-[#5D4E37]/10 pt-1.5' : 'mt-1.5'
+          }`}
+        >
           <span
             className="h-1.5 w-1.5 shrink-0 rounded-full"
             style={{ backgroundColor: AQI_LABELS[airQuality.aqi].color }}

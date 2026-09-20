@@ -2,10 +2,13 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Globe } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useI18n } from '../hooks/useI18n';
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
+import { LANGUAGES } from '../../src/stores/i18nStore';
 
 export function LanguageSelector() {
   const { locale, setLocale } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
+  const animateDecorations = !usePrefersReducedMotion();
 
   // The backdrop below is a click-to-dismiss overlay, not a focusable
   // control (aria-hidden, no keyboard handler on it) -- keyboard users
@@ -24,13 +27,23 @@ export function LanguageSelector() {
     { code: 'es' as const, label: 'Español', flag: '🇪🇸' },
   ];
 
-  const currentLanguage = languages.find((lang) => lang.code === locale);
+  // i18nStore supports (and persists) many more locales than this compact
+  // dropdown offers as choices -- fall back to the full LANGUAGES registry
+  // so a visitor already on e.g. French sees their real language name
+  // instead of a blank label, even though only en/es are selectable here.
+  const matchedLanguage = languages.find((lang) => lang.code === locale);
+  const currentLanguage = matchedLanguage
+    ? { label: matchedLanguage.label, flag: matchedLanguage.flag }
+    : { label: LANGUAGES[locale].name, flag: LANGUAGES[locale].flag };
 
   return (
     <div className="relative">
       {/* Current language button */}
       <motion.button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
         className="relative flex items-center gap-2 px-4 py-2.5 cursor-pointer group"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -70,7 +83,7 @@ export function LanguageSelector() {
           className="relative text-lg text-[#1A1A1D] group-hover:text-[#006b24] transition-colors"
           style={{ fontFamily: 'Patrick Hand, cursive' }}
         >
-          {currentLanguage?.label}
+          {currentLanguage.label}
         </span>
 
         {/* Arrow indicator */}
@@ -89,11 +102,12 @@ export function LanguageSelector() {
         {/* Floating particle */}
         <motion.div
           className="absolute -top-1 -right-1 w-2 h-2 bg-[#00AB39] rounded-full"
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.5, 1, 0.5],
-          }}
-          transition={{ duration: 2, repeat: Infinity }}
+          animate={
+            animateDecorations
+              ? { scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }
+              : { scale: 1, opacity: 0.8 }
+          }
+          transition={{ duration: 2, repeat: animateDecorations ? Infinity : 0 }}
         />
       </motion.button>
 
@@ -232,11 +246,16 @@ export function LanguageSelector() {
                   key={i}
                   className="absolute w-4 h-4 pointer-events-none"
                   style={pos}
-                  animate={{
-                    rotate: [0, 180, 360],
-                    scale: [1, 1.15, 1],
+                  animate={
+                    animateDecorations
+                      ? { rotate: [0, 180, 360], scale: [1, 1.15, 1] }
+                      : { rotate: 0, scale: 1 }
+                  }
+                  transition={{
+                    duration: 3,
+                    repeat: animateDecorations ? Infinity : 0,
+                    delay: i * 0.5,
                   }}
-                  transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 }}
                 >
                   <svg width="16" height="16" viewBox="0 0 16 16">
                     <path
