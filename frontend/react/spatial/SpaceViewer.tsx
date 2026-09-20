@@ -47,6 +47,12 @@ export function SpaceViewer({ building, className = '' }: Readonly<SpaceViewerPr
     let cancelled = false;
     let mountedHandle: SpatialEngineHandle | null = null;
 
+    // Clear any handle from a previous building before mounting the new
+    // one, otherwise a stale "ready"/"error" handle stays truthy while
+    // this mount is pending, hiding the loading overlay for the new
+    // container and showing the old building's lifecycle state.
+    setHandle(null);
+
     engine.mount(containerRef.current, config).then((result) => {
       if (cancelled) {
         result.destroy();
