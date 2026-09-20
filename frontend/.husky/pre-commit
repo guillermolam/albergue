@@ -19,6 +19,28 @@ if [ -n "${frontend_staged}" ]; then
 	done
 fi
 
+# --- Astro validation (frontend changes only) ---
+if [ -n "${frontend_staged}" ]; then
+	pnpm --dir frontend run check:astro || exit 1
+	pnpm --dir frontend run build || exit 1
+
+	# Smoke-test the dev server: `dev:background` blocks until Astro
+	# confirms it's actually serving, so a non-zero exit here means dev
+	# is broken (e.g. a stale Vite optimizeDeps cache, a config error)
+	# even though `build` succeeded. Always stop it afterwards so a
+	# failed commit doesn't leave an orphaned server running.
+	if pnpm --dir frontend run dev:background; then
+		dev_status=0
+	else
+		dev_status=1
+	fi
+	pnpm --dir frontend run dev:stop >/dev/null 2>&1 || true
+	if [ "${dev_status}" -ne 0 ]; then
+		echo "astro dev failed to start" >&2
+		exit 1
+	fi
+fi
+
 # --- OPA Rego policy gate ---
 # Blocks commits that violate architectural/security policies.
 if [ -x "security/policies/run-opa-gate.sh" ]; then
