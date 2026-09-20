@@ -1,11 +1,24 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { Globe, Search } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+} from 'react';
 import { useI18n } from '../hooks/useI18n';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { LANGUAGES, type Language } from '../../src/stores/i18nStore';
 
 const ALL_LANGUAGES = Object.values(LANGUAGES);
+
+/** Offset-block colours cycled down the list, so scanning it feels like a
+ * stack of cards rather than one long strip. The active language keeps the
+ * brand green instead of taking its turn in the rotation. */
+const LIFT_COLORS = ['#ADF296', '#96C7F2', '#F396E5', '#F2CF96'] as const;
 
 export function LanguageSelector() {
   const { locale, setLocale } = useI18n();
@@ -13,13 +26,14 @@ export function LanguageSelector() {
   const [query, setQuery] = useState('');
   const animateDecorations = !usePrefersReducedMotion();
   const inputRef = useRef<HTMLInputElement>(null);
+  const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   // The backdrop below is a click-to-dismiss overlay, not a focusable
   // control (aria-hidden, no keyboard handler on it) -- keyboard users
   // need Escape to close the dropdown instead.
   useEffect(() => {
     if (!isOpen) return;
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key === 'Escape') setIsOpen(false);
     };
     document.addEventListener('keydown', handleKeyDown);
@@ -44,15 +58,65 @@ export function LanguageSelector() {
 
   const currentLanguage: Language = LANGUAGES[locale];
 
+  const focusOption = useCallback((index: number) => {
+    optionRefs.current[index]?.focus();
+  }, []);
+
   function selectLanguage(code: Language['code']) {
     setLocale(code);
     setIsOpen(false);
   }
 
+  /** Down-arrow hands focus from the query field to the list, so the whole
+   * selector is reachable without leaving the keyboard. Enter still takes
+   * the top match directly, which is faster when the query is unambiguous. */
   function handleSearchKeyDown(event: KeyboardEvent<HTMLInputElement>) {
-    if (event.key === 'Enter' && filteredLanguages.length > 0) {
+    if (filteredLanguages.length === 0) return;
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      focusOption(0);
+      return;
+    }
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      focusOption(filteredLanguages.length - 1);
+      return;
+    }
+    if (event.key === 'Enter') {
       event.preventDefault();
       selectLanguage(filteredLanguages[0].code);
+    }
+  }
+
+  /** Arrow keys walk the list and wrap; ArrowUp off the first row returns to
+   * the query field rather than wrapping, so backing out feels like undo.
+   * Any printable character jumps back to the field and keeps typing. */
+  function handleOptionKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    const lastIndex = filteredLanguages.length - 1;
+
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        focusOption(index === lastIndex ? 0 : index + 1);
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        if (index === 0) inputRef.current?.focus();
+        else focusOption(index - 1);
+        break;
+      case 'Home':
+        event.preventDefault();
+        focusOption(0);
+        break;
+      case 'End':
+        event.preventDefault();
+        focusOption(lastIndex);
+        break;
+      default:
+        if (event.key.length === 1 && !event.metaKey && !event.ctrlKey && !event.altKey) {
+          inputRef.current?.focus();
+        }
     }
   }
 
@@ -64,12 +128,12 @@ export function LanguageSelector() {
         onClick={() => setIsOpen(!isOpen)}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
-        className="relative flex items-center gap-2 px-4 py-2.5 cursor-pointer group"
+        className="group relative flex cursor-pointer items-center gap-2 px-4 py-2.5"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
         {/* Doodle background */}
-        <svg className="absolute inset-0 w-full h-full">
+        <svg className="absolute inset-0 h-full w-full">
           <rect
             x="2"
             y="2"
@@ -96,11 +160,11 @@ export function LanguageSelector() {
 
         {/* Content */}
         <Globe
-          className="relative w-5 h-5 text-[#00AB39] group-hover:text-[#006b24] transition-colors"
+          className="relative h-5 w-5 text-[#00AB39] transition-colors group-hover:text-[#006b24]"
           strokeWidth={2.5}
         />
         <span
-          className="relative text-lg text-[#1A1A1D] group-hover:text-[#006b24] transition-colors"
+          className="relative text-lg text-[#1A1A1D] transition-colors group-hover:text-[#006b24]"
           style={{ fontFamily: 'Patrick Hand, cursive' }}
         >
           {currentLanguage.name}
@@ -108,7 +172,7 @@ export function LanguageSelector() {
 
         {/* Arrow indicator */}
         <motion.svg
-          className="relative w-4 h-4 text-[#00AB39]"
+          className="relative h-4 w-4 text-[#00AB39]"
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3 }}
           viewBox="0 0 24 24"
@@ -121,7 +185,7 @@ export function LanguageSelector() {
 
         {/* Floating particle */}
         <motion.div
-          className="absolute -top-1 -right-1 w-2 h-2 bg-[#00AB39] rounded-full"
+          className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-[#00AB39]"
           animate={
             animateDecorations
               ? { scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }
@@ -146,17 +210,17 @@ export function LanguageSelector() {
 
             {/* Menu */}
             <motion.div
-              className="absolute top-full right-0 mt-2 z-50 w-64"
+              className="absolute top-full right-0 z-50 mt-2 w-52"
               initial={{ opacity: 0, y: -10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ duration: 0.2 }}
             >
               {/* Shadow */}
-              <div className="absolute inset-0 bg-black/20 blur-xl transform translate-y-2" />
+              <div className="absolute inset-0 translate-y-2 transform bg-black/20 blur-xl" />
 
               {/* Menu background */}
-              <svg className="absolute inset-0 w-full h-full">
+              <svg className="absolute inset-0 h-full w-full">
                 <rect
                   x="3"
                   y="3"
@@ -180,9 +244,11 @@ export function LanguageSelector() {
                 />
               </svg>
 
-              <div className="relative p-2">
+              {/* pt-3.5 clears the panel's double stroke, which the search
+                  box used to sit right on top of. */}
+              <div className="relative px-2 pt-3.5 pb-2">
                 {/* Search / autocomplete input */}
-                <div className="relative mb-1.5 flex items-center gap-2 rounded-lg border-2 border-[#5D4E37]/20 bg-white px-3 py-1.5">
+                <div className="relative mb-2 flex items-center gap-2 rounded-lg border-2 border-[#5D4E37]/20 bg-white px-2.5 py-1.5">
                   <Search className="h-4 w-4 shrink-0 text-[#5D4E37]/50" aria-hidden="true" />
                   <input
                     ref={inputRef}
@@ -201,101 +267,87 @@ export function LanguageSelector() {
                   />
                 </div>
 
-                {/* Menu items */}
+                {/* Menu items. The horizontal padding on the scroll area
+                    gives each row's offset block somewhere to land instead
+                    of being clipped by the panel edge. */}
                 <div
                   id="language-selector-list"
                   role="listbox"
-                  className="max-h-56 overflow-y-auto"
+                  className="max-h-44 overflow-x-hidden overflow-y-auto px-0.5 pb-1"
                 >
                   {filteredLanguages.length === 0 && (
                     <p className="px-3 py-4 text-center text-sm text-[#5D4E37]/50">
                       No matching language
                     </p>
                   )}
-                  {filteredLanguages.map((lang, index) => (
-                    <motion.button
-                      key={lang.code}
-                      type="button"
-                      role="option"
-                      aria-selected={locale === lang.code}
-                      onClick={() => selectLanguage(lang.code)}
-                      className="relative w-full flex items-center gap-3 px-3 py-2.5 cursor-pointer group"
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: Math.min(index, 8) * 0.03 }}
-                      whileHover={{ x: 3 }}
-                    >
-                      {/* Hover background */}
-                      <motion.div
-                        className="absolute inset-1 rounded-xl"
-                        initial={{ opacity: 0 }}
-                        whileHover={{ opacity: 1 }}
-                        style={{
-                          background:
-                            'linear-gradient(135deg, rgba(0, 171, 57, 0.1) 0%, rgba(0, 171, 57, 0.05) 100%)',
+                  {filteredLanguages.map((lang, index) => {
+                    const isActive = locale === lang.code;
+                    return (
+                      <motion.button
+                        key={lang.code}
+                        ref={(node) => {
+                          optionRefs.current[index] = node;
                         }}
-                      />
-
-                      {/* Active indicator */}
-                      {locale === lang.code && (
-                        <motion.div
-                          className="absolute left-1 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#00AB39] rounded-full"
-                          layoutId="activeLanguage"
-                          transition={{
-                            type: 'spring',
-                            stiffness: 300,
-                            damping: 30,
-                          }}
-                        />
-                      )}
-
-                      {/* Flag emoji */}
-                      <span className="relative text-xl">{lang.flag}</span>
-
-                      {/* Language name */}
-                      <span
-                        className={`relative text-base transition-colors ${
-                          locale === lang.code
-                            ? 'text-[#00AB39]'
-                            : 'text-[#1A1A1D] group-hover:text-[#00AB39]'
-                        }`}
-                        style={{ fontFamily: 'Patrick Hand, cursive' }}
+                        type="button"
+                        role="option"
+                        aria-selected={isActive}
+                        onClick={() => selectLanguage(lang.code)}
+                        onKeyDown={(event) => handleOptionKeyDown(event, index)}
+                        className="lift-item relative flex w-full cursor-pointer items-center gap-2.5 bg-white px-2.5 py-1.5"
+                        style={
+                          {
+                            '--lift-color': isActive
+                              ? '#00AB39'
+                              : LIFT_COLORS[index % LIFT_COLORS.length],
+                          } as CSSProperties
+                        }
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: Math.min(index, 8) * 0.025 }}
                       >
-                        {lang.name}
-                      </span>
+                        {/* Flag emoji */}
+                        <span className="relative text-lg">{lang.flag}</span>
 
-                      {/* Check mark for active language */}
-                      {locale === lang.code && (
-                        <motion.svg
-                          className="relative ml-auto w-4 h-4 text-[#00AB39]"
-                          initial={{ scale: 0, rotate: -180 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          transition={{
-                            type: 'spring',
-                            stiffness: 300,
-                            damping: 20,
-                          }}
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="3"
+                        {/* Language name */}
+                        <span
+                          className={`relative text-sm transition-colors ${
+                            isActive ? 'text-[#00AB39]' : 'text-[#1A1A1D]'
+                          }`}
+                          style={{ fontFamily: 'Patrick Hand, cursive' }}
                         >
-                          <polyline points="20 6 9 17 4 12" />
-                        </motion.svg>
-                      )}
-                    </motion.button>
-                  ))}
+                          {lang.name}
+                        </span>
+
+                        {/* Check mark for active language */}
+                        {isActive && (
+                          <motion.svg
+                            className="relative ml-auto h-3.5 w-3.5 text-[#00AB39]"
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                          >
+                            <polyline points="20 6 9 17 4 12" />
+                          </motion.svg>
+                        )}
+                      </motion.button>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Decorative corner stars */}
+              {/* Decorative corner stars -- both sit low now, since the top
+                  corners belong to the search box. */}
               {[
-                { top: '8px', right: '8px' },
-                { bottom: '8px', left: '8px' },
+                { bottom: '6px', right: '8px' },
+                { bottom: '6px', left: '8px' },
               ].map((pos, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-4 h-4 pointer-events-none"
+                  className="pointer-events-none absolute h-3 w-3"
                   style={pos}
                   animate={
                     animateDecorations
@@ -308,7 +360,7 @@ export function LanguageSelector() {
                     delay: i * 0.5,
                   }}
                 >
-                  <svg width="16" height="16" viewBox="0 0 16 16">
+                  <svg width="12" height="12" viewBox="0 0 16 16">
                     <path
                       d="M8,1 L9,7 L15,8 L9,9 L8,15 L7,9 L1,8 L7,7 Z"
                       fill="#00AB39"
