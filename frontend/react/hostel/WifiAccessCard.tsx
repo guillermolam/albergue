@@ -13,8 +13,24 @@ interface WifiAccessCardProps {
 // information (same as a QR code posted on a hostel wall), not a secret
 // that belongs in an env var or secret manager.
 const COPY = {
-  es: { network: 'Red', password: 'Contraseña', copy: 'Copiar', copied: 'Copiado' }, // NOSONAR typescript:S2068
-  en: { network: 'Network', password: 'Password', copy: 'Copy', copied: 'Copied' }, // NOSONAR typescript:S2068
+  es: {
+    network: 'Red',
+    password: 'Contraseña', // NOSONAR typescript:S2068
+    copy: 'Copiar',
+    copied: 'Copiado',
+    show: 'Mostrar',
+    hide: 'Ocultar',
+    qrAlt: 'Código QR de la WiFi',
+  },
+  en: {
+    network: 'Network',
+    password: 'Password', // NOSONAR typescript:S2068
+    copy: 'Copy',
+    copied: 'Copied',
+    show: 'Show',
+    hide: 'Hide',
+    qrAlt: 'WiFi QR code',
+  },
 };
 
 function CredentialBadge({
@@ -23,12 +39,16 @@ function CredentialBadge({
   masked = false,
   copyLabel,
   copiedLabel,
+  showLabel,
+  hideLabel,
 }: Readonly<{
   label: string;
   value: string;
   masked?: boolean;
   copyLabel: string;
   copiedLabel: string;
+  showLabel: string;
+  hideLabel: string;
 }>) {
   const [revealed, setRevealed] = useState(!masked);
   const [copied, setCopied] = useState(false);
@@ -55,7 +75,7 @@ function CredentialBadge({
         <button
           type="button"
           onClick={() => setRevealed((r) => !r)}
-          aria-label={revealed ? 'Hide' : 'Show'}
+          aria-label={revealed ? hideLabel : showLabel}
           className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[#5D4E37]/70 hover:bg-white"
         >
           {revealed ? (
@@ -107,18 +127,27 @@ export function WifiAccessCard({ ssid, password }: Readonly<WifiAccessCardProps>
       {qrDataUrl && (
         <img
           src={qrDataUrl}
-          alt="WiFi QR code"
+          alt={t.qrAlt}
           className="h-20 w-20 shrink-0 rounded-lg border border-[#5D4E37]/20 bg-white p-1"
         />
       )}
       <div className="flex flex-1 flex-col gap-1.5">
-        <CredentialBadge label={t.network} value={ssid} copyLabel={t.copy} copiedLabel={t.copied} />
+        <CredentialBadge
+          label={t.network}
+          value={ssid}
+          copyLabel={t.copy}
+          copiedLabel={t.copied}
+          showLabel={t.show}
+          hideLabel={t.hide}
+        />
         <CredentialBadge
           label={t.password}
           value={password}
           masked
           copyLabel={t.copy}
           copiedLabel={t.copied}
+          showLabel={t.show}
+          hideLabel={t.hide}
         />
       </div>
     </div>
