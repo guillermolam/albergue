@@ -61,7 +61,14 @@ async function notifyAdminByEmail(submission: ContactMessage): Promise<void> {
       // Resend request (bad key, unverified sender, malformed payload)
       // still resolves here, so response.ok must be checked explicitly
       // or a provider-side failure silently drops the notification.
-      const detail = await response.text().catch(() => "");
+      //
+      // Resend's error body can echo back parts of what we sent it (e.g.
+      // the message/subject), which is attacker-influenced -- strip
+      // newlines/control characters before logging so a crafted
+      // submission can't forge extra log lines or inject control
+      // sequences into the log stream.
+      const rawDetail = await response.text().catch(() => "");
+      const detail = rawDetail.replace(/[\r\n\t\p{Cc}]+/gu, " ").slice(0, 500);
       console.error(
         `Resend contact notification failed: ${response.status} ${response.statusText} ${detail}`,
       );
