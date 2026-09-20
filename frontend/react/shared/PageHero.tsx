@@ -55,7 +55,7 @@ export function PageHero({ eyebrow, title, subtitle, ctas, children }: Readonly<
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-linear-to-br from-[#E8F5E9] to-[#FFF9F0] py-16 md:py-24"
+      className="relative overflow-hidden bg-linear-to-br from-[#E8F5E9] to-[#FFFFFF] py-10 md:py-14"
     >
       <div ref={patternRef} className="absolute inset-0 text-[#00AB39]">
         <DoodlePatterns.Squiggles grid="8x8" />
