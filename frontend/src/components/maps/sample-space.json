@@ -1,0 +1,3757 @@
+{
+  "space": {
+    "levels": [
+      {
+        "name": "",
+        "roofs": [
+          {
+            "id": "81bc8f07-1f33-45dd-b357-6747263cc2ed",
+            "name": "Roof 1",
+            "type": "roof",
+            "options": {},
+            "segments": []
+          }
+        ],
+        "walls": [
+          {
+            "id": "3eb040ca-e74a-41ca-ab44-d827ad2a672a",
+            "name": "Verja",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "shell",
+              "height": 160,
+              "thickness": 5,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "1879bc8b-c6c9-4336-8401-101b74a5bbde",
+                "end": {
+                  "r": 29.277,
+                  "t": 6.328,
+                  "id": "5dd6461b-0b49-5a10-be3b-cedd1a5f2ca2"
+                },
+                "start": {
+                  "r": 27.955,
+                  "t": 66.535,
+                  "id": "9467ef2b-eb37-5cf6-9f5e-91eacd39cf6c"
+                },
+                "openings": [
+                  {
+                    "id": "57524d1b-66a6-4bee-b791-60c3d64b0bb3",
+                    "name": "Door 9",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "end",
+                      "distance": 2.486
+                    },
+                    "dimensions": {
+                      "width": 100,
+                      "height": 160
+                    }
+                  },
+                  {
+                    "id": "0dd4a38f-ac2e-4104-b492-c6cb5a364f40",
+                    "name": "Door 10",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "roller-shutter",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "end",
+                      "distance": 23.14
+                    },
+                    "dimensions": {
+                      "width": 400,
+                      "height": 200
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "61ce811b-93e1-44c4-abfd-d68195e7bb13",
+                "end": {
+                  "r": 37.633,
+                  "t": 6.328,
+                  "id": "9861d82e-6f48-5244-8213-6156fad32644"
+                },
+                "start": {
+                  "r": 29.277,
+                  "t": 6.328,
+                  "id": "5dd6461b-0b49-5a10-be3b-cedd1a5f2ca2"
+                },
+                "openings": []
+              },
+              {
+                "id": "c11c4e9d-96f3-495b-ba51-9d5ebc0955a4",
+                "end": {
+                  "r": 37.633,
+                  "t": 4.739,
+                  "id": "5552d1aa-ed07-5474-a7cc-6f32d47cbbf5"
+                },
+                "start": {
+                  "r": 37.633,
+                  "t": 6.328,
+                  "id": "9861d82e-6f48-5244-8213-6156fad32644"
+                },
+                "openings": []
+              },
+              {
+                "id": "d42c93e0-70c6-422f-9818-d72fb1847d26",
+                "end": {
+                  "r": 59.11,
+                  "t": 5.446,
+                  "id": "18551f9b-fece-51fe-adb0-1134d4de85e0"
+                },
+                "start": {
+                  "r": 37.633,
+                  "t": 4.739,
+                  "id": "5552d1aa-ed07-5474-a7cc-6f32d47cbbf5"
+                },
+                "openings": []
+              },
+              {
+                "id": "70cbf6ef-0676-4521-b797-42dcdf7e83fb",
+                "end": {
+                  "r": 59.11,
+                  "t": 66.535,
+                  "id": "21717f13-4d2c-5ec3-9a67-e3f769a77245"
+                },
+                "start": {
+                  "r": 59.11,
+                  "t": 5.446,
+                  "id": "18551f9b-fece-51fe-adb0-1134d4de85e0"
+                },
+                "openings": [
+                  {
+                    "id": "2a521402-7965-4add-9059-e8ebc767acd3",
+                    "name": "Door 7",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "railing",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "openAngle": 90,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "railingHeight": 110,
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 12.057
+                    },
+                    "dimensions": {
+                      "width": 100,
+                      "height": 160
+                    }
+                  },
+                  {
+                    "id": "424430f8-c20c-4c54-905b-29d207dcd69a",
+                    "name": "Door 8",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "railing",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1,
+                      "railingHeight": 110
+                    },
+                    "position": {
+                      "from": "end",
+                      "distance": 21.086
+                    },
+                    "dimensions": {
+                      "width": 100,
+                      "height": 160
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "77c76906-bcef-40ce-8677-5d28613e4ab6",
+                "end": {
+                  "r": 27.955,
+                  "t": 66.535,
+                  "id": "da6b4462-7274-5f69-bb5d-5bceb2b71a2e"
+                },
+                "start": {
+                  "r": 59.11,
+                  "t": 66.535,
+                  "id": "21717f13-4d2c-5ec3-9a67-e3f769a77245"
+                },
+                "openings": []
+              }
+            ]
+          },
+          {
+            "id": "4634b5da-8e5d-4402-857c-95e74afe9bf7",
+            "name": "ED01_Wall",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "height": 300,
+              "thickness": 30,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "46689b9e-d0ec-4942-a080-dca0a7a1a432",
+                "end": {
+                  "r": 36.893,
+                  "t": 9.97,
+                  "id": "719f8f3a-249d-4ff7-afaa-b354d68f25aa"
+                },
+                "start": {
+                  "r": 34.606,
+                  "t": 9.97,
+                  "id": "1759df4a-31c5-48a5-8c92-b96757215cc7"
+                },
+                "openings": []
+              },
+              {
+                "id": "f3cdf896-8f65-449c-927e-e2f535fdc089",
+                "end": {
+                  "r": 36.893,
+                  "t": 8.198,
+                  "id": "47a0fdc2-5f3c-4e48-92f5-2bf416ced155"
+                },
+                "start": {
+                  "r": 36.893,
+                  "t": 9.97,
+                  "id": "719f8f3a-249d-4ff7-afaa-b354d68f25aa"
+                },
+                "openings": [
+                  {
+                    "id": "13c5a379-36ba-4e01-b449-66dacd5b35d0",
+                    "name": "Door 4",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 0.79
+                    },
+                    "dimensions": {
+                      "width": 90,
+                      "height": 210
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "1b467ad5-3969-43a3-9e95-73ced9c30c6b",
+                "end": {
+                  "r": 53.24,
+                  "t": 8.198,
+                  "id": "2ba77457-8fca-49f2-9050-77dad6606d73"
+                },
+                "start": {
+                  "r": 36.893,
+                  "t": 8.198,
+                  "id": "47a0fdc2-5f3c-4e48-92f5-2bf416ced155"
+                },
+                "openings": []
+              },
+              {
+                "id": "3b0f0094-970f-4cde-8e9d-a21b879ec5f3",
+                "end": {
+                  "r": 53.24,
+                  "t": 27.215,
+                  "id": "11ed0f65-76bd-4b3e-ad2d-d857e1ada9d6"
+                },
+                "start": {
+                  "r": 53.24,
+                  "t": 8.198,
+                  "id": "2ba77457-8fca-49f2-9050-77dad6606d73"
+                },
+                "openings": [
+                  {
+                    "id": "f7c4a2fe-1d0c-432c-b7c7-00d6b6c3f219",
+                    "name": "Window 9",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "end",
+                      "distance": 5.047
+                    },
+                    "dimensions": {
+                      "width": 110,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  },
+                  {
+                    "id": "f71a571e-6b34-451e-8c64-a92347e5d408",
+                    "name": "Window 10",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "end",
+                      "distance": 2.569
+                    },
+                    "dimensions": {
+                      "width": 110,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "772f8138-a639-4693-9605-d8f06a0dd966",
+                "end": {
+                  "r": 34.606,
+                  "t": 27.622,
+                  "id": "b04504b6-9280-477a-8bc4-f691a6a86ccd"
+                },
+                "start": {
+                  "r": 53.24,
+                  "t": 27.215,
+                  "id": "11ed0f65-76bd-4b3e-ad2d-d857e1ada9d6"
+                },
+                "openings": [
+                  {
+                    "id": "a2cf5aa3-8e5a-4356-a27f-d3792bc629b0",
+                    "name": "Door 1",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": true,
+                      "twoPanels": true,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": true,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 5.164
+                    },
+                    "dimensions": {
+                      "width": 160,
+                      "height": 210
+                    }
+                  },
+                  {
+                    "id": "196e06fc-3cf2-4cca-92da-e8c7d0bb692d",
+                    "name": "Window 2",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "end",
+                      "distance": 2.636
+                    },
+                    "dimensions": {
+                      "width": 110,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  },
+                  {
+                    "id": "b7596572-67bc-41ac-b325-058b6a7ab0de",
+                    "name": "Window 4",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 9.279
+                    },
+                    "dimensions": {
+                      "width": 110,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "ef757b56-6eaa-4825-8c90-9396fa355c52",
+            "name": "Wall 14",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "thickness": 30,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "d97f22fc-8202-4600-9685-289449a0e674",
+                "end": {
+                  "r": 34.606,
+                  "t": 9.97,
+                  "id": "4b169d67-2523-448b-bce3-c9e23676f62c"
+                },
+                "start": {
+                  "r": 34.606,
+                  "t": 27.622,
+                  "id": "94add849-d1eb-4cdd-b2ef-1edf24527d57"
+                },
+                "openings": [
+                  {
+                    "id": "3fedc388-149a-4c42-9cd1-6d881f02744c",
+                    "name": "Window 1",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 2.411
+                    },
+                    "dimensions": {
+                      "width": 110,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  },
+                  {
+                    "id": "ece74978-c029-4ddb-91ea-4b30bdc2bb7a",
+                    "name": "Window 5",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 6.469
+                    },
+                    "dimensions": {
+                      "width": 110,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  },
+                  {
+                    "id": "1bbb9dc2-a3e7-49c5-b37c-538214480c3d",
+                    "name": "Window 8",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "end",
+                      "distance": 3.276
+                    },
+                    "dimensions": {
+                      "width": 110,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "b9195e3b-4641-45b8-8044-71618f3c8a05",
+            "name": "Wall 15",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "thickness": 15,
+              "autoFacade": false,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "520c1e34-8e9f-4856-986e-c6e1c022d39b",
+                "end": {
+                  "r": 49.465,
+                  "t": 12.331,
+                  "id": "36da6e6e-ce59-4154-8763-67afdca36dc7"
+                },
+                "start": {
+                  "r": 49.465,
+                  "t": 27.215,
+                  "id": "56e2670a-504a-431b-91bb-308b01ae0e00"
+                },
+                "openings": [
+                  {
+                    "id": "6742dccd-be57-4b21-a0dd-894e70b76e10",
+                    "name": "Door 6",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": true,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 5.446
+                    },
+                    "dimensions": {
+                      "width": 80,
+                      "height": 210
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "4cee4495-aff2-47fb-9f76-d4d9b88fa66d",
+                "end": {
+                  "r": 53.24,
+                  "t": 12.331,
+                  "id": "37a85afe-8282-4dcf-8adf-3df987b30b8b"
+                },
+                "start": {
+                  "r": 49.465,
+                  "t": 12.331,
+                  "id": "36da6e6e-ce59-4154-8763-67afdca36dc7"
+                },
+                "openings": []
+              },
+              {
+                "id": "791f7503-2b66-44ff-a016-9caf9805913b",
+                "end": {
+                  "r": 53.24,
+                  "t": 27.215,
+                  "id": "83b40077-20c6-4e5a-b509-846777154de6"
+                },
+                "start": {
+                  "r": 53.24,
+                  "t": 12.331,
+                  "id": "37a85afe-8282-4dcf-8adf-3df987b30b8b"
+                },
+                "openings": []
+              },
+              {
+                "id": "607fe0f8-7d85-4079-9e3d-1999dd45b93b",
+                "end": {
+                  "r": 49.465,
+                  "t": 27.215,
+                  "id": "56e2670a-504a-431b-91bb-308b01ae0e00"
+                },
+                "start": {
+                  "r": 53.24,
+                  "t": 27.215,
+                  "id": "83b40077-20c6-4e5a-b509-846777154de6"
+                },
+                "openings": [
+                  {
+                    "id": "05e6e0b5-85ed-4198-9a82-98c1e148b42b",
+                    "name": "Window 11",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "end",
+                      "distance": 1.846
+                    },
+                    "dimensions": {
+                      "width": 100,
+                      "height": 120,
+                      "baseHeight": 60
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "628ed977-3ede-4a2f-8a08-6f1669271a83",
+            "name": "Wall 16",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "thickness": 15,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "ac32ab9b-f9ae-4fd3-9e44-21f0084e2c66",
+                "end": {
+                  "r": 40.768,
+                  "t": 14.326,
+                  "id": "492a0c50-2bde-4260-87b4-9ef2eb9fe6ff"
+                },
+                "start": {
+                  "r": 40.768,
+                  "t": 21.07,
+                  "id": "2d824b3c-4bc0-4fdc-8000-0414a7414212"
+                },
+                "openings": []
+              },
+              {
+                "id": "9597ad54-f7af-472d-b35c-515a067ae7a2",
+                "end": {
+                  "r": 47.203,
+                  "t": 14.326,
+                  "id": "ebf283df-5dd0-4bc5-8f92-b95e0ae03b19"
+                },
+                "start": {
+                  "r": 40.768,
+                  "t": 14.326,
+                  "id": "492a0c50-2bde-4260-87b4-9ef2eb9fe6ff"
+                },
+                "openings": []
+              },
+              {
+                "id": "7108e6bb-62fa-49ba-9cb2-0f40b86f880a",
+                "end": {
+                  "r": 47.203,
+                  "t": 21.07,
+                  "id": "405bc221-00fc-4f32-9723-86e9866b0efb"
+                },
+                "start": {
+                  "r": 47.203,
+                  "t": 14.326,
+                  "id": "ebf283df-5dd0-4bc5-8f92-b95e0ae03b19"
+                },
+                "openings": []
+              },
+              {
+                "id": "c4730ad7-53e3-4413-90e6-be698c2ac94e",
+                "end": {
+                  "r": 40.768,
+                  "t": 21.07,
+                  "id": "2d824b3c-4bc0-4fdc-8000-0414a7414212"
+                },
+                "start": {
+                  "r": 47.203,
+                  "t": 21.07,
+                  "id": "405bc221-00fc-4f32-9723-86e9866b0efb"
+                },
+                "openings": []
+              }
+            ]
+          },
+          {
+            "id": "f10102d5-93fb-476d-b09e-c105bcf44f41",
+            "name": "Wall 17",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "thickness": 15,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "925fe93d-a22d-407d-839b-e1b9d3c436e5",
+                "end": {
+                  "r": 38.706,
+                  "t": 12.331,
+                  "id": "ee0de162-a50a-4b47-8921-0b852dcf4f69"
+                },
+                "start": {
+                  "r": 38.706,
+                  "t": 23.19,
+                  "id": "63eba754-b630-405a-b186-d126262bf362"
+                },
+                "openings": []
+              },
+              {
+                "id": "c3ad0188-6f42-4deb-ac25-ef722c87c459",
+                "end": {
+                  "r": 34.606,
+                  "t": 12.331,
+                  "id": "e831cf1a-02ea-4122-9254-a989d5f53cf7"
+                },
+                "start": {
+                  "r": 38.706,
+                  "t": 12.331,
+                  "id": "ee0de162-a50a-4b47-8921-0b852dcf4f69"
+                },
+                "openings": []
+              },
+              {
+                "id": "f19ace78-6a17-439d-a291-8c48cda1754c",
+                "end": {
+                  "r": 34.606,
+                  "t": 23.19,
+                  "id": "e26accaf-7720-4006-ab35-f1deade4ea6f"
+                },
+                "start": {
+                  "r": 34.606,
+                  "t": 12.331,
+                  "id": "e831cf1a-02ea-4122-9254-a989d5f53cf7"
+                },
+                "openings": [
+                  {
+                    "id": "252e90cb-1301-4496-9f48-1823fdae3356",
+                    "name": "Window 6",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "end",
+                      "distance": 5.064
+                    },
+                    "dimensions": {
+                      "width": 100,
+                      "height": 120,
+                      "baseHeight": 60
+                    }
+                  },
+                  {
+                    "id": "4b5a7783-584d-4060-80fd-30a89577498a",
+                    "name": "Window 7",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 3.259
+                    },
+                    "dimensions": {
+                      "width": 100,
+                      "height": 120,
+                      "baseHeight": 60
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "899ec5e1-8c3c-4397-ab23-fdc32441eecc",
+                "end": {
+                  "r": 38.706,
+                  "t": 23.19,
+                  "id": "63eba754-b630-405a-b186-d126262bf362"
+                },
+                "start": {
+                  "r": 34.606,
+                  "t": 23.19,
+                  "id": "e26accaf-7720-4006-ab35-f1deade4ea6f"
+                },
+                "openings": []
+              }
+            ]
+          },
+          {
+            "id": "2e5bfa5f-d322-412d-bbf4-bfdd1efb1c9c",
+            "name": "Wall 18",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "thickness": 15,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "3fe3b5fd-9bfa-4ec5-87b5-9d82ae1a0f1f",
+                "end": {
+                  "r": 47.203,
+                  "t": 27.215,
+                  "id": "a6138e71-612e-45b3-8f5e-833abcc181c1"
+                },
+                "start": {
+                  "r": 47.203,
+                  "t": 23.19,
+                  "id": "eff782b5-432d-4b9f-b02a-95eb338ac353"
+                },
+                "openings": []
+              },
+              {
+                "id": "1a9d26a4-22d2-4225-8499-39d97d68f391",
+                "end": {
+                  "r": 34.606,
+                  "t": 27.622,
+                  "id": "eadccf02-e7ff-4119-8ae0-9a62aca2f561"
+                },
+                "start": {
+                  "r": 47.203,
+                  "t": 27.215,
+                  "id": "a6138e71-612e-45b3-8f5e-833abcc181c1"
+                },
+                "openings": [
+                  {
+                    "id": "b49e77bb-381a-46bc-9040-c66de3574bd5",
+                    "name": "Window 3",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "end",
+                      "distance": 5.945
+                    },
+                    "dimensions": {
+                      "width": 100,
+                      "height": 120,
+                      "baseHeight": 60
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "f988856b-438e-4f16-820e-4208b6ef20d0",
+                "end": {
+                  "r": 34.606,
+                  "t": 23.19,
+                  "id": "0334dbd7-40bb-4dfb-a266-bfa30e6ac4ef"
+                },
+                "start": {
+                  "r": 34.606,
+                  "t": 27.622,
+                  "id": "eadccf02-e7ff-4119-8ae0-9a62aca2f561"
+                },
+                "openings": []
+              },
+              {
+                "id": "31d81157-f90b-4840-86b7-a12ccaff72ae",
+                "end": {
+                  "r": 47.203,
+                  "t": 23.19,
+                  "id": "eff782b5-432d-4b9f-b02a-95eb338ac353"
+                },
+                "start": {
+                  "r": 34.606,
+                  "t": 23.19,
+                  "id": "0334dbd7-40bb-4dfb-a266-bfa30e6ac4ef"
+                },
+                "openings": [
+                  {
+                    "id": "37ecac87-6e6d-4c84-aeea-fcbe25eecf91",
+                    "name": "Door 5",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 5.346
+                    },
+                    "dimensions": {
+                      "width": 80,
+                      "height": 210
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "760e4f36-e9d8-4b3f-8b6c-8291ad938c9e",
+            "name": "Wall 19",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "thickness": 15,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "57d73e14-a387-44d9-b4cc-c1cfbb1d24e5",
+                "end": {
+                  "r": 48.076,
+                  "t": 8.198,
+                  "id": "2a7860b9-db7d-4802-b5bc-0bd36b548be0"
+                },
+                "start": {
+                  "r": 48.076,
+                  "t": 12.331,
+                  "id": "839f7a5d-39a1-4e7c-b7c4-44626d08e67b"
+                },
+                "openings": []
+              },
+              {
+                "id": "bcf2542f-d5ce-42ae-ada1-7a5c4df754a9",
+                "end": {
+                  "r": 36.893,
+                  "t": 8.198,
+                  "id": "c480ffef-5637-40de-b935-cdc0e281b7b9"
+                },
+                "start": {
+                  "r": 48.076,
+                  "t": 8.198,
+                  "id": "2a7860b9-db7d-4802-b5bc-0bd36b548be0"
+                },
+                "openings": []
+              },
+              {
+                "id": "bb51e9db-c817-40eb-a918-03eb08857766",
+                "end": {
+                  "r": 36.893,
+                  "t": 9.97,
+                  "id": "120b84c4-ab67-4a96-81e2-97e7a9e9fe54"
+                },
+                "start": {
+                  "r": 36.893,
+                  "t": 8.198,
+                  "id": "c480ffef-5637-40de-b935-cdc0e281b7b9"
+                },
+                "openings": []
+              },
+              {
+                "id": "22af0252-fc76-4b7a-a037-095e9fda4af2",
+                "end": {
+                  "r": 34.606,
+                  "t": 9.97,
+                  "id": "c906b190-d5bf-4afb-84c3-b5d73085af31"
+                },
+                "start": {
+                  "r": 36.893,
+                  "t": 9.97,
+                  "id": "120b84c4-ab67-4a96-81e2-97e7a9e9fe54"
+                },
+                "openings": []
+              },
+              {
+                "id": "6513586c-056c-4257-b5c4-f8caaef50349",
+                "end": {
+                  "r": 34.606,
+                  "t": 12.331,
+                  "id": "e627d152-7673-4469-9170-ca2cd2565519"
+                },
+                "start": {
+                  "r": 34.606,
+                  "t": 9.97,
+                  "id": "c906b190-d5bf-4afb-84c3-b5d73085af31"
+                },
+                "openings": []
+              },
+              {
+                "id": "85e200ac-6a61-44f5-b4dc-e87399b8d720",
+                "end": {
+                  "r": 38.706,
+                  "t": 12.331,
+                  "id": "47612989-01cf-4e4f-87a6-50040610a74f"
+                },
+                "start": {
+                  "r": 34.606,
+                  "t": 12.331,
+                  "id": "e627d152-7673-4469-9170-ca2cd2565519"
+                },
+                "openings": []
+              },
+              {
+                "id": "68523b3e-dd17-4deb-859f-e8848a710daa",
+                "end": {
+                  "r": 48.076,
+                  "t": 12.331,
+                  "id": "839f7a5d-39a1-4e7c-b7c4-44626d08e67b"
+                },
+                "start": {
+                  "r": 38.706,
+                  "t": 12.331,
+                  "id": "47612989-01cf-4e4f-87a6-50040610a74f"
+                },
+                "openings": []
+              }
+            ]
+          },
+          {
+            "id": "45907d8d-5e65-4364-b783-aee8a21be636",
+            "name": "Wall 20",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "thickness": 15,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "6c350d36-bb43-4ea2-84e9-f37cc13f1bfd",
+                "end": {
+                  "r": 49.465,
+                  "t": 12.331,
+                  "id": "e1969c9c-c2ac-4bb7-912c-26ce0a99e0f2"
+                },
+                "start": {
+                  "r": 53.24,
+                  "t": 12.331,
+                  "id": "9081ba72-7f9f-434e-b139-7c0cfe5f4149"
+                },
+                "openings": []
+              }
+            ]
+          },
+          {
+            "id": "b15dee5b-ab70-4b19-8a53-cb6f063af6a8",
+            "name": "Wall 21",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "autoFacade": true,
+              "partOfFacade": false,
+              "thickness": 15
+            },
+            "segments": [
+              {
+                "id": "af4655f2-1573-46d5-beda-ec8778e37aeb",
+                "end": {
+                  "r": 60.341,
+                  "t": 13.404,
+                  "id": "2d01e133-2765-45b3-9746-de9783e6db3c"
+                },
+                "start": {
+                  "r": 60.341,
+                  "t": 13.404,
+                  "id": "2d01e133-2765-45b3-9746-de9783e6db3c"
+                },
+                "openings": []
+              }
+            ]
+          },
+          {
+            "id": "90906f51-660a-42ab-aa5f-849e7f358232",
+            "name": "Wall 22",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "thickness": 15,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "d71029d1-3039-4236-8808-e1d352c11c1d",
+                "end": {
+                  "r": 49.465,
+                  "t": 8.556,
+                  "id": "613e43b1-0aca-4b96-81bf-536e5d159154"
+                },
+                "start": {
+                  "r": 49.465,
+                  "t": 12.331,
+                  "id": "ed1c740e-16dc-45c3-bfc5-c5da88c83070"
+                },
+                "openings": []
+              },
+              {
+                "id": "4e24e66e-3a60-4957-831d-08c2a86ca3ce",
+                "end": {
+                  "r": 53.24,
+                  "t": 8.198,
+                  "id": "f1d29858-be23-4042-8878-4ecbf8aaed26"
+                },
+                "start": {
+                  "r": 49.465,
+                  "t": 8.556,
+                  "id": "613e43b1-0aca-4b96-81bf-536e5d159154"
+                },
+                "openings": []
+              },
+              {
+                "id": "f6c92d6d-97b5-4ac1-868e-cd55bf2787f0",
+                "end": {
+                  "r": 53.24,
+                  "t": 12.331,
+                  "id": "e3ff8e79-395a-4418-820f-860a65d03568"
+                },
+                "start": {
+                  "r": 53.24,
+                  "t": 8.198,
+                  "id": "f1d29858-be23-4042-8878-4ecbf8aaed26"
+                },
+                "openings": []
+              },
+              {
+                "id": "bde3155c-bf78-47f6-86e9-eafee15c9d58",
+                "end": {
+                  "r": 49.465,
+                  "t": 12.331,
+                  "id": "ed1c740e-16dc-45c3-bfc5-c5da88c83070"
+                },
+                "start": {
+                  "r": 53.24,
+                  "t": 12.331,
+                  "id": "e3ff8e79-395a-4418-820f-860a65d03568"
+                },
+                "openings": []
+              }
+            ]
+          },
+          {
+            "id": "24b5987c-2278-42bf-87a2-83e44651dbdd",
+            "name": "Wall 23",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "thickness": 30,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "9ba7675c-33b6-4ee7-9509-b68e0757c6a4",
+                "end": {
+                  "r": 35.114,
+                  "t": 43.279,
+                  "id": "c2991967-a78d-47c4-aefa-763df6624d84"
+                },
+                "start": {
+                  "r": 35.114,
+                  "t": 35.346,
+                  "id": "c8f93c02-5cf9-4655-8dd8-44128c1bfa2d"
+                },
+                "openings": []
+              },
+              {
+                "id": "b725aafa-e260-44f5-85c5-9241280d3d7d",
+                "end": {
+                  "r": 56.416,
+                  "t": 43.279,
+                  "id": "d72208e8-871f-48a9-9198-9fdfe3e0371c"
+                },
+                "start": {
+                  "r": 35.114,
+                  "t": 43.279,
+                  "id": "c2991967-a78d-47c4-aefa-763df6624d84"
+                },
+                "openings": []
+              },
+              {
+                "id": "3fd1d262-efe7-4692-afa6-5c5010917481",
+                "end": {
+                  "r": 56.416,
+                  "t": 35.346,
+                  "id": "24d6c597-5e03-4677-b488-3c44deea3efc"
+                },
+                "start": {
+                  "r": 56.416,
+                  "t": 43.279,
+                  "id": "d72208e8-871f-48a9-9198-9fdfe3e0371c"
+                },
+                "openings": []
+              },
+              {
+                "id": "5c8f2f75-25f9-4a2f-8265-24ca6b50e840",
+                "end": {
+                  "r": 35.114,
+                  "t": 35.346,
+                  "id": "c8f93c02-5cf9-4655-8dd8-44128c1bfa2d"
+                },
+                "start": {
+                  "r": 56.416,
+                  "t": 35.346,
+                  "id": "24d6c597-5e03-4677-b488-3c44deea3efc"
+                },
+                "openings": [
+                  {
+                    "id": "7fa0ee4b-a6c0-4eaf-bdcc-59c86baf953c",
+                    "name": "Door 2",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": true,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": true,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 7.508
+                    },
+                    "dimensions": {
+                      "width": 280,
+                      "height": 220
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "e03f432a-8729-4a12-aff6-d198f481bf6b",
+            "name": "Wall 24",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "thickness": 30,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "73ba1d9a-4566-47a7-8596-e332f3664e8b",
+                "end": {
+                  "r": 35.114,
+                  "t": 31.305,
+                  "id": "295aa015-1a3c-4534-966c-dc254ac0e6c2"
+                },
+                "start": {
+                  "r": 35.114,
+                  "t": 35.346,
+                  "id": "c216bbda-4089-468f-9b7f-9e5b5e4653d3"
+                },
+                "openings": []
+              }
+            ]
+          },
+          {
+            "id": "72f0aa8b-81a7-4786-8103-46c938ebec58",
+            "name": "Wall 26",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "thickness": 30,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "3eb1d61d-6ef7-454c-93ca-cfa8e1eba784",
+                "end": {
+                  "r": 48.076,
+                  "t": 35.346,
+                  "id": "f6d822fc-47b0-4d93-a6ef-9c173e482445"
+                },
+                "start": {
+                  "r": 48.076,
+                  "t": 31.305,
+                  "id": "610a35aa-51d6-48e2-aa8f-bdd14bde6ee1"
+                },
+                "openings": []
+              }
+            ]
+          },
+          {
+            "id": "16599e87-bf4b-4874-b971-73e5226127a0",
+            "name": "Wall 27",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "thickness": 30,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "9083eea0-19d7-4143-aa3c-7292da1aaae9",
+                "end": {
+                  "r": 50.504,
+                  "t": 35.346,
+                  "id": "04dab990-64bc-43ae-96f5-8cae2b7ee533"
+                },
+                "start": {
+                  "r": 50.504,
+                  "t": 31.305,
+                  "id": "d5bd281e-f2ed-4581-af0f-c7aa8b226545"
+                },
+                "openings": []
+              },
+              {
+                "id": "1c0318fd-f532-4a4d-94f1-a7c7e117b754",
+                "end": {
+                  "r": 53.24,
+                  "t": 35.346,
+                  "id": "2117b027-89ef-4dc6-b802-a24009d7af8b"
+                },
+                "start": {
+                  "r": 50.504,
+                  "t": 35.346,
+                  "id": "04dab990-64bc-43ae-96f5-8cae2b7ee533"
+                },
+                "openings": []
+              },
+              {
+                "id": "66bdc32e-c5c6-46f1-b839-09cd14ccf858",
+                "end": {
+                  "r": 53.24,
+                  "t": 31.305,
+                  "id": "bed8ebab-4c06-4748-bde9-4ff3d7b24783"
+                },
+                "start": {
+                  "r": 53.24,
+                  "t": 35.346,
+                  "id": "2117b027-89ef-4dc6-b802-a24009d7af8b"
+                },
+                "openings": []
+              },
+              {
+                "id": "91cb6d4d-03bd-4c07-989e-95552b378393",
+                "end": {
+                  "r": 50.504,
+                  "t": 31.305,
+                  "id": "d5bd281e-f2ed-4581-af0f-c7aa8b226545"
+                },
+                "start": {
+                  "r": 53.24,
+                  "t": 31.305,
+                  "id": "bed8ebab-4c06-4748-bde9-4ff3d7b24783"
+                },
+                "openings": []
+              }
+            ]
+          },
+          {
+            "id": "6abf4158-3cbb-4ff4-a110-75871361312e",
+            "name": "Wall 28",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "thickness": 30,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "aa47f3bd-8a21-4ef3-8a77-a2352adfb6b3",
+                "end": {
+                  "r": 54.271,
+                  "t": 47.744,
+                  "id": "813a667d-4667-5522-a5a9-0b9205014a55"
+                },
+                "start": {
+                  "r": 34.606,
+                  "t": 47.744,
+                  "id": "030c3f76-c9b8-52f0-875b-fcfcdb85d71a"
+                },
+                "openings": [
+                  {
+                    "id": "a05c56a3-b1ce-4663-8713-64251735adf2",
+                    "name": "Door 3",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "roller-shutter",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 1.987
+                    },
+                    "dimensions": {
+                      "width": 300,
+                      "height": 300
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "22fa8db8-9ee0-489b-9e2d-dbe84b5bf414",
+                "end": {
+                  "r": 54.271,
+                  "t": 61.829,
+                  "id": "f9401acd-9e05-5a25-806c-74197b6168ea"
+                },
+                "start": {
+                  "r": 54.271,
+                  "t": 47.744,
+                  "id": "813a667d-4667-5522-a5a9-0b9205014a55"
+                },
+                "openings": []
+              },
+              {
+                "id": "d18932eb-e7fd-4848-8909-21d46082c388",
+                "end": {
+                  "r": 34.606,
+                  "t": 61.829,
+                  "id": "dcd8e51d-914b-5751-a1d0-213dfb238c52"
+                },
+                "start": {
+                  "r": 54.271,
+                  "t": 61.829,
+                  "id": "f9401acd-9e05-5a25-806c-74197b6168ea"
+                },
+                "openings": []
+              },
+              {
+                "id": "10c2a495-badc-42c8-952b-2bd9b8eb0447",
+                "end": {
+                  "r": 34.606,
+                  "t": 47.744,
+                  "id": "030c3f76-c9b8-52f0-875b-fcfcdb85d71a"
+                },
+                "start": {
+                  "r": 34.606,
+                  "t": 61.829,
+                  "id": "dcd8e51d-914b-5751-a1d0-213dfb238c52"
+                },
+                "openings": []
+              }
+            ]
+          },
+          {
+            "id": "611da140-2750-4323-be07-e4a066fdab17",
+            "name": "Wall 29",
+            "type": "wall",
+            "extras": {
+              "__parkingCluster": {
+                "params": {
+                  "rows": 1,
+                  "walls": {
+                    "endCaps": true,
+                    "singleBack": true,
+                    "doubleOuter": false,
+                    "singleFront": false
+                  },
+                  "points": [
+                    {
+                      "r": 7.108999793299238,
+                      "t": 0.5700000970322677
+                    },
+                    {
+                      "r": 7.607000047913175,
+                      "t": 0.5700000970322677
+                    },
+                    {
+                      "r": 7.607000047913175,
+                      "t": 8.002000371955715
+                    }
+                  ],
+                  "bayWidth": 250,
+                  "lineWidth": 10,
+                  "levelIndex": 0,
+                  "lineHeight": 2,
+                  "interpretation": {
+                    "swap": true,
+                    "originIndex": 1
+                  }
+                },
+                "clusterId": "4a4f1df0-cb5a-47d8-a071-b5d6ae963c54"
+              }
+            },
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "height": 20,
+              "thickness": 15,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "70c9546b-1482-4d17-8bf0-9ee532a58310",
+                "end": {
+                  "r": 63.251,
+                  "t": 66.535,
+                  "id": "6582741d-1a8d-49a1-8727-a7537d8a8179"
+                },
+                "start": {
+                  "r": 63.251,
+                  "t": 4.739,
+                  "id": "323a4811-e99c-453b-a07b-506a5b351a1f"
+                },
+                "openings": []
+              }
+            ]
+          },
+          {
+            "id": "f3e35fe8-6509-4bdd-ae1a-b28ae7d652ed",
+            "name": "Wall 30",
+            "type": "wall",
+            "extras": {
+              "__parkingCluster": {
+                "params": {
+                  "rows": 1,
+                  "walls": {
+                    "endCaps": true,
+                    "singleBack": true,
+                    "doubleOuter": false,
+                    "singleFront": false
+                  },
+                  "points": [
+                    {
+                      "r": 7.108999793299238,
+                      "t": 0.5700000970322677
+                    },
+                    {
+                      "r": 7.607000047913175,
+                      "t": 0.5700000970322677
+                    },
+                    {
+                      "r": 7.607000047913175,
+                      "t": 8.002000371955715
+                    }
+                  ],
+                  "bayWidth": 250,
+                  "lineWidth": 10,
+                  "levelIndex": 0,
+                  "lineHeight": 2,
+                  "interpretation": {
+                    "swap": true,
+                    "originIndex": 1
+                  }
+                },
+                "clusterId": "4a4f1df0-cb5a-47d8-a071-b5d6ae963c54"
+              }
+            },
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "height": 20,
+              "thickness": 15,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "079be5cc-4d4b-44b9-a254-739b8bbb3499",
+                "end": {
+                  "r": 59.11,
+                  "t": 4.739,
+                  "id": "a98702b5-5621-40b5-8c7d-5f115184f9ff"
+                },
+                "start": {
+                  "r": 63.251,
+                  "t": 4.739,
+                  "id": "d53ab13d-2041-4b9e-8259-ecfbbb13ce55"
+                },
+                "openings": []
+              }
+            ]
+          },
+          {
+            "id": "88c4d0e6-4fd1-4e77-9428-67cbcc2e4603",
+            "name": "Wall 31",
+            "type": "wall",
+            "extras": {
+              "__parkingCluster": {
+                "params": {
+                  "rows": 1,
+                  "walls": {
+                    "endCaps": true,
+                    "singleBack": true,
+                    "doubleOuter": false,
+                    "singleFront": false
+                  },
+                  "points": [
+                    {
+                      "r": 7.108999793299238,
+                      "t": 0.5700000970322677
+                    },
+                    {
+                      "r": 7.607000047913175,
+                      "t": 0.5700000970322677
+                    },
+                    {
+                      "r": 7.607000047913175,
+                      "t": 8.002000371955715
+                    }
+                  ],
+                  "bayWidth": 250,
+                  "lineWidth": 10,
+                  "levelIndex": 0,
+                  "lineHeight": 2,
+                  "interpretation": {
+                    "swap": true,
+                    "originIndex": 1
+                  }
+                },
+                "clusterId": "4a4f1df0-cb5a-47d8-a071-b5d6ae963c54"
+              }
+            },
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "height": 20,
+              "thickness": 15,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "257509a2-3fb9-4cbe-9b28-237b084107a0",
+                "end": {
+                  "r": 59.11,
+                  "t": 25.335,
+                  "id": "f1bbe864-0528-47ca-96a7-edf3247ab9e3"
+                },
+                "start": {
+                  "r": 63.251,
+                  "t": 25.335,
+                  "id": "dd19b576-c1fa-4071-b981-210f9a046436"
+                },
+                "openings": []
+              }
+            ]
+          },
+          {
+            "id": "e9fb9bc8-ca19-4be7-a185-1281554ceaca",
+            "name": "Wall 32",
+            "type": "wall",
+            "extras": {
+              "__parkingCluster": {
+                "params": {
+                  "rows": 1,
+                  "walls": {
+                    "endCaps": true,
+                    "singleBack": true,
+                    "doubleOuter": false,
+                    "singleFront": false
+                  },
+                  "points": [
+                    {
+                      "r": 7.108999793299238,
+                      "t": 0.5700000970322677
+                    },
+                    {
+                      "r": 7.607000047913175,
+                      "t": 0.5700000970322677
+                    },
+                    {
+                      "r": 7.607000047913175,
+                      "t": 8.002000371955715
+                    }
+                  ],
+                  "bayWidth": 250,
+                  "lineWidth": 10,
+                  "levelIndex": 0,
+                  "lineHeight": 2,
+                  "interpretation": {
+                    "swap": true,
+                    "originIndex": 1
+                  }
+                },
+                "clusterId": "4a4f1df0-cb5a-47d8-a071-b5d6ae963c54"
+              }
+            },
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "height": 20,
+              "thickness": 15,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "85ef92a5-4a0b-42ac-8ea5-40d10dec6dd6",
+                "end": {
+                  "r": 59.11,
+                  "t": 45.94,
+                  "id": "c9965d19-95f5-4c00-a545-400c7f169561"
+                },
+                "start": {
+                  "r": 63.251,
+                  "t": 45.94,
+                  "id": "eafb4180-e224-48e9-b98d-afc6ea1a1397"
+                },
+                "openings": []
+              }
+            ]
+          },
+          {
+            "id": "93d16694-08c8-4eac-b7f9-d181a90e193a",
+            "name": "Wall 33",
+            "type": "wall",
+            "extras": {
+              "__parkingCluster": {
+                "params": {
+                  "rows": 1,
+                  "walls": {
+                    "endCaps": true,
+                    "singleBack": true,
+                    "doubleOuter": false,
+                    "singleFront": false
+                  },
+                  "points": [
+                    {
+                      "r": 7.108999793299238,
+                      "t": 0.5700000970322677
+                    },
+                    {
+                      "r": 7.607000047913175,
+                      "t": 0.5700000970322677
+                    },
+                    {
+                      "r": 7.607000047913175,
+                      "t": 8.002000371955715
+                    }
+                  ],
+                  "bayWidth": 250,
+                  "lineWidth": 10,
+                  "levelIndex": 0,
+                  "lineHeight": 2,
+                  "interpretation": {
+                    "swap": true,
+                    "originIndex": 1
+                  }
+                },
+                "clusterId": "4a4f1df0-cb5a-47d8-a071-b5d6ae963c54"
+              }
+            },
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "height": 20,
+              "thickness": 15,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": [
+              {
+                "id": "a272a9d3-0360-42de-b5db-c15a6451a23d",
+                "end": {
+                  "r": 59.11,
+                  "t": 66.535,
+                  "id": "047c7dec-df1d-4bdb-9520-09870bdfa24e"
+                },
+                "start": {
+                  "r": 63.251,
+                  "t": 66.535,
+                  "id": "1198f7ac-6be5-4755-acee-bbe84fac1f1b"
+                },
+                "openings": []
+              }
+            ]
+          },
+          {
+            "id": "3689cfb8-d5b1-4fa0-84ea-2c029d862fe0",
+            "name": "Wall 28",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "shell",
+              "height": 200,
+              "thickness": 5,
+              "autoFacade": true,
+              "partOfFacade": false
+            },
+            "segments": []
+          }
+        ],
+        "stairs": [],
+        "grounds": [
+          {
+            "id": "autoground-ab1f5490-6415-49dd-8c4a-ead7770e3257",
+            "name": "Automatic ground",
+            "type": "ground",
+            "holes": [],
+            "layers": ["1"],
+            "options": {
+              "type": "normal",
+              "style": "grass",
+              "contour": 1,
+              "external": true,
+              "thickness": 0.2,
+              "baseHeight": 2
+            },
+            "segments": [
+              {
+                "end": {
+                  "r": 27.955,
+                  "t": 66.535,
+                  "id": "a5838ad0-de2d-4de4-9f20-02b86a450a3a"
+                },
+                "start": {
+                  "r": 28.079,
+                  "t": 60.682,
+                  "id": "a9d6a3b1-6b0e-4068-a03d-fea8dab9f528"
+                }
+              },
+              {
+                "end": {
+                  "r": 63.251,
+                  "t": 66.535,
+                  "id": "5e307d6c-3589-4d65-a7ef-1f2c9553b47c"
+                },
+                "start": {
+                  "r": 27.955,
+                  "t": 66.535,
+                  "id": "a5838ad0-de2d-4de4-9f20-02b86a450a3a"
+                }
+              },
+              {
+                "end": {
+                  "r": 63.251,
+                  "t": 4.739,
+                  "id": "317cbb5f-a425-4590-b46b-eaf3348ab893"
+                },
+                "start": {
+                  "r": 63.251,
+                  "t": 66.535,
+                  "id": "5e307d6c-3589-4d65-a7ef-1f2c9553b47c"
+                }
+              },
+              {
+                "end": {
+                  "r": 59.942,
+                  "t": 4.739,
+                  "id": "d3a5eb58-9266-4785-97f1-adbab48f4cc5"
+                },
+                "start": {
+                  "r": 63.251,
+                  "t": 4.739,
+                  "id": "317cbb5f-a425-4590-b46b-eaf3348ab893"
+                }
+              },
+              {
+                "end": {
+                  "r": 59.11,
+                  "t": 5.446,
+                  "id": "7873c225-f7a0-4f88-9b6c-9c80dcf75119"
+                },
+                "start": {
+                  "r": 59.942,
+                  "t": 4.739,
+                  "id": "d3a5eb58-9266-4785-97f1-adbab48f4cc5"
+                }
+              },
+              {
+                "end": {
+                  "r": 59.11,
+                  "t": 4.739,
+                  "id": "c5ab7d5d-6359-4b3f-b28f-421a568ed8ee"
+                },
+                "start": {
+                  "r": 59.11,
+                  "t": 5.446,
+                  "id": "7873c225-f7a0-4f88-9b6c-9c80dcf75119"
+                }
+              },
+              {
+                "end": {
+                  "r": 58.287,
+                  "t": 5.421,
+                  "id": "446eb4f9-5aef-45ed-8589-1c6d70bc9fd5"
+                },
+                "start": {
+                  "r": 59.11,
+                  "t": 4.739,
+                  "id": "c5ab7d5d-6359-4b3f-b28f-421a568ed8ee"
+                }
+              },
+              {
+                "end": {
+                  "r": 37.633,
+                  "t": 4.739,
+                  "id": "7f342880-47ad-4492-87fd-9baee506a49b"
+                },
+                "start": {
+                  "r": 58.287,
+                  "t": 5.421,
+                  "id": "446eb4f9-5aef-45ed-8589-1c6d70bc9fd5"
+                }
+              },
+              {
+                "end": {
+                  "r": 37.633,
+                  "t": 6.328,
+                  "id": "d9d0ae38-bebb-4414-9c64-54f97d071586"
+                },
+                "start": {
+                  "r": 37.633,
+                  "t": 4.739,
+                  "id": "7f342880-47ad-4492-87fd-9baee506a49b"
+                }
+              },
+              {
+                "end": {
+                  "r": 29.277,
+                  "t": 6.328,
+                  "id": "89ad5d80-e327-4999-9691-7faa2c6aa1af"
+                },
+                "start": {
+                  "r": 37.633,
+                  "t": 6.328,
+                  "id": "d9d0ae38-bebb-4414-9c64-54f97d071586"
+                }
+              },
+              {
+                "end": {
+                  "r": 28.079,
+                  "t": 60.682,
+                  "id": "a9d6a3b1-6b0e-4068-a03d-fea8dab9f528"
+                },
+                "start": {
+                  "r": 29.277,
+                  "t": 6.328,
+                  "id": "89ad5d80-e327-4999-9691-7faa2c6aa1af"
+                }
+              }
+            ]
+          },
+          {
+            "id": "d33a67c9-3961-4621-b0f1-7fb23a4ff695",
+            "name": "Ground 1",
+            "type": "ground",
+            "holes": [],
+            "layers": [],
+            "options": {
+              "type": "normal",
+              "style": "indoor",
+              "external": false,
+              "thickness": 5,
+              "baseHeight": 2
+            },
+            "segments": [
+              {
+                "end": {
+                  "r": 29.277,
+                  "t": 6.328,
+                  "id": "44020d6b-adaf-4d44-a371-7ae33e77dd50"
+                },
+                "start": {
+                  "r": 27.955,
+                  "t": 66.535,
+                  "id": "931fb27d-f624-4c3b-a800-685cbfeec381"
+                }
+              },
+              {
+                "end": {
+                  "r": 37.633,
+                  "t": 6.328,
+                  "id": "a8c34dec-c2f5-4ff8-991d-24d2ef5c54e4"
+                },
+                "start": {
+                  "r": 29.277,
+                  "t": 6.328,
+                  "id": "44020d6b-adaf-4d44-a371-7ae33e77dd50"
+                }
+              },
+              {
+                "end": {
+                  "r": 37.633,
+                  "t": 4.739,
+                  "id": "c6d852a0-2dae-4054-b505-b7cf5201d030"
+                },
+                "start": {
+                  "r": 37.633,
+                  "t": 6.328,
+                  "id": "a8c34dec-c2f5-4ff8-991d-24d2ef5c54e4"
+                }
+              },
+              {
+                "end": {
+                  "r": 59.11,
+                  "t": 5.446,
+                  "id": "b343f247-c484-4236-9941-9a3844f717be"
+                },
+                "start": {
+                  "r": 37.633,
+                  "t": 4.739,
+                  "id": "c6d852a0-2dae-4054-b505-b7cf5201d030"
+                }
+              },
+              {
+                "end": {
+                  "r": 59.11,
+                  "t": 66.535,
+                  "id": "25ef16cf-8903-44c8-9b01-02bd8eab7491"
+                },
+                "start": {
+                  "r": 59.11,
+                  "t": 5.446,
+                  "id": "b343f247-c484-4236-9941-9a3844f717be"
+                }
+              },
+              {
+                "end": {
+                  "r": 27.955,
+                  "t": 66.535,
+                  "id": "443c2e67-deeb-41ee-8439-133ebde2adf5"
+                },
+                "start": {
+                  "r": 59.11,
+                  "t": 66.535,
+                  "id": "25ef16cf-8903-44c8-9b01-02bd8eab7491"
+                }
+              }
+            ]
+          },
+          {
+            "id": "7831e8b4-d2a1-410d-8e61-214b3048047b",
+            "name": "Ground 8",
+            "type": "ground",
+            "holes": [],
+            "layers": [],
+            "options": {
+              "type": "normal",
+              "style": "darkgrey",
+              "external": false
+            },
+            "segments": [
+              {
+                "end": {
+                  "r": 63.251,
+                  "t": 66.535,
+                  "id": "ad0f1796-5cde-41e8-abf8-27e540220c7f"
+                },
+                "start": {
+                  "r": 63.251,
+                  "t": 2.012,
+                  "id": "ac45bef6-8ac2-413c-83ad-43d66ab4d252"
+                }
+              },
+              {
+                "end": {
+                  "r": 70.734,
+                  "t": 66.535,
+                  "id": "67c4bfa5-8e99-4acf-b101-02462c444758"
+                },
+                "start": {
+                  "r": 63.251,
+                  "t": 66.535,
+                  "id": "ad0f1796-5cde-41e8-abf8-27e540220c7f"
+                }
+              },
+              {
+                "end": {
+                  "r": 70.734,
+                  "t": 2.012,
+                  "id": "92e96b90-6908-470f-afd4-21b61a8fcf27"
+                },
+                "start": {
+                  "r": 70.734,
+                  "t": 66.535,
+                  "id": "67c4bfa5-8e99-4acf-b101-02462c444758"
+                }
+              },
+              {
+                "end": {
+                  "r": 63.251,
+                  "t": 2.012,
+                  "id": "300cda31-4eaa-46c4-9733-3ab8e27c274c"
+                },
+                "start": {
+                  "r": 70.734,
+                  "t": 2.012,
+                  "id": "92e96b90-6908-470f-afd4-21b61a8fcf27"
+                }
+              }
+            ]
+          },
+          {
+            "id": "5612f9e6-639b-4628-864d-b2c1ace181e5",
+            "name": "Ground 1",
+            "type": "ground",
+            "holes": [],
+            "layers": [],
+            "options": {
+              "type": "normal",
+              "style": "indoor",
+              "external": false
+            },
+            "segments": [
+              {
+                "end": {
+                  "r": 29.277,
+                  "t": 6.328,
+                  "id": "c824e7ca-27b0-44f6-9deb-7fbf7ef68faa"
+                },
+                "start": {
+                  "r": 24.346,
+                  "t": 6.328,
+                  "id": "dbb8959a-0784-4edb-8a50-aa399af66664"
+                }
+              },
+              {
+                "end": {
+                  "r": 27.955,
+                  "t": 66.535,
+                  "id": "70cf4946-8662-49c8-bac9-c2fd5da686d8"
+                },
+                "start": {
+                  "r": 29.277,
+                  "t": 6.328,
+                  "id": "c824e7ca-27b0-44f6-9deb-7fbf7ef68faa"
+                }
+              },
+              {
+                "end": {
+                  "r": 24.346,
+                  "t": 66.535,
+                  "id": "19ce61d3-c865-410b-a410-de56bccf6d03"
+                },
+                "start": {
+                  "r": 27.955,
+                  "t": 66.535,
+                  "id": "70cf4946-8662-49c8-bac9-c2fd5da686d8"
+                }
+              },
+              {
+                "end": {
+                  "r": 24.346,
+                  "t": 6.328,
+                  "id": "dbb8959a-0784-4edb-8a50-aa399af66664"
+                },
+                "start": {
+                  "r": 24.346,
+                  "t": 66.535,
+                  "id": "19ce61d3-c865-410b-a410-de56bccf6d03"
+                }
+              }
+            ]
+          },
+          {
+            "id": "03c6b70a-93ea-4363-91e2-3fcfba621ffc",
+            "name": "Carretera",
+            "type": "ground",
+            "holes": [],
+            "layers": [],
+            "options": {
+              "type": "normal",
+              "style": "darkgrey",
+              "contour": 2,
+              "external": false
+            },
+            "segments": [
+              {
+                "end": {
+                  "r": 13.869,
+                  "t": 6.328,
+                  "id": "ccc34287-09b5-4284-a43a-5187ca2bd9bb"
+                },
+                "start": {
+                  "r": 24.346,
+                  "t": 6.328,
+                  "id": "044139eb-20d2-4bca-9f99-e5b426527d68"
+                }
+              },
+              {
+                "end": {
+                  "r": 13.869,
+                  "t": 65.563,
+                  "id": "5fc7005d-ff6f-4373-b66d-189b0b494921"
+                },
+                "start": {
+                  "r": 13.869,
+                  "t": 6.328,
+                  "id": "ccc34287-09b5-4284-a43a-5187ca2bd9bb"
+                }
+              },
+              {
+                "end": {
+                  "r": 24.346,
+                  "t": 66.535,
+                  "id": "b917c891-b974-42e6-bc53-3792db4e7534"
+                },
+                "start": {
+                  "r": 13.869,
+                  "t": 65.563,
+                  "id": "5fc7005d-ff6f-4373-b66d-189b0b494921"
+                }
+              }
+            ]
+          },
+          {
+            "id": "ae3f00cc-cf2e-4825-a489-7eb0576ffe99",
+            "name": "Ground 10",
+            "type": "ground",
+            "holes": [],
+            "layers": [],
+            "options": {
+              "type": "normal",
+              "style": "white",
+              "external": false
+            },
+            "segments": [
+              {
+                "end": {
+                  "r": 35.114,
+                  "t": 30.898,
+                  "id": "7caf6dcf-af41-4ce9-bee3-be554eff9a54"
+                },
+                "start": {
+                  "r": 35.114,
+                  "t": 35.346,
+                  "id": "f7241e12-e924-4c35-88d7-7c4584168e76"
+                }
+              },
+              {
+                "end": {
+                  "r": 48.076,
+                  "t": 30.898,
+                  "id": "a3965c75-0135-4caa-9a3a-296715661bb3"
+                },
+                "start": {
+                  "r": 35.114,
+                  "t": 30.898,
+                  "id": "7caf6dcf-af41-4ce9-bee3-be554eff9a54"
+                }
+              },
+              {
+                "end": {
+                  "r": 48.076,
+                  "t": 35.346,
+                  "id": "f08286dc-7aab-4af6-ba8a-45d06086d092"
+                },
+                "start": {
+                  "r": 48.076,
+                  "t": 30.898,
+                  "id": "a3965c75-0135-4caa-9a3a-296715661bb3"
+                }
+              },
+              {
+                "end": {
+                  "r": 35.114,
+                  "t": 35.346,
+                  "id": "c9255da7-3880-4a41-ba22-ff701ce5005f"
+                },
+                "start": {
+                  "r": 48.076,
+                  "t": 35.346,
+                  "id": "f08286dc-7aab-4af6-ba8a-45d06086d092"
+                }
+              }
+            ]
+          },
+          {
+            "id": "e2026235-6371-40be-9458-ed63c858e8af",
+            "name": "Ground 11",
+            "type": "ground",
+            "holes": [],
+            "layers": [],
+            "options": {
+              "type": "normal",
+              "style": "indoor",
+              "external": false
+            },
+            "segments": [
+              {
+                "end": {
+                  "r": 50.504,
+                  "t": 35.346,
+                  "id": "71041d8a-46ec-4aac-abf1-5df190b04b55"
+                },
+                "start": {
+                  "r": 50.504,
+                  "t": 31.305,
+                  "id": "80dbb89e-7943-497a-affb-62bcb690b1d0"
+                }
+              },
+              {
+                "end": {
+                  "r": 53.24,
+                  "t": 35.346,
+                  "id": "c9c6b936-4e37-40d5-a732-7a91be355a36"
+                },
+                "start": {
+                  "r": 50.504,
+                  "t": 35.346,
+                  "id": "71041d8a-46ec-4aac-abf1-5df190b04b55"
+                }
+              },
+              {
+                "end": {
+                  "r": 53.24,
+                  "t": 31.305,
+                  "id": "c1082db4-008d-4f18-8a8c-77e8fdbf9c06"
+                },
+                "start": {
+                  "r": 53.24,
+                  "t": 35.346,
+                  "id": "c9c6b936-4e37-40d5-a732-7a91be355a36"
+                }
+              },
+              {
+                "end": {
+                  "r": 50.504,
+                  "t": 31.305,
+                  "id": "80dbb89e-7943-497a-affb-62bcb690b1d0"
+                },
+                "start": {
+                  "r": 53.24,
+                  "t": 31.305,
+                  "id": "c1082db4-008d-4f18-8a8c-77e8fdbf9c06"
+                }
+              }
+            ]
+          },
+          {
+            "id": "e5d455c6-35a6-4a37-95d9-f9766b8bae7c",
+            "name": "Ground 12",
+            "type": "ground",
+            "holes": [],
+            "layers": [],
+            "options": {
+              "type": "normal",
+              "style": "indoor",
+              "external": false
+            },
+            "segments": [
+              {
+                "end": {
+                  "r": 56.416,
+                  "t": 35.346,
+                  "id": "caa5a7a9-0644-47ec-aab9-cb0b4ad26e3c"
+                },
+                "start": {
+                  "r": 53.24,
+                  "t": 35.346,
+                  "id": "543fd1c7-2129-4ad6-a0ca-42616c117079"
+                }
+              },
+              {
+                "end": {
+                  "r": 56.416,
+                  "t": 43.279,
+                  "id": "d8255a21-289e-4ecb-95ef-e654aec02f47"
+                },
+                "start": {
+                  "r": 56.416,
+                  "t": 35.346,
+                  "id": "caa5a7a9-0644-47ec-aab9-cb0b4ad26e3c"
+                }
+              },
+              {
+                "end": {
+                  "r": 51.918,
+                  "t": 43.279,
+                  "id": "051dd2cf-eafe-452b-a86e-c3bb55444366"
+                },
+                "start": {
+                  "r": 56.416,
+                  "t": 43.279,
+                  "id": "d8255a21-289e-4ecb-95ef-e654aec02f47"
+                }
+              },
+              {
+                "end": {
+                  "r": 51.918,
+                  "t": 37.109,
+                  "id": "fb3f1eba-d170-4982-87c4-51d958da062a"
+                },
+                "start": {
+                  "r": 51.918,
+                  "t": 43.279,
+                  "id": "051dd2cf-eafe-452b-a86e-c3bb55444366"
+                }
+              },
+              {
+                "end": {
+                  "r": 51.918,
+                  "t": 35.346,
+                  "id": "b16edf3f-b9b6-4e57-a2f3-a3f87f676822"
+                },
+                "start": {
+                  "r": 51.918,
+                  "t": 37.109,
+                  "id": "fb3f1eba-d170-4982-87c4-51d958da062a"
+                }
+              },
+              {
+                "end": {
+                  "r": 53.24,
+                  "t": 35.346,
+                  "id": "543fd1c7-2129-4ad6-a0ca-42616c117079"
+                },
+                "start": {
+                  "r": 51.918,
+                  "t": 35.346,
+                  "id": "b16edf3f-b9b6-4e57-a2f3-a3f87f676822"
+                }
+              }
+            ]
+          },
+          {
+            "id": "8d07c44f-b4a7-444c-b862-d309bedc09e0",
+            "name": "Ground 13",
+            "type": "ground",
+            "holes": [],
+            "layers": [],
+            "options": {
+              "type": "normal",
+              "style": "indoor",
+              "external": false
+            },
+            "segments": [
+              {
+                "end": {
+                  "r": 35.114,
+                  "t": 43.279,
+                  "id": "e128ab83-bc77-4d39-9810-dd672c879608"
+                },
+                "start": {
+                  "r": 35.114,
+                  "t": 35.346,
+                  "id": "703b8d60-06d3-41b2-8031-de6df3856510"
+                }
+              },
+              {
+                "end": {
+                  "r": 51.918,
+                  "t": 43.279,
+                  "id": "d8836cff-7ddd-40d8-9235-fba4e78e2fa0"
+                },
+                "start": {
+                  "r": 35.114,
+                  "t": 43.279,
+                  "id": "e128ab83-bc77-4d39-9810-dd672c879608"
+                }
+              }
+            ]
+          },
+          {
+            "id": "57745670-0230-45d7-8b94-3e5f3f669970",
+            "name": "Ground 14",
+            "type": "ground",
+            "holes": [],
+            "layers": [],
+            "options": {
+              "type": "normal",
+              "style": "indoor",
+              "external": false
+            },
+            "segments": [
+              {
+                "end": {
+                  "r": 51.918,
+                  "t": 35.346,
+                  "id": "748e5ca4-ce7c-4b66-ba8c-ac09ad8e0e1a"
+                },
+                "start": {
+                  "r": 51.918,
+                  "t": 35.346,
+                  "id": "748e5ca4-ce7c-4b66-ba8c-ac09ad8e0e1a"
+                }
+              }
+            ]
+          },
+          {
+            "id": "fc985011-2038-4ae3-80d6-b8054ecbbc2e",
+            "name": "Ground 15",
+            "type": "ground",
+            "holes": [],
+            "layers": [],
+            "options": {
+              "type": "normal",
+              "style": "indoor",
+              "external": false
+            },
+            "segments": [
+              {
+                "end": {
+                  "r": 35.114,
+                  "t": 35.346,
+                  "id": "08ce7017-563a-42cb-a539-3140459af39d"
+                },
+                "start": {
+                  "r": 51.918,
+                  "t": 35.346,
+                  "id": "c82c067b-6310-497b-819a-01c38e648210"
+                }
+              }
+            ]
+          },
+          {
+            "id": "b97f5032-baad-468f-a67a-9498d4228a51",
+            "name": "Ground 16",
+            "type": "ground",
+            "holes": [],
+            "layers": [],
+            "options": {
+              "type": "normal",
+              "style": "indoor",
+              "external": false
+            },
+            "segments": [
+              {
+                "end": {
+                  "r": 54.271,
+                  "t": 47.744,
+                  "id": "234f6943-1840-48ea-b8ec-d5394ca37d45"
+                },
+                "start": {
+                  "r": 34.606,
+                  "t": 47.744,
+                  "id": "60d80c2e-e8b1-4947-ad77-0d2d2510aea5"
+                }
+              },
+              {
+                "end": {
+                  "r": 54.271,
+                  "t": 61.829,
+                  "id": "add499a4-bd0e-45ca-b477-f961926864d8"
+                },
+                "start": {
+                  "r": 54.271,
+                  "t": 47.744,
+                  "id": "234f6943-1840-48ea-b8ec-d5394ca37d45"
+                }
+              },
+              {
+                "end": {
+                  "r": 34.606,
+                  "t": 61.829,
+                  "id": "c1872636-9d9d-4aa9-a2c5-55a46d185031"
+                },
+                "start": {
+                  "r": 54.271,
+                  "t": 61.829,
+                  "id": "add499a4-bd0e-45ca-b477-f961926864d8"
+                }
+              },
+              {
+                "end": {
+                  "r": 34.606,
+                  "t": 47.744,
+                  "id": "60d80c2e-e8b1-4947-ad77-0d2d2510aea5"
+                },
+                "start": {
+                  "r": 34.606,
+                  "t": 61.829,
+                  "id": "c1872636-9d9d-4aa9-a2c5-55a46d185031"
+                }
+              }
+            ]
+          },
+          {
+            "id": "dd092b43-816c-4938-8e4f-e422e1cd51df",
+            "name": "Ground 17",
+            "type": "ground",
+            "holes": [],
+            "layers": [],
+            "options": {
+              "type": "normal",
+              "style": "indoor",
+              "external": false
+            },
+            "segments": [
+              {
+                "end": {
+                  "r": 34.606,
+                  "t": 47.744,
+                  "id": "f98084bb-13e4-43fb-9e85-41f1c518cbb4"
+                },
+                "start": {
+                  "r": 34.606,
+                  "t": 47.744,
+                  "id": "f98084bb-13e4-43fb-9e85-41f1c518cbb4"
+                }
+              }
+            ]
+          },
+          {
+            "id": "f1cfc2a5-6935-4b2d-a3f9-7692e00f19af",
+            "name": "Ground 18",
+            "type": "ground",
+            "holes": [],
+            "layers": [],
+            "options": {
+              "type": "normal",
+              "style": "indoor",
+              "external": false
+            },
+            "segments": []
+          }
+        ],
+        "objects": [
+          {
+            "id": "14e9f790-23b3-4eba-89f6-71b757bb41bd",
+            "name": "3-seater sofa",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 49.317,
+              "z": -35.73,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 179.5,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "768b34ff-8e6a-46ff-b205-943f6eda562e",
+            "dimensions": {
+              "width": 70,
+              "height": 78,
+              "length": 213.5
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "1319651b-787a-4cde-bcf0-6e63fc039e79",
+            "name": "2-seater sofa",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 32.986,
+              "z": -48.901,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "76bec661-c631-439b-994a-db46e52598a3",
+            "dimensions": {
+              "width": 70,
+              "height": 78,
+              "length": 143.9
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "6ffa923a-e8d6-45d8-9987-de42f11868c9",
+            "name": "Armchair",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 57.174,
+              "z": -48.119,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -44.7,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "79c1f801-916b-4809-aadc-d41cc3a96a10",
+            "dimensions": {
+              "width": 60,
+              "height": 80.8,
+              "length": 60
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "f5fe75c5-c364-4417-bc3a-8a49f1b28573",
+            "name": "Coffee table",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 49.591,
+              "z": -43.08,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "1fc299c9-cabf-46a6-83ec-1c7fdfc295e4",
+            "dimensions": {
+              "width": 60,
+              "height": 40,
+              "length": 120
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "shape": "round"
+            }
+          },
+          {
+            "id": "d232712c-da1b-4876-808d-8e97341f01d7",
+            "name": "Sink",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 28.596,
+              "z": 73.461,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "104ec791-1716-4f0a-a9c1-afbea47a7ab0",
+            "dimensions": {
+              "width": 65.5,
+              "height": 90.7,
+              "length": 50
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "0b047038-cb14-4064-8f51-89b6df0cf719",
+            "name": "Sink",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 44.112,
+              "z": 75.964,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "104ec791-1716-4f0a-a9c1-afbea47a7ab0",
+            "dimensions": {
+              "width": 65.5,
+              "height": 90.7,
+              "length": 50
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "b13a7042-0d10-4598-8571-af4ed1f65731",
+            "name": "Toilet",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 39.655,
+              "z": 82.449,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -90.4,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "7528e431-6cbb-4f89-81b1-79d0729f00f6",
+            "dimensions": {
+              "width": 45.3,
+              "height": 91.9,
+              "length": 70.9
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "718998e2-dd6b-4b19-a484-23c2e751590c",
+            "name": "Toilet",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 25.786,
+              "z": 82.424,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -90.4,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "7528e431-6cbb-4f89-81b1-79d0729f00f6",
+            "dimensions": {
+              "width": 45.3,
+              "height": 85.2,
+              "length": 70.9
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "93eb8766-018b-448a-8cf1-5d7fba6ec4f4",
+            "name": "Coffee table",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 72.831,
+              "z": -49.699,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "1fc299c9-cabf-46a6-83ec-1c7fdfc295e4",
+            "dimensions": {
+              "width": 40,
+              "height": 60,
+              "length": 40
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "shape": "round"
+            }
+          },
+          {
+            "id": "c9b4b403-3f95-40fe-b54c-5ce484200f61",
+            "name": "Chair",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 72.806,
+              "z": -44.352,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 73.7,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "e946a191-c197-4a1d-ab4f-c33a22044e28",
+            "dimensions": {
+              "width": 46.1,
+              "height": 109.6,
+              "length": 45
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "style": "chair"
+            }
+          },
+          {
+            "id": "dd0a46b3-ff78-4fe5-9dce-aaf7a555958b",
+            "name": "Chair",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 72.806,
+              "z": -54.879,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 106.2,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "e946a191-c197-4a1d-ab4f-c33a22044e28",
+            "dimensions": {
+              "width": 46.1,
+              "height": 109.6,
+              "length": 45
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "style": "chair"
+            }
+          },
+          {
+            "id": "316ceb72-bbe6-4fb3-8b6a-baab54f00d6b",
+            "name": "Desk",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 25.595,
+              "z": 44.251,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "72d7bfd0-380b-4de5-91f9-0c2bc3780052",
+            "dimensions": {
+              "width": 60,
+              "height": 70,
+              "length": 120
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "office-chair",
+              "leftSide": "feet",
+              "drawerBar": false,
+              "rightSide": "feet"
+            }
+          },
+          {
+            "id": "19b76552-ee7f-48d3-b916-cee6966a34f9",
+            "name": "Desk",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 25.603,
+              "z": 49.256,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -180,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "72d7bfd0-380b-4de5-91f9-0c2bc3780052",
+            "dimensions": {
+              "width": 60,
+              "height": 70,
+              "length": 120
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "office-chair",
+              "leftSide": "feet",
+              "drawerBar": false,
+              "rightSide": "feet"
+            }
+          },
+          {
+            "id": "702876ff-b683-47bb-a741-4d8df7d80c03",
+            "name": "Desk",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 35.614,
+              "z": 44.251,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "72d7bfd0-380b-4de5-91f9-0c2bc3780052",
+            "dimensions": {
+              "width": 60,
+              "height": 70,
+              "length": 120
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "office-chair",
+              "leftSide": "feet",
+              "drawerBar": false,
+              "rightSide": "feet"
+            }
+          },
+          {
+            "id": "594455df-736d-4d17-8b82-9688433fb1a9",
+            "name": "Desk",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 35.614,
+              "z": 49.265,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -180,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "72d7bfd0-380b-4de5-91f9-0c2bc3780052",
+            "dimensions": {
+              "width": 60,
+              "height": 70,
+              "length": 120
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "office-chair",
+              "leftSide": "feet",
+              "drawerBar": false,
+              "rightSide": "feet"
+            }
+          },
+          {
+            "id": "27f8a246-2a2b-4cfd-8976-f07f248fa4bb",
+            "name": "Desk",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 43.122,
+              "z": 46.762,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "72d7bfd0-380b-4de5-91f9-0c2bc3780052",
+            "dimensions": {
+              "width": 60,
+              "height": 70,
+              "length": 120
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "office-chair",
+              "leftSide": "feet",
+              "drawerBar": false,
+              "rightSide": "feet"
+            }
+          },
+          {
+            "id": "467761c8-8bcb-4505-848f-798b16ae1b28",
+            "name": "Shelves",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 46.082,
+              "z": 32.56,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 180,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "6bb82005-5787-43bd-9935-5b36645fa82f",
+            "dimensions": {
+              "width": 30,
+              "height": 180,
+              "length": 140
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "rows": null,
+              "doors": "no-doors",
+              "columns": 3,
+              "backPanel": false,
+              "glassDoor": false
+            }
+          },
+          {
+            "id": "a9b4be73-84a2-4932-aee0-c2b520e8059e",
+            "name": "Desk",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 25.669,
+              "z": 19.273,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -180,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "72d7bfd0-380b-4de5-91f9-0c2bc3780052",
+            "dimensions": {
+              "width": 60,
+              "height": 70,
+              "length": 120
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "office-chair",
+              "leftSide": "feet",
+              "drawerBar": false,
+              "rightSide": "feet"
+            }
+          },
+          {
+            "id": "cc857147-7456-4b3d-9626-31ebb78df41a",
+            "name": "Desk",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 35.689,
+              "z": 19.273,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -180,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "72d7bfd0-380b-4de5-91f9-0c2bc3780052",
+            "dimensions": {
+              "width": 60,
+              "height": 70,
+              "length": 120
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "office-chair",
+              "leftSide": "feet",
+              "drawerBar": false,
+              "rightSide": "feet"
+            }
+          },
+          {
+            "id": "b1997637-0206-4b03-8f3d-5d6bf9560416",
+            "name": "Desk",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 25.678,
+              "z": 14.243,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "72d7bfd0-380b-4de5-91f9-0c2bc3780052",
+            "dimensions": {
+              "width": 60,
+              "height": 70,
+              "length": 120
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "office-chair",
+              "leftSide": "feet",
+              "drawerBar": false,
+              "rightSide": "feet"
+            }
+          },
+          {
+            "id": "a91c833f-bb61-4b5f-bab1-c4fa268dd1c9",
+            "name": "Desk",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 35.68,
+              "z": 14.234,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "72d7bfd0-380b-4de5-91f9-0c2bc3780052",
+            "dimensions": {
+              "width": 60,
+              "height": 70,
+              "length": 120
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "office-chair",
+              "leftSide": "feet",
+              "drawerBar": false,
+              "rightSide": "feet"
+            }
+          },
+          {
+            "id": "26003f80-0f7b-428c-a5a6-b0fdccfca567",
+            "name": "Desk",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 43.222,
+              "z": 16.745,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "72d7bfd0-380b-4de5-91f9-0c2bc3780052",
+            "dimensions": {
+              "width": 60,
+              "height": 70,
+              "length": 120
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "office-chair",
+              "leftSide": "feet",
+              "drawerBar": false,
+              "rightSide": "feet"
+            }
+          },
+          {
+            "id": "783fbfe8-7ac8-43a7-a792-b76f65d95393",
+            "name": "Shelves",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 46.556,
+              "z": 1.18,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 180,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "6bb82005-5787-43bd-9935-5b36645fa82f",
+            "dimensions": {
+              "width": 30,
+              "height": 180,
+              "length": 140
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "rows": null,
+              "doors": "no-doors",
+              "columns": 3,
+              "backPanel": false,
+              "glassDoor": false
+            }
+          },
+          {
+            "id": "46707f8f-1236-48fa-aac0-29d50f7ffed9",
+            "name": "Triangular desk",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 38.499,
+              "z": -16.265,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 30,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "b4976395-1e6a-445a-ab30-b371012de060",
+            "dimensions": {
+              "width": 60,
+              "height": 70,
+              "length": 130
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "office-chair"
+            }
+          },
+          {
+            "id": "50bfb8c8-0afc-43b7-9f23-0321be43f956",
+            "name": "Triangular desk",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 38.466,
+              "z": -16.223,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 150,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "b4976395-1e6a-445a-ab30-b371012de060",
+            "dimensions": {
+              "width": 60,
+              "height": 70,
+              "length": 130
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "office-chair"
+            }
+          },
+          {
+            "id": "21692264-258f-4933-bf44-0babdf922c7b",
+            "name": "Triangular desk",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 38.524,
+              "z": -16.231,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "b4976395-1e6a-445a-ab30-b371012de060",
+            "dimensions": {
+              "width": 60,
+              "height": 70,
+              "length": 130
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "office-chair"
+            }
+          },
+          {
+            "id": "0943a8aa-3df6-4ef8-bdfa-2f54f3d0216a",
+            "name": "Shelves",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 22.027,
+              "z": -16.298,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "6bb82005-5787-43bd-9935-5b36645fa82f",
+            "dimensions": {
+              "width": 30,
+              "height": 180,
+              "length": 140
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "rows": null,
+              "doors": "no-doors",
+              "columns": 3,
+              "backPanel": false,
+              "glassDoor": false
+            }
+          },
+          {
+            "id": "28429fd4-f1a7-493b-aa7e-f57c8d4ed646",
+            "name": "Table & chairs",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 43.521,
+              "z": -64.574,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -180,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "c6e8a3ce-500c-4976-9435-ee958e048076",
+            "dimensions": {
+              "width": 50,
+              "height": 75,
+              "length": 310
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "chair",
+              "shape": "rectangle",
+              "noEndSeat": false,
+              "numberOfSeats": 4,
+              "seatsOnOneSide": true
+            }
+          },
+          {
+            "id": "5441b27f-4a06-4fca-8e6a-545289dccae5",
+            "name": "Shelves",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 64.259,
+              "z": 83.023,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "6bb82005-5787-43bd-9935-5b36645fa82f",
+            "dimensions": {
+              "width": 55,
+              "height": 90,
+              "length": 271.7
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "rows": null,
+              "doors": "swing-doors",
+              "columns": 4,
+              "doorRows": 1,
+              "backPanel": false,
+              "glassDoor": false,
+              "doorColumns": 6
+            }
+          },
+          {
+            "id": "aa3c188b-a0e3-40b9-aa3a-c86bf4d82a95",
+            "name": "Table & chairs",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 67.002,
+              "z": 71.706,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -135,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "c6e8a3ce-500c-4976-9435-ee958e048076",
+            "dimensions": {
+              "width": 70,
+              "height": 75,
+              "length": 70
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "chair",
+              "shape": "round",
+              "noEndSeat": false,
+              "numberOfSeats": 4,
+              "seatsOnOneSide": false
+            }
+          },
+          {
+            "id": "e7138eb9-c0d6-4dcd-89cd-19f98bab1907",
+            "name": "Fridge",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 50.132,
+              "z": 82.774,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "359671ef-de52-435f-8161-f23c403d6679",
+            "dimensions": {
+              "width": 59.3,
+              "height": 168.1,
+              "length": 60
+            },
+            "levelIndex": 0
+          }
+        ],
+        "initials": "",
+        "floorplan": {
+          "r": 14.152657,
+          "t": 1.715315,
+          "url": "https://firebasestorage.googleapis.com/v0/b/smplrspace.appspot.com/o/floorplan%2Fac94efd1-e6d0-48c7-ada0-c6096c18b0a3-2DPlanfloor.png?alt=media&token=2275899f-71b3-4054-91cc-16276df7f83f",
+          "scale": 11.642436,
+          "flipped": false
+        },
+        "annotations": [],
+        "autoInitials": true
+      },
+      {
+        "name": "",
+        "roofs": [
+          {
+            "id": "c8e459c3-2027-4528-ab39-34d440e0d900",
+            "name": "Roof 1",
+            "type": "roof",
+            "options": {},
+            "segments": []
+          }
+        ],
+        "walls": [
+          {
+            "id": "28835196-11fe-4b93-837b-63104e88a154",
+            "name": "Wall 1",
+            "type": "wall",
+            "layers": [],
+            "options": {
+              "cap": "flat",
+              "type": "normal",
+              "autoFacade": true,
+              "partOfFacade": false,
+              "thickness": 15
+            },
+            "segments": []
+          }
+        ],
+        "stairs": [],
+        "grounds": [
+          {
+            "id": "autoground-345ee885-7dd3-446d-9b88-446f1d64e4ec",
+            "name": "Automatic ground",
+            "type": "ground",
+            "holes": [],
+            "layers": [],
+            "options": {
+              "type": "normal",
+              "style": "indoor",
+              "external": false,
+              "thickness": 0.2
+            },
+            "segments": []
+          },
+          {
+            "id": "85369d0a-ae76-4855-9d88-2fff4a66f93e",
+            "name": "Ground 1",
+            "type": "ground",
+            "holes": [],
+            "layers": [],
+            "options": {
+              "type": "normal",
+              "style": "indoor",
+              "external": false
+            },
+            "segments": []
+          }
+        ],
+        "objects": [],
+        "initials": "",
+        "floorplan": {
+          "r": 0,
+          "t": 0,
+          "scale": 8.314856,
+          "flipped": false
+        },
+        "annotations": [],
+        "autoInitials": true
+      }
+    ],
+    "defaults": {
+      "unit": "cm-sqft",
+      "doorWidth": 90,
+      "roofAngle": 0,
+      "doorHeight": 210,
+      "doorLayers": [],
+      "wallHeight": 300,
+      "wallLayers": [],
+      "windowWidth": 110,
+      "groundLayers": [],
+      "objectLayers": [],
+      "stairsLayers": [],
+      "windowHeight": 140,
+      "windowLayers": [],
+      "doorOpenAngle": 90,
+      "railingHeight": 110,
+      "roofTopHeight": 180,
+      "wallThickness": 15,
+      "annotationSize": 14,
+      "doorBaseHeight": 0,
+      "roofBaseHeight": 0,
+      "stairsStepSize": 25,
+      "groundThickness": 1,
+      "annotationHeight": 120,
+      "annotationLayers": [],
+      "windowBaseHeight": 60
+    },
+    "compassDirection": 50
+  },
+  "spaceMeta": {
+    "name": "Sample space"
+  }
+}

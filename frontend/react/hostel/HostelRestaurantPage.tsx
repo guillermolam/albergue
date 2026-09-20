@@ -176,7 +176,7 @@ const MENU: MenuCategory[] = [
 const COPY = {
   es: {
     eyebrow: 'El secreto mejor guardado de la A-66',
-    title: 'Nuestra Cocina',
+    title: 'Nuestro Restaurante',
     subtitle:
       'A pocos pasos del albergue, recomendamos Alqantara Plaza: una terraza acogedora en plena naturaleza de El Carrascalejo, ideal para reponer fuerzas tras una etapa del Camino.',
     aboutTitle: 'Sobre Alqantara Plaza',

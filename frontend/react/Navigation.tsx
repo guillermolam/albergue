@@ -184,7 +184,7 @@ const NAV_COPY = {
       trigger: 'El Albergue',
       info: 'Info',
       facilities: 'Instalaciones',
-      restaurant: 'Nuestra Cocina',
+      restaurant: 'Nuestro Restaurante',
       services: 'Servicios',
     },
     area: {
