@@ -35,9 +35,17 @@ interface PlaceGalleryProps {
   places: PlaceWithDetails[];
   mapCenter?: [number, number];
   showMap?: boolean;
+  /** Optional: called (in addition to the existing map-sync highlight) when
+   * a card is clicked -- callers can use this to open a detail modal. */
+  onPlaceClick?: (place: PlaceWithDetails) => void;
 }
 
-export function PlaceGallery({ places, mapCenter, showMap = true }: Readonly<PlaceGalleryProps>) {
+export function PlaceGallery({
+  places,
+  mapCenter,
+  showMap = true,
+  onPlaceClick,
+}: Readonly<PlaceGalleryProps>) {
   const { locale } = useI18n();
   const isEs = locale !== 'en';
   const [activeCategory, setActiveCategory] = useState<PlaceCategory | 'all'>('all');
@@ -119,7 +127,10 @@ export function PlaceGallery({ places, mapCenter, showMap = true }: Readonly<Pla
             key={place.id}
             place={place}
             isActive={place.id === activeId}
-            onClick={() => setActiveId(place.id)}
+            onClick={() => {
+              setActiveId(place.id);
+              onPlaceClick?.(place);
+            }}
           />
         ))}
       </div>

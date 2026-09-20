@@ -17,3 +17,4 @@ export { default as auth } from "./auth.js";
 export { default as contactMessages } from "./contact_messages.js";
 export { default as places } from "./places.js";
 export { default as hostel } from "./hostel.js";
+export { default as meridaEvents } from "./merida_events.js";

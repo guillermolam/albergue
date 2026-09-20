@@ -46,6 +46,7 @@ import {
   contactMessages,
   places,
   hostel,
+  meridaEvents,
 } from "./routes/index.js";
 
 // Create main Hono app
@@ -92,6 +93,7 @@ app.get("/", (c) => {
       contactMessages: "/api/contact-messages",
       places: "/api/places",
       hostel: "/api/hostel",
+      meridaEvents: "/api/merida-events",
       health: "/health",
     },
   });
@@ -195,6 +197,7 @@ api.route("/users", users);
 api.route("/contact-messages", contactMessages);
 api.route("/places", places);
 api.route("/hostel", hostel);
+api.route("/merida-events", meridaEvents);
 
 // Mount API routes under /api prefix
 app.route("/api", api);
