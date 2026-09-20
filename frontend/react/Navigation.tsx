@@ -27,6 +27,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from './ui/navigation-menu';
+import { LanguageSelector } from './ui/LanguageSelector';
 
 interface NavigationProps {
   currentPath: string;
@@ -145,7 +146,7 @@ function DesktopNavDropdown({
       </NavigationMenuTrigger>
       {isGroupActive && <ActiveUnderline />}
       <NavigationMenuContent>
-        <ul className="min-w-[220px] space-y-1 rounded-xl border-2 border-[#5D4E37]/30 bg-[#FFF9F0] p-2 paper-texture doodle-border doodle-shadow">
+        <ul className="min-w-[220px] space-y-1 rounded-xl border-2 border-[#5D4E37]/30 bg-[#FFFFFF] p-2 paper-texture doodle-border doodle-shadow">
           {group.items.map((item) => {
             const ItemIcon = item.icon;
             return (
@@ -192,8 +193,6 @@ const NAV_COPY = {
       eat: 'Dónde Comer',
       do: 'Qué Hacer',
     },
-    switchLang: 'Switch to English',
-    langCode: 'ES',
     login: 'Entrar',
     adminLogin: 'Acceso Admin',
     closeMenu: 'Cerrar menú',
@@ -217,8 +216,6 @@ const NAV_COPY = {
       eat: 'Where to Eat',
       do: 'What to Do',
     },
-    switchLang: 'Cambiar a Español',
-    langCode: 'EN',
     login: 'Login',
     adminLogin: 'Admin Login',
     closeMenu: 'Close menu',
@@ -330,7 +327,7 @@ function MobileNavSection({
 
 export function Navigation({ currentPath }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { locale, setLocale } = useI18n();
+  const { locale } = useI18n();
   const isEs = locale !== 'en';
 
   const t = isEs ? NAV_COPY.es : NAV_COPY.en;
@@ -378,7 +375,7 @@ export function Navigation({ currentPath }: NavigationProps) {
       animate={{ y: 0 }}
       transition={{ type: 'spring', stiffness: 100, damping: 20 }}
       aria-label="Main navigation"
-      className="bg-[#FFF9F0] sticky top-0 z-50 paper-texture border-b-4 border-[#5D4E37]/20 doodle-border"
+      className="bg-[#FFFFFF] sticky top-0 z-50 paper-texture border-b-4 border-[#5D4E37]/20 doodle-border"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
@@ -443,47 +440,7 @@ export function Navigation({ currentPath }: NavigationProps) {
           </div>
 
           <div className="flex items-center space-x-3">
-            <motion.button
-              whileHover={{ scale: 1.1, rotate: 8 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setLocale(isEs ? 'en' : 'es')}
-              className="relative"
-              aria-label={t.switchLang}
-            >
-              <svg width="48" height="36" className="hover:drop-shadow-lg transition-all">
-                <ellipse
-                  cx="24"
-                  cy="18"
-                  rx="22"
-                  ry="16"
-                  fill="#F5E6D3"
-                  stroke="#5D4E37"
-                  strokeWidth="2.5"
-                />
-                <ellipse
-                  cx="24"
-                  cy="18"
-                  rx="20"
-                  ry="14"
-                  fill="none"
-                  stroke="#5D4E37"
-                  strokeWidth="2"
-                  opacity="0.2"
-                  style={{ strokeDasharray: '2, 2' }}
-                />
-                <text
-                  x="24"
-                  y="23"
-                  textAnchor="middle"
-                  fill="#5D4E37"
-                  fontSize="12"
-                  fontFamily="Patrick Hand, cursive"
-                  fontWeight="bold"
-                >
-                  {t.langCode}
-                </text>
-              </svg>
-            </motion.button>
+            <LanguageSelector />
 
             <div className="hidden sm:block">
               <WiredButton href="/admin" variant="outline" size="sm">
