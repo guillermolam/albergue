@@ -1847,3 +1847,82 @@ export function PaperPlaneIcon({
     </motion.svg>
   );
 }
+
+// Eye icon (reveal secret)
+export function EyeIcon({ className = 'w-6 h-6', animate = true }: Readonly<DoodleIconProps>) {
+  return (
+    <motion.svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      whileHover={animate ? { scale: 1.08 } : {}}
+    >
+      <path
+        d="M5 50 C18 25 38 15 50 15 C62 15 82 25 95 50 C82 75 62 85 50 85 C38 85 18 75 5 50 Z"
+        stroke="#1A1A1A"
+        strokeWidth="3.5"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <circle cx="50" cy="50" r="16" fill="#0071BC" stroke="#1A1A1A" strokeWidth="3" />
+      <circle cx="50" cy="50" r="5" fill="#1A1A1A" />
+    </motion.svg>
+  );
+}
+
+// Eye-off icon (hide secret)
+export function EyeOffIcon({ className = 'w-6 h-6', animate = true }: Readonly<DoodleIconProps>) {
+  return (
+    <motion.svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      whileHover={animate ? { scale: 1.08 } : {}}
+    >
+      <path
+        d="M5 50 C18 25 38 15 50 15 C62 15 82 25 95 50 C82 75 62 85 50 85 C38 85 18 75 5 50 Z"
+        stroke="#1A1A1A"
+        strokeWidth="3.5"
+        strokeLinejoin="round"
+        fill="none"
+        opacity="0.4"
+      />
+      <circle cx="50" cy="50" r="16" fill="#5D4E37" opacity="0.4" />
+      <path d="M12 12 L88 88" stroke="#1A1A1A" strokeWidth="4" strokeLinecap="round" />
+    </motion.svg>
+  );
+}
+
+// Copy icon (clipboard)
+export function CopyIcon({ className = 'w-6 h-6', animate = true }: Readonly<DoodleIconProps>) {
+  return (
+    <motion.svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      whileHover={animate ? { scale: 1.08 } : {}}
+      whileTap={animate ? { scale: 0.92 } : {}}
+    >
+      <rect
+        x="30"
+        y="30"
+        width="55"
+        height="55"
+        rx="6"
+        fill="#FFFFFF"
+        stroke="#1A1A1A"
+        strokeWidth="3.5"
+      />
+      <rect
+        x="15"
+        y="15"
+        width="55"
+        height="55"
+        rx="6"
+        fill="#E8F5E9"
+        stroke="#1A1A1A"
+        strokeWidth="3.5"
+      />
+    </motion.svg>
+  );
+}
