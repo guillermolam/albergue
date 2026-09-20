@@ -47,6 +47,7 @@ import {
   places,
   hostel,
   meridaEvents,
+  carrascalejoLocal,
 } from "./routes/index.js";
 
 // Create main Hono app
@@ -94,6 +95,7 @@ app.get("/", (c) => {
       places: "/api/places",
       hostel: "/api/hostel",
       meridaEvents: "/api/merida-events",
+      carrascalejoLocal: "/api/carrascalejo-local",
       health: "/health",
     },
   });
@@ -198,6 +200,7 @@ api.route("/contact-messages", contactMessages);
 api.route("/places", places);
 api.route("/hostel", hostel);
 api.route("/merida-events", meridaEvents);
+api.route("/carrascalejo-local", carrascalejoLocal);
 
 // Mount API routes under /api prefix
 app.route("/api", api);
