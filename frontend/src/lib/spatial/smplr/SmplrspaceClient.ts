@@ -4,7 +4,15 @@
  * and no endpoints (documented or otherwise) are implemented here.
  */
 export interface SmplrspaceClientConfig {
-  readonly projectId: string;
+  /**
+   * Corresponds to Smplrspace's own project concept (see
+   * `QueryClient.createSpace`'s documented `addToProjectId` option) --
+   * not invented here. Optional because no real Smplrspace project
+   * exists yet; requiring it here would force a caller to fabricate a
+   * value just to construct this config, unlike `organizationId` and
+   * `spaceId`, which this boundary can't meaningfully do without.
+   */
+  readonly projectId?: string;
   readonly organizationId: string;
   readonly spaceId: string;
   /**
