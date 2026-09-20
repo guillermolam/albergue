@@ -27,6 +27,36 @@ export const sharedConfig = {
         values: ['local', 'mock'],
         default: 'local',
       }),
+      // Smplrspace spatial/floor-plan viewer (see frontend/react/spatial/).
+      // None of these exist yet -- no Smplrspace organization or Spaces have
+      // been created. Left optional and unset on purpose: the viewer detects
+      // missing config and renders a "not yet configured" placeholder rather
+      // than failing. Never fall back to Smplrspace's own demo IDs here.
+      PUBLIC_SMPLR_ORGANIZATION_ID: envField.string({
+        context: 'client',
+        access: 'public',
+        optional: true,
+      }),
+      PUBLIC_SMPLR_CLIENT_TOKEN: envField.string({
+        context: 'client',
+        access: 'public',
+        optional: true,
+      }),
+      PUBLIC_SMPLR_SPACE_B01_ID: envField.string({
+        context: 'client',
+        access: 'public',
+        optional: true,
+      }),
+      PUBLIC_SMPLR_SPACE_B02_ID: envField.string({
+        context: 'client',
+        access: 'public',
+        optional: true,
+      }),
+      PUBLIC_SMPLR_SPACE_B03_ID: envField.string({
+        context: 'client',
+        access: 'public',
+        optional: true,
+      }),
       BACKEND_API_URL: envField.string({
         context: 'server',
         access: 'secret',

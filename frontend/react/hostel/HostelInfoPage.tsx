@@ -2,6 +2,7 @@ import { useI18n } from '../hooks/useI18n';
 import { PageHero } from '../shared/PageHero';
 import { FancyCard } from '../shared/FancyCard';
 import { MapPinIcon } from '../doodle/DoodleIcons';
+import { SpaceViewer } from '../spatial/SpaceViewer';
 
 const COPY = {
   es: {
@@ -23,6 +24,8 @@ const COPY = {
         'A 15 km de Mérida y su estación de tren, en la provincia de Badajoz, Extremadura.',
     },
     coordinates: { title: 'Coordenadas GPS', description: '39.0224, -6.3372' },
+    floorPlanTitle: 'Plano del Albergue',
+    floorPlanSubtitle: 'Explora los dormitorios y espacios comunes en 3D.',
   },
   en: {
     title: 'How to Arrive',
@@ -43,6 +46,8 @@ const COPY = {
         '15 km from Mérida and its train station, in the province of Badajoz, Extremadura.',
     },
     coordinates: { title: 'GPS Coordinates', description: '39.0224, -6.3372' },
+    floorPlanTitle: 'Hostel Floor Plan',
+    floorPlanSubtitle: 'Explore the dormitories and common areas in 3D.',
   },
 } as const;
 
@@ -66,6 +71,12 @@ export function HostelInfoPage() {
               icon={<MapPinIcon className="h-8 w-8" />}
             />
           ))}
+        </div>
+
+        <div className="mt-10">
+          <h2 className="mb-1 text-xl font-bold text-charcoal font-sketch">{t.floorPlanTitle}</h2>
+          <p className="mb-4 text-sm text-dark-grey font-handwritten">{t.floorPlanSubtitle}</p>
+          <SpaceViewer building="B01" />
         </div>
       </section>
     </>
