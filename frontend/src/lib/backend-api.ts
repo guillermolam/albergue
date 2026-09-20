@@ -35,6 +35,13 @@ export async function backendJson<T>(
   try {
     response = await fetch(`${base}${path}`, {
       ...init,
+      // Diagnostic: rule out Cloudflare edge-caching a stale response for
+      // this exact same-account *.workers.dev -> *.workers.dev fetch (a
+      // browser/curl request to the identical URL succeeds; this Worker's
+      // own outbound fetch to it doesn't, and the failing response body
+      // isn't valid JSON -- consistent with an edge-cached negative
+      // response rather than the app's own router).
+      cache: 'no-store',
       headers: {
         accept: 'application/json',
         ...(init.body ? { 'content-type': 'application/json' } : {}),
@@ -50,18 +57,24 @@ export async function backendJson<T>(
     return { ok: false, status: 503, message: (error as Error).message };
   }
 
-  const envelope = (await response.json().catch(() => null)) as ApiResponse<T> | null;
+  const rawText = await response.text();
+  let envelope: ApiResponse<T> | null = null;
+  try {
+    envelope = JSON.parse(rawText) as ApiResponse<T>;
+  } catch {
+    envelope = null;
+  }
   if (!response.ok || !envelope?.success || envelope.data === undefined) {
     // Visibility into *why* a backend call failed -- the caller only ever
     // sees a terse "Backend 404"-style message, which wasn't enough to
     // diagnose a live-production mismatch between what backendJson actually
     // fetched and what curling the same path directly returned. Deliberately
-    // omits `path` and the full envelope: some callers (e.g. the booking
-    // reference lookup) put an access credential *in* the path, and a
-    // backend error envelope's `details` field isn't guaranteed safe to
-    // echo either -- only the resolved host and a short message are logged.
+    // omits `path`: some callers (e.g. the booking reference lookup) put an
+    // access credential *in* the path. `rawText` is capped and only logged
+    // when JSON parsing failed (a safe app envelope would never fail to
+    // parse), since that's specifically the case under investigation.
     console.error(
-      `backendJson failure: base=${base} status=${response.status} message=${envelope?.message ?? envelope?.error ?? '(no message)'}`
+      `backendJson failure: base=${base} status=${response.status} contentType=${response.headers.get('content-type')} message=${envelope?.message ?? envelope?.error ?? '(no message)'}${envelope === null ? ` rawText=${rawText.slice(0, 300)}` : ''}`
     );
     return {
       ok: false,
