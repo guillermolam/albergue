@@ -6,7 +6,7 @@ Apply hard-offset 2.5D shadow effects, double-pencil extrusion (optional), and S
 
 ## Context
 
-The project (`/Users/guillermolammartin/Git/guillermolam/albergue/frontend/`) uses UnoCSS with `presetWind3()` for atomic class generation and Tailwind v4 (`@import 'tailwindcss'`) for theme/layers. Components currently use soft shadows (`shadow-lg`, `shadow-xl`) or SVG-based shadow layers. The goal is consistent 2.5D/Neubrutalism aesthetics across all components.
+The project (`frontend/`) uses UnoCSS with `presetWind3()` for atomic class generation and Tailwind v4 (`@import 'tailwindcss'`) for theme/layers. Components currently use soft shadows (`shadow-lg`, `shadow-xl`) or SVG-based shadow layers. The goal is consistent 2.5D/Neubrutalism aesthetics across all components.
 
 ## Design Tokens (existing in `src/styles/design-system.css`)
 

@@ -21,6 +21,7 @@ import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 12;
 const KEY_LENGTH = 32;
+const AUTH_TAG_LENGTH = 16;
 
 /** Fail closed: null unless a well-formed key is configured. */
 export function getEncryptionKey(
@@ -28,19 +29,19 @@ export function getEncryptionKey(
 ): Buffer | null {
   const raw = env.PILGRIM_ENCRYPTION_KEY;
   if (!raw) return null;
-  let key: Buffer;
-  try {
-    key = Buffer.from(raw, "base64");
-  } catch {
-    return null;
-  }
+  // Buffer.from(_, "base64") never throws for a string input -- it's a
+  // lenient parse, not a validating one -- so the length check below is
+  // the only real validation here.
+  const key = Buffer.from(raw, "base64");
   if (key.length !== KEY_LENGTH) return null;
   return key;
 }
 
 export function encryptField(plaintext: string, key: Buffer): string {
   const iv = randomBytes(IV_LENGTH);
-  const cipher = createCipheriv(ALGORITHM, key, iv);
+  const cipher = createCipheriv(ALGORITHM, key, iv, {
+    authTagLength: AUTH_TAG_LENGTH,
+  });
   const ciphertext = Buffer.concat([
     cipher.update(plaintext, "utf8"),
     cipher.final(),
@@ -63,7 +64,17 @@ export function decryptField(stored: string, key: Buffer): string {
   const iv = Buffer.from(ivB64, "base64");
   const authTag = Buffer.from(tagB64, "base64");
   const ciphertext = Buffer.from(ciphertextB64, "base64");
-  const decipher = createDecipheriv(ALGORITHM, key, iv);
+  // authTagLength must be pinned explicitly: `stored` (and so `tagB64`)
+  // is attacker-reachable data (a corrupted/tampered PII column), and
+  // without it Node accepts whatever length setAuthTag() is given --
+  // a truncated tag is far easier to forge, undermining exactly the
+  // integrity guarantee this module exists to provide.
+  const decipher = createDecipheriv(ALGORITHM, key, iv, {
+    authTagLength: AUTH_TAG_LENGTH,
+  });
+  if (authTag.length !== AUTH_TAG_LENGTH) {
+    throw new Error("encrypted field: malformed auth tag");
+  }
   decipher.setAuthTag(authTag);
   const plaintext = Buffer.concat([
     decipher.update(ciphertext),
@@ -77,7 +88,9 @@ export function encryptBuffer(
   key: Buffer,
 ): { iv: Buffer; authTag: Buffer; ciphertext: Buffer } {
   const iv = randomBytes(IV_LENGTH);
-  const cipher = createCipheriv(ALGORITHM, key, iv);
+  const cipher = createCipheriv(ALGORITHM, key, iv, {
+    authTagLength: AUTH_TAG_LENGTH,
+  });
   const ciphertext = Buffer.concat([
     cipher.update(plaintext),
     cipher.final(),
@@ -85,12 +98,18 @@ export function encryptBuffer(
   return { iv, authTag: cipher.getAuthTag(), ciphertext };
 }
 
-/** Throws if the auth tag doesn't match. */
+/** Throws if the auth tag doesn't match (or is the wrong length --
+ * `encrypted.authTag` may come from attacker-reachable stored data). */
 export function decryptBuffer(
   encrypted: { iv: Buffer; authTag: Buffer; ciphertext: Buffer },
   key: Buffer,
 ): Buffer {
-  const decipher = createDecipheriv(ALGORITHM, key, encrypted.iv);
+  const decipher = createDecipheriv(ALGORITHM, key, encrypted.iv, {
+    authTagLength: AUTH_TAG_LENGTH,
+  });
+  if (encrypted.authTag.length !== AUTH_TAG_LENGTH) {
+    throw new Error("encrypted buffer: malformed auth tag");
+  }
   decipher.setAuthTag(encrypted.authTag);
   return Buffer.concat([
     decipher.update(encrypted.ciphertext),
