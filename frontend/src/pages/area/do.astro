@@ -8,26 +8,33 @@ import {
   type CulturalEvent,
 } from '../../../react/area/CulturalEventsSection';
 import { NightlifeSection } from '../../../react/area/NightlifeSection';
+import {
+  CarrascalejoLocalSection,
+  type LocalNotice,
+} from '../../../react/area/CarrascalejoLocalSection';
 import { backendJson } from '../../lib/backend-api';
 import type { PlaceWithDetails } from '../../../react/places/types';
 
 const NIGHTLIFE_CATEGORIES = new Set(['bar', 'night_club']);
 
-const [eventsResult, placesResult] = await Promise.all([
+const [eventsResult, placesResult, localResult] = await Promise.all([
   backendJson<CulturalEvent[]>('/api/merida-events'),
   backendJson<PlaceWithDetails[]>('/api/places'),
+  backendJson<LocalNotice[]>('/api/carrascalejo-local'),
 ]);
 
 const events = eventsResult.ok ? eventsResult.data : [];
 const nightlifePlaces = placesResult.ok
   ? placesResult.data.filter((p) => NIGHTLIFE_CATEGORIES.has(p.category))
   : [];
+const localNotices = localResult.ok ? localResult.data : [];
 ---
 
 <Layout
   title="Qué Hacer - Albergue Municipal Carrascalejo"
-  description="Información turística, agenda cultural y ocio nocturno en Carrascalejo y la zona"
+  description="Información turística, agenda cultural, vida local y ocio nocturno en Carrascalejo y la zona"
 >
+  <CarrascalejoLocalSection client:load notices={localNotices} />
   <CulturalEventsSection client:load events={events} />
   <AreaDoPage client:load />
   <NightlifeSection client:load places={nightlifePlaces} />
