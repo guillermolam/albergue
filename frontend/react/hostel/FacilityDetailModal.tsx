@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import type { FancyCardMeta } from '../shared/FancyCard';
+import { ImageCarousel } from './ImageCarousel';
+import { WifiAccessCard } from './WifiAccessCard';
 
 export interface Facility {
   id: string;
@@ -9,6 +11,8 @@ export interface Facility {
   detail: string;
   icon?: ReactNode;
   meta?: FancyCardMeta[];
+  images?: string[];
+  wifi?: { ssid: string; password: string };
 }
 
 interface FacilityDetailModalProps {
@@ -37,6 +41,12 @@ export function FacilityDetailModal({
             {facility.title}
           </DialogTitle>
         </DialogHeader>
+
+        {facility.wifi && (
+          <WifiAccessCard ssid={facility.wifi.ssid} password={facility.wifi.password} />
+        )}
+
+        <ImageCarousel images={facility.images ?? []} alt={facility.title} />
 
         {facility.meta && facility.meta.length > 0 && (
           <dl className="flex flex-wrap gap-2">

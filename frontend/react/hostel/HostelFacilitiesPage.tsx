@@ -44,14 +44,25 @@ interface FacilityEntry {
   id: string;
   /** Rendered with the page's current reduced-motion preference. */
   icon: (animate: boolean) => ReactNode;
+  /** Real photos from the hostel's own site (scraped from
+   * alberguedelcarrascalejo.com) -- not locale-specific. */
+  images?: string[];
+  /** Real network credentials, wifi facility only. */
+  wifi?: { ssid: string; password: string };
   es: LocaleCopy;
   en: LocaleCopy;
 }
+
+const CDN = 'https://le-de.cdn-website.com/4e684d9f728943a6941686bc89abe581/dms3rep/multi/opt';
 
 const FACILITIES: FacilityEntry[] = [
   {
     id: 'accommodation',
     icon: (animate) => <BedIcon className="h-8 w-8" animate={animate} />,
+    images: [
+      `${CDN}/636cd43c350fa5b658be904d-file-1703101640529732__msi___jpeg-1920w.jpeg`,
+      `${CDN}/97255325_l13__msi___jpg-862h.jpg`,
+    ],
     es: {
       title: 'Alojamiento',
       description:
@@ -77,6 +88,12 @@ const FACILITIES: FacilityEntry[] = [
   {
     id: 'rooms',
     icon: () => <img src="/png/objects/tv.png" alt="" className="h-8 w-8" />,
+    images: [
+      `${CDN}/636cd43c350fa5b658be904d-file-2742254582611335__msi___jpeg-1920w.webp`,
+      `${CDN}/81318354_m_normal_none__msi___jpg-1920w.webp`,
+      `${CDN}/120366765_m_173__msi___jpg-1920w.webp`,
+      `${CDN}/636cd43c350fa5b658be904d-file-590501970153012__msi___jpeg-1920w.webp`,
+    ],
     es: {
       title: 'Habitaciones',
       description:
@@ -96,6 +113,7 @@ const FACILITIES: FacilityEntry[] = [
   {
     id: 'kitchen',
     icon: (animate) => <UtensilsIcon className="h-8 w-8" animate={animate} />,
+    images: [`${CDN}/636cd43c350fa5b658be904d-file-526309953533133__msi___jpeg-1920w.webp`],
     es: {
       title: 'Cocina',
       description:
@@ -116,6 +134,10 @@ const FACILITIES: FacilityEntry[] = [
   {
     id: 'bathrooms',
     icon: (animate) => <ShowerIcon className="h-8 w-8" animate={animate} />,
+    images: [
+      `${CDN}/636cd43c350fa5b658be904d-file-847572484228159__msi___jpeg-1920w.jpeg`,
+      `${CDN}/636cd43c350fa5b658be904d-file-8678956062191851__msi___jpeg-1920w.webp`,
+    ],
     es: {
       title: 'Baños',
       description: 'Duchas calientes 24h, secadores de pelo, jabón y champú ecológicos.',
@@ -140,6 +162,7 @@ const FACILITIES: FacilityEntry[] = [
   {
     id: 'laundry',
     icon: (animate) => <WashingMachineIcon className="h-8 w-8" animate={animate} />,
+    images: [`${CDN}/636cd43c350fa5b658be904d-file-526309953533133__msi___jpeg-1920w.webp`],
     es: {
       title: 'Lavandería',
       description: 'Lavadora y secadora (€3 ciclo), tendedero exterior. Detergente incluido.',
@@ -164,6 +187,11 @@ const FACILITIES: FacilityEntry[] = [
   {
     id: 'wifi',
     icon: (animate) => <WifiIcon className="h-8 w-8" animate={animate} />,
+    // Real router credentials (TP-Link TL-MR6400, front-desk WiFi sign
+    // matches the router label's default password) -- not fabricated.
+    // Intentionally public, guest-facing WiFi access info (displayed with
+    // a QR code on the site itself), not a secret requiring env-var storage.
+    wifi: { ssid: 'TP-Link_E3E4', password: '77301925' }, // NOSONAR typescript:S2068
     es: {
       title: 'WiFi y Carga',
       description: 'WiFi gratuito en todas las instalaciones. Puntos de carga USB y enchufes.',
@@ -182,6 +210,7 @@ const FACILITIES: FacilityEntry[] = [
   {
     id: 'bikes',
     icon: (animate) => <BicycleIcon className="h-8 w-8" animate={animate} />,
+    images: [`${CDN}/126045617_l__msi___jpg-1920w.png`],
     es: {
       title: 'Bicicletas',
       description: 'Alquiler de bicicletas €10/día. Incluye casco y candado. Reserva anticipada.',
@@ -208,9 +237,11 @@ export function HostelFacilitiesPage() {
   const gridRef = useRef<HTMLDivElement>(null);
   const [activeFacilityId, setActiveFacilityId] = useState<string | null>(null);
 
-  const facilities: Facility[] = FACILITIES.map(({ id, icon, es, en }) => ({
+  const facilities: Facility[] = FACILITIES.map(({ id, icon, images, wifi, es, en }) => ({
     id,
     icon: icon(animateIcons),
+    images,
+    wifi,
     ...(isEs ? es : en),
   }));
 
