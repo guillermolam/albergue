@@ -1,4 +1,5 @@
 import { PageHero } from '../shared/PageHero';
+import { SectionDecor } from '../shared/SectionDecor';
 import { FancyCard } from '../shared/FancyCard';
 import { PhoneIcon, ClipboardIcon } from '../doodle/DoodleIcons';
 import { useI18n } from '../hooks/useI18n';
@@ -49,9 +50,10 @@ export function HostelServicesPage({ services }: Readonly<HostelServicesPageProp
 
   return (
     <>
-      <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
+      <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} decor="maintenance" />
 
-      <section className="container mx-auto max-w-5xl px-4 py-12">
+      <section className="relative isolate container mx-auto max-w-5xl px-4 py-12">
+        <SectionDecor preset="works" />
         <h2 className="mb-6 text-2xl font-bold text-[#5D4E37] font-sketch">{t.rulesHeading}</h2>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           {rules.map((service) => (
@@ -66,7 +68,8 @@ export function HostelServicesPage({ services }: Readonly<HostelServicesPageProp
       </section>
 
       {emergencies.length > 0 && (
-        <section className="bg-[#FFF5F5] py-12">
+        <section className="relative isolate bg-[#FFF5F5] py-12">
+          <SectionDecor preset="hospitality" delayOffset={1.4} />
           <div className="container mx-auto max-w-5xl px-4">
             <h2 className="mb-1 text-2xl font-bold text-[#ED1C24] font-sketch">
               {t.emergencyHeading}

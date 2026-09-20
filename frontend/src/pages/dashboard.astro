@@ -4,6 +4,7 @@ export const prerender = true;
 import Layout from '../layouts/Layout.astro';
 import DoodleCard from '../components/doodle/DoodleCard.astro';
 import DoodleButton from '../components/doodle/DoodleButton.astro';
+import SectionDecor from '../components/SectionDecor.astro';
 import { UserProfileCard, DashboardBookingWidget } from '../islands';
 import { CaminoProgressTracker } from '../../react/CaminoProgressTracker';
 ---
@@ -11,8 +12,9 @@ import { CaminoProgressTracker } from '../../react/CaminoProgressTracker';
 <Layout title="Dashboard - Albergue Municipal Carrascalejo">
   <main class="bg-paper-bg">
     <!-- Hero Section -->
-    <section class="relative min-h-[60vh] flex items-center justify-center overflow-hidden bg-linear-to-br from-green-50 to-cream">
+    <section class="relative isolate min-h-[60vh] flex items-center justify-center overflow-hidden bg-linear-to-br from-green-50 to-cream">
       <div class="absolute inset-0 sketchy-bg opacity-70"></div>
+      <SectionDecor preset="hospitality" />
       <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
         <h1 class="text-4xl md:text-5xl font-bold text-charcoal mb-4 font-sketch">
           Bienvenido, Peregrino

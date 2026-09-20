@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useI18n } from '../hooks/useI18n';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { ExternalLinkIcon, MapPinIcon } from '../doodle/DoodleIcons';
+import { SectionDecor } from '../shared/SectionDecor';
 
 export interface CulturalEvent {
   id: number;
@@ -158,7 +159,8 @@ export function CulturalEventsSection({ events }: Readonly<{ events: CulturalEve
   }
 
   return (
-    <section className="py-10 bg-[#FFFFFF]">
+    <section className="relative isolate py-10 bg-[#FFFFFF]">
+      <SectionDecor preset="journey" delayOffset={1.0} />
       <div className="container mx-auto max-w-6xl px-4">
         <div className="mb-5 flex items-start gap-3">
           <img src="/png/interface/calendar.png" alt="" className="h-9 w-9 shrink-0" />

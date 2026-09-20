@@ -1,5 +1,6 @@
 import { useI18n } from '../hooks/useI18n';
 import { PageHero } from '../shared/PageHero';
+import { SectionDecor } from '../shared/SectionDecor';
 import { MapPinIcon, UtensilsIcon, SparkleIcon, MonumentIcon } from '../doodle/DoodleIcons';
 
 const COPY = {
@@ -74,8 +75,9 @@ export function AreaDoPage() {
 
   return (
     <>
-      <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
-      <section className="container mx-auto max-w-3xl px-4 py-12">
+      <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} decor="journey" />
+      <section className="relative isolate container mx-auto max-w-3xl px-4 py-12">
+        <SectionDecor preset="distance" />
         <div className="space-y-3">
           {t.sections.map((section) => {
             const Icon = section.icon;

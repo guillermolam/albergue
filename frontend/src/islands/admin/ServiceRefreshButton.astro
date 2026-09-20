@@ -1,0 +1,84 @@
+---
+import { ErrorBoundary } from '../../../react/ErrorBoundary';
+
+export interface Props {
+  endpoint?: string;
+  refreshInterval?: number;
+}
+
+const { endpoint = '/api/health/services', refreshInterval = 30000 } = Astro.props;
+---
+
+<ErrorBoundary>
+  <button
+    type="button"
+    class="btn btn-ghost btn-xs"
+    id="service-refresh-btn"
+    data-endpoint={endpoint}
+    data-refresh-interval={String(refreshInterval)}
+  >
+    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+      />
+    </svg>
+    Refresh
+  </button>
+</ErrorBoundary>
+
+<script is:inline>
+  (function () {
+    'use strict';
+
+    const root = document.querySelector('#service-refresh-btn');
+    if (!root) return;
+
+    const endpoint = root.dataset.endpoint || '/api/health/services';
+    const refreshInterval = Math.max(5000, parseInt(root.dataset.refreshInterval || '30000', 10));
+    let timer = null;
+
+    function setLoading(loading) {
+      if (loading) {
+        root.classList.add('loading');
+        root.disabled = true;
+      } else {
+        root.classList.remove('loading');
+        root.disabled = false;
+      }
+    }
+
+    async function refresh() {
+      setLoading(true);
+      try {
+        const res = await fetch(endpoint, {
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        window.dispatchEvent(
+          new CustomEvent('services-refreshed', {
+            detail: data.services || data,
+          })
+        );
+      } catch (err) {
+        console.warn('[ServiceRefreshButton] Refresh failed:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    root.addEventListener('click', refresh);
+
+    function startPolling() {
+      if (timer) clearInterval(timer);
+      timer = setInterval(refresh, refreshInterval);
+    }
+
+    setTimeout(() => {
+      refresh().finally(startPolling);
+    }, 2000);
+  })();
+</script>

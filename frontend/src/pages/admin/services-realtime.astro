@@ -88,9 +88,10 @@ import { mockHealthChecks } from '../../lib/healthchecks';
         <div class="stat-value text-info">
           {Math.round(
             mockHealthChecks
-              .filter((s) => s.status !== 'error')
+              .filter((s) => s.status !== 'error' && s.responseTime !== 'Timeout')
               .reduce((acc, s) => acc + parseInt(s.responseTime), 0) /
-              mockHealthChecks.filter((s) => s.status !== 'error').length
+              mockHealthChecks.filter((s) => s.status !== 'error' && s.responseTime !== 'Timeout')
+                .length
           )}
           ms
         </div>
