@@ -161,7 +161,7 @@ export function PriceSummaryModal({
                   </div>
                 </div>
 
-                <div className="mt-4 p-4 bg-[#FFF9F0] rounded-lg doodle-border">
+                <div className="mt-4 p-4 bg-[#FFFFFF] rounded-lg doodle-border">
                   <p className="text-sm text-gray-600 hand-drawn">
                     ✨ <strong>{isEs ? 'Tarifa Peregrino:' : 'Pilgrim Rate:'}</strong> €
                     {pricePerNight}/{isEs ? 'noche' : 'night'}

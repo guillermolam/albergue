@@ -15,7 +15,7 @@ interface WiredButtonProps {
 
 const COLORS = {
   primary: { bg: '#00AB39', stroke: '#00AB39', text: 'white' },
-  secondary: { bg: '#FFF9F0', stroke: '#5D4E37', text: '#5D4E37' },
+  secondary: { bg: '#FFFFFF', stroke: '#5D4E37', text: '#5D4E37' },
   outline: { bg: 'transparent', stroke: '#00AB39', text: '#00AB39' },
 } as const;
 

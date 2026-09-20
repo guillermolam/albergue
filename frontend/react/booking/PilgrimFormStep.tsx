@@ -267,7 +267,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
   };
 
   const inputClass = (field: string) =>
-    `w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 ${
+    `w-full px-4 py-3 doodle-border bg-[#FFFFFF] focus:outline-none focus:ring-2 ${
       errors[field] ? 'focus:ring-[#ED1C24] border-[#ED1C24]' : 'focus:ring-[#00AB39]'
     }`;
 
@@ -395,7 +395,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                     type="text"
                     value={formData.secondLastName}
                     onChange={(e) => handleChange('secondLastName', e.target.value)}
-                    className="w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
+                    className="w-full px-4 py-3 doodle-border bg-[#FFFFFF] focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
                     style={{ fontFamily: 'Patrick Hand, cursive' }}
                     maxLength={FIELD_LIMITS.secondLastName.max}
                   />
@@ -438,7 +438,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                     value={formData.nationality}
                     onChange={(e) => handleChange('nationality', e.target.value)}
                     placeholder={t.nationalityPlaceholder}
-                    className="w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
+                    className="w-full px-4 py-3 doodle-border bg-[#FFFFFF] focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
                     style={{ fontFamily: 'Patrick Hand, cursive' }}
                     maxLength={FIELD_LIMITS.nationality.max}
                   />
@@ -637,7 +637,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                     value={formData.addressLine2}
                     onChange={(e) => handleChange('addressLine2', e.target.value)}
                     placeholder={t.addressLine2Placeholder}
-                    className="w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 focus:ring-[#0071BC]"
+                    className="w-full px-4 py-3 doodle-border bg-[#FFFFFF] focus:outline-none focus:ring-2 focus:ring-[#0071BC]"
                     style={{ fontFamily: 'Patrick Hand, cursive' }}
                     autoComplete="address-line2"
                     maxLength={FIELD_LIMITS.addressLine2.max}
@@ -732,7 +732,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                     value={formData.emergencyContact}
                     onChange={(e) => handleChange('emergencyContact', e.target.value)}
                     placeholder="John Doe"
-                    className="w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
+                    className="w-full px-4 py-3 doodle-border bg-[#FFFFFF] focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
                     style={{ fontFamily: 'Patrick Hand, cursive' }}
                     maxLength={FIELD_LIMITS.emergencyContact.max}
                   />

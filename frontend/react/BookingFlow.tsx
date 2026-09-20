@@ -402,7 +402,7 @@ export function BookingFlow() {
   const totalAmount = bookingData.totalAmount ?? nights * pricePerNight;
 
   return (
-    <div className="min-h-screen bg-[#FFF9F0] paper-texture flex overflow-x-hidden w-full max-w-[100vw]">
+    <div className="min-h-screen bg-[#FFFFFF] paper-texture flex overflow-x-hidden w-full max-w-[100vw]">
       <div className="hidden lg:block w-80 flex-shrink-0 bg-white/80 backdrop-blur-sm border-r-4 border-[#D4A574]/30 p-8 sticky top-0 h-screen overflow-y-auto">
         <div className="mb-12">
           <motion.a
@@ -461,7 +461,7 @@ export function BookingFlow() {
       </div>
 
       <div className="flex-1 relative">
-        <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-[#FFF9F0]/95 backdrop-blur-sm border-b-3 border-[#00AB39]/20">
+        <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-[#FFFFFF]/95 backdrop-blur-sm border-b-3 border-[#00AB39]/20">
           <div className="px-4 py-4 flex items-center gap-3">
             <motion.a
               href="/"

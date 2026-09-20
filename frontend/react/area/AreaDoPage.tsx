@@ -82,7 +82,7 @@ export function AreaDoPage() {
             return (
               <details
                 key={section.title}
-                className="group rounded-xl border-2 border-[#5D4E37]/30 bg-[#FFF9F0] paper-texture doodle-shadow"
+                className="group rounded-xl border-2 border-[#5D4E37]/30 bg-[#FFFFFF] paper-texture doodle-shadow"
               >
                 <summary className="flex cursor-pointer list-none items-center gap-3 px-5 py-4 font-semibold text-[#5D4E37]">
                   <Icon className="h-6 w-6 shrink-0 text-[#00AB39]" />

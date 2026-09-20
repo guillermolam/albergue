@@ -8,7 +8,7 @@
   --font-size: 16px;
 
   /* ── Brand surfaces ── */
-  --background: #fff9f0;
+  --background: #ffffff;
   --foreground: #1a1a1a;
   --card: #ffffff;
   --card-foreground: #1a1a1a;
@@ -68,7 +68,7 @@
   --green-medium: #66bb6a;
   --green-dark: #00ab39;
   --green-darker: #006b24;
-  --paper-bg: #fff9f0;
+  --paper-bg: #ffffff;
 }
 
 .dark {

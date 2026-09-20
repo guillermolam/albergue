@@ -61,7 +61,7 @@ function NavButton({
 
 function ReviewCard({ review, t }: Readonly<{ review: Review; t: (typeof COPY)['es'] }>) {
   return (
-    <div className="mx-auto flex max-w-xl flex-col items-center rounded-xl border-2 border-[#5D4E37]/20 bg-[#FFF9F0] p-6 text-center doodle-shadow paper-texture sm:p-8">
+    <div className="mx-auto flex max-w-xl flex-col items-center rounded-xl border-2 border-[#5D4E37]/20 bg-[#FFFFFF] p-6 text-center doodle-shadow paper-texture sm:p-8">
       <ChatIcon className="mb-3 h-9 w-9 text-[#00AB39]" />
 
       {review.rating && (

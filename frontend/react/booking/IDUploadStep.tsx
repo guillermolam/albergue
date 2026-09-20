@@ -1363,7 +1363,7 @@ function FileUploadBox({
           y="3"
           width="calc(100% - 6px)"
           height="calc(100% - 6px)"
-          fill={file ? '#F5F5F5' : '#FFF9F0'}
+          fill={file ? '#F5F5F5' : '#FFFFFF'}
           stroke={color}
           strokeWidth="2.5"
           rx="16"

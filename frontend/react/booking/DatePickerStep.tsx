@@ -154,7 +154,7 @@ export function DatePickerStep({
             max={MAX_GUESTS}
             value={guestCount}
             onChange={(e) => setGuestCount(Number(e.target.value))}
-            className="w-20 px-3 py-2 doodle-border bg-[#FFF9F0] text-center focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
+            className="w-20 px-3 py-2 doodle-border bg-[#FFFFFF] text-center focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
             style={{ fontFamily: 'Patrick Hand, cursive' }}
           />
         </motion.div>

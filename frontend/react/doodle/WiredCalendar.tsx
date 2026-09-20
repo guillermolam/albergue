@@ -77,7 +77,7 @@ function getDayCellStyle({
     };
   }
   return {
-    fill: '#FFF9F0',
+    fill: '#FFFFFF',
     stroke: '#D4A574',
     strokeWidth: '2.5',
     rx: '15',

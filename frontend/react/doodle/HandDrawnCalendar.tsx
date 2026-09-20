@@ -34,7 +34,7 @@ export function HandDrawnCalendar({
       {/* Calendar body - hand-drawn rectangle */}
       <path
         d="M15,30 L15,85 C15,88 17,90 20,90 L80,90 C83,90 85,88 85,85 L85,30 Z"
-        fill="#FFF9F0"
+        fill="#FFFFFF"
         stroke="#00AB39"
         strokeWidth="3"
         strokeLinecap="round"

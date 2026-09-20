@@ -245,7 +245,7 @@ export function HostelRestaurantPage() {
           {MENU.map((category) => (
             <div
               key={category.es}
-              className="rounded-xl border-2 border-[#5D4E37]/30 bg-[#FFF9F0] p-5 paper-texture doodle-border doodle-shadow"
+              className="rounded-xl border-2 border-[#5D4E37]/30 bg-[#FFFFFF] p-5 paper-texture doodle-border doodle-shadow"
             >
               <h3 className="mb-3 text-lg font-bold text-[#5D4E37] font-sketch">
                 {isEs ? category.es : category.en}

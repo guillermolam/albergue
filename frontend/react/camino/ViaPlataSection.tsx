@@ -95,7 +95,7 @@ function AppDownloadCard() {
   const os = useDetectedOS();
 
   return (
-    <div className="rounded-xl border-2 border-[#00AB39]/40 bg-linear-to-br from-[#E8F5E9] to-[#FFF9F0] p-4 doodle-shadow paper-texture">
+    <div className="rounded-xl border-2 border-[#00AB39]/40 bg-linear-to-br from-[#E8F5E9] to-[#FFFFFF] p-4 doodle-shadow paper-texture">
       <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:text-left">
         <div className="shrink-0 text-[#00AB39]">
           <CompassIcon className="h-8 w-8" />
@@ -258,7 +258,7 @@ export function ViaPlataSection() {
               className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00AB39] ${
                 stage.passesCarrascalejo
                   ? 'border-[#00AB39] bg-[#E8F5E9]'
-                  : 'border-[#5D4E37]/20 bg-[#FFF9F0] hover:border-[#00AB39]/50 hover:bg-[#E8F5E9]/60'
+                  : 'border-[#5D4E37]/20 bg-[#FFFFFF] hover:border-[#00AB39]/50 hover:bg-[#E8F5E9]/60'
               }`}
             >
               <span className="flex h-6 w-6 shrink-0 items-center justify-center text-[#00AB39]">

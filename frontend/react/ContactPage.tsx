@@ -142,7 +142,7 @@ export function ContactPage() {
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="space-y-4 rounded-xl border-2 border-[#5D4E37]/30 bg-[#FFF9F0] p-6 doodle-shadow paper-texture"
+            className="space-y-4 rounded-xl border-2 border-[#5D4E37]/30 bg-[#FFFFFF] p-6 doodle-shadow paper-texture"
           >
             <div>
               <label

@@ -100,7 +100,7 @@ export function PhoneInput({
             y="3"
             width="calc(100% - 6px)"
             height="calc(100% - 6px)"
-            fill="#FFF9F0"
+            fill="#FFFFFF"
             stroke={focused ? '#00AB39' : '#D4A574'}
             strokeWidth={focused ? '3' : '2.5'}
             rx="12"
@@ -187,7 +187,7 @@ export function PhoneInput({
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search countries..."
-                        className="w-full pl-10 pr-3 py-2 text-sm doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
+                        className="w-full pl-10 pr-3 py-2 text-sm doodle-border bg-[#FFFFFF] focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
                         style={{ fontFamily: 'Patrick Hand, cursive' }}
                       />
                     </div>

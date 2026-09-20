@@ -131,3 +131,20 @@ export interface HostelStats {
   availableBeds: number;
   minPricePerNight: string | null;
 }
+
+// Mirrors backend/src/routes/carrascalejo_weather.ts's DailyForecast.
+export interface DailyForecast {
+  date: string;
+  skyCode: string;
+  tempMax: number;
+  tempMin: number;
+  precipProbability: number;
+}
+
+export type WeatherForecast = DailyForecast[];
+
+// Mirrors backend/src/routes/carrascalejo_air_quality.ts's AirQuality.
+export interface AirQuality {
+  aqi: 1 | 2 | 3 | 4 | 5;
+  dominantPollutant: string;
+}
