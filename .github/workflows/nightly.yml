@@ -123,13 +123,16 @@ jobs:
         # `wrangler deploy` never touches secrets, so this was previously
         # a one-off manual `wrangler secret put` -- easy to drift or lose
         # entirely (which is what happened). Keeping it here means it's
-        # reset to the known-correct value on every deploy.
+        # reset to the known-correct value on every deploy. The script
+        # itself refuses to run if BACKEND_API_URL is empty (the GitHub
+        # secret not existing yet silently wiped the live value with a
+        # blank one the first time this ran).
         working-directory: frontend
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           BACKEND_API_URL: ${{ secrets.BACKEND_API_URL }}
-        run: echo "$BACKEND_API_URL" | pnpm exec wrangler secret put BACKEND_API_URL
+        run: ../.github/scripts/sync-backend-api-url.sh
 
   migrate-database:
     name: Apply database migrations
