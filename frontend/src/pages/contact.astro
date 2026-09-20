@@ -1,5 +1,11 @@
 ---
-export const prerender = true;
+// Request-rendered rather than prerendered: the chat's FAQ answers depend
+// on live check-in/out times from /api/hostel (same reasoning as
+// hostel/services.astro's emergency numbers). Prerendering would bake
+// whatever the backend returns at build time into every deploy until the
+// next one -- including a permanent null if the backend happened to be
+// unavailable during that build.
+export const prerender = false;
 
 import Layout from '../layouts/Layout.astro';
 import { ContactPage } from '../../react/ContactPage';
