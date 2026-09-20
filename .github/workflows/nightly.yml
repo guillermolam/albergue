@@ -92,7 +92,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: nightly-release
+    # Must run every time this workflow runs -- `nightly-release` only
+    # succeeds when there are pending Dependabot PRs, so depending on it
+    # here was silently skipping every deploy whenever there were none.
+    needs: check-dependabot
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -121,7 +124,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: nightly-release
+    # Must run every time this workflow runs -- `nightly-release` only
+    # succeeds when there are pending Dependabot PRs, so depending on it
+    # here was silently skipping every deploy whenever there were none.
+    needs: check-dependabot
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -146,7 +152,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    needs: nightly-release
+    # Must run every time this workflow runs -- `nightly-release` only
+    # succeeds when there are pending Dependabot PRs, so depending on it
+    # here was silently skipping every deploy whenever there were none.
+    needs: check-dependabot
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
