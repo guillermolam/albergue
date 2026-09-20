@@ -1,0 +1,892 @@
+{
+  "$schema": "./carrascalejo-spatial.schema.json",
+  "schemaVersion": "1.0.0",
+  "project": {
+    "id": "carrascalejo-albergue",
+    "name": "Albergue Municipal de Carrascalejo",
+    "description": "Canonical spatial model for the complete Carrascalejo hostel site.",
+    "status": "reconstruction",
+    "units": {
+      "distance": "m",
+      "area": "m2",
+      "equipmentDimensions": "cm"
+    }
+  },
+  "smplrspace": {
+    "strategy": "single-space",
+    "spaceId": "spc_ira3ue5m",
+    "organizationId": null,
+    "clientTokenEnv": "PUBLIC_SMPLR_CLIENT_TOKEN",
+    "editorUrl": "https://app.smplrspace.com/spc_ira3ue5m/edit/layout",
+    "geometryAuthority": "smplrspace",
+    "businessDataAuthority": "application",
+    "notes": [
+      "Do not store production client tokens in this JSON.",
+      "Do not invent Smplrspace furniture or room identifiers.",
+      "Smplrspace IDs are populated after physical geometry is created.",
+      "This document is the canonical reconstruction/source model, not an undocumented Smplrspace internal import format."
+    ]
+  },
+  "coordinateSystem": {
+    "type": "local-cartesian",
+    "units": "m",
+    "horizontalAxes": {
+      "x": "site-east-west",
+      "z": "site-north-south"
+    },
+    "verticalAxis": "elevation",
+    "origin": {
+      "x": 0,
+      "z": 0,
+      "elevation": 0
+    },
+    "orientation": {
+      "trueNorthKnown": false,
+      "rotationFromTrueNorthDeg": null,
+      "status": "unknown"
+    },
+    "precision": {
+      "internalMeters": 0.001,
+      "displayMeters": 0.01
+    }
+  },
+  "confidenceLevels": {
+    "measured": {
+      "rank": 4,
+      "description": "Directly measured or otherwise established measurement."
+    },
+    "derived": {
+      "rank": 3,
+      "description": "Calculated from measured data."
+    },
+    "estimated": {
+      "rank": 2,
+      "description": "Estimated from photographs, sketches, aerial imagery or proportions."
+    },
+    "placeholder": {
+      "rank": 1,
+      "description": "Temporary value required for modelling and awaiting calibration."
+    }
+  },
+  "editorLayers": [
+    {
+      "id": "site.boundary",
+      "category": "site",
+      "persistent": true
+    },
+    {
+      "id": "site.fence",
+      "category": "site",
+      "persistent": true
+    },
+    {
+      "id": "site.gates",
+      "category": "site",
+      "persistent": true
+    },
+    {
+      "id": "site.parking",
+      "category": "site",
+      "persistent": true
+    },
+    {
+      "id": "site.paths",
+      "category": "site",
+      "persistent": true
+    },
+    {
+      "id": "site.landscape",
+      "category": "site",
+      "persistent": true
+    },
+    {
+      "id": "site.exterior",
+      "category": "site",
+      "persistent": true
+    },
+    {
+      "id": "building.b01.exterior",
+      "category": "building",
+      "buildingId": "B01"
+    },
+    {
+      "id": "building.b01.interior",
+      "category": "building",
+      "buildingId": "B01"
+    },
+    {
+      "id": "building.b01.openings",
+      "category": "building",
+      "buildingId": "B01"
+    },
+    {
+      "id": "building.b01.equipment",
+      "category": "building",
+      "buildingId": "B01"
+    },
+    {
+      "id": "building.b02.exterior",
+      "category": "building",
+      "buildingId": "B02"
+    },
+    {
+      "id": "building.b02.interior",
+      "category": "building",
+      "buildingId": "B02"
+    },
+    {
+      "id": "building.b02.openings",
+      "category": "building",
+      "buildingId": "B02"
+    },
+    {
+      "id": "building.b02.equipment",
+      "category": "building",
+      "buildingId": "B02"
+    },
+    {
+      "id": "building.b03.exterior",
+      "category": "building",
+      "buildingId": "B03"
+    },
+    {
+      "id": "building.b03.interior",
+      "category": "building",
+      "buildingId": "B03"
+    },
+    {
+      "id": "building.b03.openings",
+      "category": "building",
+      "buildingId": "B03"
+    },
+    {
+      "id": "building.b03.equipment",
+      "category": "building",
+      "buildingId": "B03"
+    }
+  ],
+  "site": {
+    "id": "SITE",
+    "name": "Albergue Municipal de Carrascalejo",
+    "levelIndex": 0,
+    "boundary": {
+      "status": "placeholder",
+      "polygon": []
+    },
+    "fence": {
+      "status": "placeholder",
+      "heightM": null,
+      "segments": []
+    },
+    "gates": [],
+    "paths": [],
+    "landscape": [],
+    "exteriorZones": [
+      {
+        "id": "EXT-B01-B02",
+        "name": "Exterior between B01 and B02",
+        "type": "circulation",
+        "status": "estimated",
+        "polygon": []
+      },
+      {
+        "id": "EXT-B02-B03",
+        "name": "Exterior between B02 and B03",
+        "type": "circulation",
+        "status": "estimated",
+        "polygon": []
+      }
+    ],
+    "parking": {
+      "id": "PARKING-01",
+      "name": "Main parking",
+      "status": "placeholder",
+      "layer": "site.parking",
+      "polygon": [],
+      "entrance": null,
+      "spaces": [],
+      "accessibleSpaces": [],
+      "capacity": null
+    }
+  },
+  "buildings": [
+    {
+      "id": "B01",
+      "name": "Accommodation",
+      "type": "accommodation",
+      "levelIndex": 0,
+      "status": "estimated",
+      "transform": {
+        "origin": {
+          "x": 0,
+          "z": 0
+        },
+        "rotationDeg": 0,
+        "status": "placeholder"
+      },
+      "dimensions": {
+        "widthM": 16,
+        "depthM": 14,
+        "status": "estimated"
+      },
+      "construction": {
+        "exteriorWallThicknessM": {
+          "value": 0.3,
+          "status": "estimated"
+        },
+        "interiorWallThicknessM": {
+          "value": 0.15,
+          "status": "estimated"
+        },
+        "defaultDoorWidthM": {
+          "value": 0.9,
+          "status": "estimated"
+        },
+        "defaultWindowWidthM": {
+          "value": 1.4,
+          "status": "estimated"
+        }
+      },
+      "footprint": {
+        "status": "estimated",
+        "coordinates": [
+          { "x": 0, "z": 0 },
+          { "x": 16, "z": 0 },
+          { "x": 16, "z": 14 },
+          { "x": 0, "z": 14 }
+        ]
+      },
+      "referencePoints": [
+        { "id": "B01-P01", "x": 0, "z": 0 },
+        { "id": "B01-P02", "x": 11.5, "z": 0 },
+        { "id": "B01-P03", "x": 16, "z": 0 },
+        { "id": "B01-P04", "x": 16, "z": 3.5 },
+        { "id": "B01-P05", "x": 16, "z": 14 },
+        { "id": "B01-P06", "x": 11.5, "z": 14 },
+        { "id": "B01-P07", "x": 10, "z": 14 },
+        { "id": "B01-P08", "x": 0, "z": 14 },
+        { "id": "B01-P09", "x": 0, "z": 10.5 },
+        { "id": "B01-P10", "x": 0, "z": 3.5 },
+        { "id": "B01-P11", "x": 4, "z": 3.5 },
+        { "id": "B01-P12", "x": 4, "z": 10.5 },
+        { "id": "B01-P13", "x": 10, "z": 10.5 },
+        { "id": "B01-P14", "x": 11.5, "z": 3.5 },
+        { "id": "B01-P20", "x": 5.5, "z": 5.2 },
+        { "id": "B01-P21", "x": 10, "z": 5.2 },
+        { "id": "B01-P22", "x": 10, "z": 9.8 },
+        { "id": "B01-P23", "x": 5.5, "z": 9.8 }
+      ],
+      "rooms": [
+        {
+          "id": "B01-STAFF",
+          "name": "Staff Dorm",
+          "type": "staff-dorm",
+          "status": "estimated",
+          "expectedAreaM2": 40.25,
+          "polygon": [
+            { "x": 0, "z": 0 },
+            { "x": 11.5, "z": 0 },
+            { "x": 11.5, "z": 3.5 },
+            { "x": 0, "z": 3.5 }
+          ],
+          "smplrBinding": null
+        },
+        {
+          "id": "B01-WC",
+          "name": "Toilets",
+          "type": "bathroom",
+          "status": "estimated",
+          "expectedAreaM2": 15.75,
+          "polygon": [
+            { "x": 11.5, "z": 0 },
+            { "x": 16, "z": 0 },
+            { "x": 16, "z": 3.5 },
+            { "x": 11.5, "z": 3.5 }
+          ],
+          "smplrBinding": null
+        },
+        {
+          "id": "B01-DORM2",
+          "name": "Dorm 2",
+          "type": "dorm",
+          "status": "estimated",
+          "expectedAreaM2": 28,
+          "polygon": [
+            { "x": 0, "z": 3.5 },
+            { "x": 4, "z": 3.5 },
+            { "x": 4, "z": 10.5 },
+            { "x": 0, "z": 10.5 }
+          ],
+          "smplrBinding": null
+        },
+        {
+          "id": "B01-DORM1",
+          "name": "Dorm 1",
+          "type": "dorm",
+          "status": "estimated",
+          "expectedAreaM2": 35,
+          "polygon": [
+            { "x": 0, "z": 10.5 },
+            { "x": 10, "z": 10.5 },
+            { "x": 10, "z": 14 },
+            { "x": 0, "z": 14 }
+          ],
+          "smplrBinding": null
+        },
+        {
+          "id": "B01-KITCHEN-LIVING",
+          "name": "Kitchen & Living",
+          "type": "kitchen-living",
+          "status": "estimated",
+          "expectedAreaM2": 47.25,
+          "polygon": [
+            { "x": 11.5, "z": 3.5 },
+            { "x": 16, "z": 3.5 },
+            { "x": 16, "z": 14 },
+            { "x": 11.5, "z": 14 }
+          ],
+          "smplrBinding": null
+        },
+        {
+          "id": "B01-PATIO",
+          "name": "Central Patio",
+          "type": "patio",
+          "status": "estimated",
+          "expectedAreaM2": 20.7,
+          "polygon": [
+            { "x": 5.5, "z": 5.2 },
+            { "x": 10, "z": 5.2 },
+            { "x": 10, "z": 9.8 },
+            { "x": 5.5, "z": 9.8 }
+          ],
+          "smplrBinding": null
+        }
+      ],
+      "walls": [],
+      "openings": {
+        "doors": [],
+        "windows": []
+      },
+      "equipment": {
+        "bunks": [],
+        "lockers": [],
+        "other": []
+      },
+      "entrances": [
+        {
+          "id": "B01-ENTRANCE-01",
+          "name": "Main accommodation entrance",
+          "status": "estimated",
+          "position": null
+        }
+      ]
+    },
+    {
+      "id": "B02",
+      "name": "Social / Bar",
+      "type": "social",
+      "levelIndex": 0,
+      "status": "estimated",
+      "transform": {
+        "origin": {
+          "x": 2,
+          "z": 19
+        },
+        "rotationDeg": 0,
+        "status": "placeholder"
+      },
+      "dimensions": {
+        "widthM": 16.5,
+        "depthM": 11,
+        "status": "estimated"
+      },
+      "footprint": {
+        "status": "estimated",
+        "coordinates": [
+          { "x": 0, "z": 0 },
+          { "x": 12, "z": 0 },
+          { "x": 12, "z": 3 },
+          { "x": 16.5, "z": 3 },
+          { "x": 16.5, "z": 11 },
+          { "x": 0, "z": 11 }
+        ]
+      },
+      "rooms": [
+        {
+          "id": "B02-TERRACE",
+          "name": "Terrace",
+          "type": "terrace",
+          "status": "estimated",
+          "expectedAreaM2": 30,
+          "polygon": [
+            { "x": 0, "z": 0 },
+            { "x": 12, "z": 0 },
+            { "x": 12, "z": 2.5 },
+            { "x": 0, "z": 2.5 }
+          ],
+          "smplrBinding": null
+        },
+        {
+          "id": "B02-HALL",
+          "name": "Social Hall",
+          "type": "social-hall",
+          "status": "estimated",
+          "expectedAreaM2": 96,
+          "polygon": [
+            { "x": 0, "z": 3 },
+            { "x": 12, "z": 3 },
+            { "x": 12, "z": 11 },
+            { "x": 0, "z": 11 }
+          ],
+          "smplrBinding": null
+        },
+        {
+          "id": "B02-WC",
+          "name": "WC",
+          "type": "bathroom",
+          "status": "estimated",
+          "expectedAreaM2": 8.75,
+          "polygon": [
+            { "x": 13, "z": 0 },
+            { "x": 16.5, "z": 0 },
+            { "x": 16.5, "z": 2.5 },
+            { "x": 13, "z": 2.5 }
+          ],
+          "smplrBinding": null
+        },
+        {
+          "id": "B02-KITCHEN",
+          "name": "Kitchen",
+          "type": "kitchen",
+          "status": "estimated",
+          "expectedAreaM2": 31.5,
+          "polygon": [
+            { "x": 12, "z": 4 },
+            { "x": 16.5, "z": 4 },
+            { "x": 16.5, "z": 11 },
+            { "x": 12, "z": 11 }
+          ],
+          "smplrBinding": null
+        }
+      ],
+      "walls": [],
+      "openings": {
+        "doors": [],
+        "windows": []
+      },
+      "equipment": {
+        "bar": [
+          {
+            "id": "B02-BAR-01",
+            "type": "bar-counter",
+            "status": "estimated",
+            "dimensionsM": {
+              "width": 0.6,
+              "length": 3.5
+            },
+            "position": null,
+            "smplrFurnitureId": null
+          }
+        ],
+        "columns": [
+          {
+            "id": "B02-COLUMN-01",
+            "status": "estimated",
+            "dimensionsM": {
+              "width": 0.4,
+              "depth": 0.4
+            },
+            "position": null
+          },
+          {
+            "id": "B02-COLUMN-02",
+            "status": "estimated",
+            "dimensionsM": {
+              "width": 0.4,
+              "depth": 0.4
+            },
+            "position": null
+          }
+        ],
+        "tables": [
+          {
+            "id": "B02-TABLE-01",
+            "status": "placeholder",
+            "dimensionsM": {
+              "width": 1.2,
+              "length": 1.8
+            },
+            "position": null
+          },
+          {
+            "id": "B02-TABLE-02",
+            "status": "placeholder",
+            "dimensionsM": {
+              "width": 1.2,
+              "length": 1.8
+            },
+            "position": null
+          },
+          {
+            "id": "B02-TABLE-03",
+            "status": "placeholder",
+            "dimensionsM": {
+              "width": 1.2,
+              "length": 1.8
+            },
+            "position": null
+          },
+          {
+            "id": "B02-TABLE-04",
+            "status": "placeholder",
+            "dimensionsM": {
+              "width": 1.2,
+              "length": 1.8
+            },
+            "position": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "B03",
+      "name": "Warehouse",
+      "type": "warehouse",
+      "levelIndex": 0,
+      "status": "derived",
+      "transform": {
+        "origin": {
+          "x": 0,
+          "z": 35
+        },
+        "rotationDeg": 0,
+        "status": "placeholder"
+      },
+      "calibration": {
+        "priority": "primary",
+        "measuredPerimeterM": {
+          "value": 67.5,
+          "status": "measured"
+        },
+        "estimatedLongSideM": {
+          "value": 20.3,
+          "status": "derived"
+        },
+        "estimatedShortSideM": {
+          "value": 13.45,
+          "status": "derived"
+        },
+        "estimatedAreaM2": {
+          "value": 273.035,
+          "status": "derived"
+        },
+        "acceptance": {
+          "perimeterTargetM": 67.5,
+          "perimeterToleranceM": 0.1,
+          "areaInformationalOnly": true
+        }
+      },
+      "footprint": {
+        "status": "derived",
+        "coordinates": [
+          { "x": 0, "z": 0 },
+          { "x": 20.3, "z": 0 },
+          { "x": 20.3, "z": 13.45 },
+          { "x": 0, "z": 13.45 }
+        ]
+      },
+      "rooms": [
+        {
+          "id": "B03-WAREHOUSE",
+          "name": "Warehouse",
+          "type": "warehouse",
+          "status": "derived",
+          "expectedAreaM2": 273.035,
+          "polygon": [
+            { "x": 0, "z": 0 },
+            { "x": 20.3, "z": 0 },
+            { "x": 20.3, "z": 13.45 },
+            { "x": 0, "z": 13.45 }
+          ],
+          "smplrBinding": null
+        }
+      ],
+      "walls": [],
+      "openings": {
+        "doors": [],
+        "windows": [
+          {
+            "id": "B03-WINDOW-GROUP-01",
+            "status": "estimated",
+            "position": null
+          },
+          {
+            "id": "B03-WINDOW-GROUP-02",
+            "status": "estimated",
+            "position": null
+          },
+          {
+            "id": "B03-WINDOW-GROUP-03",
+            "status": "estimated",
+            "position": null
+          },
+          {
+            "id": "B03-WINDOW-GROUP-04",
+            "status": "estimated",
+            "position": null
+          },
+          {
+            "id": "B03-WINDOW-GROUP-05",
+            "status": "estimated",
+            "position": null
+          }
+        ]
+      },
+      "equipment": []
+    }
+  ],
+  "operationalDataLayers": [
+    {
+      "id": "room-availability",
+      "type": "polygon",
+      "source": "booking-domain",
+      "scope": ["B01"],
+      "dynamic": true
+    },
+    {
+      "id": "bunk-availability",
+      "type": "furniture",
+      "source": "booking-domain",
+      "scope": ["B01"],
+      "dynamic": true
+    },
+    {
+      "id": "selected-bed",
+      "type": "furniture",
+      "source": "booking-ui",
+      "scope": ["B01"],
+      "dynamic": true
+    },
+    {
+      "id": "parking-availability",
+      "type": "polygon",
+      "source": "parking-domain",
+      "scope": ["PARKING-01"],
+      "dynamic": true
+    },
+    {
+      "id": "points-of-interest",
+      "type": "point",
+      "source": "site-domain",
+      "scope": ["SITE", "B01", "B02", "B03"],
+      "dynamic": false
+    },
+    {
+      "id": "navigation-routes",
+      "type": "polyline",
+      "source": "navigation-domain",
+      "scope": ["SITE", "B01", "B02", "B03"],
+      "dynamic": true
+    },
+    {
+      "id": "emergency-equipment",
+      "type": "point",
+      "source": "safety-domain",
+      "scope": ["SITE", "B01", "B02", "B03"],
+      "dynamic": false
+    }
+  ],
+  "viewPresets": [
+    {
+      "id": "site",
+      "name": "Entire site",
+      "editorLayers": [
+        "site.boundary",
+        "site.fence",
+        "site.gates",
+        "site.parking",
+        "site.paths",
+        "site.landscape",
+        "site.exterior",
+        "building.b01.exterior",
+        "building.b01.interior",
+        "building.b01.openings",
+        "building.b01.equipment",
+        "building.b02.exterior",
+        "building.b02.interior",
+        "building.b02.openings",
+        "building.b02.equipment",
+        "building.b03.exterior",
+        "building.b03.interior",
+        "building.b03.openings",
+        "building.b03.equipment"
+      ]
+    },
+    {
+      "id": "accommodation",
+      "name": "B01 Accommodation",
+      "editorLayers": [
+        "building.b01.exterior",
+        "building.b01.interior",
+        "building.b01.openings",
+        "building.b01.equipment"
+      ]
+    },
+    {
+      "id": "booking",
+      "name": "Bed booking",
+      "editorLayers": [
+        "building.b01.exterior",
+        "building.b01.interior",
+        "building.b01.openings",
+        "building.b01.equipment"
+      ],
+      "dataLayers": ["room-availability", "bunk-availability", "selected-bed"],
+      "defaultRenderMode": "cutaway"
+    },
+    {
+      "id": "social",
+      "name": "B02 Social / Bar",
+      "editorLayers": [
+        "building.b02.exterior",
+        "building.b02.interior",
+        "building.b02.openings",
+        "building.b02.equipment"
+      ]
+    },
+    {
+      "id": "warehouse",
+      "name": "B03 Warehouse",
+      "editorLayers": [
+        "building.b03.exterior",
+        "building.b03.interior",
+        "building.b03.openings",
+        "building.b03.equipment"
+      ]
+    },
+    {
+      "id": "parking",
+      "name": "Parking",
+      "editorLayers": ["site.boundary", "site.fence", "site.gates", "site.parking", "site.paths"],
+      "dataLayers": ["parking-availability"]
+    }
+  ],
+  "renderModes": {
+    "architectural": {
+      "walls": {
+        "render": true,
+        "alpha": 1
+      }
+    },
+    "transparent": {
+      "walls": {
+        "render": true,
+        "alpha": 0.18
+      }
+    },
+    "cutaway": {
+      "walls": {
+        "render": true,
+        "maxHeightCm": 120
+      }
+    },
+    "availability": {
+      "walls": {
+        "render": false
+      }
+    }
+  },
+  "domainBindings": {
+    "rooms": {},
+    "bunks": {},
+    "beds": {},
+    "parkingSpaces": {},
+    "pointsOfInterest": {}
+  },
+  "validation": {
+    "rules": [
+      {
+        "id": "B03-PERIMETER",
+        "severity": "error",
+        "description": "B03 perimeter must match the measured 67.50 m within the configured tolerance."
+      },
+      {
+        "id": "ROOM-BINDING",
+        "severity": "error",
+        "description": "Every bookable room must resolve to physical Smplrspace geometry."
+      },
+      {
+        "id": "BUNK-BINDING",
+        "severity": "error",
+        "description": "Every bookable bunk must resolve to exactly one physical furniture/equipment object."
+      },
+      {
+        "id": "BED-PHYSICAL-DUPLICATION",
+        "severity": "error",
+        "description": "Upper and lower logical beds must not be represented as duplicate overlapping physical bunk objects."
+      },
+      {
+        "id": "EQUIPMENT-CONTAINMENT",
+        "severity": "warning",
+        "description": "Physical room equipment should be contained by its expected room geometry."
+      },
+      {
+        "id": "UNKNOWN-GEOMETRY",
+        "severity": "warning",
+        "description": "Placeholder geometry must remain explicitly marked until calibrated."
+      }
+    ]
+  },
+  "reconstruction": {
+    "priorityOrder": [
+      "site-reference",
+      "B03-calibration",
+      "B01-shell",
+      "B01-internal-layout",
+      "B01-openings",
+      "B01-equipment",
+      "B02-shell",
+      "B02-internal-layout",
+      "B02-openings",
+      "B02-equipment",
+      "parking",
+      "fence",
+      "gates",
+      "paths",
+      "landscape",
+      "final-site-calibration"
+    ],
+    "evidencePriority": [
+      "direct-measurement",
+      "known-map-measurement",
+      "photographs",
+      "aerial-imagery",
+      "physical-observation",
+      "sketch",
+      "legacy-floorplan"
+    ],
+    "openQuestions": [
+      "Exact parcel boundary",
+      "Exact B01 position and rotation within parcel",
+      "Exact B02 position and rotation within parcel",
+      "Exact B03 position and rotation within parcel",
+      "Exact B01-to-B02 separation",
+      "Exact B02-to-B03 separation",
+      "Parking polygon and individual bay geometry",
+      "Fence geometry",
+      "Gate positions and widths",
+      "Exterior path geometry",
+      "B01 door positions",
+      "B01 window positions",
+      "B01 bunk count and exact positions",
+      "B01 locker positions",
+      "B02 door and window positions",
+      "B02 bar position",
+      "B02 structural column positions",
+      "B02 furniture positions",
+      "B03 door position",
+      "B03 exact window group positions",
+      "Site orientation relative to true north"
+    ]
+  }
+}
