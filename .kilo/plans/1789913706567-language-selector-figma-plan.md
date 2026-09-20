@@ -35,7 +35,10 @@ Adapt the figma component to:
 
 ### 3. Verify Styling Dependencies
 - Ensure `motion/react` (Framer Motion) is available - already used in Navigation
-- Ensure `lucide-react` is available - already used in Navigation
+- `lucide-react` is NOT currently a frontend dependency: Navigation.tsx's icons come from
+  `./doodle/DoodleIcons` (the figma/ prototype uses lucide-react, but the frontend workspace
+  doesn't). Either add `lucide-react` as a frontend dependency for the globe icon, or use/add a
+  matching DoodleIcons icon instead to stay consistent with the rest of the site's icon set.
 - Font "Patrick Hand" should be loaded globally (check if already in layout)
 
 ## Implementation Details
@@ -47,9 +50,13 @@ The component can be self-contained using `useI18n()` internally, no props neede
 The figma version uses `absolute top-full right-0 mt-2` - verify this works within Navigation's flex container. May need `relative` on parent.
 
 ### Mobile Considerations
-The figma dropdown is desktop-oriented. Consider:
-- Keep current mobile menu language toggle (lines 566-574 in Navigation.tsx) OR
-- Make LanguageSelector responsive
+The figma dropdown is desktop-oriented. There is no separate mobile-only language
+control today: the current ES/EN toggle button sits outside both the `hidden md:flex`
+desktop nav and the `md:hidden` collapsible mobile panel, so the same button is already
+visible on every viewport. Consider:
+- Keep that same always-visible placement for the new LanguageSelector, OR
+- Make LanguageSelector responsive and explicitly decide where it renders on narrow
+  viewports if its dropdown doesn't fit well outside the collapsible mobile menu
 
 ## Testing
 - Verify language switching works (locale changes, persists)
