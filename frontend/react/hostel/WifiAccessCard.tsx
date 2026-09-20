@@ -8,13 +8,13 @@ interface WifiAccessCardProps {
   password: string;
 }
 
-// NOSONAR typescript:S2068 -- these are UI label strings ("Contraseña"/
-// "Password"), not a credential. The actual WiFi password is intentionally
-// public, guest-facing information (same as a QR code posted on a hostel
-// wall), not a secret that belongs in an env var or secret manager.
+// These are UI label strings ("Contraseña"/"Password"), not a credential.
+// The actual WiFi password is intentionally public, guest-facing
+// information (same as a QR code posted on a hostel wall), not a secret
+// that belongs in an env var or secret manager.
 const COPY = {
-  es: { network: 'Red', password: 'Contraseña', copy: 'Copiar', copied: 'Copiado' },
-  en: { network: 'Network', password: 'Password', copy: 'Copy', copied: 'Copied' },
+  es: { network: 'Red', password: 'Contraseña', copy: 'Copiar', copied: 'Copiado' }, // NOSONAR typescript:S2068
+  en: { network: 'Network', password: 'Password', copy: 'Copy', copied: 'Copied' }, // NOSONAR typescript:S2068
 };
 
 function CredentialBadge({
