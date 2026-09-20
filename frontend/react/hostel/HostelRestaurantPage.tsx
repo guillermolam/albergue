@@ -213,7 +213,7 @@ export function HostelRestaurantPage() {
   const t = isEs ? COPY.es : COPY.en;
 
   return (
-    <main>
+    <>
       <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
 
       <section className="container mx-auto max-w-4xl px-4 py-12">
@@ -280,6 +280,6 @@ export function HostelRestaurantPage() {
           </WiredButton>
         </div>
       </section>
-    </main>
+    </>
   );
 }

@@ -13,6 +13,10 @@ export interface ContactMessageRow {
 
 export interface ContactMessagesTableProps {
   initialMessages: ContactMessageRow[];
+  /** Total row count across all pages, not just the current page's rows --
+   * defaults to the page length when the caller doesn't have it (e.g. the
+   * admin API is unconfigured), so the header still shows a sane number. */
+  total?: number;
 }
 
 function getStatusColor(status: string | null) {
@@ -28,11 +32,14 @@ function getStatusColor(status: string | null) {
   }
 }
 
-export function ContactMessagesTable({ initialMessages }: Readonly<ContactMessagesTableProps>) {
+export function ContactMessagesTable({
+  initialMessages,
+  total = initialMessages.length,
+}: Readonly<ContactMessagesTableProps>) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Contact Messages ({initialMessages.length})</CardTitle>
+        <CardTitle>Contact Messages ({total})</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">

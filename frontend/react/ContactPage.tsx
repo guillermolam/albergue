@@ -70,7 +70,11 @@ export function ContactPage() {
     setStatus('sending');
     setErrorMessage('');
 
-    const formData = new FormData(event.currentTarget);
+    // React nulls out event.currentTarget once the synthetic event is no
+    // longer being dispatched, i.e. after this await -- capture the form
+    // element up front rather than re-reading it from the event later.
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const { data, error } = await actions.contact.submit({
       name: getStringField(formData, 'name'),
       email: getStringField(formData, 'email'),
@@ -85,7 +89,7 @@ export function ContactPage() {
     }
 
     setStatus('success');
-    event.currentTarget.reset();
+    form.reset();
   }
 
   return (

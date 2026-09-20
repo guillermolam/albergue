@@ -44,11 +44,23 @@ export function FancyCard({
       whileHover={{ y: -4, rotate: -0.5 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={
+        onClick
+          ? (event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
       className={`fancy-card relative overflow-hidden rounded-xl border-2 doodle-shadow paper-texture ${
         isFeatured
           ? 'border-[#00AB39] bg-linear-to-br from-[#E8F5E9] to-[#FFF9F0]'
           : 'border-[#5D4E37]/30 bg-[#FFF9F0]'
-      } ${onClick ? 'cursor-pointer' : ''} ${className}`}
+      } ${onClick ? 'cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00AB39]' : ''} ${className}`}
     >
       {image && (
         <div className="h-40 w-full overflow-hidden">

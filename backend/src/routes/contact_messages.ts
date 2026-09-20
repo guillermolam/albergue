@@ -11,12 +11,24 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { Context } from "hono";
+import { z } from "zod";
 import { authMiddleware } from "../lib/middleware.js";
 import { getAllContactMessages, getContactMessageById } from "../queries/contact_messages.js";
 import { createContactMessage } from "../commands/contact_messages.js";
-import type { ApiResponse, PaginatedResponse, ContactMessage, InsertContactMessage } from "../types/index.js";
+import type { ApiResponse, PaginatedResponse, ContactMessage } from "../types/index.js";
 
 const contactMessages = new Hono();
+
+// This public route is reachable directly, not only via the Astro Action
+// (which has its own zod validation) -- mirrors that Action's schema
+// exactly so a caller bypassing the Action can't persist invalid email
+// values, whitespace-only/oversized fields, or arbitrarily large messages.
+const contactMessageInputSchema = z.object({
+  name: z.string().trim().min(1).max(120),
+  email: z.string().trim().email(),
+  subject: z.string().trim().max(200).optional(),
+  message: z.string().trim().min(1).max(4000),
+});
 
 /**
  * Best-effort admin notification email via Resend. No provider is
@@ -30,7 +42,7 @@ async function notifyAdminByEmail(submission: ContactMessage): Promise<void> {
   if (!apiKey || !to) return;
 
   try {
-    await fetch("https://api.resend.com/emails", {
+    const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         authorization: `Bearer ${apiKey}`,
@@ -44,6 +56,23 @@ async function notifyAdminByEmail(submission: ContactMessage): Promise<void> {
         text: `From: ${submission.name} <${submission.email}>\n\n${submission.message}`,
       }),
     });
+    if (!response.ok) {
+      // fetch() only rejects on transport failure -- a rejected/invalid
+      // Resend request (bad key, unverified sender, malformed payload)
+      // still resolves here, so response.ok must be checked explicitly
+      // or a provider-side failure silently drops the notification.
+      //
+      // Resend's error body can echo back parts of what we sent it (e.g.
+      // the message/subject), which is attacker-influenced -- strip
+      // newlines/control characters before logging so a crafted
+      // submission can't forge extra log lines or inject control
+      // sequences into the log stream.
+      const rawDetail = await response.text().catch(() => "");
+      const detail = rawDetail.replace(/[\r\n\t\p{Cc}]+/gu, " ").slice(0, 500);
+      console.error(
+        `Resend contact notification failed: ${response.status} ${response.statusText} ${detail}`,
+      );
+    }
   } catch (error) {
     console.error("Failed to send contact notification email:", error);
   }
@@ -53,12 +82,15 @@ async function notifyAdminByEmail(submission: ContactMessage): Promise<void> {
  * POST / - Submit a contact message (public)
  */
 contactMessages.post("/", async (c: Context) => {
-  const body = await c.req.json<InsertContactMessage>().catch(() => null);
-  if (!body?.name || !body?.email || !body?.message) {
-    throw new HTTPException(400, { message: "Missing name, email, or message" });
+  const rawBody = await c.req.json().catch(() => null);
+  const parsed = contactMessageInputSchema.safeParse(rawBody);
+  if (!parsed.success) {
+    throw new HTTPException(400, {
+      message: `Invalid contact message: ${parsed.error.issues.map((i) => i.message).join(", ")}`,
+    });
   }
 
-  const result = await createContactMessage(body);
+  const result = await createContactMessage(parsed.data);
   await notifyAdminByEmail(result);
 
   return c.json<ApiResponse<ContactMessage>>(

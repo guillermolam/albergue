@@ -21,12 +21,22 @@ interface ContactMessagesPage {
 // backend too (defense in depth -- these rows can carry visitor PII), so the
 // shared ADMIN_API_TOKEN has to be attached here, same as callAdminBackendRoute
 // does for admin Actions.
+//
+// Pagination is plain query-string + full navigation (?page=N), not a
+// client-side fetch: ADMIN_API_TOKEN is a server-only secret (astro:env/server)
+// and this page is already SSR'd per request (prerender = false), so a page
+// link is the simplest way to page through results without ever putting the
+// admin token in front of the client.
+const requestedPage = Number(Astro.url.searchParams.get('page') || '1') || 1;
 const result = ADMIN_API_TOKEN
-  ? await backendJson<ContactMessagesPage>('/api/contact-messages', {
+  ? await backendJson<ContactMessagesPage>(`/api/contact-messages?page=${requestedPage}`, {
       headers: { authorization: `Bearer ${ADMIN_API_TOKEN}` },
     })
   : { ok: false as const, status: 503, message: 'Admin API is not configured (ADMIN_API_TOKEN).' };
 const initialMessages = result.ok ? result.data.data : [];
+const total = result.ok ? result.data.total : 0;
+const page = result.ok ? result.data.page : 1;
+const totalPages = result.ok ? result.data.totalPages : 1;
 ---
 
 <AdminLayout title="Contact Messages" activeSection="contact-messages">
@@ -35,5 +45,29 @@ const initialMessages = result.ok ? result.data.data : [];
       Could not load contact messages: {result.message}
     </div>
   )}
-  <ContactMessagesTable client:load initialMessages={initialMessages} />
+  <ContactMessagesTable client:load initialMessages={initialMessages} total={total} />
+  {totalPages > 1 && (
+    <nav
+      class="mt-4 flex items-center justify-center gap-4 text-sm"
+      aria-label="Contact messages pagination"
+    >
+      {page > 1 ? (
+        <a class="text-blue-600 hover:underline" href={`?page=${page - 1}`}>
+          &larr; Previous
+        </a>
+      ) : (
+        <span class="text-gray-400">&larr; Previous</span>
+      )}
+      <span class="text-gray-600">
+        Page {page} of {totalPages}
+      </span>
+      {page < totalPages ? (
+        <a class="text-blue-600 hover:underline" href={`?page=${page + 1}`}>
+          Next &rarr;
+        </a>
+      ) : (
+        <span class="text-gray-400">Next &rarr;</span>
+      )}
+    </nav>
+  )}
 </AdminLayout>
