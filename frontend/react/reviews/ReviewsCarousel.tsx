@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useI18n } from '../hooks/useI18n';
 import {
@@ -41,6 +41,23 @@ const SOURCE_COLOR: Record<Review['source'], string> = {
   booking: '#003580',
   tripadvisor: '#00AA6C',
 };
+
+function NavButton({
+  onClick,
+  label,
+  icon,
+}: Readonly<{ onClick: () => void; label: string; icon: ReactNode }>) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#00AB39]/40 text-[#00AB39] hover:bg-[#E8F5E9] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#00AB39]"
+    >
+      {icon}
+    </button>
+  );
+}
 
 function ReviewCard({ review, t }: Readonly<{ review: Review; t: (typeof COPY)['es'] }>) {
   return (
@@ -134,14 +151,11 @@ export function ReviewsCarousel() {
         </div>
 
         <div className="relative flex items-center gap-2 sm:gap-4">
-          <button
-            type="button"
+          <NavButton
             onClick={() => goTo(index - 1)}
-            aria-label={t.prev}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#00AB39]/40 text-[#00AB39] hover:bg-[#E8F5E9] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#00AB39]"
-          >
-            <ChevronLeftIcon className="h-5 w-5" animate={false} />
-          </button>
+            label={t.prev}
+            icon={<ChevronLeftIcon className="h-5 w-5" animate={false} />}
+          />
 
           <div className="min-h-[260px] flex-1 overflow-hidden">
             <AnimatePresence mode="wait" custom={direction}>
@@ -158,14 +172,11 @@ export function ReviewsCarousel() {
             </AnimatePresence>
           </div>
 
-          <button
-            type="button"
+          <NavButton
             onClick={() => goTo(index + 1)}
-            aria-label={t.next}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#00AB39]/40 text-[#00AB39] hover:bg-[#E8F5E9] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#00AB39]"
-          >
-            <ChevronRightIcon className="h-5 w-5" animate={false} />
-          </button>
+            label={t.next}
+            icon={<ChevronRightIcon className="h-5 w-5" animate={false} />}
+          />
         </div>
 
         <div className="mt-5 flex justify-center gap-1.5">

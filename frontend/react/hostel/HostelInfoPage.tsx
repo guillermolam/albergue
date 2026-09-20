@@ -9,22 +9,40 @@ const COPY = {
     subtitle: 'Todo lo que necesitas saber para encontrarnos en el Camino de Santiago',
     bus: {
       title: 'En Autobús',
-      description: 'Desde Santiago: línea 5 hasta Carrascalejo, 45 minutos.',
+      description:
+        'Autobuses regionales desde Mérida (15 km) hasta El Carrascalejo. Consulta horarios actualizados en recepción.',
     },
-    camino: { title: 'Desde el Camino', description: 'A 2 km del desvío en Negreira, señalizado.' },
-    car: { title: 'En Coche', description: 'A-8 salida 123, seguir señales a Carrascalejo.' },
-    coordinates: { title: 'Coordenadas GPS', description: '42.1234, -8.5678' },
+    camino: {
+      title: 'Desde el Camino',
+      description:
+        'En la Vía de la Plata, la etapa 11 (Mérida → Alcuéscar) pasa directamente por El Carrascalejo.',
+    },
+    car: {
+      title: 'En Coche',
+      description:
+        'A 15 km de Mérida y su estación de tren, en la provincia de Badajoz, Extremadura.',
+    },
+    coordinates: { title: 'Coordenadas GPS', description: '39.0224, -6.3372' },
   },
   en: {
     title: 'How to Arrive',
     subtitle: 'Everything you need to find us on the Camino de Santiago',
-    bus: { title: 'By Bus', description: 'From Santiago: line 5 to Carrascalejo, 45 minutes.' },
+    bus: {
+      title: 'By Bus',
+      description:
+        'Regional buses from Mérida (15 km) to El Carrascalejo. Check current timetables at reception.',
+    },
     camino: {
       title: 'From the Camino',
-      description: '2 km from the Negreira turn-off, signposted.',
+      description:
+        'On the Vía de la Plata, stage 11 (Mérida → Alcuéscar) passes directly through El Carrascalejo.',
     },
-    car: { title: 'By Car', description: 'A-8 exit 123, follow signs to Carrascalejo.' },
-    coordinates: { title: 'GPS Coordinates', description: '42.1234, -8.5678' },
+    car: {
+      title: 'By Car',
+      description:
+        '15 km from Mérida and its train station, in the province of Badajoz, Extremadura.',
+    },
+    coordinates: { title: 'GPS Coordinates', description: '39.0224, -6.3372' },
   },
 } as const;
 
