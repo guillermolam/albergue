@@ -5,6 +5,8 @@ interface DoodleFrameProps {
   className?: string;
   /** 'featured' tints the panel and border a stronger green. */
   variant?: 'default' | 'featured';
+  /** Overrides the panel/pedestal stroke color (e.g. emergency-red cards). */
+  borderColor?: string;
   /** Width in px of the hatched "pedestal" edge along the bottom and right. */
   edge?: number;
   /** Corner radius in px. */
@@ -25,6 +27,7 @@ export function DoodleFrame({
   children,
   className = '',
   variant = 'default',
+  borderColor,
   edge = 9,
   radius = 16,
 }: Readonly<DoodleFrameProps>) {
@@ -32,7 +35,8 @@ export function DoodleFrame({
   const innerRadius = Math.max(radius - 4, 4);
   const isFeatured = variant === 'featured';
   const panelFill = isFeatured ? '#F1F8F2' : '#FFFFFF';
-  const borderColor = isFeatured ? '#00AB39' : '#1A1A1A';
+  const strokeColor = borderColor ?? '#1A1A1A';
+  const sketchLineColor = borderColor ?? (isFeatured ? '#00AB39' : '#1A1A1A');
 
   return (
     <div className={`relative ${className}`} style={{ paddingRight: edge, paddingBottom: edge }}>
@@ -47,6 +51,7 @@ export function DoodleFrame({
           >
             <rect width="7" height="7" fill="#FFFFFF" />
             <line x1="0" y1="0" x2="0" y2="7" stroke="#1A1A1A" strokeWidth="1.4" opacity="0.55" />
+            <line x1="0" y1="0" x2="7" y2="0" stroke="#1A1A1A" strokeWidth="1.4" opacity="0.55" />
           </pattern>
         </defs>
 
@@ -58,7 +63,7 @@ export function DoodleFrame({
           height={`calc(100% - ${edge}px)`}
           rx={radius}
           fill={`url(#${patternId})`}
-          stroke="#1A1A1A"
+          stroke={strokeColor}
           strokeWidth="2.2"
         />
 
@@ -70,7 +75,7 @@ export function DoodleFrame({
           height={`calc(100% - ${edge}px)`}
           rx={radius}
           fill={panelFill}
-          stroke="#1A1A1A"
+          stroke={strokeColor}
           strokeWidth="2.6"
         />
         {/* Inner sketch line -- the doodle "retrace" */}
@@ -81,7 +86,7 @@ export function DoodleFrame({
           height={`calc(100% - ${edge}px - 8px)`}
           rx={innerRadius}
           fill="none"
-          stroke={borderColor}
+          stroke={sketchLineColor}
           strokeWidth="1.4"
           opacity="0.5"
         />

@@ -17,6 +17,8 @@ export interface FancyCardProps {
   tags?: string[];
   cta?: { label: string; href: string };
   variant?: 'default' | 'featured';
+  /** Overrides the frame's border color, e.g. red for emergency contacts. */
+  borderColor?: string;
   onClick?: () => void;
   className?: string;
 }
@@ -35,6 +37,7 @@ export function FancyCard({
   tags,
   cta,
   variant = 'default',
+  borderColor,
   onClick,
   className = '',
 }: Readonly<FancyCardProps>) {
@@ -59,7 +62,11 @@ export function FancyCard({
       }
       className={`fancy-card ${onClick ? 'cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00AB39]' : ''} ${className}`}
     >
-      <DoodleFrame variant={isFeatured ? 'featured' : 'default'} className="paper-texture">
+      <DoodleFrame
+        variant={isFeatured ? 'featured' : 'default'}
+        borderColor={borderColor}
+        className="paper-texture"
+      >
         {image && (
           <div className="h-40 w-full overflow-hidden">
             <img src={image} alt={title} className="h-full w-full object-cover" loading="lazy" />

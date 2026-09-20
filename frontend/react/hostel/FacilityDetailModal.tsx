@@ -46,7 +46,7 @@ export function FacilityDetailModal({
                 className="rounded-full border border-[#00AB39]/40 bg-[#E8F5E9] px-3 py-1 text-xs"
               >
                 <dt className="inline text-[#5D4E37]/70">{item.label}: </dt>
-                <dd className="inline font-semibold text-[#00AB39]">{item.value}</dd>
+                <dd className="inline font-semibold text-[#006B26]">{item.value}</dd>
               </div>
             ))}
           </dl>

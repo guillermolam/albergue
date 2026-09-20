@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useI18n } from '../hooks/useI18n';
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { PageHero } from '../shared/PageHero';
 import { FancyCard, type FancyCardMeta } from '../shared/FancyCard';
 import { FacilityDetailModal, type Facility } from './FacilityDetailModal';
@@ -40,7 +41,8 @@ interface LocaleCopy {
 
 interface FacilityEntry {
   id: string;
-  icon: ReactNode;
+  /** Rendered with the page's current reduced-motion preference. */
+  icon: (animate: boolean) => ReactNode;
   es: LocaleCopy;
   en: LocaleCopy;
 }
@@ -48,7 +50,7 @@ interface FacilityEntry {
 const FACILITIES: FacilityEntry[] = [
   {
     id: 'accommodation',
-    icon: <BedIcon className="h-8 w-8" />,
+    icon: (animate) => <BedIcon className="h-8 w-8" animate={animate} />,
     es: {
       title: 'Alojamiento',
       description:
@@ -73,7 +75,7 @@ const FACILITIES: FacilityEntry[] = [
   },
   {
     id: 'rooms',
-    icon: <img src="/png/objects/tv.png" alt="" className="h-8 w-8" />,
+    icon: () => <img src="/png/objects/tv.png" alt="" className="h-8 w-8" />,
     es: {
       title: 'Habitaciones',
       description:
@@ -92,7 +94,7 @@ const FACILITIES: FacilityEntry[] = [
   },
   {
     id: 'kitchen',
-    icon: <UtensilsIcon className="h-8 w-8" />,
+    icon: (animate) => <UtensilsIcon className="h-8 w-8" animate={animate} />,
     es: {
       title: 'Cocina',
       description:
@@ -112,7 +114,7 @@ const FACILITIES: FacilityEntry[] = [
   },
   {
     id: 'bathrooms',
-    icon: <ShowerIcon className="h-8 w-8" />,
+    icon: (animate) => <ShowerIcon className="h-8 w-8" animate={animate} />,
     es: {
       title: 'Baños',
       description: 'Duchas calientes 24h, secadores de pelo, jabón y champú ecológicos.',
@@ -136,7 +138,7 @@ const FACILITIES: FacilityEntry[] = [
   },
   {
     id: 'laundry',
-    icon: <WashingMachineIcon className="h-8 w-8" />,
+    icon: (animate) => <WashingMachineIcon className="h-8 w-8" animate={animate} />,
     es: {
       title: 'Lavandería',
       description: 'Lavadora y secadora (€3 ciclo), tendedero exterior. Detergente incluido.',
@@ -160,7 +162,7 @@ const FACILITIES: FacilityEntry[] = [
   },
   {
     id: 'wifi',
-    icon: <WifiIcon className="h-8 w-8" />,
+    icon: (animate) => <WifiIcon className="h-8 w-8" animate={animate} />,
     es: {
       title: 'WiFi y Carga',
       description: 'WiFi gratuito en todas las instalaciones. Puntos de carga USB y enchufes.',
@@ -178,7 +180,7 @@ const FACILITIES: FacilityEntry[] = [
   },
   {
     id: 'bikes',
-    icon: <BicycleIcon className="h-8 w-8" />,
+    icon: (animate) => <BicycleIcon className="h-8 w-8" animate={animate} />,
     es: {
       title: 'Bicicletas',
       description: 'Alquiler de bicicletas €10/día. Incluye casco y candado. Reserva anticipada.',
@@ -200,15 +202,21 @@ export function HostelFacilitiesPage() {
   const { locale } = useI18n();
   const isEs = locale !== 'en';
   const page = isEs ? PAGE_COPY.es : PAGE_COPY.en;
+  const animateIcons = !usePrefersReducedMotion();
 
   const gridRef = useRef<HTMLDivElement>(null);
-  const [activeFacility, setActiveFacility] = useState<Facility | null>(null);
+  const [activeFacilityId, setActiveFacilityId] = useState<string | null>(null);
 
   const facilities: Facility[] = FACILITIES.map(({ id, icon, es, en }) => ({
     id,
-    icon,
+    icon: icon(animateIcons),
     ...(isEs ? es : en),
   }));
+
+  // Re-derived from the current locale on every render (instead of storing
+  // the localized Facility snapshot itself), so a modal left open through a
+  // language switch shows the new locale's copy rather than a stale one.
+  const activeFacility = facilities.find((facility) => facility.id === activeFacilityId) ?? null;
 
   useEffect(() => {
     ensureScrollTrigger();
@@ -243,7 +251,7 @@ export function HostelFacilitiesPage() {
               description={facility.description}
               icon={facility.icon}
               meta={facility.meta}
-              onClick={() => setActiveFacility(facility)}
+              onClick={() => setActiveFacilityId(facility.id)}
             />
           ))}
         </div>
@@ -253,7 +261,7 @@ export function HostelFacilitiesPage() {
         facility={activeFacility}
         open={activeFacility !== null}
         onOpenChange={(open) => {
-          if (!open) setActiveFacility(null);
+          if (!open) setActiveFacilityId(null);
         }}
       />
     </>
