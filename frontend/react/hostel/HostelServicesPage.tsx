@@ -80,7 +80,7 @@ export function HostelServicesPage({ services }: Readonly<HostelServicesPageProp
                   description={(isEs ? service.descriptionEs : service.descriptionEn) ?? ''}
                   icon={<PhoneIcon className="h-8 w-8" />}
                   variant="featured"
-                  className="border-[#ED1C24]/40"
+                  borderColor="#ED1C24"
                 />
               ))}
             </div>

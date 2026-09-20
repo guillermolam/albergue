@@ -1579,3 +1579,173 @@ export function RainIcon({ className = 'w-8 h-8', animate = true }: DoodleIconPr
     </motion.svg>
   );
 }
+
+// Shower icon (bathrooms)
+export function ShowerIcon({ className = 'w-8 h-8', animate = true }: Readonly<DoodleIconProps>) {
+  return (
+    <motion.svg className={className} viewBox="0 0 100 100" fill="none">
+      {/* Wall arm + shower head */}
+      <path
+        d="M20 15 L62 15 C68 15 72 19 72 25 L72 32"
+        stroke="#1A1A1A"
+        strokeWidth="4"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <rect
+        x="56"
+        y="30"
+        width="32"
+        height="14"
+        rx="7"
+        fill="#D4A574"
+        stroke="#1A1A1A"
+        strokeWidth="3"
+      />
+      {/* Water drops */}
+      {[62, 72, 82].map((x, i) => (
+        <motion.line
+          key={x}
+          x1={x}
+          y1="46"
+          x2={x - 3}
+          y2="62"
+          stroke="#0071BC"
+          strokeWidth="3"
+          strokeLinecap="round"
+          animate={animate ? { y2: [62, 68, 62], opacity: [1, 0.3, 1] } : {}}
+          transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
+        />
+      ))}
+      {/* Person outline */}
+      <circle cx="40" cy="55" r="8" fill="#FFFFFF" stroke="#1A1A1A" strokeWidth="3" />
+      <path
+        d="M40 63 L40 85 M28 92 L40 78 L52 92"
+        stroke="#1A1A1A"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+    </motion.svg>
+  );
+}
+
+// Washing machine icon (laundry)
+export function WashingMachineIcon({
+  className = 'w-8 h-8',
+  animate = true,
+}: Readonly<DoodleIconProps>) {
+  return (
+    <motion.svg className={className} viewBox="0 0 100 100" fill="none">
+      <rect
+        x="15"
+        y="12"
+        width="70"
+        height="76"
+        rx="6"
+        fill="#FFFFFF"
+        stroke="#1A1A1A"
+        strokeWidth="3.5"
+      />
+      {/* Control dial */}
+      <circle cx="26" cy="24" r="4" fill="#00AB39" stroke="#1A1A1A" strokeWidth="2" />
+      <rect
+        x="38"
+        y="20"
+        width="18"
+        height="7"
+        rx="2"
+        fill="#5D4E37"
+        stroke="#1A1A1A"
+        strokeWidth="2"
+      />
+      {/* Drum */}
+      <circle cx="50" cy="58" r="24" fill="#E8F5E9" stroke="#1A1A1A" strokeWidth="3.5" />
+      <motion.circle
+        cx="50"
+        cy="58"
+        r="15"
+        fill="none"
+        stroke="#0071BC"
+        strokeWidth="3"
+        strokeDasharray="10 8"
+        animate={animate ? { rotate: 360 } : {}}
+        style={{ originX: '50px', originY: '58px' }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+      />
+    </motion.svg>
+  );
+}
+
+// WiFi icon (wireless connectivity)
+export function WifiIcon({ className = 'w-8 h-8', animate = true }: Readonly<DoodleIconProps>) {
+  return (
+    <motion.svg className={className} viewBox="0 0 100 100" fill="none">
+      {[
+        { r: 42, o: 1 },
+        { r: 28, o: 0.7 },
+        { r: 14, o: 1 },
+      ].map((arc, i) => (
+        <motion.path
+          key={arc.r}
+          d={`M${50 - arc.r} ${70 - arc.r * 0.55} A ${arc.r} ${arc.r} 0 0 1 ${50 + arc.r} ${70 - arc.r * 0.55}`}
+          stroke="#00AB39"
+          strokeWidth="5"
+          strokeLinecap="round"
+          fill="none"
+          opacity={arc.o}
+          animate={animate ? { opacity: [0.3, 1, 0.3] } : {}}
+          transition={{ duration: 1.6, repeat: Infinity, delay: i * 0.25 }}
+        />
+      ))}
+      <circle cx="50" cy="78" r="6" fill="#1A1A1A" />
+    </motion.svg>
+  );
+}
+
+// Bicycle icon (bike rental)
+export function BicycleIcon({ className = 'w-8 h-8', animate = true }: Readonly<DoodleIconProps>) {
+  return (
+    <motion.svg className={className} viewBox="0 0 100 100" fill="none">
+      <motion.circle
+        cx="26"
+        cy="70"
+        r="16"
+        fill="none"
+        stroke="#1A1A1A"
+        strokeWidth="3.5"
+        animate={animate ? { rotate: 360 } : {}}
+        style={{ originX: '26px', originY: '70px' }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+      />
+      <motion.circle
+        cx="74"
+        cy="70"
+        r="16"
+        fill="none"
+        stroke="#1A1A1A"
+        strokeWidth="3.5"
+        animate={animate ? { rotate: 360 } : {}}
+        style={{ originX: '74px', originY: '70px' }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+      />
+      <path
+        d="M26 70 L46 32 L66 32 M46 32 L60 70 M26 70 L60 70 M60 70 L74 70 M60 70 L68 56"
+        stroke="#00AB39"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <path d="M40 32 L52 32" stroke="#1A1A1A" strokeWidth="4" strokeLinecap="round" />
+      <path
+        d="M64 25 L70 25 L68 32"
+        stroke="#1A1A1A"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        fill="none"
+      />
+    </motion.svg>
+  );
+}
