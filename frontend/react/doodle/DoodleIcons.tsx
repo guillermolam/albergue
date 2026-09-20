@@ -1751,3 +1751,99 @@ export function BicycleIcon({ className = 'w-8 h-8', animate = true }: Readonly<
     </motion.svg>
   );
 }
+
+// Robot icon (chat agent)
+export function RobotIcon({ className = 'w-8 h-8', animate = true }: Readonly<DoodleIconProps>) {
+  return (
+    <motion.svg className={className} viewBox="0 0 100 100" fill="none">
+      {/* Antenna */}
+      <line
+        x1="50"
+        y1="10"
+        x2="50"
+        y2="20"
+        stroke="#1A1A1A"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+      <motion.circle
+        cx="50"
+        cy="8"
+        r="4"
+        fill="#00AB39"
+        stroke="#1A1A1A"
+        strokeWidth="2"
+        animate={animate ? { scale: [1, 1.25, 1] } : {}}
+        transition={{ duration: 1.4, repeat: Infinity }}
+      />
+      {/* Head */}
+      <rect
+        x="22"
+        y="20"
+        width="56"
+        height="42"
+        rx="12"
+        fill="#FFFFFF"
+        stroke="#1A1A1A"
+        strokeWidth="3.5"
+      />
+      {/* Eyes */}
+      <motion.circle
+        cx="38"
+        cy="40"
+        r="6"
+        fill="#0071BC"
+        animate={animate ? { scaleY: [1, 0.1, 1] } : {}}
+        transition={{ duration: 3, repeat: Infinity, repeatDelay: 1.5 }}
+      />
+      <motion.circle
+        cx="62"
+        cy="40"
+        r="6"
+        fill="#0071BC"
+        animate={animate ? { scaleY: [1, 0.1, 1] } : {}}
+        transition={{ duration: 3, repeat: Infinity, repeatDelay: 1.5 }}
+      />
+      {/* Mouth */}
+      <rect x="38" y="50" width="24" height="4" rx="2" fill="#5D4E37" />
+      {/* Body */}
+      <rect
+        x="30"
+        y="62"
+        width="40"
+        height="28"
+        rx="8"
+        fill="#E8F5E9"
+        stroke="#1A1A1A"
+        strokeWidth="3"
+      />
+      <circle cx="50" cy="76" r="5" fill="#00AB39" stroke="#1A1A1A" strokeWidth="2" />
+    </motion.svg>
+  );
+}
+
+// Paper plane icon (Telegram-style send)
+export function PaperPlaneIcon({
+  className = 'w-8 h-8',
+  animate = true,
+}: Readonly<DoodleIconProps>) {
+  return (
+    <motion.svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      whileHover={animate ? { x: 4, y: -4, rotate: -6 } : {}}
+      transition={{ type: 'spring', stiffness: 300 }}
+    >
+      <path
+        d="M12 46 L86 14 L62 88 L46 58 L12 46 Z"
+        fill="#0071BC"
+        stroke="#1A1A1A"
+        strokeWidth="3.5"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+      <path d="M46 58 L86 14" stroke="#1A1A1A" strokeWidth="2.5" strokeLinecap="round" />
+    </motion.svg>
+  );
+}
