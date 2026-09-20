@@ -110,6 +110,17 @@ jobs:
           pnpm-version: "10.29.3"
 
       - name: Build frontend for Cloudflare
+        # PUBLIC_SMPLR_* are client vars inlined into the built bundle by
+        # Astro/Vite at build time -- frontend/scripts/root-env.mjs only
+        # fills these from the (gitignored, CI-absent) monorepo-root .env
+        # when they're NOT already set, so setting them here is what
+        # actually gets the 3D floor plan working in production (it was
+        # silently falling back to the "not configured" placeholder on
+        # every deploy before this).
+        env:
+          PUBLIC_SMPLR_ORGANIZATION_ID: ${{ secrets.PUBLIC_SMPLR_ORGANIZATION_ID }}
+          PUBLIC_SMPLR_CLIENT_TOKEN: ${{ secrets.PUBLIC_SMPLR_CLIENT_TOKEN }}
+          PUBLIC_SMPLR_SPACE_B01_ID: ${{ secrets.PUBLIC_SMPLR_SPACE_B01_ID }}
         run: ./.github/scripts/build-frontend-target.sh cloudflare
 
       - name: Deploy to Cloudflare
