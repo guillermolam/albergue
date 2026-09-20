@@ -12,7 +12,7 @@ export interface Session {
 export async function createSession(
   userId: string,
   token: string,
-  kv: KV,
+  kv: KVNamespace,
   ttl: number = 7 * 24 * 60 * 60
 ): Promise<void> {
   const session: Session = {
@@ -26,11 +26,11 @@ export async function createSession(
   });
 }
 
-export async function getSession(userId: string, kv: KV): Promise<Session | null> {
+export async function getSession(userId: string, kv: KVNamespace): Promise<Session | null> {
   const sessionData = await kv.get(`session:${userId}`);
   if (!sessionData) return null;
 
-  const session = JSON.parse(sessionData.text());
+  const session = JSON.parse(sessionData);
 
   // Check if session has expired
   if (session.expiresAt < Date.now()) {
@@ -41,11 +41,11 @@ export async function getSession(userId: string, kv: KV): Promise<Session | null
   return session;
 }
 
-export async function deleteSession(userId: string, kv: KV): Promise<void> {
+export async function deleteSession(userId: string, kv: KVNamespace): Promise<void> {
   await kv.delete(`session:${userId}`);
 }
 
-export async function invalidateUserSessions(userId: string, kv: KV): Promise<void> {
+export async function invalidateUserSessions(userId: string, kv: KVNamespace): Promise<void> {
   // Get all sessions and invalidate this user's
   const keys = await kv.list({ prefix: 'session:' });
   for (const key of keys.keys) {
@@ -58,7 +58,7 @@ export async function invalidateUserSessions(userId: string, kv: KV): Promise<vo
 
 export async function extendSession(
   userId: string,
-  kv: KV,
+  kv: KVNamespace,
   ttl: number = 7 * 24 * 60 * 60
 ): Promise<void> {
   const session = await getSession(userId, kv);
