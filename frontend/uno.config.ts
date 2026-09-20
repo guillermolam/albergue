@@ -242,6 +242,7 @@ export default defineConfig({
     'doodle-shadow-sm',
     'wired-border',
     'sketch-border',
+    'sketchy-border',
     'hand-drawn',
     'sketch-title',
     'sketch-subtitle',
