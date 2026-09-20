@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
 import { useI18n } from '../hooks/useI18n';
 import { PageHero } from '../shared/PageHero';
 import { FancyCard } from '../shared/FancyCard';
@@ -96,14 +95,14 @@ function AppDownloadCard() {
   const os = useDetectedOS();
 
   return (
-    <div className="rounded-xl border-2 border-[#00AB39]/40 bg-linear-to-br from-[#E8F5E9] to-[#FFF9F0] p-6 doodle-shadow paper-texture">
-      <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
+    <div className="rounded-xl border-2 border-[#00AB39]/40 bg-linear-to-br from-[#E8F5E9] to-[#FFF9F0] p-4 doodle-shadow paper-texture">
+      <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:text-left">
         <div className="shrink-0 text-[#00AB39]">
-          <CompassIcon className="h-10 w-10" />
+          <CompassIcon className="h-8 w-8" />
         </div>
         <div className="flex-1">
-          <h3 className="text-lg font-bold text-[#5D4E37] font-sketch">{t.appTitle}</h3>
-          <p className="text-sm text-[#5D4E37]/80 font-handwritten">{t.appSubtitle}</p>
+          <h3 className="text-sm font-bold text-[#5D4E37] font-sketch">{t.appTitle}</h3>
+          <p className="text-xs text-[#5D4E37]/80 font-handwritten">{t.appSubtitle}</p>
         </div>
         <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
           {os !== 'android' && (
@@ -220,82 +219,79 @@ export function ViaPlataSection() {
   ];
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-8 bg-white">
       <div className="container mx-auto max-w-6xl px-4">
         <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
 
-        <div className="mb-10 grid grid-cols-3 gap-4 text-center">
+        <div className="mb-4 grid grid-cols-3 gap-4 text-center">
           <div>
-            <div className="text-3xl font-bold text-[#00AB39] font-sketch">
+            <div className="text-2xl font-bold text-[#00AB39] font-sketch">
               {VIA_PLATA_ROUTE_STATS.stages}
             </div>
-            <div className="text-sm text-[#5D4E37]/70">{t.statStages}</div>
+            <div className="text-xs text-[#5D4E37]/70">{t.statStages}</div>
           </div>
           <div>
-            <div className="text-3xl font-bold text-[#00AB39] font-sketch">
+            <div className="text-2xl font-bold text-[#00AB39] font-sketch">
               {VIA_PLATA_ROUTE_STATS.distanceKm}
             </div>
-            <div className="text-sm text-[#5D4E37]/70">{t.statKm}</div>
+            <div className="text-xs text-[#5D4E37]/70">{t.statKm}</div>
           </div>
           <div>
-            <div className="text-3xl font-bold text-[#00AB39] font-sketch">
+            <div className="text-2xl font-bold text-[#00AB39] font-sketch">
               {VIA_PLATA_ROUTE_STATS.villages}
             </div>
-            <div className="text-sm text-[#5D4E37]/70">{t.statVillages}</div>
+            <div className="text-xs text-[#5D4E37]/70">{t.statVillages}</div>
           </div>
         </div>
 
-        <h3 className="mb-2 text-xl font-bold text-[#5D4E37] font-sketch">{t.mapTitle}</h3>
-        <p className="mb-4 text-sm text-[#5D4E37]/70 font-handwritten">{t.mapHint}</p>
-        <MapLibreMap center={[-6.15, 39.3]} zoom={7} markers={markers} className="mb-12 h-96" />
+        <h3 className="mb-1 text-base font-bold text-[#5D4E37] font-sketch">{t.mapTitle}</h3>
+        <p className="mb-2 text-xs text-[#5D4E37]/70 font-handwritten">{t.mapHint}</p>
+        <MapLibreMap center={[-6.15, 39.3]} zoom={7} markers={markers} className="mb-6 h-64" />
 
-        <h3 className="mb-6 text-xl font-bold text-[#5D4E37] font-sketch">{t.stagesTitle}</h3>
-        <div className="mb-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {mainStages.map((stage, i) => (
-            <motion.div
+        <h3 className="mb-2 text-base font-bold text-[#5D4E37] font-sketch">{t.stagesTitle}</h3>
+        <div className="mb-6 grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
+          {mainStages.map((stage) => (
+            <button
               key={stage.slug}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.3, delay: (i % 6) * 0.05 }}
+              type="button"
+              onClick={() => openStage(stage)}
+              className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00AB39] ${
+                stage.passesCarrascalejo
+                  ? 'border-[#00AB39] bg-[#E8F5E9]'
+                  : 'border-[#5D4E37]/20 bg-[#FFF9F0] hover:border-[#00AB39]/50 hover:bg-[#E8F5E9]/60'
+              }`}
             >
-              <FancyCard
-                title={`${t.stage} ${stage.stage}: ${stage.from} → ${stage.to}`}
-                description={
-                  stage.summary ??
-                  `${stage.km} km · ${stage.villages} ${t.villages} · ${stage.hosting} ${t.hosting}`
-                }
-                icon={
-                  stage.passesCarrascalejo ? (
-                    <StarIcon className="h-7 w-7" />
-                  ) : (
-                    <CompassIcon className="h-7 w-7" />
-                  )
-                }
-                variant={stage.passesCarrascalejo ? 'featured' : 'default'}
-                meta={[
-                  { label: t.km, value: String(stage.km) },
-                  { label: t.hosting, value: String(stage.hosting) },
-                ]}
-                onClick={() => openStage(stage)}
-              />
-            </motion.div>
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center text-[#00AB39]">
+                {stage.passesCarrascalejo ? (
+                  <StarIcon className="h-4 w-4" />
+                ) : (
+                  <span className="text-xs font-bold">{stage.stage}</span>
+                )}
+              </span>
+              <span className="min-w-0 flex-1 truncate text-sm font-semibold text-[#5D4E37]">
+                {stage.from} → {stage.to}
+              </span>
+              <span className="shrink-0 text-xs text-[#5D4E37]/60">
+                {stage.km} {t.km}
+              </span>
+            </button>
           ))}
         </div>
 
         <AppDownloadCard />
 
-        <h3 className="mt-14 mb-6 text-xl font-bold text-[#5D4E37] font-sketch">
+        <h3 className="mt-6 mb-2 text-base font-bold text-[#5D4E37] font-sketch">
           {t.resourcesTitle}
         </h3>
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {EXTERNAL_RESOURCES.map((resource) => (
             <FancyCard
               key={resource.url}
               title={resource.title}
               description={resource.description}
-              icon={<ExternalLinkIcon className="h-7 w-7" />}
+              icon={<ExternalLinkIcon className="h-6 w-6" />}
               cta={{ label: resource.domain, href: resource.url }}
+              className="text-sm"
             />
           ))}
         </div>
