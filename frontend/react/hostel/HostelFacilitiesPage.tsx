@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useI18n } from '../hooks/useI18n';
 import { PageHero } from '../shared/PageHero';
-import { FancyCard } from '../shared/FancyCard';
+import { FancyCard, type FancyCardMeta } from '../shared/FancyCard';
 import { FacilityDetailModal, type Facility } from './FacilityDetailModal';
 import {
   BedIcon,
@@ -23,11 +23,33 @@ function ensureScrollTrigger() {
   }
 }
 
-const COPY = {
+const PAGE_COPY = {
   es: {
     title: 'Instalaciones',
     subtitle: 'Todo lo que necesitas para descansar y reponer fuerzas',
-    accommodation: {
+  },
+  en: { title: 'Facilities', subtitle: 'Everything you need to rest and recharge' },
+};
+
+interface LocaleCopy {
+  title: string;
+  description: string;
+  detail: string;
+  meta: FancyCardMeta[];
+}
+
+interface FacilityEntry {
+  id: string;
+  icon: ReactNode;
+  es: LocaleCopy;
+  en: LocaleCopy;
+}
+
+const FACILITIES: FacilityEntry[] = [
+  {
+    id: 'accommodation',
+    icon: <BedIcon className="h-8 w-8" />,
+    es: {
       title: 'Alojamiento',
       description:
         '24 camas en dormitorios mixtos con taquillas individuales. Ropa de cama incluida.',
@@ -38,61 +60,7 @@ const COPY = {
         { label: 'Taquillas', value: '24' },
       ],
     },
-    rooms: {
-      title: 'Habitaciones',
-      description:
-        'Terrazas privadas, aire acondicionado y TV de pantalla plana en todas las habitaciones.',
-      detail:
-        'Habitaciones privadas dobles con baño propio, terraza exterior y climatización individual. Ideales para parejas o quienes prefieren más intimidad tras la etapa.',
-      meta: [{ label: 'Habitaciones', value: '4' }],
-    },
-    kitchen: {
-      title: 'Cocina',
-      description:
-        'Cocina equipada con nevera, microondas, utensilios y especias básicas. Zona de comedor.',
-      detail:
-        'Cocina compartida abierta de 7:00 a 22:00, con dos fogones, nevera grande, microondas y menaje completo. La zona de comedor tiene mesas largas pensadas para compartir la cena entre peregrinos.',
-      meta: [{ label: 'Horario', value: '7–22h' }],
-    },
-    bathrooms: {
-      title: 'Baños',
-      description: 'Duchas calientes 24h, secadores de pelo, jabón y champú ecológicos.',
-      detail:
-        'Baños separados por género con duchas individuales de agua caliente disponible las 24 horas. Jabón y champú ecológico incluidos, además de secadores de pelo en cada zona.',
-      meta: [
-        { label: 'Duchas', value: '6' },
-        { label: 'Agua caliente', value: '24h' },
-      ],
-    },
-    laundry: {
-      title: 'Lavandería',
-      description: 'Lavadora y secadora (€3 ciclo), tendedero exterior. Detergente incluido.',
-      detail:
-        'Lavadora y secadora de uso público junto al patio, con detergente incluido en el precio. También hay un tendedero exterior cubierto para quien prefiera secar al aire libre.',
-      meta: [
-        { label: 'Precio', value: '€3/ciclo' },
-        { label: 'Detergente', value: 'Incluido' },
-      ],
-    },
-    wifi: {
-      title: 'WiFi y Carga',
-      description: 'WiFi gratuito en todas las instalaciones. Puntos de carga USB y enchufes.',
-      detail:
-        'Cobertura WiFi gratuita en todo el albergue, incluida la zona de descanso exterior. Cada litera cuenta con su propio enchufe y puerto USB para cargar dispositivos sin salir de la cama.',
-      meta: [{ label: 'Wifi', value: 'Gratis' }],
-    },
-    bikes: {
-      title: 'Bicicletas',
-      description: 'Alquiler de bicicletas €10/día. Incluye casco y candado. Reserva anticipada.',
-      detail:
-        'Alquiler de bicicletas de trekking en buen estado, con casco y candado incluidos. Recomendamos reservar con un día de antelación para asegurar disponibilidad en temporada alta.',
-      meta: [{ label: 'Precio', value: '€10/día' }],
-    },
-  },
-  en: {
-    title: 'Facilities',
-    subtitle: 'Everything you need to rest and recharge',
-    accommodation: {
+    en: {
       title: 'Accommodation',
       description: '24 beds in mixed dormitories with individual lockers. Bed linen included.',
       detail:
@@ -102,14 +70,38 @@ const COPY = {
         { label: 'Lockers', value: '24' },
       ],
     },
-    rooms: {
+  },
+  {
+    id: 'rooms',
+    icon: <img src="/png/objects/tv.png" alt="" className="h-8 w-8" />,
+    es: {
+      title: 'Habitaciones',
+      description:
+        'Terrazas privadas, aire acondicionado y TV de pantalla plana en todas las habitaciones.',
+      detail:
+        'Habitaciones privadas dobles con baño propio, terraza exterior y climatización individual. Ideales para parejas o quienes prefieren más intimidad tras la etapa.',
+      meta: [{ label: 'Habitaciones', value: '4' }],
+    },
+    en: {
       title: 'Rooms',
       description: 'Private terraces, air conditioning, and flat-screen TV in every room.',
       detail:
         'Private double rooms with their own bathroom, outdoor terrace and individual climate control. Ideal for couples or anyone who wants more privacy after the stage.',
       meta: [{ label: 'Rooms', value: '4' }],
     },
-    kitchen: {
+  },
+  {
+    id: 'kitchen',
+    icon: <UtensilsIcon className="h-8 w-8" />,
+    es: {
+      title: 'Cocina',
+      description:
+        'Cocina equipada con nevera, microondas, utensilios y especias básicas. Zona de comedor.',
+      detail:
+        'Cocina compartida abierta de 7:00 a 22:00, con dos fogones, nevera grande, microondas y menaje completo. La zona de comedor tiene mesas largas pensadas para compartir la cena entre peregrinos.',
+      meta: [{ label: 'Horario', value: '7–22h' }],
+    },
+    en: {
       title: 'Kitchen',
       description:
         'Equipped kitchen with fridge, microwave, utensils and basic spices. Dining area.',
@@ -117,7 +109,21 @@ const COPY = {
         'Shared kitchen open from 7am to 10pm, with two stovetops, a large fridge, microwave and full cookware. The dining area has long tables made for sharing dinner with other pilgrims.',
       meta: [{ label: 'Hours', value: '7am–10pm' }],
     },
-    bathrooms: {
+  },
+  {
+    id: 'bathrooms',
+    icon: <ShowerIcon className="h-8 w-8" />,
+    es: {
+      title: 'Baños',
+      description: 'Duchas calientes 24h, secadores de pelo, jabón y champú ecológicos.',
+      detail:
+        'Baños separados por género con duchas individuales de agua caliente disponible las 24 horas. Jabón y champú ecológico incluidos, además de secadores de pelo en cada zona.',
+      meta: [
+        { label: 'Duchas', value: '6' },
+        { label: 'Agua caliente', value: '24h' },
+      ],
+    },
+    en: {
       title: 'Bathrooms',
       description: '24h hot showers, hair dryers, eco-friendly soap and shampoo.',
       detail:
@@ -127,7 +133,21 @@ const COPY = {
         { label: 'Hot water', value: '24h' },
       ],
     },
-    laundry: {
+  },
+  {
+    id: 'laundry',
+    icon: <WashingMachineIcon className="h-8 w-8" />,
+    es: {
+      title: 'Lavandería',
+      description: 'Lavadora y secadora (€3 ciclo), tendedero exterior. Detergente incluido.',
+      detail:
+        'Lavadora y secadora de uso público junto al patio, con detergente incluido en el precio. También hay un tendedero exterior cubierto para quien prefiera secar al aire libre.',
+      meta: [
+        { label: 'Precio', value: '€3/ciclo' },
+        { label: 'Detergente', value: 'Incluido' },
+      ],
+    },
+    en: {
       title: 'Laundry',
       description: 'Washer and dryer (€3/cycle), outdoor clothesline. Detergent included.',
       detail:
@@ -137,14 +157,36 @@ const COPY = {
         { label: 'Detergent', value: 'Included' },
       ],
     },
-    wifi: {
+  },
+  {
+    id: 'wifi',
+    icon: <WifiIcon className="h-8 w-8" />,
+    es: {
+      title: 'WiFi y Carga',
+      description: 'WiFi gratuito en todas las instalaciones. Puntos de carga USB y enchufes.',
+      detail:
+        'Cobertura WiFi gratuita en todo el albergue, incluida la zona de descanso exterior. Cada litera cuenta con su propio enchufe y puerto USB para cargar dispositivos sin salir de la cama.',
+      meta: [{ label: 'Wifi', value: 'Gratis' }],
+    },
+    en: {
       title: 'WiFi & Charging',
       description: 'Free WiFi throughout the hostel. USB charging points and outlets.',
       detail:
         'Free WiFi coverage across the whole hostel, including the outdoor rest area. Every bunk has its own outlet and USB port so you can charge devices without leaving your bed.',
       meta: [{ label: 'WiFi', value: 'Free' }],
     },
-    bikes: {
+  },
+  {
+    id: 'bikes',
+    icon: <BicycleIcon className="h-8 w-8" />,
+    es: {
+      title: 'Bicicletas',
+      description: 'Alquiler de bicicletas €10/día. Incluye casco y candado. Reserva anticipada.',
+      detail:
+        'Alquiler de bicicletas de trekking en buen estado, con casco y candado incluidos. Recomendamos reservar con un día de antelación para asegurar disponibilidad en temporada alta.',
+      meta: [{ label: 'Precio', value: '€10/día' }],
+    },
+    en: {
       title: 'Bicycles',
       description: 'Bike rental €10/day. Includes helmet and lock. Advance booking recommended.',
       detail:
@@ -152,29 +194,21 @@ const COPY = {
       meta: [{ label: 'Price', value: '€10/day' }],
     },
   },
-};
+];
 
 export function HostelFacilitiesPage() {
   const { locale } = useI18n();
   const isEs = locale !== 'en';
-  const t = isEs ? COPY.es : COPY.en;
+  const page = isEs ? PAGE_COPY.es : PAGE_COPY.en;
 
   const gridRef = useRef<HTMLDivElement>(null);
   const [activeFacility, setActiveFacility] = useState<Facility | null>(null);
 
-  const facilities: Facility[] = [
-    { id: 'accommodation', ...t.accommodation, icon: <BedIcon className="h-8 w-8" /> },
-    {
-      id: 'rooms',
-      ...t.rooms,
-      icon: <img src="/png/objects/tv.png" alt="" className="h-8 w-8" />,
-    },
-    { id: 'kitchen', ...t.kitchen, icon: <UtensilsIcon className="h-8 w-8" /> },
-    { id: 'bathrooms', ...t.bathrooms, icon: <ShowerIcon className="h-8 w-8" /> },
-    { id: 'laundry', ...t.laundry, icon: <WashingMachineIcon className="h-8 w-8" /> },
-    { id: 'wifi', ...t.wifi, icon: <WifiIcon className="h-8 w-8" /> },
-    { id: 'bikes', ...t.bikes, icon: <BicycleIcon className="h-8 w-8" /> },
-  ];
+  const facilities: Facility[] = FACILITIES.map(({ id, icon, es, en }) => ({
+    id,
+    icon,
+    ...(isEs ? es : en),
+  }));
 
   useEffect(() => {
     ensureScrollTrigger();
@@ -199,7 +233,7 @@ export function HostelFacilitiesPage() {
 
   return (
     <>
-      <PageHero title={t.title} subtitle={t.subtitle} />
+      <PageHero title={page.title} subtitle={page.subtitle} />
       <section className="container mx-auto max-w-5xl px-4 py-12">
         <div ref={gridRef} className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {facilities.map((facility) => (
