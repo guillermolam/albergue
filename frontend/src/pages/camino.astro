@@ -5,8 +5,9 @@ import Layout from '../layouts/Layout.astro';
 import DoodleCard from '../components/doodle/DoodleCard.astro';
 import DoodleButton from '../components/doodle/DoodleButton.astro';
 import Icon from '../components/core/Icon.astro';
-import { CaminoStageProgress, DailyKmLogger } from '../islands';
+import { CaminoStageProgress } from '../islands';
 import { ViaPlataSection } from '../../react/camino/ViaPlataSection';
+import { DailyKmLoggerCard } from '../../react/camino/DailyKmLoggerCard';
 ---
 
 <Layout title="Mi Camino - Albergue Municipal Carrascalejo">
@@ -28,73 +29,32 @@ import { ViaPlataSection } from '../../react/camino/ViaPlataSection';
       </div>
     </section>
 
-    <!-- Progress Overview -->
-    <section class="py-8 bg-white">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-xl font-bold text-charcoal mb-4 text-center font-sketch">
-          Progreso General
-        </h2>
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <!-- Overall Progress -->
-          <div class="lg:col-span-2">
-            <DoodleCard variant="gradient" gradient="green" padding="md">
-              <div class="flex items-center justify-between mb-2">
-                <h3 class="text-base font-bold text-charcoal font-sketch flex items-center gap-2">
-                  <span class="text-xl">📊</span>
-                  Avance Total
-                </h3>
-                <span class="text-sm font-bold text-green-darker">15%</span>
-              </div>
-              <div class="w-full bg-green-light rounded-full h-2 mb-2">
-                <div class="bg-green-dark h-2 rounded-full" style="width: 15%"></div>
-              </div>
-              <div class="flex justify-between text-xs text-dark-grey mb-3">
-                <span>127 km recorridos</span>
-                <span>720 km restantes</span>
-                <span>847 km total</span>
-              </div>
-              <div class="grid grid-cols-4 gap-2">
-                <div class="bg-green-light p-2 rounded-lg text-center">
-                  <div class="text-lg font-bold text-charcoal">7</div>
-                  <div class="text-xs text-dark-grey">Días</div>
-                </div>
-                <div class="bg-green-light p-2 rounded-lg text-center">
-                  <div class="text-lg font-bold text-charcoal">18.1</div>
-                  <div class="text-xs text-dark-grey">km/día</div>
-                </div>
-                <div class="bg-green-light p-2 rounded-lg text-center">
-                  <div class="text-lg font-bold text-charcoal">4.2</div>
-                  <div class="text-xs text-dark-grey">h/día</div>
-                </div>
-                <div class="bg-green-light p-2 rounded-lg text-center">
-                  <div class="text-lg font-bold text-charcoal">18,932</div>
-                  <div class="text-xs text-dark-grey">calorías</div>
-                </div>
-              </div>
-            </DoodleCard>
+    <!-- Progress Overview: single compact strip -->
+    <section class="py-5 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+        <div class="rounded-xl border-2 border-green-dark/20 bg-linear-to-br from-green-50 to-cream p-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <h2 class="text-sm font-bold text-charcoal font-sketch flex items-center gap-1.5">
+              <span class="text-base">📊</span> Progreso General
+            </h2>
+            <span class="text-sm font-bold text-green-darker">15% · 127 / 847 km</span>
           </div>
-
-          <!-- Logros -->
-          <DoodleCard variant="elevated" padding="md">
-            <h3 class="text-base font-bold text-charcoal mb-2 font-sketch flex items-center gap-2">
-              <span class="text-xl">🏆</span>
-              Logros
-            </h3>
-            <div class="space-y-2">
-              <div class="flex items-center gap-2 p-2 bg-green-light rounded-lg">
-                <span class="text-lg">🌅</span>
-                <div class="text-sm font-semibold text-charcoal">Amanecer Mágico</div>
-              </div>
-              <div class="flex items-center gap-2 p-2 bg-green-light rounded-lg">
-                <span class="text-lg">🦶</span>
-                <div class="text-sm font-semibold text-charcoal">100km Club</div>
-              </div>
-              <div class="flex items-center gap-2 p-2 bg-green-light rounded-lg opacity-50">
-                <span class="text-lg">🏔️</span>
-                <div class="text-sm font-semibold text-dark-grey">Montañero (próximamente)</div>
-              </div>
-            </div>
-          </DoodleCard>
+          <div class="w-full bg-green-light rounded-full h-2 mb-3">
+            <div class="bg-green-dark h-2 rounded-full" style="width: 15%"></div>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-dark-grey">
+            <span>📅 7 días</span>
+            <span>🏃 18.1 km/día</span>
+            <span>⏱️ 4.2 h/día</span>
+            <span>🔥 18,932 cal</span>
+            <span class="ml-auto flex gap-1.5 text-sm" aria-label="Logros">
+              <span title="Amanecer Mágico">🌅</span>
+              <span title="100km Club">🦶</span>
+              <span class="opacity-40" title="Montañero (próximamente)">
+                🏔️
+              </span>
+            </span>
+          </div>
         </div>
       </div>
     </section>
@@ -108,7 +68,7 @@ import { ViaPlataSection } from '../../react/camino/ViaPlataSection';
     <!-- Daily Km Logger -->
     <section class="py-8 bg-white">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl">
-        <DailyKmLogger initialKm={18.1} />
+        <DailyKmLoggerCard client:load initialKm={18.1} />
       </div>
     </section>
 
