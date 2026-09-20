@@ -27,6 +27,7 @@ export async function backendJson<T>(
   try {
     base = requireBackendUrl();
   } catch (error) {
+    console.error(`backendJson failure: ${(error as Error).message}`);
     return { ok: false, status: 503, message: (error as Error).message };
   }
 
@@ -45,11 +46,23 @@ export async function backendJson<T>(
     // throws rather than resolving a Response -- without this, it was
     // an uncaught exception that crashed the entire page render instead
     // of degrading the same way a missing/misconfigured URL does.
+    console.error(`backendJson failure: base=${base} network error: ${(error as Error).message}`);
     return { ok: false, status: 503, message: (error as Error).message };
   }
 
   const envelope = (await response.json().catch(() => null)) as ApiResponse<T> | null;
   if (!response.ok || !envelope?.success || envelope.data === undefined) {
+    // Visibility into *why* a backend call failed -- the caller only ever
+    // sees a terse "Backend 404"-style message, which wasn't enough to
+    // diagnose a live-production mismatch between what backendJson actually
+    // fetched and what curling the same path directly returned. Deliberately
+    // omits `path` and the full envelope: some callers (e.g. the booking
+    // reference lookup) put an access credential *in* the path, and a
+    // backend error envelope's `details` field isn't guaranteed safe to
+    // echo either -- only the resolved host and a short message are logged.
+    console.error(
+      `backendJson failure: base=${base} status=${response.status} message=${envelope?.message ?? envelope?.error ?? '(no message)'}`
+    );
     return {
       ok: false,
       status: response.status,
