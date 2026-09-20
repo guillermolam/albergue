@@ -29,95 +29,144 @@ import { DailyKmLoggerCard } from '../../react/camino/DailyKmLoggerCard';
       </div>
     </section>
 
-    <!-- Progress Overview: single compact strip -->
-    <section class="py-5 bg-white">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
-        <div class="rounded-xl border-2 border-green-dark/20 bg-linear-to-br from-green-50 to-cream p-4">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-            <h2 class="text-sm font-bold text-charcoal font-sketch flex items-center gap-1.5">
-              <span class="text-base">📊</span> Progreso General
-            </h2>
-            <span class="text-sm font-bold text-green-darker">15% · 127 / 847 km</span>
-          </div>
-          <div class="w-full bg-green-light rounded-full h-2 mb-3">
-            <div class="bg-green-dark h-2 rounded-full" style="width: 15%"></div>
-          </div>
-          <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-dark-grey">
-            <span>📅 7 días</span>
-            <span>🏃 18.1 km/día</span>
-            <span>⏱️ 4.2 h/día</span>
-            <span>🔥 18,932 cal</span>
-            <span class="ml-auto flex gap-1.5 text-sm" aria-label="Logros">
-              <span title="Amanecer Mágico">🌅</span>
-              <span title="100km Club">🦶</span>
-              <span class="opacity-40" title="Montañero (próximamente)">
-                🏔️
-              </span>
+    <!-- Dashboard: KPI row + 2/3 main / 1/3 sidebar, asymmetric tiles -->
+    <section class="py-8 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+        <!-- KPI row -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+          <div class="rounded-xl border border-charcoal/10 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-green-light text-base mb-2">
+              📅
             </span>
+            <div class="text-2xl font-bold text-charcoal font-sketch">7</div>
+            <div class="text-xs text-dark-grey">Días en camino</div>
+          </div>
+          <div class="rounded-xl border border-charcoal/10 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-green-light text-base mb-2">
+              🏃
+            </span>
+            <div class="text-2xl font-bold text-charcoal font-sketch">18.1</div>
+            <div class="text-xs text-dark-grey">km/día</div>
+          </div>
+          <div class="rounded-xl border border-charcoal/10 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-green-light text-base mb-2">
+              ⏱️
+            </span>
+            <div class="text-2xl font-bold text-charcoal font-sketch">4.2</div>
+            <div class="text-xs text-dark-grey">h/día</div>
+          </div>
+          <div class="rounded-xl border border-charcoal/10 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-green-light text-base mb-2">
+              🔥
+            </span>
+            <div class="text-2xl font-bold text-charcoal font-sketch">18,932</div>
+            <div class="text-xs text-dark-grey">calorías</div>
           </div>
         </div>
-      </div>
-    </section>
-    <!-- Current Stage -->
-    <section class="py-8 bg-linear-to-br from-green-50 to-cream">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <CaminoStageProgress />
-      </div>
-    </section>
 
-    <!-- Daily Km Logger -->
-    <section class="py-8 bg-white">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl">
-        <DailyKmLoggerCard client:load initialKm={18.1} />
-      </div>
-    </section>
-
-    <!-- Recommendations -->
-    <section class="py-8 bg-white">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-xl font-bold text-charcoal mb-4 text-center font-sketch">
-          <Icon name="star" size="lg" color="primary" animated /> Recomendaciones Inteligentes
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-w-5xl mx-auto">
-          <DoodleCard variant="subtle" padding="sm">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="text-lg">🚨</span>
-              <h3 class="text-sm font-bold text-charcoal">Importante</h3>
+        <!-- Main (2/3) + Sidebar (1/3) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="lg:col-span-2 space-y-4">
+            <!-- Progreso Total: big card, CSS conic-gradient ring, no JS needed -->
+            <div class="rounded-xl border border-charcoal/10 bg-linear-to-br from-green-50 to-cream p-5 shadow-sm">
+              <div class="flex items-center gap-5">
+                <div
+                  class="relative h-24 w-24 shrink-0 rounded-full"
+                  style="background: conic-gradient(#1a7a3a 0% 15%, #d9f0df 15% 100%)"
+                >
+                  <div class="absolute inset-2 flex flex-col items-center justify-center rounded-full bg-white">
+                    <span class="text-xl font-bold text-charcoal font-sketch">15%</span>
+                  </div>
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-base font-bold text-charcoal font-sketch mb-1">Progreso Total</h3>
+                  <div class="flex justify-between text-xs text-dark-grey mb-2">
+                    <span>127 km recorridos</span>
+                    <span>847 km total</span>
+                  </div>
+                  <div class="w-full bg-green-light rounded-full h-2">
+                    <div class="bg-green-dark h-2 rounded-full" style="width: 15%"></div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <p class="text-xs text-dark-grey mb-2">
-              Considera descansar en Alcuéscar tras 7 días seguidos.
-            </p>
-            <span class="badge badge-warning badge-sm">18.1 km/día</span>
-          </DoodleCard>
 
-          <DoodleCard variant="subtle" padding="sm">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="text-lg">🌟</span>
-              <h3 class="text-sm font-bold text-charcoal">Optimización</h3>
-            </div>
-            <p class="text-xs text-dark-grey mb-2">A este ritmo, llegas a Santiago en 34 días.</p>
-            <span class="badge badge-green badge-sm">Ritmo óptimo</span>
-          </DoodleCard>
+            <CaminoStageProgress />
 
-          <DoodleCard variant="subtle" padding="sm">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="text-lg">🏃</span>
-              <h3 class="text-sm font-bold text-charcoal">Próxima Etapa</h3>
-            </div>
-            <p class="text-xs text-dark-grey mb-2">
-              Alcuéscar → Cáceres, la más corta para recuperar.
-            </p>
-            <span class="badge badge-info badge-sm">23.1 km</span>
-          </DoodleCard>
+            <DailyKmLoggerCard client:load initialKm={18.1} />
+          </div>
 
-          <DoodleCard variant="subtle" padding="sm">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="text-lg">⚡</span>
-              <h3 class="text-sm font-bold text-charcoal">Rendimiento</h3>
+          <div class="space-y-4">
+            <!-- Logros -->
+            <div class="rounded-xl border border-charcoal/10 bg-white p-4 shadow-sm">
+              <h3 class="text-sm font-bold text-charcoal mb-3 font-sketch flex items-center gap-2">
+                <span class="text-lg">🏆</span> Logros
+              </h3>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2 p-2 bg-green-light rounded-lg">
+                  <span class="text-lg">🌅</span>
+                  <div class="text-sm font-semibold text-charcoal">Amanecer Mágico</div>
+                </div>
+                <div class="flex items-center gap-2 p-2 bg-green-light rounded-lg">
+                  <span class="text-lg">🦶</span>
+                  <div class="text-sm font-semibold text-charcoal">100km Club</div>
+                </div>
+                <div class="flex items-center gap-2 p-2 bg-green-light rounded-lg opacity-50">
+                  <span class="text-lg">🏔️</span>
+                  <div class="text-sm font-semibold text-dark-grey">Montañero (próx.)</div>
+                </div>
+              </div>
             </div>
-            <p class="text-xs text-dark-grey mb-2">Ritmo constante, 4.9 km/h de media, ideal.</p>
-            <span class="badge badge-green badge-sm">Ritmo estable</span>
-          </DoodleCard>
+
+            <!-- Recomendaciones: compact stacked list -->
+            <div class="rounded-xl border border-charcoal/10 bg-white p-4 shadow-sm">
+              <h3 class="text-sm font-bold text-charcoal mb-3 font-sketch flex items-center gap-2">
+                <Icon name="star" size="sm" color="primary" animated /> Recomendaciones
+              </h3>
+              <div class="divide-y divide-charcoal/10">
+                <div class="py-2.5 first:pt-0 last:pb-0">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-base">🚨</span>
+                    <span class="text-sm font-bold text-charcoal">Importante</span>
+                  </div>
+                  <p class="text-xs text-dark-grey mb-1.5">
+                    Considera descansar en Alcuéscar tras 7 días seguidos.
+                  </p>
+                  <span class="badge badge-warning badge-sm">18.1 km/día</span>
+                </div>
+                <div class="py-2.5 first:pt-0 last:pb-0">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-base">🌟</span>
+                    <span class="text-sm font-bold text-charcoal">Optimización</span>
+                  </div>
+                  <p class="text-xs text-dark-grey mb-1.5">
+                    A este ritmo, llegas a Santiago en 34 días.
+                  </p>
+                  <span class="badge badge-green badge-sm">Ritmo óptimo</span>
+                </div>
+                <div class="py-2.5 first:pt-0 last:pb-0">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-base">🏃</span>
+                    <span class="text-sm font-bold text-charcoal">Próxima Etapa</span>
+                  </div>
+                  <p class="text-xs text-dark-grey mb-1.5">
+                    Alcuéscar → Cáceres, la más corta para recuperar.
+                  </p>
+                  <span class="badge badge-info badge-sm">23.1 km</span>
+                </div>
+                <div class="py-2.5 first:pt-0 last:pb-0">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-base">⚡</span>
+                    <span class="text-sm font-bold text-charcoal">Rendimiento</span>
+                  </div>
+                  <p class="text-xs text-dark-grey mb-1.5">
+                    Ritmo constante, 4.9 km/h de media, ideal.
+                  </p>
+                  <span class="badge badge-green badge-sm">Ritmo estable</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
