@@ -4,7 +4,7 @@
 
 const cache = new Map<string, { data: any; expires: number }>();
 
-export function getCached<T>(key: string, ttl: number = 60000): T | null {
+export function getCached<T>(key: string): T | null {
   const cached = cache.get(key);
   if (cached && cached.expires > Date.now()) {
     return cached.data as T;

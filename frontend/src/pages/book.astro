@@ -5,10 +5,6 @@ import Layout from '../layouts/BookingFlowLayout.astro';
 import { BookingFlow } from '../../react/BookingFlow';
 ---
 
-<Layout
-  title="Reservar Albergue - Albergue Municipal Carrascalejo"
-  showHeader={false}
-  showFooter={false}
->
+<Layout title="Reservar Albergue - Albergue Municipal Carrascalejo">
   <BookingFlow client:load />
 </Layout>

@@ -22,7 +22,7 @@ const {
   sortable = true,
   filterable = true,
   pageSize = 10,
-} = Astro.props;
+} = Astro.props as Props;
 ---
 
 <data-table
@@ -55,9 +55,9 @@ const {
       </thead>
       <tbody>
         {data.map((row, ri) => (
-          <tr key={ri} className={ri % 2 === 0 ? 'bg-base-100' : 'bg-base-200/50'}>
+          <tr class={ri % 2 === 0 ? 'bg-base-100' : 'bg-base-200/50'}>
             {columns.map((col) => {
-              const value = row[col.key as keyof typeof row];
+              const value = row[col.key as string];
               const rendered = col.render ? col.render(value, row) : String(value ?? '');
               return <td class="px-4 py-3 text-dark-grey font-handwritten">{rendered}</td>;
             })}
@@ -91,7 +91,6 @@ const {
 
     const pageSize = parseInt(root.dataset.pageSize || '10', 10);
     const sortable = root.dataset.sortable === 'true';
-    const filterable = root.dataset.filterable === 'true';
 
     // Parse server rows into JS data
     let allRows = [];
@@ -117,7 +116,7 @@ const {
     let currentPage = 1;
 
     const headers = thead.querySelectorAll('th');
-    headers.forEach((th, i) => {
+    headers.forEach((th) => {
       th.dataset.key = th.textContent.trim();
     });
 

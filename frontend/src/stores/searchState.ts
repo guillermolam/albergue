@@ -1,5 +1,4 @@
-import { writable } from '@nanostores/persistent';
-import { computed } from '@nanostores/lite';
+import { atom, computed } from 'nanostores';
 
 export interface SearchFilters {
   [key: string]: string | string[] | boolean | null;
@@ -23,9 +22,7 @@ const DEFAULT_STATE: SearchState = {
   pageSize: 10,
 };
 
-export const searchState = writable<SearchState>(DEFAULT_STATE, {
-  key: 'albergue-search-state',
-});
+export const searchState = atom<SearchState>(DEFAULT_STATE);
 
 export const searchActions = {
   setSearchTerm(term: string) {
@@ -60,6 +57,6 @@ export const searchActions = {
   },
 };
 
-export const filteredCount = computed(searchState, (s) => s.searchTerm.length);
+export const filteredCount = computed(searchState, (s: SearchState) => s.searchTerm.length);
 
 export default searchState;
