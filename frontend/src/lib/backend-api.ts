@@ -50,6 +50,13 @@ export async function backendJson<T>(
 
   const envelope = (await response.json().catch(() => null)) as ApiResponse<T> | null;
   if (!response.ok || !envelope?.success || envelope.data === undefined) {
+    // Visibility into *why* a backend call failed -- the caller only ever
+    // sees a terse "Backend 404"-style message, which wasn't enough to
+    // diagnose a live-production mismatch between what backendJson actually
+    // fetched and what curling the same path directly returned.
+    console.error(
+      `backendJson failure: ${base}${path} -> status=${response.status} envelope=${JSON.stringify(envelope)}`
+    );
     return {
       ok: false,
       status: response.status,
