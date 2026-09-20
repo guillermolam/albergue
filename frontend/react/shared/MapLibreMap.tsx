@@ -19,13 +19,20 @@ interface MapLibreMapProps {
   className?: string;
 }
 
-function createMarkerElement(label: string, active?: boolean): HTMLDivElement {
+function createMarkerElement(label: string, active: boolean, interactive: boolean): HTMLDivElement {
   const el = document.createElement('div');
   // A pin the user can click, not a static picture -- "button" describes it
   // more accurately than "img" ever would.
   el.setAttribute('role', 'button');
   el.setAttribute('aria-label', label);
   el.style.cursor = 'pointer';
+  if (interactive) {
+    // maplibre-gl's Marker element isn't a native <button>, so it's outside
+    // the tab order and has no keyboard-activation behavior by default --
+    // both have to be added by hand for keyboard/screen-reader users to
+    // reach the same locations pointer users can click.
+    el.setAttribute('tabindex', '0');
+  }
   el.innerHTML = `
     <svg width="32" height="40" viewBox="0 0 32 40" style="filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.3))">
       <path
@@ -76,9 +83,17 @@ export function MapLibreMap({
 
     markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = markers.map((markerData) => {
-      const el = createMarkerElement(markerData.label, markerData.active);
+      const el = createMarkerElement(markerData.label, !!markerData.active, !!markerData.onClick);
       if (markerData.onClick) {
-        el.addEventListener('click', markerData.onClick);
+        const onClick = markerData.onClick;
+        el.addEventListener('click', onClick);
+        el.addEventListener('keydown', (event) => {
+          const key = (event as KeyboardEvent).key;
+          if (key === 'Enter' || key === ' ') {
+            event.preventDefault();
+            onClick();
+          }
+        });
       }
       return new Marker({ element: el }).setLngLat(markerData.coords).addTo(map);
     });

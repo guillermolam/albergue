@@ -34,6 +34,8 @@ describe('admin-gated endpoints reject unauthenticated requests', () => {
     ['GET', '/api/payments/pending'],
     ['GET', '/api/notifications'],
     ['GET', '/api/pricing'],
+    ['GET', '/api/contact-messages'],
+    ['GET', '/api/contact-messages/1'],
   ])('%s %s -> 401', async (method, path) => {
     expect(await status(path, { method })).toBe(401);
   });
@@ -47,6 +49,7 @@ describe('guest booking flow stays public', () => {
     ['GET', '/api/bookings/available-beds?checkInDate=2026-01-01&checkOutDate=2026-01-02'],
     ['GET', '/api/bookings/reference/ALB-000000000000'],
     ['POST', '/api/payments/intent'],
+    ['POST', '/api/contact-messages'],
   ])('%s %s does not require auth', async (method, path) => {
     const responseStatus = await status(path, {
       method,
