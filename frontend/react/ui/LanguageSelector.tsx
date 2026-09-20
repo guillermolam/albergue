@@ -1,11 +1,23 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { Globe } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useI18n } from '../hooks/useI18n';
 
 export function LanguageSelector() {
   const { locale, setLocale } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
+
+  // The backdrop below is a click-to-dismiss overlay, not a focusable
+  // control (aria-hidden, no keyboard handler on it) -- keyboard users
+  // need Escape to close the dropdown instead.
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsOpen(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
 
   const languages = [
     { code: 'en' as const, label: 'English', flag: '🇬🇧' },
@@ -89,8 +101,14 @@ export function LanguageSelector() {
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Backdrop */}
-            <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+            {/* Backdrop -- decorative click-to-dismiss only; not
+                focusable/interactive, so aria-hidden. Escape (handled
+                above) is the keyboard equivalent. */}
+            <div
+              className="fixed inset-0 z-40"
+              onClick={() => setIsOpen(false)}
+              aria-hidden="true"
+            />
 
             {/* Menu */}
             <motion.div

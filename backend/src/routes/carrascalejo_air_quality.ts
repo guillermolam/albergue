@@ -44,8 +44,11 @@ async function fetchAirQuality(apiKey: string): Promise<AirQuality> {
     throw new Error("OpenWeatherMap air pollution API returned no data");
   }
 
-  const [dominantPollutant] = Object.entries(entry.components).reduce((max, current) =>
-    current[1] > max[1] ? current : max,
+  // reduce() needs an explicit initial value -- entry.components could in
+  // principle be empty, and without one that throws rather than degrading.
+  const [dominantPollutant] = Object.entries(entry.components).reduce<[string, number]>(
+    (max, current) => (current[1] > max[1] ? current : max),
+    ["", -Infinity],
   );
 
   return { aqi: entry.main.aqi, dominantPollutant };
