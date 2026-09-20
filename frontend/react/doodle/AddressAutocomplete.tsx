@@ -188,7 +188,7 @@ export function AddressAutocomplete({
             y="3"
             width="calc(100% - 6px)"
             height="calc(100% - 6px)"
-            fill="#FFF9F0"
+            fill="#FFFFFF"
             stroke={focused ? '#0071BC' : '#D4A574'}
             strokeWidth={focused ? '3' : '2.5'}
             rx="12"

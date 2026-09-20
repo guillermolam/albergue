@@ -93,7 +93,7 @@ export function DateTimePicker({
               y="3"
               width="calc(100% - 6px)"
               height="calc(100% - 6px)"
-              fill="#FFF9F0"
+              fill="#FFFFFF"
               stroke={focused === 'date' ? '#00AB39' : '#D4A574'}
               strokeWidth={focused === 'date' ? '3' : '2.5'}
               rx="12"
@@ -154,7 +154,7 @@ export function DateTimePicker({
               y="3"
               width="calc(100% - 6px)"
               height="calc(100% - 6px)"
-              fill="#FFF9F0"
+              fill="#FFFFFF"
               stroke={focused === 'time' ? '#0071BC' : '#D4A574'}
               strokeWidth={focused === 'time' ? '3' : '2.5'}
               rx="12"

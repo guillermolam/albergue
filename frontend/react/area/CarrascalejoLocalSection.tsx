@@ -62,7 +62,7 @@ export function CarrascalejoLocalSection({ notices }: Readonly<{ notices: LocalN
   const t = isEs ? COPY.es : COPY.en;
 
   return (
-    <section className="py-10 bg-[#FFF9F0]">
+    <section className="py-10 bg-[#FFFFFF]">
       <div className="container mx-auto max-w-6xl px-4">
         <div className="mb-6 flex items-start gap-3">
           <ClipboardIcon className="h-9 w-9 shrink-0 text-[#00AB39]" />

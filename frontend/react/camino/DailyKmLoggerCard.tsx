@@ -98,7 +98,7 @@ export function DailyKmLoggerCard({
   }
 
   return (
-    <div className="rounded-xl border-2 border-[#00AB39]/40 bg-linear-to-br from-[#E8F5E9] to-[#FFF9F0] p-5 doodle-shadow paper-texture">
+    <div className="rounded-xl border-2 border-[#00AB39]/40 bg-linear-to-br from-[#E8F5E9] to-[#FFFFFF] p-5 doodle-shadow paper-texture">
       <div className="flex items-center gap-2 mb-1">
         <CompassIcon className="h-6 w-6 text-[#00AB39]" />
         <h3 className="text-base font-bold text-[#5D4E37] font-sketch">{t.title}</h3>

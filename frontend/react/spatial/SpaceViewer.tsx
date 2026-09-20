@@ -72,7 +72,7 @@ export function SpaceViewer({ building, className = '' }: Readonly<SpaceViewerPr
   if (!config) {
     return (
       <div
-        className={`flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-[#5D4E37]/25 bg-[#FFF9F0] p-10 text-center paper-texture ${className}`}
+        className={`flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-[#5D4E37]/25 bg-[#FFFFFF] p-10 text-center paper-texture ${className}`}
       >
         <CompassIcon className="h-10 w-10 text-[#00AB39]/60" />
         <h3 className="text-base font-bold text-[#5D4E37] font-sketch">{t.notConfigured}</h3>
@@ -86,15 +86,15 @@ export function SpaceViewer({ building, className = '' }: Readonly<SpaceViewerPr
     <div
       className={`relative overflow-hidden rounded-xl border-2 border-[#5D4E37]/20 ${className}`}
     >
-      <div ref={containerRef} className="h-[420px] w-full bg-[#FFF9F0]" />
+      <div ref={containerRef} className="h-[420px] w-full bg-[#FFFFFF]" />
       {!handle && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[#FFF9F0]">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[#FFFFFF]">
           <LoaderIcon className="h-8 w-8 animate-spin text-[#00AB39]" />
           <p className="text-sm text-[#5D4E37]/70">{t.loading}</p>
         </div>
       )}
       {handle?.status === 'error' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[#FFF9F0] p-6 text-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[#FFFFFF] p-6 text-center">
           <p className="text-sm font-semibold text-red-600">{t.error}</p>
           {handle.error && <p className="text-xs text-[#5D4E37]/50">{handle.error}</p>}
         </div>

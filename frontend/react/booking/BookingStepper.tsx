@@ -122,7 +122,7 @@ export function BookingStepper({ currentStep, completedSteps, onStepClick }: Boo
                       cx="30"
                       cy="30"
                       r="26"
-                      fill={isActive ? '#00AB39' : isCompleted ? '#0071BC' : '#FFF9F0'}
+                      fill={isActive ? '#00AB39' : isCompleted ? '#0071BC' : '#FFFFFF'}
                       stroke={isActive ? '#005a1e' : isCompleted ? '#003d66' : '#D4A574'}
                       strokeWidth={isActive ? '3.5' : '2.5'}
                     />

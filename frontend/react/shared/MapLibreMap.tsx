@@ -41,7 +41,7 @@ function createMarkerElement(label: string, active: boolean, interactive: boolea
         stroke="#5D4E37"
         stroke-width="2"
       />
-      <circle cx="16" cy="15" r="5" fill="#FFF9F0" />
+      <circle cx="16" cy="15" r="5" fill="#FFFFFF" />
     </svg>
   `;
   return el;
