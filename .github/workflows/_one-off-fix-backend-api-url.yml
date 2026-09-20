@@ -11,6 +11,10 @@ name: One-off - Fix BACKEND_API_URL secret
 on:
   workflow_dispatch:
 
+concurrency:
+  group: fix-backend-api-url-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: read
 
