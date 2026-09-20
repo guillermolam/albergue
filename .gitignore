@@ -231,3 +231,4 @@ frontend/.storybook/
 # === RETTO JS WORKER ===
 backend/retto-js-worker/
 retto_wasm.wasm
+.firecrawl/
