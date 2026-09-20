@@ -23,7 +23,10 @@ const CLIP_SRC: Record<LottieClip, string> = {
 };
 
 export interface FloatingLottieProps {
-  clip: LottieClip;
+  /** Named clip from the registry. Ignored when `src` is given. */
+  clip?: LottieClip;
+  /** Explicit `.lottie` URL, for one-off use outside the named vocabulary. */
+  src?: string;
   /** Which gutter it hangs in. */
   side?: 'left' | 'right';
   /** Vertical anchor within the section, as a CSS length/percentage. */
@@ -45,6 +48,7 @@ export interface FloatingLottieProps {
 
 export function FloatingLottie({
   clip,
+  src,
   side = 'left',
   top = '50%',
   size = 160,
@@ -72,9 +76,13 @@ export function FloatingLottie({
     return () => observer.disconnect();
   }, []);
 
+  const source = src ?? (clip ? CLIP_SRC[clip] : undefined);
+
   // Purely decorative: with reduced motion requested there is nothing worth
   // showing, so it stays out of the DOM entirely rather than sitting frozen.
-  if (prefersReducedMotion) return null;
+  // Same for a caller that named neither a clip nor a src -- a missing
+  // decoration is never worth an exception.
+  if (prefersReducedMotion || !source) return null;
 
   const gutter = `clamp(0px, ${inset / 16}rem, 8vw)`;
 
@@ -109,13 +117,7 @@ export function FloatingLottie({
         }}
       >
         {isNear && (
-          <DotLottieReact
-            src={CLIP_SRC[clip]}
-            loop
-            autoplay
-            speed={speed}
-            className="h-full w-full"
-          />
+          <DotLottieReact src={source} loop autoplay speed={speed} className="h-full w-full" />
         )}
       </motion.div>
     </div>

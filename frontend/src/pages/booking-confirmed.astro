@@ -5,6 +5,7 @@ import Layout from '../layouts/Layout.astro';
 import { DoodleCard } from '../components';
 import { backendJson } from '../lib/backend-api';
 import { BookingShareActions } from '../islands';
+import SectionDecor from '../components/SectionDecor.astro';
 import '../styles/booking-confirmation.css';
 
 interface ConfirmedBooking {
@@ -45,8 +46,9 @@ const nights = booking?.numberOfNights ?? 0;
   title="Reserva confirmada - Albergue Municipal Carrascalejo"
   description="Confirmación de reserva"
 >
-  <main class="min-h-screen bg-paper-bg flex items-center justify-center p-4">
-    <div class="w-full max-w-2xl">
+  <main class="relative isolate min-h-screen bg-paper-bg flex items-center justify-center p-4">
+    <SectionDecor preset="hospitality" />
+    <div class="w-full max-w-2xl relative z-10">
       <DoodleCard variant="elevated" padding="lg">
         {lookupError || !booking ? (
           <div>

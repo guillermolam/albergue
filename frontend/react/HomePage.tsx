@@ -9,6 +9,7 @@ import {
 import { VisualAreaShowcase } from './VisualAreaShowcase';
 import { WeatherWidget } from './home/WeatherWidget';
 import { useI18n } from './hooks/useI18n';
+import { SectionDecor } from './shared/SectionDecor';
 import type { WeatherForecast, AirQuality } from '../src/lib/hostelTypes';
 
 function SketchyButton({
@@ -196,8 +197,9 @@ export function HomePage({ stats, forecast, airQuality }: Readonly<HomePageProps
         ))}
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12 lg:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-12 items-start md:items-center">
+      <main className="relative isolate max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-12 lg:py-16">
+        <SectionDecor preset="welcome" />
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-12 items-start md:items-center">
           <motion.div
             className="space-y-4 md:space-y-6"
             initial={{ opacity: 0, x: -30 }}

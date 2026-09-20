@@ -3,6 +3,7 @@ import { useI18n } from '../hooks/useI18n';
 import { PlaceGallery } from '../places/PlaceGallery';
 import { PlaceDetailModal } from '../places/PlaceDetailModal';
 import type { PlaceWithDetails } from '../places/types';
+import { SectionDecor } from '../shared/SectionDecor';
 
 /** Same Nominatim-geocoded village centroid as AreaEatPage/AreaVisitPage. */
 const HOSTEL_CENTER: [number, number] = [-6.3371905, 39.0223673];
@@ -31,7 +32,8 @@ export function NightlifeSection({ places }: Readonly<{ places: PlaceWithDetails
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
-    <section className="py-10 bg-white">
+    <section className="relative isolate py-10 bg-white">
+      <SectionDecor preset="hospitality" delayOffset={2.4} />
       <div className="container mx-auto max-w-6xl px-4">
         <div className="mb-5 flex items-start gap-3">
           <img src="/png/food/drink.png" alt="" className="h-9 w-9 shrink-0" />

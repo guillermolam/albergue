@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { WiredButton } from '../doodle/WiredButton';
 import { DoodlePatterns } from '../doodle/DoodlePattern';
+import { SectionDecor, type SectionDecorPreset } from './SectionDecor';
 
 let scrollTriggerRegistered = false;
 
@@ -25,10 +26,19 @@ interface PageHeroProps {
   title: string;
   subtitle?: string;
   ctas?: PageHeroCta[];
+  /** Optional floating Lottie decoration for this hero. */
+  decor?: SectionDecorPreset;
   children?: ReactNode;
 }
 
-export function PageHero({ eyebrow, title, subtitle, ctas, children }: Readonly<PageHeroProps>) {
+export function PageHero({
+  eyebrow,
+  title,
+  subtitle,
+  ctas,
+  decor,
+  children,
+}: Readonly<PageHeroProps>) {
   const sectionRef = useRef<HTMLElement>(null);
   const patternRef = useRef<HTMLDivElement>(null);
 
@@ -55,11 +65,13 @@ export function PageHero({ eyebrow, title, subtitle, ctas, children }: Readonly<
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-linear-to-br from-[#E8F5E9] to-[#FFFFFF] py-10 md:py-14"
+      className="relative isolate overflow-hidden bg-linear-to-br from-[#E8F5E9] to-[#FFFFFF] py-10 md:py-14"
     >
       <div ref={patternRef} className="absolute inset-0 text-[#00AB39]">
         <DoodlePatterns.Squiggles grid="8x8" />
       </div>
+
+      {decor && <SectionDecor preset={decor} />}
 
       <div className="relative z-10 container mx-auto px-4 max-w-4xl text-center">
         {eyebrow && (

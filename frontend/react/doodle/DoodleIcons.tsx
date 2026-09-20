@@ -1572,6 +1572,7 @@ export function RainIcon({ className = 'w-8 h-8', animate = true }: DoodleIconPr
           stroke="#0071BC"
           strokeWidth="3"
           strokeLinecap="round"
+          initial={{ y1: 65, y2: 85, opacity: 1 }}
           animate={animate ? { y1: [65, 68, 65], y2: [85, 88, 85], opacity: [1, 0.4, 1] } : {}}
           transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
         />
@@ -1613,6 +1614,7 @@ export function ShowerIcon({ className = 'w-8 h-8', animate = true }: Readonly<D
           stroke="#0071BC"
           strokeWidth="3"
           strokeLinecap="round"
+          initial={{ y2: 62, opacity: 1 }}
           animate={animate ? { y2: [62, 68, 62], opacity: [1, 0.3, 1] } : {}}
           transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
         />

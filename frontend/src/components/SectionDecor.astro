@@ -1,0 +1,21 @@
+---
+import { SectionDecor } from '../../react/shared/SectionDecor';
+import type { SectionDecorPreset } from '../../react/shared/SectionDecor';
+
+/**
+ * Astro-side wrapper for the floating Lottie decoration layer, for sections
+ * that are authored in `.astro` rather than React.
+ *
+ * Hydrates on visibility -- the decoration is never worth blocking a page on.
+ * The host `<section>` must be `relative`, and its content should sit on
+ * `relative z-10`.
+ */
+interface Props {
+  preset: SectionDecorPreset;
+  delayOffset?: number;
+}
+
+const { preset, delayOffset = 0 } = Astro.props;
+---
+
+<SectionDecor client:visible preset={preset} delayOffset={delayOffset} />

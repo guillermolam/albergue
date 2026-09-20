@@ -54,7 +54,7 @@ export function WeatherWidget({ forecast, airQuality }: Readonly<WeatherWidgetPr
   // unavailable must never hide the other (previously an early return
   // on missing `forecast` discarded a perfectly valid `airQuality`).
   return (
-    <div className="rounded-lg border border-[#5D4E37]/20 bg-white/60 px-3 py-2">
+    <div className="sketchy-border rounded-lg bg-white/60 px-3 py-2">
       {hasForecast ? (
         <div className="flex items-center justify-between gap-3">
           {forecast.map((day) => {

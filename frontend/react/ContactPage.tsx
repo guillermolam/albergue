@@ -92,7 +92,7 @@ export function ContactPage({ hostelInfo = null }: Readonly<ContactPageProps>) {
 
   return (
     <>
-      <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
+      <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} decor="hospitality" />
 
       <ContactHub hostelInfo={hostelInfo} />
       <InstitutionsSection />

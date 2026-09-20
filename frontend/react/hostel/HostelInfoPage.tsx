@@ -1,5 +1,6 @@
 import { useI18n } from '../hooks/useI18n';
 import { PageHero } from '../shared/PageHero';
+import { SectionDecor } from '../shared/SectionDecor';
 import { FancyCard } from '../shared/FancyCard';
 import { MapPinIcon } from '../doodle/DoodleIcons';
 import { SpaceViewer } from '../spatial/SpaceViewer';
@@ -60,9 +61,19 @@ export function HostelInfoPage() {
 
   return (
     <>
-      <PageHero title={t.title} subtitle={t.subtitle} />
-      <section className="container mx-auto max-w-4xl px-4 py-12">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <PageHero title={t.title} subtitle={t.subtitle} decor="distance" />
+      <section className="relative isolate container mx-auto max-w-4xl px-4 py-12">
+        <SectionDecor preset="journey" />
+        {/* Floor plan leads the page: it is the thing worth landing on, and
+            `relative z-10` keeps its WebGL canvas clear of the decoration
+            layer behind the section. */}
+        <div className="relative z-10 mb-10">
+          <h2 className="mb-1 text-xl font-bold text-charcoal font-sketch">{t.floorPlanTitle}</h2>
+          <p className="mb-4 text-sm text-dark-grey font-handwritten">{t.floorPlanSubtitle}</p>
+          <SpaceViewer building="B01" />
+        </div>
+
+        <div className="relative z-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
           {cards.map((card) => (
             <FancyCard
               key={card.title}
@@ -71,12 +82,6 @@ export function HostelInfoPage() {
               icon={<MapPinIcon className="h-8 w-8" />}
             />
           ))}
-        </div>
-
-        <div className="mt-10">
-          <h2 className="mb-1 text-xl font-bold text-charcoal font-sketch">{t.floorPlanTitle}</h2>
-          <p className="mb-4 text-sm text-dark-grey font-handwritten">{t.floorPlanSubtitle}</p>
-          <SpaceViewer building="B01" />
         </div>
       </section>
     </>

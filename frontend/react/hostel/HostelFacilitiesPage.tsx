@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useI18n } from '../hooks/useI18n';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { PageHero } from '../shared/PageHero';
+import { SectionDecor } from '../shared/SectionDecor';
 import { FancyCard, type FancyCardMeta } from '../shared/FancyCard';
 import { FacilityDetailModal, type Facility } from './FacilityDetailModal';
 import {
@@ -241,8 +242,9 @@ export function HostelFacilitiesPage() {
 
   return (
     <>
-      <PageHero title={page.title} subtitle={page.subtitle} />
-      <section className="container mx-auto max-w-5xl px-4 py-12">
+      <PageHero title={page.title} subtitle={page.subtitle} decor="works" />
+      <section className="relative isolate container mx-auto max-w-5xl px-4 py-12">
+        <SectionDecor preset="maintenance" />
         <div ref={gridRef} className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {facilities.map((facility) => (
             <FancyCard
