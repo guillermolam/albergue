@@ -1,0 +1,116 @@
+---
+export interface Step {
+  id: string;
+  label: string;
+  description?: string;
+  status?: 'pending' | 'active' | 'completed' | 'error';
+}
+
+export interface Props {
+  steps: Step[];
+  currentStep?: number;
+  onStepClick?: string;
+  orientation?: 'horizontal' | 'vertical';
+}
+
+const { steps = [], currentStep = 0, onStepClick = '', orientation = 'horizontal' } = Astro.props;
+---
+
+<step-indicator
+  class="block"
+  data-orientation={orientation}
+  data-current={String(currentStep)}
+  data-on-click={onStepClick}
+>
+  <!-- Server-rendered fallback -->
+  {orientation === 'horizontal' ? (
+    <div class="flex items-center w-full">
+      {steps.map((step, index) => {
+        const isActive = index === currentStep;
+        const isCompleted = index < currentStep;
+        const status = step.status ?? (isCompleted ? 'completed' : isActive ? 'active' : 'pending');
+        const colorClass =
+          status === 'completed'
+            ? 'bg-success text-success-content'
+            : status === 'active'
+              ? 'bg-primary text-primary-content'
+              : status === 'error'
+                ? 'bg-error text-error-content'
+                : 'bg-base-300 text-base-content/60';
+        return (
+          <div class="flex items-center flex-1 min-w-0">
+            {index > 0 && (
+              <div
+                class={`flex-1 h-1 mx-2 rounded transition-colors ${
+                  isCompleted ? 'bg-success' : 'bg-base-300'
+                }`}
+                aria-hidden="true"
+              />
+            )}
+            <div class="flex flex-col items-center shrink-0">
+              <div
+                class={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${colorClass}`}
+              >
+                {status === 'completed' ? '✓' : index + 1}
+              </div>
+              <span class="text-xs mt-1 font-semibold text-charcoal whitespace-nowrap">
+                {step.label}
+              </span>
+              {step.description && (
+                <span class="text-xs text-base-content/60 whitespace-nowrap">
+                  {step.description}
+                </span>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  ) : (
+    <div class="flex flex-col space-y-2">
+      {steps.map((step, index) => {
+        const isActive = index === currentStep;
+        const isCompleted = index < currentStep;
+        const status = step.status ?? (isCompleted ? 'completed' : isActive ? 'active' : 'pending');
+        const colorClass =
+          status === 'completed'
+            ? 'border-success text-success'
+            : status === 'active'
+              ? 'border-primary text-primary'
+              : status === 'error'
+                ? 'border-error text-error'
+                : 'border-base-300 text-base-content/60';
+        return (
+          <div class="flex items-center gap-3">
+            <div
+              class={`w-8 h-8 rounded-full border-2 flex items-center justify-center font-bold text-sm shrink-0 ${colorClass}`}
+            >
+              {status === 'completed' ? '✓' : index + 1}
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="font-semibold text-charcoal text-sm truncate">{step.label}</span>
+              {step.description && (
+                <span class="text-xs text-base-content/60 truncate">{step.description}</span>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  )}
+</step-indicator>
+
+<style is:global>
+  @keyframes pulse-step {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
+    }
+    50% {
+      box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+  .step-active-pulse {
+    animation: pulse-step 2s infinite;
+  }
+</style>

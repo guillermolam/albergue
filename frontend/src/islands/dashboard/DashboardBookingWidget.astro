@@ -1,0 +1,181 @@
+---
+import { ErrorBoundary } from '../../../react/ErrorBoundary';
+
+export interface Booking {
+  id: number;
+  referenceNumber: string;
+  guestName: string;
+  bedLabel: string | null;
+  checkInDate: string;
+  checkOutDate: string | null;
+  status: 'reserved' | 'checked_in' | 'checked_out' | 'cancelled' | 'expired';
+  nights: number;
+}
+
+export interface Props {
+  initialBooking?: Booking | null;
+}
+
+const { initialBooking = null } = Astro.props;
+---
+
+<ErrorBoundary
+  fallback={
+    <div class="bg-base-200 rounded-box p-6 text-center">
+      <p class="text-base-content/60">No se pudo cargar la reserva</p>
+    </div>
+  }
+>
+  <dashboard-booking-widget class="block" data-initial-booking={JSON.stringify(initialBooking)}>
+    <!-- Server-rendered fallback -->
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">Mi Reserva</h2>
+        {initialBooking ? (
+          <>
+            <div class="flex items-center gap-2 mt-2">
+              <span class="badge badge-primary">#{initialBooking.referenceNumber}</span>
+              <span
+                class={`badge ${
+                  initialBooking.status === 'checked_in'
+                    ? 'badge-success'
+                    : initialBooking.status === 'reserved'
+                      ? 'badge-info'
+                      : initialBooking.status === 'cancelled'
+                        ? 'badge-error'
+                        : 'badge-ghost'
+                }`}
+              >
+                {initialBooking.status}
+              </span>
+            </div>
+            <div class="mt-4 space-y-2 text-sm">
+              <p>
+                <span class="font-semibold">Huésped:</span> {initialBooking.guestName}
+              </p>
+              <p>
+                <span class="font-semibold">Cama:</span> {initialBooking.bedLabel ?? 'No asignada'}
+              </p>
+              <p>
+                <span class="font-semibold">Entrada:</span> {initialBooking.checkInDate}
+              </p>
+              {initialBooking.checkOutDate && (
+                <p>
+                  <span class="font-semibold">Salida:</span> {initialBooking.checkOutDate}
+                </p>
+              )}
+              <p>
+                <span class="font-semibold">Noches:</span> {initialBooking.nights}
+              </p>
+            </div>
+          </>
+        ) : (
+          <p class="text-base-content/60 mt-4">No tienes reserva activa</p>
+        )}
+      </div>
+    </div>
+  </dashboard-booking-widget>
+</ErrorBoundary>
+
+<script is:inline>
+  (function () {
+    'use strict';
+
+    const root = document.querySelector('dashboard-booking-widget');
+    if (!root) return;
+
+    let booking = null;
+    try {
+      booking = JSON.parse(root.dataset.initialBooking || 'null');
+    } catch {
+      booking = null;
+    }
+
+    if (!booking) {
+      fetch('/api/bookings/next', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          if (data) renderBooking(data);
+        })
+        .catch(() => {});
+      return;
+    }
+
+    renderBooking(booking);
+
+    function renderBooking(b) {
+      const card = root.querySelector('.card');
+      if (!card) return;
+
+      const statusBadge =
+        b.status === 'checked_in'
+          ? 'badge-success'
+          : b.status === 'reserved'
+            ? 'badge-info'
+            : b.status === 'cancelled'
+              ? 'badge-error'
+              : 'badge-ghost';
+
+      const actionBtn =
+        b.status === 'reserved'
+          ? `<button class="btn btn-primary btn-sm mt-4" id="check-in-btn">Hacer check-in</button>`
+          : b.status === 'checked_in'
+            ? `<button class="btn btn-success btn-sm mt-4" id="check-out-btn">Hacer check-out</button>`
+            : '';
+
+      card.innerHTML = `
+        <div class="card-body">
+          <h2 class="card-title">Mi Reserva</h2>
+          <div class="flex items-center gap-2 mt-2">
+            <span class="badge badge-primary">#${escapeHtml(b.referenceNumber)}</span>
+            <span class="badge ${statusBadge}">${escapeHtml(b.status)}</span>
+          </div>
+          <div class="mt-4 space-y-2 text-sm">
+            <p><span class="font-semibold">Huésped:</span> ${escapeHtml(b.guestName)}</p>
+            <p><span class="font-semibold">Cama:</span> ${escapeHtml(b.bedLabel || 'No asignada')}</p>
+            <p><span class="font-semibold">Entrada:</span> ${escapeHtml(b.checkInDate)}</p>
+            ${b.checkOutDate ? `<p><span class="font-semibold">Salida:</span> ${escapeHtml(b.checkOutDate)}</p>` : ''}
+            <p><span class="font-semibold">Noches:</span> ${b.nights}</p>
+          </div>
+          ${actionBtn}
+        </div>
+      `;
+
+      const checkInBtn = card.querySelector('#check-in-btn');
+      if (checkInBtn) {
+        checkInBtn.addEventListener('click', function () {
+          fetch('/api/bookings/' + b.id + '/check-in', {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+          })
+            .then((r) => (r.ok ? r.json() : null))
+            .then((data) => {
+              if (data) renderBooking(data);
+            })
+            .catch(() => {});
+        });
+      }
+
+      const checkOutBtn = card.querySelector('#check-out-btn');
+      if (checkOutBtn) {
+        checkOutBtn.addEventListener('click', function () {
+          fetch('/api/bookings/' + b.id + '/check-out', {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+          })
+            .then((r) => (r.ok ? r.json() : null))
+            .then((data) => {
+              if (data) renderBooking(data);
+            })
+            .catch(() => {});
+        });
+      }
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = String(str);
+      return div.innerHTML;
+    }
+  })();
+</script>

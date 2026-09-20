@@ -110,6 +110,7 @@
     "@astrojs/cloudflare": "^14.3.2",
     "@astrojs/netlify": "8.2.6",
     "@astrojs/node": "^11.1.6",
+    "@astrojs/vercel": "^11.0.10",
     "@playwright/test": "^1.63.0",
     "@swup/astro": "^1.8.0",
     "@types/markdown-it": "^14.2.0",

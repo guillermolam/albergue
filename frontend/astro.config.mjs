@@ -1,2 +1,10 @@
-// Cloudflare remains the default for local development and backwards compatibility.
-export { default } from './astro.config.cloudflare.mjs';
+import { defineConfig } from 'astro/config';
+import { sharedConfig } from './astro.config.shared.mjs';
+
+export default defineConfig({
+  ...sharedConfig,
+  server: {
+    port: process.env.PORT || 4321,
+    host: true,
+  },
+});

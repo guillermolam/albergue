@@ -1,0 +1,128 @@
+---
+import { ErrorBoundary } from '../../../react/ErrorBoundary';
+
+export interface ServiceEntry {
+  name: string;
+  status: 'healthy' | 'warning' | 'error';
+  responseTime: string;
+  message?: string;
+}
+
+export interface Props {
+  initialServices?: ServiceEntry[];
+  pollInterval?: number;
+}
+
+const { initialServices = [], pollInterval = 30000 } = Astro.props;
+---
+
+<ErrorBoundary>
+  <service-status-island
+    class="block"
+    data-poll-interval={String(pollInterval)}
+    data-initial-services={JSON.stringify(initialServices)}
+  >
+    <!-- Server-rendered fallback -->
+    <div class="bg-base-200 rounded-box p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold text-base-content">Service status</h2>
+        <div class="text-sm text-base-content/60">Static snapshot</div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="table table-zebra">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Status</th>
+              <th>Response</th>
+              <th>Message</th>
+            </tr>
+          </thead>
+          <tbody>
+            {initialServices.map((s) => (
+              <tr>
+                <td class="font-medium">{s.name}</td>
+                <td>
+                  <span
+                    class={`badge ${s.status === 'healthy' ? 'badge-success' : s.status === 'warning' ? 'badge-warning' : 'badge-error'}`}
+                  >
+                    {s.status}
+                  </span>
+                </td>
+                <td class="font-mono">{s.responseTime}</td>
+                <td class="text-base-content/70">{s.message}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </service-status-island>
+</ErrorBoundary>
+
+<script is:inline>
+  (function () {
+    'use strict';
+
+    const root = document.querySelector('service-status-island');
+    if (!root) return;
+
+    const pollInterval = Math.max(5000, parseInt(root.dataset.pollInterval || '30000', 10));
+    let timer = null;
+
+    function renderServices(services) {
+      const tbody = root.querySelector('tbody');
+      if (!tbody || !services) return;
+
+      tbody.innerHTML = services
+        .map(
+          (s) => `
+          <tr>
+            <td class="font-medium">${escapeHtml(s.name)}</td>
+            <td>
+              <span class="badge ${s.status === 'healthy' ? 'badge-success' : s.status === 'warning' ? 'badge-warning' : 'badge-error'}">
+                ${escapeHtml(s.status)}
+              </span>
+            </td>
+            <td class="font-mono">${escapeHtml(s.responseTime)}</td>
+            <td class="text-base-content/70">${escapeHtml(s.message || '')}</td>
+          </tr>
+        `
+        )
+        .join('');
+
+      // Update header timestamp
+      const header = root.querySelector('.text-base-content\\/60');
+      if (header) header.textContent = 'Live · ' + new Date().toLocaleTimeString();
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = String(str);
+      return div.innerHTML;
+    }
+
+    async function poll() {
+      try {
+        const res = await fetch('/api/health/services', {
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        renderServices(data.services || []);
+      } catch (err) {
+        console.warn('[ServiceStatus] Poll failed:', err);
+      }
+    }
+
+    function startPolling() {
+      if (timer) clearInterval(timer);
+      timer = setInterval(poll, pollInterval);
+    }
+
+    // First poll after a short delay, then interval
+    setTimeout(() => {
+      poll().finally(startPolling);
+    }, 2000);
+  })();
+</script>

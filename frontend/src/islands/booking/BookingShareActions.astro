@@ -1,0 +1,106 @@
+---
+import { ErrorBoundary } from '../../../react/ErrorBoundary';
+
+export interface BookingShareData {
+  referenceNumber: string;
+  checkInDate: string;
+  checkOutDate: string;
+  nights: number;
+  totalAmount: string;
+  shareUrl?: string;
+}
+
+export interface Props {
+  booking?: BookingShareData | null;
+}
+
+const { booking = null } = Astro.props;
+const shareUrl = booking?.shareUrl ?? (typeof window !== 'undefined' ? window.location.href : '');
+---
+
+<ErrorBoundary
+  fallback={
+    <div class="bg-base-200 rounded-box p-6 text-center">
+      <p class="text-base-content/60">No se pudieron cargar las acciones</p>
+    </div>
+  }
+>
+  <booking-share-actions
+    class="block"
+    data-reference={booking?.referenceNumber ?? ''}
+    data-share-url={shareUrl}
+  >
+    <!-- Server-rendered fallback -->
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title flex items-center gap-2">
+          <span>📤</span>
+          Compartir Reserva
+        </h2>
+        <div class="flex flex-wrap gap-3 mt-4">
+          <button class="btn btn-outline btn-sm" data-action="print" disabled>
+            🖨️ Imprimir
+          </button>
+          <button class="btn btn-outline btn-sm" data-action="email" disabled>
+            ✉️ Email
+          </button>
+          <button class="btn btn-outline btn-sm" data-action="copy" disabled>
+            🔗 Copiar enlace
+          </button>
+        </div>
+        <p id="share-status" class="text-sm text-base-content/60 mt-2"></p>
+      </div>
+    </div>
+  </booking-share-actions>
+</ErrorBoundary>
+
+<script is:inline>
+  (function () {
+    'use strict';
+
+    const root = document.querySelector('booking-share-actions');
+    if (!root) return;
+
+    const reference = root.dataset.reference;
+    const shareUrl = root.dataset.shareUrl || window.location.href;
+    const status = root.querySelector('#share-status');
+
+    function setStatus(msg, type) {
+      if (!status) return;
+      status.textContent = msg;
+      status.className =
+        'text-sm mt-2 ' +
+        (type === 'success'
+          ? 'text-success'
+          : type === 'error'
+            ? 'text-error'
+            : 'text-base-content/60');
+    }
+
+    root.querySelectorAll('[data-action]').forEach((btn) => {
+      btn.addEventListener('click', function () {
+        const action = btn.dataset.action;
+        const message = `Reserva ${reference} - Albergue Municipal Carrascalejo`;
+
+        if (action === 'print') {
+          window.print();
+          setStatus('Impresión iniciada', 'success');
+        } else if (action === 'email') {
+          const subject = encodeURIComponent(`Reserva ${reference}`);
+          const body = encodeURIComponent(`${message}\n\n${shareUrl}`);
+          window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+          setStatus('Abriendo cliente de correo…', 'success');
+        } else if (action === 'copy') {
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(shareUrl).then(
+              () => setStatus('Enlace copiado al portapapeles ✓', 'success'),
+              () => setStatus('Error al copiar', 'error')
+            );
+          } else {
+            setStatus('Copiar no disponible', 'error');
+          }
+        }
+      });
+    });
+  })();
+</script>

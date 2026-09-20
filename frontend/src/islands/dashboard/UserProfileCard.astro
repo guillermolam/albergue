@@ -1,0 +1,137 @@
+---
+import { ErrorBoundary } from '../../../react/ErrorBoundary';
+
+export interface UserProfile {
+  name: string;
+  email: string;
+  avatarUrl?: string;
+  bio?: string;
+  stage?: string;
+  totalKmLogged?: number;
+}
+
+export interface Props {
+  initialUser?: UserProfile | null;
+  editable?: boolean;
+}
+
+const { initialUser = null, editable = false } = Astro.props;
+---
+
+<ErrorBoundary
+  fallback={
+    <div class="bg-base-200 rounded-box p-6 text-center">
+      <p class="text-base-content/60">No se pudo cargar el perfil</p>
+    </div>
+  }
+>
+  <user-profile-card
+    class="block"
+    data-editable={editable ? 'true' : 'false'}
+    data-initial-user={JSON.stringify(initialUser)}
+  >
+    <!-- Server-rendered fallback -->
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body items-center text-center">
+        <div class="avatar">
+          <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+            <img
+              src={initialUser?.avatarUrl ?? '/avatar-placeholder.svg'}
+              alt={initialUser?.name ?? 'Peregrino'}
+            />
+          </div>
+        </div>
+        <h2 class="card-title mt-2">{initialUser?.name ?? 'Peregrino'}</h2>
+        <p class="text-base-content/70 text-sm">{initialUser?.email ?? ''}</p>
+        {initialUser?.stage && <div class="badge badge-primary mt-2">{initialUser.stage}</div>}
+        {initialUser?.totalKmLogged !== undefined && (
+          <p class="text-sm text-base-content/60 mt-1">
+            {initialUser.totalKmLogged} km registrados
+          </p>
+        )}
+        {editable && (
+          <button class="btn btn-outline btn-sm mt-4" disabled>
+            Editar perfil
+          </button>
+        )}
+      </div>
+    </div>
+  </user-profile-card>
+</ErrorBoundary>
+
+<script is:inline>
+  (function () {
+    'use strict';
+
+    const root = document.querySelector('user-profile-card');
+    if (!root) return;
+
+    const editable = root.dataset.editable === 'true';
+    let user = null;
+    try {
+      user = JSON.parse(root.dataset.initialUser || 'null');
+    } catch {
+      user = null;
+    }
+
+    if (!user) {
+      // Try fetching from API
+      fetch('/api/users/me', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          if (data) renderProfile(data);
+        })
+        .catch(() => {});
+      return;
+    }
+
+    renderProfile(user);
+
+    function renderProfile(u) {
+      const card = root.querySelector('.card');
+      if (!card) return;
+
+      card.innerHTML = `
+        <div class="card-body items-center text-center">
+          <div class="avatar">
+            <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+              <img src="${escapeHtml(u.avatarUrl || '/avatar-placeholder.svg')}" alt="${escapeHtml(u.name || 'Peregrino')}" />
+            </div>
+          </div>
+          <h2 class="card-title mt-2">${escapeHtml(u.name || 'Peregrino')}</h2>
+          <p class="text-base-content/70 text-sm">${escapeHtml(u.email || '')}</p>
+          ${u.stage ? `<div class="badge badge-primary mt-2">${escapeHtml(u.stage)}</div>` : ''}
+          ${u.totalKmLogged !== undefined ? `<p class="text-sm text-base-content/60 mt-1">${u.totalKmLogged} km registrados</p>` : ''}
+          ${editable ? `<button class="btn btn-outline btn-sm mt-4" id="edit-profile-btn">Editar perfil</button>` : ''}
+        </div>
+      `;
+
+      const editBtn = card.querySelector('#edit-profile-btn');
+      if (editBtn) {
+        editBtn.addEventListener('click', function () {
+          const name = prompt('Nombre', u.name || '');
+          if (!name) return;
+          fetch('/api/users/me', {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({ name }),
+          })
+            .then((r) => (r.ok ? r.json() : null))
+            .then((updated) => {
+              if (updated) renderProfile(updated);
+            })
+            .catch(() => {});
+        });
+      }
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = String(str);
+      return div.innerHTML;
+    }
+  })();
+</script>

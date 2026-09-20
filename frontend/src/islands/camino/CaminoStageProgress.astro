@@ -1,0 +1,160 @@
+---
+import { ErrorBoundary } from '../../../react/ErrorBoundary';
+
+export interface StageData {
+  stageName: string;
+  progressPercent: number;
+  distanceCompleted: number;
+  distanceRemaining: number;
+  distanceToNext: number;
+  nextStage: string;
+  startTime: string;
+  estimatedArrival: string;
+  pace: string;
+}
+
+export interface Props {
+  initialStage?: StageData | null;
+}
+
+const { initialStage = null } = Astro.props;
+---
+
+<ErrorBoundary
+  fallback={
+    <div class="bg-base-200 rounded-box p-6 text-center">
+      <p class="text-base-content/60">No se pudo cargar el progreso de etapa</p>
+    </div>
+  }
+>
+  <camino-stage-progress class="block" data-initial-stage={JSON.stringify(initialStage)}>
+    <!-- Server-rendered fallback -->
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title flex items-center gap-2">
+          <span>🗺️</span>
+          Etapa Actual
+        </h2>
+        {initialStage ? (
+          <>
+            <div class="flex items-center gap-2 mt-2">
+              <span class="badge badge-primary">{initialStage.stageName}</span>
+              <span class="badge badge-info">{initialStage.progressPercent}%</span>
+            </div>
+            <div class="mt-4">
+              <div class="flex justify-between text-sm mb-1">
+                <span>{initialStage.distanceCompleted} km</span>
+                <span>{initialStage.distanceRemaining} km restantes</span>
+              </div>
+              <div class="w-full bg-base-200 rounded-full h-3 overflow-hidden">
+                <div
+                  class="h-full bg-primary rounded-full"
+                  style={`width: ${initialStage.progressPercent}%`}
+                ></div>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-4 text-sm">
+              <div class="bg-base-200 p-3 rounded-lg">
+                <div class="font-semibold text-charcoal">Origen</div>
+                <div class="text-base-content/70">{initialStage.startTime}</div>
+              </div>
+              <div class="bg-base-200 p-3 rounded-lg">
+                <div class="font-semibold text-charcoal">Destino</div>
+                <div class="text-base-content/70">{initialStage.estimatedArrival}</div>
+              </div>
+              <div class="bg-base-200 p-3 rounded-lg">
+                <div class="font-semibold text-charcoal">Próxima etapa</div>
+                <div class="text-base-content/70">{initialStage.nextStage}</div>
+              </div>
+              <div class="bg-base-200 p-3 rounded-lg">
+                <div class="font-semibold text-charcoal">Ritmo</div>
+                <div class="text-base-content/70">{initialStage.pace}</div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <p class="text-base-content/60 mt-4">Cargando progreso...</p>
+        )}
+      </div>
+    </div>
+  </camino-stage-progress>
+</ErrorBoundary>
+
+<script is:inline>
+  (function () {
+    'use strict';
+
+    const root = document.querySelector('camino-stage-progress');
+    if (!root) return;
+
+    let stage = null;
+    try {
+      stage = JSON.parse(root.dataset.initialStage || 'null');
+    } catch {
+      stage = null;
+    }
+
+    if (!stage) {
+      fetch('/api/camino/stage', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          if (data) renderStage(data);
+        })
+        .catch(() => {});
+      return;
+    }
+
+    renderStage(stage);
+
+    function renderStage(s) {
+      const card = root.querySelector('.card');
+      if (!card) return;
+
+      card.innerHTML = `
+        <div class="card-body">
+          <h2 class="card-title flex items-center gap-2">
+            <span>🗺️</span>
+            Etapa Actual
+          </h2>
+          <div class="flex items-center gap-2 mt-2">
+            <span class="badge badge-primary">${escapeHtml(s.stageName)}</span>
+            <span class="badge badge-info">${s.progressPercent}%</span>
+          </div>
+          <div class="mt-4">
+            <div class="flex justify-between text-sm mb-1">
+              <span>${s.distanceCompleted} km</span>
+              <span>${s.distanceRemaining} km restantes</span>
+            </div>
+            <div class="w-full bg-base-200 rounded-full h-3 overflow-hidden">
+              <div class="h-full bg-primary rounded-full" style="width: ${s.progressPercent}%"></div>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mt-4 text-sm">
+            <div class="bg-base-200 p-3 rounded-lg">
+              <div class="font-semibold text-charcoal">Origen</div>
+              <div class="text-base-content/70">${escapeHtml(s.startTime)}</div>
+            </div>
+            <div class="bg-base-200 p-3 rounded-lg">
+              <div class="font-semibold text-charcoal">Destino</div>
+              <div class="text-base-content/70">${escapeHtml(s.estimatedArrival)}</div>
+            </div>
+            <div class="bg-base-200 p-3 rounded-lg">
+              <div class="font-semibold text-charcoal">Próxima etapa</div>
+              <div class="text-base-content/70">${escapeHtml(s.nextStage)}</div>
+            </div>
+            <div class="bg-base-200 p-3 rounded-lg">
+              <div class="font-semibold text-charcoal">Ritmo</div>
+              <div class="text-base-content/70">${escapeHtml(s.pace)}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = String(str);
+      return div.innerHTML;
+    }
+  })();
+</script>

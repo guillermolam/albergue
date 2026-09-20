@@ -1,0 +1,55 @@
+---
+import '../styles/tailwind.css';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Reservar Albergue - Albergue Municipal Carrascalejo',
+  description = 'Albergue de peregrinos en el Camino de Santiago',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script type="module" src="/src/scripts/runtime.ts"></script>
+    <meta name="view-transition" content="same-origin" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Patrick+Hand&family=Shadows+Into+Light&family=Cabin+Sketch:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="paper-texture min-h-screen">
+    <div id="main-content" class="transition-fade">
+      <main class="booking-flow-layout">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>
+
+<style>
+  .booking-flow-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 1rem;
+  }
+  @media (min-width: 768px) {
+    .booking-flow-layout {
+      padding: 3rem;
+    }
+  }
+</style>
