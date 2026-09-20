@@ -3,11 +3,16 @@ export const prerender = true;
 
 import Layout from '../layouts/Layout.astro';
 import { ContactPage } from '../../react/ContactPage';
+import { backendJson } from '../lib/backend-api';
+import type { HostelAggregate } from '../lib/hostelTypes';
+
+const hostelInfoResult = await backendJson<HostelAggregate>('/api/hostel');
+const hostelInfo = hostelInfoResult.ok ? hostelInfoResult.data : null;
 ---
 
 <Layout
   title="Contacto - Albergue Municipal Carrascalejo"
   description="Ponte en contacto con el Albergue Municipal Carrascalejo"
 >
-  <ContactPage client:load />
+  <ContactPage client:load hostelInfo={hostelInfo} />
 </Layout>
