@@ -1,0 +1,111 @@
+---
+import { ErrorBoundary } from '../../../react/ErrorBoundary';
+
+export interface Stage {
+  id: string;
+  name: string;
+  distance: number;
+  completed: boolean;
+  difficulty: 'easy' | 'medium' | 'hard';
+  estimatedDays: number;
+}
+
+export interface Props {
+  initialStages?: Stage[];
+}
+
+const { initialStages = [] } = Astro.props;
+---
+
+<ErrorBoundary>
+  <stage-list class="block" data-initial-stages={JSON.stringify(initialStages)}>
+    <div class="space-y-2">
+      {initialStages.length === 0 ? (
+        <p class="text-base-content/60">Cargando etapas...</p>
+      ) : (
+        initialStages.map((s) => (
+          <div class="flex justify-between bg-stone-50 ring-1 ring-stone-200 p-4">
+            <div>
+              <strong class={s.completed ? 'text-charcoal' : 'text-dark-grey'}>{s.name}</strong>
+              <div
+                class={`mt-1 px-3 py-1 text-xs ring-1 ${
+                  s.difficulty === 'easy'
+                    ? 'text-green-700 bg-green-50 ring-green-200'
+                    : s.difficulty === 'medium'
+                      ? 'text-yellow-800 bg-yellow-50 ring-yellow-200'
+                      : 'text-red-700 bg-red-50 ring-red-200'
+                }`}
+              >
+                {s.difficulty}
+              </div>
+            </div>
+            <div>
+              {s.distance} km
+              <br />
+              {s.estimatedDays} {s.estimatedDays > 1 ? 'días' : 'día'}
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  </stage-list>
+</ErrorBoundary>
+
+<script is:inline>
+  (function () {
+    'use strict';
+
+    const root = document.querySelector('stage-list');
+    if (!root) return;
+
+    let stages = [];
+    try {
+      stages = JSON.parse(root.dataset.initialStages || '[]');
+    } catch {
+      stages = [];
+    }
+
+    function renderStages(data) {
+      if (!data || data.length === 0) {
+        root.innerHTML = '<p class="text-base-content/60">No hay etapas disponibles</p>';
+        return;
+      }
+      root.innerHTML = data
+        .map(
+          (s) => `
+        <div class="flex justify-between bg-stone-50 ring-1 ring-stone-200 p-4">
+          <div>
+            <strong style="${s.completed ? 'color:inherit' : 'color:#525252'}">${escapeHtml(s.name)}</strong>
+            <div class="mt-1 px-3 py-1 text-xs ring-1 ${
+              s.difficulty === 'easy'
+                ? 'text-green-700 bg-green-50 ring-green-200'
+                : s.difficulty === 'medium'
+                  ? 'text-yellow-800 bg-yellow-50 ring-yellow-200'
+                  : 'text-red-700 bg-red-50 ring-red-200'
+            }">${escapeHtml(s.difficulty)}</div>
+          </div>
+          <div>${s.distance} km<br/>${s.estimatedDays} ${s.estimatedDays > 1 ? 'días' : 'día'}</div>
+        </div>
+      `
+        )
+        .join('');
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = String(str);
+      return div.innerHTML;
+    }
+
+    renderStages(stages);
+
+    root.addEventListener('stage-list-refresh', () => {
+      fetch('/api/camino/stages', {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      })
+        .then((r) => (r.ok ? r.json() : []))
+        .then(renderStages)
+        .catch(() => {});
+    });
+  })();
+</script>

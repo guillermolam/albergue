@@ -1,6 +1,8 @@
 // Islands barrel export — re-export every island component so pages can
 // import from a single path: `import { MyIsland } from '../islands'`.
 
+export { default as ServiceRefreshButton } from './admin/ServiceRefreshButton.astro';
+export { default as StageList } from './camino/StageList.astro';
 export { default as LanguageSelectorIsland } from './shared/LanguageSelectorIsland.astro';
 export { default as ServiceStatusIsland } from './admin/ServiceStatusIsland.astro';
 export { default as UserProfileCard } from './dashboard/UserProfileCard.astro';
