@@ -107,8 +107,8 @@ export function HomeIcon({ className = 'w-8 h-8', animate = true }: DoodleIconPr
         rx="2"
       />
       {/* Windows */}
-      <rect x="35" y="55" width="10" height="10" fill="#FFF9F0" stroke="#1A1A1A" strokeWidth="2" />
-      <rect x="55" y="55" width="10" height="10" fill="#FFF9F0" stroke="#1A1A1A" strokeWidth="2" />
+      <rect x="35" y="55" width="10" height="10" fill="#FFFFFF" stroke="#1A1A1A" strokeWidth="2" />
+      <rect x="55" y="55" width="10" height="10" fill="#FFFFFF" stroke="#1A1A1A" strokeWidth="2" />
       {/* Window details */}
       <line x1="40" y1="55" x2="40" y2="65" stroke="#1A1A1A" strokeWidth="1" />
       <line x1="60" y1="55" x2="60" y2="65" stroke="#1A1A1A" strokeWidth="1" />
@@ -153,7 +153,7 @@ export function ClipboardIcon({ className = 'w-8 h-8', animate = true }: DoodleI
         y="20"
         width="50"
         height="65"
-        fill="#FFF9F0"
+        fill="#FFFFFF"
         stroke="#1A1A1A"
         strokeWidth="3"
         rx="4"
@@ -1459,6 +1459,123 @@ export function ToolsIcon({ className = 'w-8 h-8', animate = true }: DoodleIconP
         strokeLinejoin="round"
       />
       <circle cx="21.5" cy="61.5" r="2.5" fill="#1A1A1A" />
+    </motion.svg>
+  );
+}
+
+// Sun icon (clear sky)
+export function SunIcon({ className = 'w-8 h-8', animate = true }: DoodleIconProps) {
+  return (
+    <motion.svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      animate={animate ? { rotate: [0, 360] } : {}}
+      transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+    >
+      <circle
+        cx="50"
+        cy="50"
+        r="22"
+        fill="#EAC102"
+        stroke="#1A1A1A"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+      {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => {
+        const rad = (angle * Math.PI) / 180;
+        const x1 = 50 + Math.cos(rad) * 30;
+        const y1 = 50 + Math.sin(rad) * 30;
+        const x2 = 50 + Math.cos(rad) * 40;
+        const y2 = 50 + Math.sin(rad) * 40;
+        return (
+          <line
+            key={angle}
+            x1={x1}
+            y1={y1}
+            x2={x2}
+            y2={y2}
+            stroke="#EAC102"
+            strokeWidth="4"
+            strokeLinecap="round"
+          />
+        );
+      })}
+    </motion.svg>
+  );
+}
+
+// Cloud icon (overcast)
+export function CloudIcon({ className = 'w-8 h-8', animate = true }: DoodleIconProps) {
+  return (
+    <motion.svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      animate={animate ? { x: [0, 4, 0] } : {}}
+      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+    >
+      <path
+        d="M28 65 C18 65 12 58 12 50 C12 42 18 36 26 35 C28 25 37 18 48 18 C59 18 68 26 70 36 C79 37 86 44 86 53 C86 60 80 65 72 65 Z"
+        fill="#FFFFFF"
+        stroke="#1A1A1A"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </motion.svg>
+  );
+}
+
+// Partly-cloudy icon (sun behind cloud)
+export function PartlyCloudyIcon({ className = 'w-8 h-8', animate = true }: DoodleIconProps) {
+  return (
+    <motion.svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      animate={animate ? { x: [0, 3, 0] } : {}}
+      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+    >
+      <circle cx="62" cy="32" r="16" fill="#EAC102" stroke="#1A1A1A" strokeWidth="2.5" />
+      <path
+        d="M24 68 C15 68 10 62 10 55 C10 48 15 43 22 42 C24 34 32 28 41 28 C50 28 58 34 60 42 C68 43 74 49 74 57 C74 63 69 68 61 68 Z"
+        fill="#FFFFFF"
+        stroke="#1A1A1A"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </motion.svg>
+  );
+}
+
+// Rain icon
+export function RainIcon({ className = 'w-8 h-8', animate = true }: DoodleIconProps) {
+  return (
+    <motion.svg className={className} viewBox="0 0 100 100" fill="none">
+      <path
+        d="M28 55 C18 55 12 48 12 40 C12 32 18 26 26 25 C28 15 37 8 48 8 C59 8 68 16 70 26 C79 27 86 34 86 43 C86 50 80 55 72 55 Z"
+        fill="#FFFFFF"
+        stroke="#1A1A1A"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {[30, 50, 70].map((x, i) => (
+        <motion.line
+          key={x}
+          x1={x}
+          y1="65"
+          x2={x - 5}
+          y2="85"
+          stroke="#0071BC"
+          strokeWidth="3"
+          strokeLinecap="round"
+          animate={animate ? { y1: [65, 68, 65], y2: [85, 88, 85], opacity: [1, 0.4, 1] } : {}}
+          transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
+        />
+      ))}
     </motion.svg>
   );
 }

@@ -19,3 +19,5 @@ export { default as places } from "./places.js";
 export { default as hostel } from "./hostel.js";
 export { default as meridaEvents } from "./merida_events.js";
 export { default as carrascalejoLocal } from "./carrascalejo_local.js";
+export { default as carrascalejoWeather } from "./carrascalejo_weather.js";
+export { default as carrascalejoAirQuality } from "./carrascalejo_air_quality.js";

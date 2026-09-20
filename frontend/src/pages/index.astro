@@ -5,20 +5,26 @@ import Layout from '../layouts/Layout.astro';
 import { HomePage } from '../../react/HomePage';
 import { ReviewsCarousel } from '../../react/reviews/ReviewsCarousel';
 import { backendJson } from '../lib/backend-api';
-import type { HostelStats } from '../lib/hostelTypes';
+import type { HostelStats, WeatherForecast, AirQuality } from '../lib/hostelTypes';
 
 // Bed availability is genuinely live operational data (changes as bookings
 // happen), unlike the footer's mostly-static content -- this page is SSR
 // (not prerendered) specifically so the homepage hero never shows a stale
 // availability count.
-const result = await backendJson<HostelStats>('/api/hostel/stats');
-const stats = result.ok ? result.data : null;
+const [statsResult, forecastResult, airQualityResult] = await Promise.all([
+  backendJson<HostelStats>('/api/hostel/stats'),
+  backendJson<WeatherForecast | null>('/api/carrascalejo-weather'),
+  backendJson<AirQuality | null>('/api/carrascalejo-air-quality'),
+]);
+const stats = statsResult.ok ? statsResult.data : null;
+const forecast = forecastResult.ok ? forecastResult.data : null;
+const airQuality = airQualityResult.ok ? airQualityResult.data : null;
 ---
 
 <Layout
   title="Albergue Municipal Carrascalejo"
   description="Albergue de peregrinos en el Camino de Santiago"
 >
-  <HomePage client:load stats={stats} />
+  <HomePage client:load stats={stats} forecast={forecast} airQuality={airQuality} />
   <ReviewsCarousel client:load />
 </Layout>

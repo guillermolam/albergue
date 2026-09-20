@@ -7,7 +7,9 @@ import {
   CompassIcon as Compass,
 } from './doodle/DoodleIcons';
 import { VisualAreaShowcase } from './VisualAreaShowcase';
+import { WeatherWidget } from './home/WeatherWidget';
 import { useI18n } from './hooks/useI18n';
+import type { WeatherForecast, AirQuality } from '../src/lib/hostelTypes';
 
 function SketchyButton({
   children,
@@ -140,6 +142,8 @@ export interface HomePageStats {
 
 interface HomePageProps {
   stats?: HomePageStats | null;
+  forecast?: WeatherForecast | null;
+  airQuality?: AirQuality | null;
 }
 
 // Fallback values when the backend is unreachable -- keeps the hero from
@@ -147,7 +151,7 @@ interface HomePageProps {
 const FALLBACK_PRICE = '10';
 const FALLBACK_BEDS_AVAILABLE = '24';
 
-export function HomePage({ stats }: Readonly<HomePageProps> = {}) {
+export function HomePage({ stats, forecast, airQuality }: Readonly<HomePageProps> = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { locale } = useI18n();
   const isEs = locale !== 'en';
@@ -163,7 +167,7 @@ export function HomePage({ stats }: Readonly<HomePageProps> = {}) {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen w-full bg-gradient-to-br from-white via-[#f5f5f5] to-[#e8f5e9] relative overflow-x-hidden"
+      className="w-full bg-gradient-to-br from-white via-[#f5f5f5] to-[#e8f5e9] relative overflow-x-hidden"
     >
       <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-10 -z-10">
         {[...Array(15)].map((_, i) => (
@@ -380,6 +384,15 @@ export function HomePage({ stats }: Readonly<HomePageProps> = {}) {
                 </motion.div>
               ))}
             </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.75 }}
+              className="pt-2"
+            >
+              <WeatherWidget forecast={forecast ?? null} airQuality={airQuality ?? null} />
+            </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 15 }}
