@@ -1581,7 +1581,7 @@ export function RainIcon({ className = 'w-8 h-8', animate = true }: DoodleIconPr
 }
 
 // Shower icon (bathrooms)
-export function ShowerIcon({ className = 'w-8 h-8', animate = true }: DoodleIconProps) {
+export function ShowerIcon({ className = 'w-8 h-8', animate = true }: Readonly<DoodleIconProps>) {
   return (
     <motion.svg className={className} viewBox="0 0 100 100" fill="none">
       {/* Wall arm + shower head */}
@@ -1632,7 +1632,10 @@ export function ShowerIcon({ className = 'w-8 h-8', animate = true }: DoodleIcon
 }
 
 // Washing machine icon (laundry)
-export function WashingMachineIcon({ className = 'w-8 h-8', animate = true }: DoodleIconProps) {
+export function WashingMachineIcon({
+  className = 'w-8 h-8',
+  animate = true,
+}: Readonly<DoodleIconProps>) {
   return (
     <motion.svg className={className} viewBox="0 0 100 100" fill="none">
       <rect
@@ -1676,7 +1679,7 @@ export function WashingMachineIcon({ className = 'w-8 h-8', animate = true }: Do
 }
 
 // WiFi icon (wireless connectivity)
-export function WifiIcon({ className = 'w-8 h-8', animate = true }: DoodleIconProps) {
+export function WifiIcon({ className = 'w-8 h-8', animate = true }: Readonly<DoodleIconProps>) {
   return (
     <motion.svg className={className} viewBox="0 0 100 100" fill="none">
       {[
@@ -1702,7 +1705,7 @@ export function WifiIcon({ className = 'w-8 h-8', animate = true }: DoodleIconPr
 }
 
 // Bicycle icon (bike rental)
-export function BicycleIcon({ className = 'w-8 h-8', animate = true }: DoodleIconProps) {
+export function BicycleIcon({ className = 'w-8 h-8', animate = true }: Readonly<DoodleIconProps>) {
   return (
     <motion.svg className={className} viewBox="0 0 100 100" fill="none">
       <motion.circle
