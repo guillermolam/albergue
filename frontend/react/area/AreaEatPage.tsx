@@ -1,5 +1,6 @@
 import { useI18n } from '../hooks/useI18n';
 import { PageHero } from '../shared/PageHero';
+import { SectionDecor } from '../shared/SectionDecor';
 import { PlaceGallery } from '../places/PlaceGallery';
 import type { PlaceWithDetails } from '../places/types';
 
@@ -33,8 +34,9 @@ export function AreaEatPage({ places }: Readonly<AreaEatPageProps>) {
 
   return (
     <>
-      <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
-      <section className="container mx-auto px-4 py-12">
+      <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} decor="journey" />
+      <section className="relative isolate container mx-auto px-4 py-12">
+        <SectionDecor preset="hospitality" />
         <PlaceGallery places={places} mapCenter={HOSTEL_CENTER} />
       </section>
     </>

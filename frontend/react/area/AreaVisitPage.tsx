@@ -1,5 +1,6 @@
 import { useI18n } from '../hooks/useI18n';
 import { PageHero } from '../shared/PageHero';
+import { SectionDecor } from '../shared/SectionDecor';
 import { PlaceGallery } from '../places/PlaceGallery';
 import type { PlaceWithDetails } from '../places/types';
 
@@ -35,8 +36,9 @@ export function AreaVisitPage({ places }: Readonly<AreaVisitPageProps>) {
 
   return (
     <>
-      <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
-      <section className="container mx-auto px-4 py-12">
+      <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} decor="distance" />
+      <section className="relative isolate container mx-auto px-4 py-12">
+        <SectionDecor preset="journey" />
         <PlaceGallery places={places} mapCenter={HOSTEL_CENTER} />
 
         {hasExcursions && (
