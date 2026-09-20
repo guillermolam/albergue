@@ -119,14 +119,25 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: ../.github/scripts/deploy-cloudflare.sh
 
-  deploy-backend:
-    name: Deploy backend to Cloudflare Workers
+      - name: Sync BACKEND_API_URL secret
+        # `wrangler deploy` never touches secrets, so this was previously
+        # a one-off manual `wrangler secret put` -- easy to drift or lose
+        # entirely (which is what happened). Keeping it here means it's
+        # reset to the known-correct value on every deploy.
+        working-directory: frontend
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          BACKEND_API_URL: ${{ secrets.BACKEND_API_URL }}
+        run: echo "$BACKEND_API_URL" | pnpm exec wrangler secret put BACKEND_API_URL
+
+  migrate-database:
+    name: Apply database migrations
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    # Must run every time this workflow runs -- `nightly-release` only
-    # succeeds when there are pending Dependabot PRs, so depending on it
-    # here was silently skipping every deploy whenever there were none.
+    # Must run every time this workflow runs, same reasoning as the
+    # deploy jobs below -- see their comments.
     needs: check-dependabot
     steps:
       - name: Checkout code
@@ -135,6 +146,37 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node.js and pnpm
+        # trunk-ignore(actionlint/action): $/ is GitHub's self-repository syntax (2026-07); Trunk's bundled actionlint predates it.
+        uses: $/.github/actions/setup-node-pnpm
+        with:
+          node-version: "24"
+          pnpm-version: "10.29.3"
+
+      - name: Apply migrations to production database
+        working-directory: backend
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: ../.github/scripts/migrate-database.sh
+
+  deploy-backend:
+    name: Deploy backend to Cloudflare Workers
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    # Must run every time this workflow runs -- `nightly-release` only
+    # succeeds when there are pending Dependabot PRs, so depending on it
+    # here was silently skipping every deploy whenever there were none.
+    # Also waits on migrate-database: new backend code should never run
+    # against a database schema it hasn't been migrated to yet.
+    needs: [check-dependabot, migrate-database]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js and pnpm
+        # trunk-ignore(actionlint/action): $/ is GitHub's self-repository syntax (2026-07); Trunk's bundled actionlint predates it.
         uses: $/.github/actions/setup-node-pnpm
         with:
           node-version: "24"
@@ -163,6 +205,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node.js and pnpm
+        # trunk-ignore(actionlint/action): $/ is GitHub's self-repository syntax (2026-07); Trunk's bundled actionlint predates it.
         uses: $/.github/actions/setup-node-pnpm
         with:
           node-version: "24"

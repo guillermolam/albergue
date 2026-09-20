@@ -94,7 +94,12 @@ function NavigationMenuContent({
       className={cn(
         'left-0 top-0 w-full p-2 transition-[opacity,transform] duration-200 md:absolute md:w-auto',
         'data-[state=open]:opacity-100 data-[state=open]:scale-100 data-[motion=from-end]:data-[state=open]:translate-x-0 data-[state=closed]:opacity-0 data-[state=closed]:scale-95',
-        'group-data-[viewport=false]/navigation-menu:mt-2 group-data-[viewport=false]/navigation-menu:overflow-hidden',
+        // Without a shared Viewport (our case -- Navigation renders
+        // `viewport={false}`), content must hang below the trigger
+        // (top-full), not overlap it from the item's own top edge
+        // (the unqualified top-0 above, which only makes sense when a
+        // shared Viewport computes position separately).
+        'group-data-[viewport=false]/navigation-menu:top-full group-data-[viewport=false]/navigation-menu:mt-2 group-data-[viewport=false]/navigation-menu:overflow-hidden',
         className
       )}
       {...props}

@@ -103,11 +103,22 @@ export const server = {
           });
         }
 
-        const response = await fetch(`${BACKEND_API_URL}/api/auth/login`, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(input),
-        });
+        let response: Response;
+        try {
+          response = await fetch(`${BACKEND_API_URL}/api/auth/login`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(input),
+          });
+        } catch {
+          // A network-level failure (connection refused, DNS, timeout,
+          // ...) throws rather than resolving a Response -- surface it
+          // as a clean ActionError instead of an unhandled exception.
+          throw new ActionError({
+            code: 'SERVICE_UNAVAILABLE',
+            message: 'Backend API is unreachable.',
+          });
+        }
         if (!response.ok) {
           throw new ActionError({ code: 'UNAUTHORIZED', message: 'Invalid credentials' });
         }

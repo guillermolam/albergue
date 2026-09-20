@@ -30,14 +30,23 @@ export async function backendJson<T>(
     return { ok: false, status: 503, message: (error as Error).message };
   }
 
-  const response = await fetch(`${base}${path}`, {
-    ...init,
-    headers: {
-      accept: 'application/json',
-      ...(init.body ? { 'content-type': 'application/json' } : {}),
-      ...init.headers,
-    },
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${base}${path}`, {
+      ...init,
+      headers: {
+        accept: 'application/json',
+        ...(init.body ? { 'content-type': 'application/json' } : {}),
+        ...init.headers,
+      },
+    });
+  } catch (error) {
+    // A network-level failure (connection refused, DNS, timeout, ...)
+    // throws rather than resolving a Response -- without this, it was
+    // an uncaught exception that crashed the entire page render instead
+    // of degrading the same way a missing/misconfigured URL does.
+    return { ok: false, status: 503, message: (error as Error).message };
+  }
 
   const envelope = (await response.json().catch(() => null)) as ApiResponse<T> | null;
   if (!response.ok || !envelope?.success || envelope.data === undefined) {

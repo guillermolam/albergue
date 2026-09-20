@@ -1,8 +1,24 @@
+import type { ComponentType } from 'react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDownIcon as ChevronDown } from './doodle/DoodleIcons';
+import {
+  ChevronDownIcon as ChevronDown,
+  HomeIcon,
+  CalendarIcon,
+  BedIcon,
+  FileTextIcon,
+  ToolsIcon,
+  UtensilsIcon,
+  ClipboardIcon,
+  MapPinIcon,
+  MonumentIcon,
+  PartyIcon,
+  CompassIcon,
+  PhoneIcon,
+} from './doodle/DoodleIcons';
 import { WiredButton } from './doodle/WiredButton';
 import { useI18n } from './hooks/useI18n';
+import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -16,14 +32,22 @@ interface NavigationProps {
   currentPath: string;
 }
 
+/** Mini hand-drawn icon shown before every nav label and submenu item. */
+type NavIcon = ComponentType<{ className?: string; animate?: boolean }>;
+
 interface NavLinkData {
   path: string;
   label: string;
+  icon: NavIcon;
+  /** Reservar/Book Now: rendered as a highlighted call-to-action button
+   * instead of a plain link. */
+  isCta?: boolean;
 }
 
 interface NavGroupData {
   id: string;
   trigger: string;
+  icon: NavIcon;
   prefix: string;
   items: NavLinkData[];
 }
@@ -61,18 +85,44 @@ function ActiveUnderline() {
 
 /** Extracted so Navigation's own cognitive complexity stays under
  * SonarCloud's threshold -- this was inline with its own active-state
- * ternary and conditional underline before. */
+ * ternary and conditional underline before.
+ *
+ * The hover group is NAMED (`group/navlink`) rather than the bare
+ * `group` Tailwind uses elsewhere in this file/ui/navigation-menu.tsx:
+ * NavigationMenuList also carries a bare `group` class, and since CSS
+ * `:hover` bubbles up the ancestor chain, an unnamed `group-hover:`
+ * here would match on ANY sibling link being hovered (hovering one
+ * link "activates" the shared list ancestor's `.group:hover`, lighting
+ * up every sibling's `group-hover:text-...` at once). Naming the group
+ * scopes the match to this specific link's own ancestor only. */
 function DesktopNavLink({ link, isActive }: { link: NavLinkData; isActive: boolean }) {
+  const Icon = link.icon;
+  const animateIcon = !usePrefersReducedMotion();
   return (
-    <a href={link.path} className="relative px-4 py-2 group">
+    <a href={link.path} className="relative px-4 py-2 group/navlink">
       <motion.span
         whileHover={{ y: -2, scale: 1.05 }}
-        className={`transition-colors ${isActive ? 'text-[#00AB39] font-semibold' : 'text-gray-700 group-hover:text-[#00AB39]'}`}
+        className={`inline-flex items-center gap-1.5 transition-colors ${isActive ? 'text-[#00AB39] font-semibold' : 'text-gray-700 group-hover/navlink:text-[#00AB39]'}`}
       >
+        <Icon className="h-4 w-4 shrink-0" animate={animateIcon} aria-hidden="true" />
         {link.label}
       </motion.span>
       {isActive && <ActiveUnderline />}
     </a>
+  );
+}
+
+/** The Reservar/Book Now item: a highlighted call-to-action rather than
+ * a plain link, so it reads as the primary thing a visiting guest
+ * should do -- not just another nav entry. */
+function DesktopNavCta({ link }: { link: NavLinkData }) {
+  const Icon = link.icon;
+  const animateIcon = !usePrefersReducedMotion();
+  return (
+    <WiredButton href={link.path} variant="primary" size="sm" className="flex items-center gap-1.5">
+      <Icon className="h-4 w-4 shrink-0 text-white" animate={animateIcon} aria-hidden="true" />
+      {link.label}
+    </WiredButton>
   );
 }
 
@@ -85,19 +135,38 @@ function DesktopNavDropdown({
   isGroupActive: boolean;
   currentPath: string;
 }>) {
+  const TriggerIcon = group.icon;
+  const animateIcon = !usePrefersReducedMotion();
   return (
     <NavigationMenuItem className="relative">
-      <NavigationMenuTrigger>{group.trigger}</NavigationMenuTrigger>
+      <NavigationMenuTrigger>
+        <TriggerIcon className="h-4 w-4 shrink-0" animate={animateIcon} aria-hidden="true" />
+        {group.trigger}
+      </NavigationMenuTrigger>
       {isGroupActive && <ActiveUnderline />}
       <NavigationMenuContent>
         <ul className="min-w-[220px] space-y-1 rounded-xl border-2 border-[#5D4E37]/30 bg-[#FFF9F0] p-2 paper-texture doodle-border doodle-shadow">
-          {group.items.map((item) => (
-            <li key={item.path}>
-              <NavigationMenuLink asChild active={currentPath === item.path}>
-                <a href={item.path}>{item.label}</a>
-              </NavigationMenuLink>
-            </li>
-          ))}
+          {group.items.map((item) => {
+            const ItemIcon = item.icon;
+            return (
+              <li key={item.path}>
+                <NavigationMenuLink
+                  asChild
+                  active={currentPath === item.path}
+                  className="flex-row items-center gap-2"
+                >
+                  <a href={item.path}>
+                    <ItemIcon
+                      className="h-4 w-4 shrink-0"
+                      animate={animateIcon}
+                      aria-hidden="true"
+                    />
+                    {item.label}
+                  </a>
+                </NavigationMenuLink>
+              </li>
+            );
+          })}
         </ul>
       </NavigationMenuContent>
     </NavigationMenuItem>
@@ -170,6 +239,9 @@ function MobileNavLink({
   delay: number;
   indent?: boolean;
 }) {
+  const Icon = link.icon;
+  const isCtaHighlighted = link.isCta && !isActive;
+  const animateIcon = !usePrefersReducedMotion();
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -180,8 +252,13 @@ function MobileNavLink({
       <a
         href={link.path}
         onClick={onClick}
-        className={`block px-4 py-3 doodle-border transition-all ${isActive ? 'bg-[#00AB39] text-white doodle-shadow' : 'bg-white text-gray-700 hover:bg-[#F5E6D3]'}`}
+        className={`flex items-center gap-2 px-4 py-3 doodle-border transition-all ${
+          isActive || isCtaHighlighted
+            ? 'bg-[#00AB39] text-white doodle-shadow'
+            : 'bg-white text-gray-700 hover:bg-[#F5E6D3]'
+        }`}
       >
+        <Icon className="h-4 w-4 shrink-0" animate={animateIcon} aria-hidden="true" />
         {link.label}
       </a>
     </motion.div>
@@ -201,6 +278,8 @@ function MobileNavSection({
 }>) {
   const groupActive = currentPath === group.prefix || currentPath.startsWith(`${group.prefix}/`);
   const [expanded, setExpanded] = useState(groupActive);
+  const TriggerIcon = group.icon;
+  const animateIcon = !usePrefersReducedMotion();
 
   return (
     <motion.div
@@ -215,7 +294,10 @@ function MobileNavSection({
         aria-controls={`mobile-group-${group.id}`}
         className={`flex w-full items-center justify-between px-4 py-3 doodle-border transition-all ${groupActive ? 'bg-[#00AB39]/10 text-[#00AB39]' : 'bg-white text-gray-700 hover:bg-[#F5E6D3]'}`}
       >
-        <span>{group.trigger}</span>
+        <span className="flex items-center gap-2">
+          <TriggerIcon className="h-4 w-4 shrink-0" animate={animateIcon} aria-hidden="true" />
+          {group.trigger}
+        </span>
         <ChevronDown className={`h-4 w-4 transition-transform ${expanded ? 'rotate-180' : ''}`} />
       </button>
       <AnimatePresence>
@@ -257,32 +339,37 @@ export function Navigation({ currentPath }: NavigationProps) {
     currentPath === group.prefix || currentPath.startsWith(`${group.prefix}/`);
   const mobileMenuLabel = isOpen ? t.closeMenu : t.openMenu;
 
+  // Order matches the requested nav priority: Home, then the Reservar CTA
+  // right next to it (the call-to-action a visiting guest most needs),
+  // then the informational sections.
   const navEntries: NavEntryData[] = [
-    { path: '/', label: t.home },
+    { path: '/', label: t.home, icon: HomeIcon },
+    { path: '/book', label: t.book, icon: CalendarIcon, isCta: true },
     {
       id: 'hostel',
       trigger: t.hostel.trigger,
+      icon: BedIcon,
       prefix: '/hostel',
       items: [
-        { path: '/hostel/info', label: t.hostel.info },
-        { path: '/hostel/facilities', label: t.hostel.facilities },
-        { path: '/hostel/restaurant', label: t.hostel.restaurant },
-        { path: '/hostel/services', label: t.hostel.services },
+        { path: '/hostel/info', label: t.hostel.info, icon: FileTextIcon },
+        { path: '/hostel/facilities', label: t.hostel.facilities, icon: ToolsIcon },
+        { path: '/hostel/restaurant', label: t.hostel.restaurant, icon: UtensilsIcon },
+        { path: '/hostel/services', label: t.hostel.services, icon: ClipboardIcon },
       ],
     },
     {
       id: 'area',
       trigger: t.area.trigger,
+      icon: MapPinIcon,
       prefix: '/area',
       items: [
-        { path: '/area/visit', label: t.area.visit },
-        { path: '/area/eat', label: t.area.eat },
-        { path: '/area/do', label: t.area.do },
+        { path: '/area/visit', label: t.area.visit, icon: MonumentIcon },
+        { path: '/area/eat', label: t.area.eat, icon: UtensilsIcon },
+        { path: '/area/do', label: t.area.do, icon: PartyIcon },
       ],
     },
-    { path: '/camino', label: t.camino },
-    { path: '/contact', label: t.contact },
-    { path: '/book', label: t.book },
+    { path: '/camino', label: t.camino, icon: CompassIcon },
+    { path: '/contact', label: t.contact, icon: PhoneIcon },
   ];
 
   return (
@@ -301,38 +388,14 @@ export function Navigation({ currentPath }: NavigationProps) {
               transition={{ duration: 0.5 }}
               className="relative"
             >
-              <svg width="56" height="56" className="transform wobble">
-                <circle
-                  cx="28"
-                  cy="28"
-                  r="24"
-                  fill="#00AB39"
-                  stroke="#005a1e"
-                  strokeWidth="3"
-                  style={{ filter: 'drop-shadow(2px 2px 2px rgba(0,0,0,0.2))' }}
-                />
-                <circle
-                  cx="28"
-                  cy="28"
-                  r="22"
-                  fill="none"
-                  stroke="#005a1e"
-                  strokeWidth="2"
-                  opacity="0.3"
-                  style={{ strokeDasharray: '4, 4' }}
-                />
-                <text
-                  x="28"
-                  y="35"
-                  textAnchor="middle"
-                  fill="white"
-                  fontSize="20"
-                  fontFamily="Cabin Sketch, cursive"
-                  fontWeight="bold"
-                >
-                  AC
-                </text>
-              </svg>
+              <img
+                src="/logos/logoalbergue-removebg-preview.png"
+                alt="Logo"
+                width={56}
+                height={56}
+                className="h-14 w-14 object-contain"
+                style={{ filter: 'drop-shadow(2px 2px 2px rgba(0,0,0,0.2))' }}
+              />
               <motion.svg
                 className="absolute -top-1 -right-1 w-4 h-4 text-[#EAC102]"
                 animate={{ rotate: [0, 180, 360] }}
@@ -354,20 +417,27 @@ export function Navigation({ currentPath }: NavigationProps) {
           <div className="hidden md:flex items-center">
             <NavigationMenu viewport={false} aria-label="Site sections">
               <NavigationMenuList>
-                {navEntries.map((entry) =>
-                  isGroup(entry) ? (
-                    <DesktopNavDropdown
-                      key={entry.id}
-                      group={entry}
-                      isGroupActive={isGroupActive(entry)}
-                      currentPath={currentPath}
-                    />
-                  ) : (
+                {navEntries.map((entry) => {
+                  if (isGroup(entry)) {
+                    return (
+                      <DesktopNavDropdown
+                        key={entry.id}
+                        group={entry}
+                        isGroupActive={isGroupActive(entry)}
+                        currentPath={currentPath}
+                      />
+                    );
+                  }
+                  return (
                     <NavigationMenuItem key={entry.path}>
-                      <DesktopNavLink link={entry} isActive={isActive(entry.path)} />
+                      {entry.isCta ? (
+                        <DesktopNavCta link={entry} />
+                      ) : (
+                        <DesktopNavLink link={entry} isActive={isActive(entry.path)} />
+                      )}
                     </NavigationMenuItem>
-                  )
-                )}
+                  );
+                })}
               </NavigationMenuList>
             </NavigationMenu>
           </div>
