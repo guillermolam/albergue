@@ -44,7 +44,7 @@ function ToastItem({ notification }: { notification: Notification }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 20, scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      class={`
+      className={`
         flex items-start gap-3 min-w-[280px] max-w-sm p-4 rounded-lg border shadow-lg
         backdrop-blur-sm
         ${typeStyles[notification.type]}
@@ -52,19 +52,19 @@ function ToastItem({ notification }: { notification: Notification }) {
       role="status"
       aria-live="polite"
     >
-      <span class="text-lg shrink-0 mt-0.5" aria-hidden="true">
+      <span className="text-lg shrink-0 mt-0.5" aria-hidden="true">
         {ICONS[notification.type]}
       </span>
-      <div class="flex-1 min-w-0">
+      <div className="flex-1 min-w-0">
         {notification.title && (
-          <p class="font-semibold text-sm leading-tight">{notification.title}</p>
+          <p className="font-semibold text-sm leading-tight">{notification.title}</p>
         )}
-        <p class="text-sm opacity-90 leading-snug break-words">{notification.message}</p>
+        <p className="text-sm opacity-90 leading-snug break-words">{notification.message}</p>
         {notification.action && (
           <button
             type="button"
             onClick={notification.action.onClick}
-            class="mt-2 text-xs font-bold underline hover:opacity-80 transition-opacity"
+            className="mt-2 text-xs font-bold underline hover:opacity-80 transition-opacity"
           >
             {notification.action.label}
           </button>
@@ -74,7 +74,7 @@ function ToastItem({ notification }: { notification: Notification }) {
         type="button"
         aria-label={t('common.close')}
         onClick={() => notificationActions.dismissToast(notification.id)}
-        class="shrink-0 text-sm opacity-60 hover:opacity-100 transition-opacity"
+        className="shrink-0 text-sm opacity-60 hover:opacity-100 transition-opacity"
       >
         ✕
       </button>
@@ -102,7 +102,7 @@ export function ToastNotification() {
 
   return (
     <div
-      class="
+      className="
         fixed top-4 right-4 z-[9999] flex flex-col gap-3
         pointer-events-none
       "
@@ -110,7 +110,7 @@ export function ToastNotification() {
     >
       <AnimatePresence initial={false}>
         {state.toasts.map((n: Notification) => (
-          <div key={n.id} class="pointer-events-auto">
+          <div key={n.id} className="pointer-events-auto">
             <ToastItem notification={n} />
           </div>
         ))}

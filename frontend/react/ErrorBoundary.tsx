@@ -43,19 +43,19 @@ export class ErrorBoundary extends Component<Props, State> {
         this.props.fallback ?? (
           <div
             role="alert"
-            class="flex flex-col items-center justify-center p-6 bg-red-50 border border-red-200 rounded-lg text-center"
+            className="flex flex-col items-center justify-center p-6 bg-red-50 border border-red-200 rounded-lg text-center"
           >
-            <span class="text-3xl mb-2" aria-hidden="true">
+            <span className="text-3xl mb-2" aria-hidden="true">
               ⚠️
             </span>
-            <h3 class="font-bold text-red-800 mb-1">Algo salió mal</h3>
-            <p class="text-sm text-red-700 mb-4">
+            <h3 className="font-bold text-red-800 mb-1">Algo salió mal</h3>
+            <p className="text-sm text-red-700 mb-4">
               {this.state.error?.message ?? 'Error desconocido'}
             </p>
             <button
               type="button"
               onClick={this.handleRetry}
-              class="px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded hover:bg-red-700 transition-colors"
+              className="px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded hover:bg-red-700 transition-colors"
             >
               Reintentar
             </button>

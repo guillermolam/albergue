@@ -71,10 +71,13 @@ test.describe('Route rendering tests', () => {
         warnings.slice(0, 10).forEach((w) => console.log(`  - ${w}`));
       }
 
-      // Check if page has content
+      // Check if page has content. Threshold is a blank/crashed-page smoke
+      // check, not a content-density requirement — deliberately minimal
+      // pages (e.g. /auth's bare login card, no header/nav/footer) can
+      // legitimately sit well under 100 chars of real text.
       const bodyText = await page.textContent('body');
       expect(bodyText).toBeTruthy();
-      expect(bodyText!.length).toBeGreaterThan(100);
+      expect(bodyText!.length).toBeGreaterThan(50);
 
       // Assert no critical errors
       expect(criticalErrors).toHaveLength(0);
