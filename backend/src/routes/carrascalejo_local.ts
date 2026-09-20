@@ -13,6 +13,7 @@ import { HTTPException } from "hono/http-exception";
 import type { Context } from "hono";
 import { XMLParser } from "fast-xml-parser";
 import type { ApiResponse } from "../types/index.js";
+import { BROWSER_USER_AGENT, decodeHtmlEntities, TimedCache } from "../lib/external_feed.js";
 
 export type LocalNoticeCategory = "agenda" | "noticias" | "tablon";
 
@@ -32,44 +33,9 @@ const FEEDS: { category: LocalNoticeCategory; url: string }[] = [
   { category: "tablon", url: "https://elcarrascalejo.es/atomtablon.php" },
 ];
 
-const BROWSER_USER_AGENT =
-  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36";
-const CACHE_TTL_MS = 30 * 60 * 1000;
-
-let cache: { data: LocalNotice[]; expiresAt: number } | null = null;
+const cache = new TimedCache<LocalNotice[]>(30 * 60 * 1000);
 
 const xmlParser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_" });
-
-const NAMED_ENTITIES: Record<string, string> = {
-  amp: "&",
-  quot: '"',
-  apos: "'",
-  lt: "<",
-  gt: ">",
-  nbsp: " ",
-  eacute: "é",
-  aacute: "á",
-  iacute: "í",
-  oacute: "ó",
-  uacute: "ú",
-  ntilde: "ñ",
-};
-
-// This town-hall site serves named HTML entities (e.g. "&eacute;") inside
-// its Atom <content>, same class of issue as merida.es's numeric entities
-// handled in merida_events.ts -- decode both forms rather than one.
-function decodeHtmlEntities(text: string): string {
-  return text.replace(/&(#\d+|#x[0-9a-fA-F]+|[a-zA-Z]+);/g, (match, entity: string) => {
-    if (entity[0] === "#") {
-      const codePoint =
-        entity[1] === "x" || entity[1] === "X"
-          ? parseInt(entity.slice(2), 16)
-          : parseInt(entity.slice(1), 10);
-      return Number.isNaN(codePoint) ? match : String.fromCodePoint(codePoint);
-    }
-    return NAMED_ENTITIES[entity] ?? match;
-  });
-}
 
 interface AtomEntryRaw {
   title?: string | { "#text"?: string };
@@ -141,13 +107,10 @@ const carrascalejoLocal = new Hono();
 
 carrascalejoLocal.get("/", async (c: Context) => {
   try {
-    if (!cache || cache.expiresAt < Date.now()) {
-      const data = await fetchAllNotices();
-      cache = { data, expiresAt: Date.now() + CACHE_TTL_MS };
-    }
+    const data = await cache.get(fetchAllNotices);
     return c.json<ApiResponse<LocalNotice[]>>({
       success: true,
-      data: cache.data,
+      data,
       message: "Local notices retrieved successfully",
       timestamp: new Date().toISOString(),
     });
