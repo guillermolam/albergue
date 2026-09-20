@@ -1432,3 +1432,33 @@ export function TreeIcon({ className = 'w-8 h-8', animate = true }: DoodleIconPr
     </motion.svg>
   );
 }
+
+// Tools/facilities icon (wrench + screwdriver, hand-drawn)
+export function ToolsIcon({ className = 'w-8 h-8', animate = true }: DoodleIconProps) {
+  return (
+    <motion.svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      whileHover={animate ? { rotate: [0, -8, 8, 0] } : {}}
+    >
+      <path
+        d="M62 22 C70 22 76 28 76 36 C76 40 74 44 71 46 L82 57 C85 60 85 65 82 68 C79 71 74 71 71 68 L60 57 C58 60 54 62 50 62 C42 62 36 56 36 48 C36 46 36 44 37 42 L46 51 L51 46 L42 37 C44 36 46 36 48 36 C49 36 50 36 51 37 L52 26 C55 24 58 22 62 22 Z"
+        fill="#5D4E37"
+        stroke="#1A1A1A"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M25 58 L40 73 L33 80 L18 65 Z"
+        fill="#D4A574"
+        stroke="#1A1A1A"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="21.5" cy="61.5" r="2.5" fill="#1A1A1A" />
+    </motion.svg>
+  );
+}
