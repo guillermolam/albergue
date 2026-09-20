@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useI18n } from '../hooks/useI18n';
 import { PageHero } from '../shared/PageHero';
+import { SectionDecor } from '../shared/SectionDecor';
 import { FancyCard } from '../shared/FancyCard';
 import { MapLibreMap, type MapLibreMarkerData } from '../shared/MapLibreMap';
 import { WiredButton } from '../doodle/WiredButton';
@@ -219,7 +220,8 @@ export function ViaPlataSection() {
   ];
 
   return (
-    <section className="py-8 bg-white">
+    <section className="relative isolate py-8 bg-white">
+      <SectionDecor preset="distance" />
       <div className="container mx-auto max-w-6xl px-4">
         <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
 

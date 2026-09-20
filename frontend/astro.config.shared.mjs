@@ -6,9 +6,14 @@ import icon from 'astro-icon';
 import { envField } from 'astro/config';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { loadRootEnv } from './scripts/root-env.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+// Smplrspace org/token/space ids live once, in the monorepo-root .env.
+// Must run before the env schema below is evaluated.
+loadRootEnv();
 
 export const sharedConfig = {
   output: 'server',
@@ -28,10 +33,12 @@ export const sharedConfig = {
         default: 'local',
       }),
       // Smplrspace spatial/floor-plan viewer (see frontend/react/spatial/).
-      // None of these exist yet -- no Smplrspace organization or Spaces have
-      // been created. Left optional and unset on purpose: the viewer detects
-      // missing config and renders a "not yet configured" placeholder rather
-      // than failing. Never fall back to Smplrspace's own demo IDs here.
+      // Not set directly here or in frontend/.env -- scripts/root-env.mjs
+      // derives them from SMPLRSPACE_* in the monorepo-root .env, so the org
+      // id and client token exist in exactly one file. Still optional: with
+      // no root .env (CI, a fresh clone) the viewer detects the missing
+      // config and renders a "not yet configured" placeholder rather than
+      // failing. Never fall back to Smplrspace's own demo IDs here.
       PUBLIC_SMPLR_ORGANIZATION_ID: envField.string({
         context: 'client',
         access: 'public',

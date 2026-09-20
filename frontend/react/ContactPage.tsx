@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { actions } from 'astro:actions';
 import { motion } from 'motion/react';
 import { PageHero } from './shared/PageHero';
+import { SectionDecor } from './shared/SectionDecor';
 import { FancyCard } from './shared/FancyCard';
 import { MapLibreMap } from './shared/MapLibreMap';
 import { WiredButton } from './doodle/WiredButton';
@@ -94,9 +95,10 @@ export function ContactPage() {
 
   return (
     <>
-      <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
+      <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} decor="hospitality" />
 
-      <section className="container mx-auto max-w-5xl px-4 py-12 md:py-16">
+      <section className="relative isolate container mx-auto max-w-5xl px-4 py-12 md:py-16">
+        <SectionDecor preset="maintenance" />
         <div className="grid gap-8 md:grid-cols-2">
           <div className="space-y-6">
             <div className="grid gap-4 sm:grid-cols-1">

@@ -1,0 +1,31 @@
+---
+import { FloatingLottie } from '../../react/shared/FloatingLottie';
+import type { LottieClip } from '../../react/shared/FloatingLottie';
+
+/**
+ * One decorative Lottie loop, for `.astro` pages that want to place a single
+ * clip by hand. Prefer `SectionDecor.astro`, which applies the shared
+ * per-section vocabulary; reach for this only for a one-off.
+ *
+ * Hydrates on visibility. The host element must be `relative isolate`, since
+ * the clip renders behind the section's content.
+ */
+interface Props {
+  /** Named clip -- 'wave-hello' | 'handsaw' | 'pipe-wrench' | 'tape-measure'. */
+  clip?: LottieClip;
+  /** Or an explicit `.lottie` URL. One of `clip` / `src` is required. */
+  src?: string;
+  side?: 'left' | 'right';
+  top?: string;
+  size?: number;
+  opacity?: number;
+  speed?: number;
+  delay?: number;
+  rotate?: number;
+  flip?: boolean;
+}
+
+const { clip, src, side = 'left', top = '50%', size = 160, ...rest } = Astro.props;
+---
+
+<FloatingLottie client:visible clip={clip} src={src} side={side} top={top} size={size} {...rest} />

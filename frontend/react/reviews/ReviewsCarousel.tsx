@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useI18n } from '../hooks/useI18n';
+import { SectionDecor } from '../shared/SectionDecor';
 import {
   ChatIcon,
   StarIcon,
@@ -127,10 +128,11 @@ export function ReviewsCarousel() {
 
   return (
     <section
-      className="py-12 bg-white"
+      className="relative isolate py-12 bg-white"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
+      <SectionDecor preset="hospitality" delayOffset={0.9} />
       <div className="container mx-auto max-w-3xl px-4">
         <div className="mb-6 text-center">
           <p className="text-xs font-bold uppercase tracking-wide text-[#00AB39]">{t.eyebrow}</p>

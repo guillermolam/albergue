@@ -5,6 +5,7 @@ import { actions } from 'astro:actions';
 import Layout from '../layouts/Layout.astro';
 import { DoodleCard } from '../components';
 import DoodleButton from '../components/doodle/DoodleButton.astro';
+import SectionDecor from '../components/SectionDecor.astro';
 import { backendJson } from '../lib/backend-api';
 import {
   BOOKING_DRAFT_SESSION_KEY,
@@ -73,10 +74,15 @@ const redsys = submitResult?.data?.payment?.gatewayUrl ? submitResult.data.payme
   description="Reserva una cama. El precio y la disponibilidad los confirma el servidor."
 >
   <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-3xl">
-    <h1 class="text-3xl font-bold text-charcoal mb-2 font-sketch">Reservar</h1>
-    <p class="text-dark-grey mb-6 font-handwritten">
-      El total lo calcula el servidor. Los datos de tarjeta van a Redsys, no a este sitio.
-    </p>
+    <div class="relative isolate mb-8">
+      <SectionDecor preset="booking" />
+      <div class="relative z-10">
+        <h1 class="text-3xl font-bold text-charcoal mb-2 font-sketch">Reservar</h1>
+        <p class="text-dark-grey mb-6 font-handwritten">
+          El total lo calcula el servidor. Los datos de tarjeta van a Redsys, no a este sitio.
+        </p>
+      </div>
+    </div>
 
     <ol class="flex flex-wrap gap-2 mb-6" aria-label="Pasos de reserva">
       {STEPS.map((item) => (

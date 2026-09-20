@@ -1,5 +1,6 @@
 import { useI18n } from '../hooks/useI18n';
 import { PageHero } from '../shared/PageHero';
+import { SectionDecor } from '../shared/SectionDecor';
 import { FancyCard } from '../shared/FancyCard';
 import { MapLibreMap } from '../shared/MapLibreMap';
 import { UtensilsIcon, PhoneIcon, MapPinIcon } from '../doodle/DoodleIcons';
@@ -214,7 +215,7 @@ export function HostelRestaurantPage() {
 
   return (
     <>
-      <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
+      <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} decor="hospitality" />
 
       <section className="container mx-auto max-w-4xl px-4 py-12">
         <FancyCard
@@ -239,7 +240,8 @@ export function HostelRestaurantPage() {
         />
       </section>
 
-      <section className="container mx-auto max-w-5xl px-4 py-12">
+      <section className="relative isolate container mx-auto max-w-5xl px-4 py-12">
+        <SectionDecor preset="journey" />
         <h2 className="mb-6 text-2xl font-bold text-[#5D4E37] font-sketch">{t.menuTitle}</h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {MENU.map((category) => (
