@@ -1,0 +1,13 @@
+---
+export const prerender = true;
+
+import Layout from '../../layouts/Layout.astro';
+import { HostelFacilitiesPage } from '../../../react/hostel/HostelFacilitiesPage';
+---
+
+<Layout
+  title="Instalaciones - Albergue Municipal Carrascalejo"
+  description="Instalaciones y servicios del Albergue Municipal Carrascalejo"
+>
+  <HostelFacilitiesPage client:load />
+</Layout>

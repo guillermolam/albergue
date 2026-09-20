@@ -1,37 +1,34 @@
 import { motion } from 'motion/react';
+import { actions } from 'astro:actions';
 import { WiredButton } from '../doodle/WiredButton';
-import { useState } from 'react';
-import { Bed, ArrowUp, ArrowDown, MapPin } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { BedIcon as Bed, MapPinIcon as MapPin } from '../doodle/DoodleIcons';
 import { useI18n } from '../hooks/useI18n';
 
+export interface AvailableBed {
+  id: number;
+  bedNumber: number;
+  roomNumber: number;
+  roomName: string;
+  roomType: string | null;
+  pricePerNight: string;
+  currency: string | null;
+}
+
 interface BedSelectionStepProps {
-  onNext: (selectedBeds: number[]) => void;
+  checkInDate?: Date;
+  checkOutDate?: Date;
+  /** Returns true on success (advance) or false on failure (stay, error
+   * already surfaced by the parent -- see BookingFlow.tsx's handleBedNext). */
+  onNext: (bed: AvailableBed) => Promise<boolean>;
   onBack: () => void;
 }
 
-const getBunkInfo = (bedNumber: number) => {
-  const isBottom = bedNumber % 2 === 1;
-  const bunkNumber = Math.ceil(bedNumber / 2);
-  const dormNumber = bedNumber <= 12 ? 1 : 2;
-  const bunkNumberInDorm = bedNumber <= 12 ? bunkNumber : bunkNumber - 6;
+function toIsoDate(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
 
-  return { isBottom, bunkNumber: bunkNumberInDorm, dormNumber };
-};
-
-function BedInfoCard({ bedNumber, isEs }: { bedNumber: number; isEs: boolean }) {
-  const info = getBunkInfo(bedNumber);
-  const bunkPositionLabel = info.isBottom
-    ? isEs
-      ? 'Litera Inferior'
-      : 'Bottom Bunk'
-    : isEs
-      ? 'Litera Superior'
-      : 'Top Bunk';
-  const activeBunkStyle = { opacity: 1, scale: 1, className: 'bg-[#2196F3] border-[#1565C0]' };
-  const inactiveBunkStyle = { opacity: 0.3, scale: 0.9, className: 'bg-gray-200 border-gray-400' };
-  const topBunkStyle = info.isBottom ? inactiveBunkStyle : activeBunkStyle;
-  const bottomBunkStyle = info.isBottom ? activeBunkStyle : inactiveBunkStyle;
-
+function BedDetailCard({ bed, isEs }: { bed: AvailableBed; isEs: boolean }) {
   return (
     <motion.div
       initial={{ scale: 0, rotate: -10, y: 20 }}
@@ -56,125 +53,18 @@ function BedInfoCard({ bedNumber, isEs }: { bedNumber: number; isEs: boolean }) 
         />
       </svg>
 
-      <div className="relative z-10 p-6 min-w-[280px]">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.1, type: 'spring', stiffness: 400 }}
-          className="text-center mb-4"
-        >
-          <div className="inline-flex items-center gap-3 bg-[#0071BC]/10 px-6 py-3 rounded-2xl">
-            <motion.div
-              animate={{ rotate: [0, -10, 10, -10, 0], scale: [1, 1.1, 1.1, 1.1, 1] }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <Bed className="w-8 h-8 text-[#0071BC]" strokeWidth={2.5} />
-            </motion.div>
-            <span className="text-4xl sketch-title text-[#0071BC]">
-              {isEs ? 'Cama' : 'Bed'} #{bedNumber}
-            </span>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="flex items-center justify-center gap-4 mb-4"
-        >
-          <div className="relative w-16 h-24">
-            <motion.div
-              initial={{ opacity: 0.3 }}
-              animate={{
-                opacity: topBunkStyle.opacity,
-                scale: topBunkStyle.scale,
-                y: info.isBottom ? 0 : [0, -2, 0],
-              }}
-              transition={{
-                opacity: { duration: 0.3, delay: 0.3 },
-                scale: { duration: 0.3, delay: 0.3 },
-                y: { duration: 1, repeat: Infinity, ease: 'easeInOut' },
-              }}
-              className={`absolute top-0 left-0 w-full h-8 rounded-lg border-3 ${topBunkStyle.className} flex items-center justify-center`}
-            >
-              {!info.isBottom && (
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 0.5, repeat: Infinity, delay: 0.5 }}
-                >
-                  <ArrowUp className="w-4 h-4 text-white" strokeWidth={3} />
-                </motion.div>
-              )}
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0.3 }}
-              animate={{
-                opacity: bottomBunkStyle.opacity,
-                scale: bottomBunkStyle.scale,
-                y: info.isBottom ? [0, -2, 0] : 0,
-              }}
-              transition={{
-                opacity: { duration: 0.3, delay: 0.3 },
-                scale: { duration: 0.3, delay: 0.3 },
-                y: { duration: 1, repeat: Infinity, ease: 'easeInOut' },
-              }}
-              className={`absolute bottom-0 left-0 w-full h-8 rounded-lg border-3 ${bottomBunkStyle.className} flex items-center justify-center`}
-            >
-              {info.isBottom && (
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 0.5, repeat: Infinity, delay: 0.5 }}
-                >
-                  <ArrowDown className="w-4 h-4 text-white" strokeWidth={3} />
-                </motion.div>
-              )}
-            </motion.div>
-
-            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gray-600 rounded" />
-            <div className="absolute right-0 top-0 bottom-0 w-1 bg-gray-600 rounded" />
-          </div>
-
-          <div className="text-left">
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 }}
-              className="text-2xl sketch-title text-[#5D4E37]"
-            >
-              {bunkPositionLabel}
-            </motion.p>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="text-sm text-gray-600 hand-drawn"
-            >
-              {isEs ? 'Litera' : 'Bunk'} #{info.bunkNumber}
-            </motion.p>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.45 }}
-          className="text-center pt-3 border-t-2 border-dashed border-gray-300"
-        >
-          <p className="text-sm text-gray-600 hand-drawn">
-            🏠 {isEs ? 'Dormitorio' : 'Dormitory'} {info.dormNumber}
-          </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ delay: 0.5, type: 'spring', stiffness: 200 }}
-          className="absolute -top-3 -right-3 w-10 h-10 bg-[#00AB39] rounded-full flex items-center justify-center text-white text-2xl"
-          style={{ boxShadow: '0 4px 8px rgba(0,171,57,0.4)' }}
-        >
-          ✓
-        </motion.div>
+      <div className="relative z-10 p-6 min-w-[280px] text-center">
+        <div className="inline-flex items-center gap-3 bg-[#0071BC]/10 px-6 py-3 rounded-2xl mb-4">
+          <Bed className="w-8 h-8 text-[#0071BC]" />
+          <span className="text-3xl sketch-title text-[#0071BC]">
+            {isEs ? 'Cama' : 'Bed'} #{bed.bedNumber}
+          </span>
+        </div>
+        <p className="text-lg text-[#5D4E37] hand-drawn">{bed.roomName}</p>
+        <p className="text-2xl sketch-title text-[#00AB39] mt-2">
+          €{bed.pricePerNight}{' '}
+          <span className="text-sm text-gray-500">/{isEs ? 'noche' : 'night'}</span>
+        </p>
       </div>
     </motion.div>
   );
@@ -182,30 +72,24 @@ function BedInfoCard({ bedNumber, isEs }: { bedNumber: number; isEs: boolean }) 
 
 function IsometricBed({
   bedNumber,
-  status,
+  selected,
   onClick,
 }: {
   bedNumber: number;
-  status: 'available' | 'selected' | 'occupied';
+  selected: boolean;
   onClick: () => void;
 }) {
-  const colors = {
-    available: { top: '#A5D6A7', side: '#66BB6A', front: '#4CAF50', stroke: '#2E7D32' },
-    selected: { top: '#64B5F6', side: '#42A5F5', front: '#2196F3', stroke: '#1565C0' },
-    occupied: { top: '#EF9A9A', side: '#E57373', front: '#F44336', stroke: '#C62828' },
-  };
-
-  const color = colors[status];
-  const isDisabled = status === 'occupied';
+  const color = selected
+    ? { top: '#64B5F6', side: '#42A5F5', front: '#2196F3', stroke: '#1565C0' }
+    : { top: '#A5D6A7', side: '#66BB6A', front: '#4CAF50', stroke: '#2E7D32' };
 
   return (
     <motion.button
       onClick={onClick}
-      disabled={isDisabled}
-      whileHover={!isDisabled ? { scale: 1.1, y: -5 } : {}}
-      whileTap={!isDisabled ? { scale: 0.95 } : {}}
+      whileHover={{ scale: 1.1, y: -5 }}
+      whileTap={{ scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 300 }}
-      className={`relative ${isDisabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
+      className="relative cursor-pointer"
       style={{ width: '100%', height: '120px' }}
     >
       <svg
@@ -263,7 +147,7 @@ function IsometricBed({
         >
           {bedNumber}
         </text>
-        {status === 'selected' && (
+        {selected && (
           <g>
             <circle cx="95" cy="40" r="8" fill="white" opacity="0.95" />
             <path
@@ -276,84 +160,99 @@ function IsometricBed({
             />
           </g>
         )}
-        {status === 'occupied' && (
-          <g>
-            <circle cx="95" cy="40" r="8" fill="white" opacity="0.95" />
-            <path
-              d="M91,36 L99,44 M91,44 L99,36"
-              stroke={color.stroke}
-              strokeWidth="2.5"
-              strokeLinecap="round"
-            />
-          </g>
-        )}
       </svg>
     </motion.button>
   );
 }
 
-export function BedSelectionStep({ onNext, onBack }: BedSelectionStepProps) {
+export function BedSelectionStep({
+  checkInDate,
+  checkOutDate,
+  onNext,
+  onBack,
+}: BedSelectionStepProps) {
   const { locale } = useI18n();
   const isEs = locale !== 'en';
 
-  const [dorm1Beds, setDorm1Beds] = useState<('available' | 'selected' | 'occupied')[]>(
-    Array.from({ length: 12 }, (_, i) => (i === 4 || i === 8 ? 'occupied' : 'available'))
-  );
-  const [dorm2Beds, setDorm2Beds] = useState<('available' | 'selected' | 'occupied')[]>(
-    Array.from({ length: 12 }, (_, i) => (i === 2 || i === 10 ? 'occupied' : 'available'))
-  );
+  const [beds, setBeds] = useState<AvailableBed[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
+  const [selectedBedId, setSelectedBedId] = useState<number | null>(null);
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleBedClick = (dorm: 1 | 2, index: number) => {
-    setError('');
-    if (dorm === 1) {
-      setDorm1Beds((prev) => {
-        const newBeds = [...prev];
-        if (newBeds[index] === 'available') {
-          setDorm2Beds(
-            Array.from({ length: 12 }, (_, i) =>
-              dorm2Beds[i] === 'occupied' ? 'occupied' : 'available'
-            )
-          );
-          return newBeds.map((status, i) =>
-            status === 'occupied' ? 'occupied' : i === index ? 'selected' : 'available'
-          );
-        } else if (newBeds[index] === 'selected') {
-          newBeds[index] = 'available';
-        }
-        return newBeds;
-      });
-    } else {
-      setDorm2Beds((prev) => {
-        const newBeds = [...prev];
-        if (newBeds[index] === 'available') {
-          setDorm1Beds(
-            Array.from({ length: 12 }, (_, i) =>
-              dorm1Beds[i] === 'occupied' ? 'occupied' : 'available'
-            )
-          );
-          return newBeds.map((status, i) =>
-            status === 'occupied' ? 'occupied' : i === index ? 'selected' : 'available'
-          );
-        } else if (newBeds[index] === 'selected') {
-          newBeds[index] = 'available';
-        }
-        return newBeds;
-      });
-    }
-  };
-
-  const selectedBedNumbers = [
-    ...dorm1Beds.map((status, i) => (status === 'selected' ? i + 1 : null)).filter(Boolean),
-    ...dorm2Beds.map((status, i) => (status === 'selected' ? i + 13 : null)).filter(Boolean),
-  ].filter((n) => n !== null) as number[];
-
-  const handleContinue = () => {
-    if (selectedBedNumbers.length === 0) {
-      setError(isEs ? 'Selecciona al menos una cama' : 'Please select at least one bed');
+  useEffect(() => {
+    if (!checkInDate || !checkOutDate) {
+      setLoadError(
+        isEs ? 'Selecciona primero las fechas de tu estancia' : 'Select your stay dates first'
+      );
+      setLoading(false);
       return;
     }
-    onNext(selectedBedNumbers);
+
+    let cancelled = false;
+    setLoading(true);
+    setLoadError('');
+
+    actions.booking
+      .getAvailableBeds({
+        checkInDate: toIsoDate(checkInDate),
+        checkOutDate: toIsoDate(checkOutDate),
+      })
+      .then(({ data, error: actionError }) => {
+        if (cancelled) return;
+        if (actionError) {
+          setLoadError(actionError.message);
+          return;
+        }
+        setBeds(data ?? []);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setLoadError(
+            isEs ? 'No se pudo cargar la disponibilidad' : 'Could not load availability'
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- re-fetch only when dates change
+  }, [checkInDate?.getTime(), checkOutDate?.getTime()]);
+
+  const bedsByRoom = useMemo(() => {
+    const grouped = new Map<number, AvailableBed[]>();
+    for (const bed of beds) {
+      const list = grouped.get(bed.roomNumber) ?? [];
+      list.push(bed);
+      grouped.set(bed.roomNumber, list);
+    }
+    return [...grouped.entries()].sort(([a], [b]) => a - b);
+  }, [beds]);
+
+  const selectedBed = beds.find((b) => b.id === selectedBedId) ?? null;
+
+  const handleContinue = async () => {
+    if (!selectedBed) {
+      setError(isEs ? 'Selecciona una cama' : 'Please select a bed');
+      return;
+    }
+    setError('');
+    setSubmitting(true);
+    const ok = await onNext(selectedBed);
+    setSubmitting(false);
+    if (!ok) {
+      setError(
+        isEs
+          ? 'Esa cama ya no está disponible. Elige otra.'
+          : 'That bed is no longer available. Please pick another.'
+      );
+      setSelectedBedId(null);
+    }
   };
 
   return (
@@ -370,7 +269,7 @@ export function BedSelectionStep({ onNext, onBack }: BedSelectionStepProps) {
             transition={{ type: 'spring', stiffness: 150, delay: 0.2 }}
             className="inline-block mb-4"
           >
-            <Bed className="w-20 h-20 text-[#00AB39] mx-auto" strokeWidth={2} />
+            <Bed className="w-20 h-20 text-[#00AB39] mx-auto" />
           </motion.div>
           <h1 className="text-4xl md:text-5xl sketch-title text-[#5D4E37] mb-3">
             {isEs ? 'Elige tu cama' : 'Select Your Bed'}
@@ -380,165 +279,100 @@ export function BedSelectionStep({ onNext, onBack }: BedSelectionStepProps) {
               ? 'Elige entre nuestros cómodos dormitorios'
               : 'Choose from our comfortable dormitories'}
           </p>
-
-          <svg className="mx-auto mt-4 w-32 h-2 opacity-40">
-            <path
-              d="M0,1 Q8,-1 16,1 T32,1 T48,1 T64,1 T80,1 T96,1 T112,1 T128,1"
-              stroke="#00AB39"
-              strokeWidth="2"
-              fill="none"
-            />
-          </svg>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="flex flex-wrap justify-center gap-6 mb-12"
-        >
-          {[
-            { status: isEs ? 'Disponible' : 'Available', color: '#4CAF50' },
-            { status: isEs ? 'Seleccionada' : 'Selected', color: '#2196F3' },
-            { status: isEs ? 'Ocupada' : 'Occupied', color: '#F44336' },
-          ].map((item) => (
-            <div key={item.status} className="flex items-center gap-2">
-              <div
-                className="w-6 h-6 rounded doodle-border"
-                style={{ backgroundColor: item.color }}
+        {loading && (
+          <p className="text-center text-gray-500 hand-drawn mb-8">
+            {isEs ? 'Cargando disponibilidad...' : 'Loading availability...'}
+          </p>
+        )}
+
+        {loadError && !loading && (
+          <div className="mb-8 relative">
+            <svg className="absolute inset-0 w-full h-full pointer-events-none">
+              <rect
+                x="4"
+                y="4"
+                width="calc(100% - 8px)"
+                height="calc(100% - 8px)"
+                fill="#FFE8E8"
+                stroke="#ED1C24"
+                strokeWidth="3"
+                rx="16"
               />
-              <span className="text-[#5D4E37] font-medium">{item.status}</span>
-            </div>
-          ))}
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mb-12 relative"
-        >
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            style={{ filter: 'drop-shadow(3px 4px 6px rgba(0,0,0,0.1))' }}
-          >
-            <rect
-              x="4"
-              y="4"
-              width="calc(100% - 8px)"
-              height="calc(100% - 8px)"
-              fill="white"
-              stroke="#00AB39"
-              strokeWidth="3.5"
-              rx="24"
-            />
-          </svg>
-
-          <div className="relative z-10 p-8">
-            <h2 className="text-3xl sketch-title text-[#00AB39] mb-6 flex items-center gap-3">
-              <MapPin className="w-7 h-7" strokeWidth={2.5} />
-              {isEs ? 'Dormitorio 1' : 'Dormitory 1'}
-              <span className="text-lg text-gray-600 hand-drawn">
-                {isEs ? '(Camas 1-12)' : '(Beds 1-12)'}
-              </span>
-            </h2>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-6">
-              {dorm1Beds.map((status, index) => (
-                <motion.div
-                  key={`dorm1-${index}`}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.5 + index * 0.03 }}
-                >
-                  <IsometricBed
-                    bedNumber={index + 1}
-                    status={status}
-                    onClick={() => handleBedClick(1, index)}
-                  />
-                </motion.div>
-              ))}
+            </svg>
+            <div className="relative z-10 text-center p-4">
+              <p className="text-[#ED1C24] font-medium hand-drawn">{loadError}</p>
             </div>
           </div>
-        </motion.div>
+        )}
 
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mb-12 relative"
-        >
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            style={{ filter: 'drop-shadow(3px 4px 6px rgba(0,0,0,0.1))' }}
+        {!loading && !loadError && beds.length === 0 && (
+          <p className="text-center text-gray-500 hand-drawn mb-8">
+            {isEs
+              ? 'No hay camas disponibles para esas fechas.'
+              : 'No beds available for those dates.'}
+          </p>
+        )}
+
+        {bedsByRoom.map(([roomNumber, roomBeds], roomIndex) => (
+          <motion.div
+            key={roomNumber}
+            initial={{ opacity: 0, x: roomIndex % 2 === 0 ? -20 : 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 + roomIndex * 0.1 }}
+            className="mb-12 relative"
           >
-            <rect
-              x="4"
-              y="4"
-              width="calc(100% - 8px)"
-              height="calc(100% - 8px)"
-              fill="white"
-              stroke="#D4A574"
-              strokeWidth="3.5"
-              rx="24"
-            />
-          </svg>
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none"
+              style={{ filter: 'drop-shadow(3px 4px 6px rgba(0,0,0,0.1))' }}
+            >
+              <rect
+                x="4"
+                y="4"
+                width="calc(100% - 8px)"
+                height="calc(100% - 8px)"
+                fill="white"
+                stroke="#00AB39"
+                strokeWidth="3.5"
+                rx="24"
+              />
+            </svg>
 
-          <div className="relative z-10 p-8">
-            <h2 className="text-3xl sketch-title text-[#D4A574] mb-6 flex items-center gap-3">
-              <span>🏠</span> {isEs ? 'Dormitorio 2' : 'Dormitory 2'}{' '}
-              <span className="text-lg text-gray-600 hand-drawn">
-                {isEs ? '(Camas 13-24)' : '(Beds 13-24)'}
-              </span>
-            </h2>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-6">
-              {dorm2Beds.map((status, index) => (
-                <motion.div
-                  key={`dorm2-${index}`}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.7 + index * 0.03 }}
-                >
-                  <IsometricBed
-                    bedNumber={index + 13}
-                    status={status}
-                    onClick={() => handleBedClick(2, index)}
-                  />
-                </motion.div>
-              ))}
+            <div className="relative z-10 p-8">
+              <h2 className="text-3xl sketch-title text-[#00AB39] mb-6 flex items-center gap-3">
+                <MapPin className="w-7 h-7" />
+                {roomBeds[0].roomName}
+              </h2>
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-6">
+                {roomBeds.map((bed) => (
+                  <motion.div
+                    key={bed.id}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                  >
+                    <IsometricBed
+                      bedNumber={bed.bedNumber}
+                      selected={bed.id === selectedBedId}
+                      onClick={() => {
+                        setError('');
+                        setSelectedBedId(bed.id === selectedBedId ? null : bed.id);
+                      }}
+                    />
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        ))}
 
-        {selectedBedNumbers.length > 0 && (
+        {selectedBed && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="mb-8 flex flex-col lg:flex-row gap-6 items-center justify-center"
+            className="mb-8 flex justify-center"
           >
-            <BedInfoCard bedNumber={selectedBedNumbers[0]} isEs={isEs} />
-
-            <div className="relative">
-              <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                <rect
-                  x="4"
-                  y="4"
-                  width="calc(100% - 8px)"
-                  height="calc(100% - 8px)"
-                  fill="#E8F5E9"
-                  stroke="#00AB39"
-                  strokeWidth="3"
-                  rx="16"
-                />
-              </svg>
-              <div className="relative z-10 p-6 text-center min-w-[200px]">
-                <p className="text-2xl sketch-title text-[#00AB39]">
-                  ✨ {isEs ? '¡Listo!' : 'Ready!'}
-                </p>
-                <p className="text-gray-600 mt-2 hand-drawn">
-                  {isEs ? 'Tu cama está reservada' : 'Your bed is reserved'}
-                </p>
-              </div>
-            </div>
+            <BedDetailCard bed={selectedBed} isEs={isEs} />
           </motion.div>
         )}
 
@@ -572,12 +406,21 @@ export function BedSelectionStep({ onNext, onBack }: BedSelectionStepProps) {
           transition={{ delay: 0.8 }}
           className="flex gap-4 justify-between"
         >
-          <WiredButton variant="outline" size="lg" onClick={onBack}>
+          <WiredButton variant="outline" size="lg" onClick={onBack} disabled={submitting}>
             ← {isEs ? 'Volver al Formulario' : 'Back to Form'}
           </WiredButton>
 
-          <WiredButton variant="primary" size="lg" onClick={handleContinue}>
-            {isEs ? 'Continuar al Pago' : 'Continue to Payment'} →
+          <WiredButton
+            variant="primary"
+            size="lg"
+            onClick={handleContinue}
+            disabled={submitting || loading}
+          >
+            {submitting
+              ? isEs
+                ? 'Guardando...'
+                : 'Saving...'
+              : `${isEs ? 'Continuar al Pago' : 'Continue to Payment'} →`}
           </WiredButton>
         </motion.div>
       </motion.div>

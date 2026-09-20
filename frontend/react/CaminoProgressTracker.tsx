@@ -72,22 +72,22 @@ export function CaminoProgressTracker() {
   const progressPercent = Math.min(100, (data.todayKm / data.dailyGoal) * 100);
 
   return (
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title flex items-center gap-2">
+    <div className="card bg-base-100 shadow-xl">
+      <div className="card-body">
+        <h2 className="card-title flex items-center gap-2">
           <span>📊</span>
           {t('dashboard.progress') || 'Progreso de Hoy'}
         </h2>
 
         {/* Daily progress bar */}
-        <div class="mt-4">
-          <div class="flex justify-between text-sm mb-1">
+        <div className="mt-4">
+          <div className="flex justify-between text-sm mb-1">
             <span>{data.todayKm} km</span>
             <span>Meta: {data.dailyGoal} km</span>
           </div>
-          <div class="w-full bg-base-200 rounded-full h-4 overflow-hidden">
+          <div className="w-full bg-base-200 rounded-full h-4 overflow-hidden">
             <motion.div
-              class="h-full bg-primary"
+              className="h-full bg-primary"
               initial={{ width: 0 }}
               animate={{ width: `${progressPercent}%` }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
@@ -97,53 +97,53 @@ export function CaminoProgressTracker() {
 
         {/* Goal editor */}
         {isEditingGoal ? (
-          <div class="flex gap-2 mt-3">
+          <div className="flex gap-2 mt-3">
             <input
               type="number"
               value={goalInput}
               onChange={(e) => setGoalInput(e.target.value)}
               min="1"
               max="100"
-              class="input input-bordered input-sm flex-1"
+              className="input input-bordered input-sm flex-1"
             />
-            <button class="btn btn-primary btn-sm" onClick={handleSaveGoal}>
+            <button className="btn btn-primary btn-sm" onClick={handleSaveGoal}>
               ✓
             </button>
-            <button class="btn btn-ghost btn-sm" onClick={() => setIsEditingGoal(false)}>
+            <button className="btn btn-ghost btn-sm" onClick={() => setIsEditingGoal(false)}>
               ✕
             </button>
           </div>
         ) : (
-          <button class="link link-primary text-sm mt-2" onClick={() => setIsEditingGoal(true)}>
+          <button className="link link-primary text-sm mt-2" onClick={() => setIsEditingGoal(true)}>
             {t('dashboard.editGoal') || 'Editar meta diaria'}
           </button>
         )}
 
         {/* Stage progress */}
         {data.stageName && (
-          <div class="mt-6 pt-4 border-t border-base-200">
-            <div class="flex justify-between text-sm mb-1">
-              <span class="font-semibold">{data.stageName}</span>
+          <div className="mt-6 pt-4 border-t border-base-200">
+            <div className="flex justify-between text-sm mb-1">
+              <span className="font-semibold">{data.stageName}</span>
               <span>{data.stageProgress}%</span>
             </div>
-            <div class="w-full bg-base-200 rounded-full h-3 overflow-hidden">
+            <div className="w-full bg-base-200 rounded-full h-3 overflow-hidden">
               <motion.div
-                class="h-full bg-secondary"
+                className="h-full bg-secondary"
                 initial={{ width: 0 }}
                 animate={{ width: `${data.stageProgress}%` }}
                 transition={{ duration: 1, ease: 'easeOut' }}
               />
             </div>
-            <p class="text-xs text-base-content/60 mt-1">
+            <p className="text-xs text-base-content/60 mt-1">
               {data.distanceToNext} km hasta la siguiente etapa
             </p>
           </div>
         )}
 
         {/* Total km */}
-        <div class="flex justify-between items-center mt-4">
-          <span class="text-sm text-base-content/60">Total acumulado</span>
-          <span class="text-2xl font-bold text-primary">{data.totalKm} km</span>
+        <div className="flex justify-between items-center mt-4">
+          <span className="text-sm text-base-content/60">Total acumulado</span>
+          <span className="text-2xl font-bold text-primary">{data.totalKm} km</span>
         </div>
       </div>
     </div>

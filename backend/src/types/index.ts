@@ -5,6 +5,24 @@
 
 // Re-export everything from domain_model schema
 export * from "@albergue/domain-model";
+import type {
+  Place,
+  PlaceAddress,
+  PlacePhone,
+  PlaceImage,
+  PlaceLabel,
+  PlacePrice,
+  Hostel,
+  HostelSocialLink,
+  HostelCertification,
+  HostelComplianceBadge,
+  HostelService,
+  HostelOpeningHours,
+  HostelBuilding,
+  HostelBedroom,
+  HostelBedBunk,
+  HostelBed,
+} from "@albergue/domain-model";
 
 // Additional backend-specific types
 
@@ -241,4 +259,47 @@ export interface SmsNotification {
 export interface GovernmentSubmissionData {
   bookingId: number;
   xmlContent: string;
+}
+
+// Places (points-of-interest gallery) composite types
+export interface PlaceWithDetails extends Place {
+  addresses: PlaceAddress[];
+  phones: PlacePhone[];
+  images: PlaceImage[];
+  labels: PlaceLabel[];
+  prices: PlacePrice[];
+}
+
+export interface PlaceFilter {
+  category?: string;
+  isActive?: boolean;
+}
+
+// Hostel aggregate composite types
+export interface HostelBedBunkWithBeds extends HostelBedBunk {
+  beds: HostelBed[];
+}
+
+export interface HostelBedroomWithBunks extends HostelBedroom {
+  bedBunks: HostelBedBunkWithBeds[];
+}
+
+export interface HostelBuildingWithRooms extends HostelBuilding {
+  bedrooms: HostelBedroomWithBunks[];
+}
+
+export interface HostelAggregate extends Hostel {
+  socialLinks: HostelSocialLink[];
+  certifications: HostelCertification[];
+  complianceBadges: HostelComplianceBadge[];
+  services: HostelService[];
+  openingHours: HostelOpeningHours[];
+  buildings: HostelBuildingWithRooms[];
+}
+
+export interface HostelStats {
+  bedroomCount: number;
+  totalBeds: number;
+  availableBeds: number;
+  minPricePerNight: string | null;
 }

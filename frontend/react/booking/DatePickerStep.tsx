@@ -5,13 +5,24 @@ import { WritingEffect } from '../doodle/WritingEffect';
 import { HandDrawnCalendar } from '../doodle/HandDrawnCalendar';
 import { useI18n } from '../hooks/useI18n';
 
+const MIN_GUESTS = 1;
+const MAX_GUESTS = 50;
+
 interface DatePickerStepProps {
-  onNext: (checkIn: Date, checkOut: Date) => void;
+  /** Returns true on success (advance) or false on failure (stay, error
+   * already surfaced by the parent -- see BookingFlow.tsx's handleDateNext). */
+  onNext: (checkIn: Date, checkOut: Date, guestCount: number) => Promise<boolean>;
   initialCheckIn?: Date;
   initialCheckOut?: Date;
+  initialGuestCount?: number;
 }
 
-export function DatePickerStep({ onNext, initialCheckIn, initialCheckOut }: DatePickerStepProps) {
+export function DatePickerStep({
+  onNext,
+  initialCheckIn,
+  initialCheckOut,
+  initialGuestCount,
+}: DatePickerStepProps) {
   const { locale } = useI18n();
   const isEs = locale !== 'en';
   const today = new Date();
@@ -19,7 +30,9 @@ export function DatePickerStep({ onNext, initialCheckIn, initialCheckOut }: Date
 
   const [checkInDate, setCheckInDate] = useState<Date | undefined>(initialCheckIn);
   const [checkOutDate, setCheckOutDate] = useState<Date | undefined>(initialCheckOut);
+  const [guestCount, setGuestCount] = useState(initialGuestCount ?? 1);
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const handleRangeSelect = (startDate: Date, endDate: Date) => {
     setCheckInDate(startDate);
@@ -27,7 +40,7 @@ export function DatePickerStep({ onNext, initialCheckIn, initialCheckOut }: Date
     setError('');
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (!checkInDate || !checkOutDate) {
       setError(
         isEs
@@ -46,8 +59,26 @@ export function DatePickerStep({ onNext, initialCheckIn, initialCheckOut }: Date
       return;
     }
 
+    if (!Number.isInteger(guestCount) || guestCount < MIN_GUESTS || guestCount > MAX_GUESTS) {
+      setError(
+        isEs
+          ? `El número de huéspedes debe estar entre ${MIN_GUESTS} y ${MAX_GUESTS}`
+          : `Guest count must be between ${MIN_GUESTS} and ${MAX_GUESTS}`
+      );
+      return;
+    }
+
     setError('');
-    onNext(checkInDate, checkOutDate);
+    setSubmitting(true);
+    const ok = await onNext(checkInDate, checkOutDate, guestCount);
+    setSubmitting(false);
+    if (!ok) {
+      setError(
+        isEs
+          ? 'No se pudieron guardar las fechas. Inténtalo de nuevo.'
+          : "Couldn't save your dates. Please try again."
+      );
+    }
   };
 
   return (
@@ -106,6 +137,33 @@ export function DatePickerStep({ onNext, initialCheckIn, initialCheckOut }: Date
             onContinue={handleContinue}
           />
         </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mt-6 flex items-center justify-center gap-3"
+        >
+          <label htmlFor="guest-count" className="text-sm font-medium text-[#5D4E37]">
+            {isEs ? 'Número de huéspedes' : 'Number of guests'}
+          </label>
+          <input
+            id="guest-count"
+            type="number"
+            min={MIN_GUESTS}
+            max={MAX_GUESTS}
+            value={guestCount}
+            onChange={(e) => setGuestCount(Number(e.target.value))}
+            className="w-20 px-3 py-2 doodle-border bg-[#FFF9F0] text-center focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
+            style={{ fontFamily: 'Patrick Hand, cursive' }}
+          />
+        </motion.div>
+
+        {submitting && (
+          <p className="mt-4 text-center text-sm text-gray-500 hand-drawn">
+            {isEs ? 'Guardando...' : 'Saving...'}
+          </p>
+        )}
 
         {error && (
           <motion.div

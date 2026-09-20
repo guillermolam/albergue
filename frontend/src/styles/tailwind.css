@@ -20,3 +20,44 @@
 @import './animations.css' layer(legacy);
 @import 'tailwindcss';
 @import './shadcn-theme.css';
+
+/* daisyUI 5, prefixed `daisy-` so its `.btn`/`.card`/`.badge` etc. classes
+   never collide with design-system.css's own unprefixed same-named legacy
+   classes (still live on dashboard.astro, camino.astro, AdminLayout.astro). */
+@plugin "daisyui" {
+  prefix: daisy-;
+  themes: albergue --default;
+}
+@plugin "daisyui/theme" {
+  name: 'albergue';
+  default: true;
+  color-scheme: light;
+  --color-primary: #00ab39;
+  --color-primary-content: #fff9f0;
+  --color-secondary: #0071bc;
+  --color-secondary-content: #fff9f0;
+  --color-accent: #d4a574;
+  --color-accent-content: #1a1a1a;
+  --color-neutral: #5d4e37;
+  --color-neutral-content: #fff9f0;
+  --color-base-100: #fff9f0;
+  --color-base-200: #f5ede0;
+  --color-base-300: #eae0cc;
+  --color-base-content: #1a1a1a;
+  --color-info: #42a5f5;
+  --color-info-content: #ffffff;
+  --color-success: #66bb6a;
+  --color-success-content: #ffffff;
+  --color-warning: #ffb74d;
+  --color-warning-content: #1a1a1a;
+  --color-error: #ef5350;
+  --color-error-content: #ffffff;
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 2px;
+  --depth: 1;
+  --noise: 0;
+}

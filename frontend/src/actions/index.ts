@@ -230,7 +230,40 @@ export const server = {
             draft = attachQuote(draft, quoted.data);
           }
         }
-        return persistDraft(context.session, draft);
+        const result = await persistDraft(context.session, draft);
+        return { ...result, quote: draft.quote };
+      },
+    }),
+
+    /** Public read of real bed availability for the current draft's dates
+     * -- lets client components (BedSelectionStep.tsx) fetch this without
+     * needing BACKEND_API_URL, which is server-only. */
+    getAvailableBeds: defineAction({
+      input: z.object({
+        checkInDate: isoDate,
+        checkOutDate: isoDate,
+      }),
+      handler: async (input) => {
+        const result = await backendJson<
+          Array<{
+            id: number;
+            bedNumber: number;
+            roomNumber: number;
+            roomName: string;
+            roomType: string | null;
+            pricePerNight: string;
+            currency: string | null;
+          }>
+        >(
+          `/api/bookings/available-beds?checkInDate=${encodeURIComponent(input.checkInDate)}&checkOutDate=${encodeURIComponent(input.checkOutDate)}`
+        );
+        if (!result.ok) {
+          throw new ActionError({
+            code: result.status === 503 ? 'SERVICE_UNAVAILABLE' : 'BAD_REQUEST',
+            message: result.message,
+          });
+        }
+        return result.data;
       },
     }),
 
@@ -335,6 +368,28 @@ export const server = {
               }
             : { unavailable: true as const, reason: intent.message },
         };
+      },
+    }),
+  },
+
+  contact: {
+    /** Public contact-form submission -- no session, no admin token. */
+    submit: defineAction({
+      input: z.object({
+        name: z.string().min(1).max(120),
+        email: z.email(),
+        subject: z.string().max(200).optional(),
+        message: z.string().min(1).max(4000),
+      }),
+      handler: async (input) => {
+        const result = await backendJson('/api/contact-messages', {
+          method: 'POST',
+          body: JSON.stringify(input),
+        });
+        if (!result.ok) {
+          throw new ActionError({ code: 'BAD_REQUEST', message: result.message });
+        }
+        return { ok: true as const };
       },
     }),
   },

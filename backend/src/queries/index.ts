@@ -12,3 +12,6 @@ export * from "./government_submissions.js";
 export * from "./notifications.js";
 export * from "./audit_log.js";
 export * from "./users.js";
+export * from "./contact_messages.js";
+export * from "./places.js";
+export * from "./hostel.js";

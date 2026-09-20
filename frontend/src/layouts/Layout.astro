@@ -2,6 +2,8 @@
 import '../styles/tailwind.css';
 import { Navigation } from '../../react/Navigation';
 import { Footer } from '../../react/Footer';
+import { backendJson } from '../lib/backend-api';
+import type { HostelAggregate } from '../lib/hostelTypes';
 
 export interface Props {
   title?: string;
@@ -16,6 +18,17 @@ const {
   showHeader = true,
   showFooter = true,
 } = Astro.props;
+
+// Runs at build time for still-prerendered pages (fine -- footer content
+// changes rarely, refreshes on every deploy) and live for on-demand SSR
+// pages. Falls back to Footer's own static footerData.ts constants when the
+// backend isn't reachable, so a broken/unconfigured backend never breaks
+// the footer.
+let hostelInfo: HostelAggregate | null = null;
+if (showFooter) {
+  const result = await backendJson<HostelAggregate>('/api/hostel');
+  if (result.ok) hostelInfo = result.data;
+}
 ---
 
 <!doctype html>
@@ -44,7 +57,7 @@ const {
         <slot />
       </main>
 
-      {showFooter && <Footer client:visible />}
+      {showFooter && <Footer client:visible hostelInfo={hostelInfo} />}
     </div>
   </body>
 </html>

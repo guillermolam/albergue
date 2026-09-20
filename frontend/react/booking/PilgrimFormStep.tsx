@@ -3,8 +3,9 @@ import { WiredButton } from '../doodle/WiredButton';
 import { PhoneInput } from '../doodle/PhoneInput';
 import { AddressAutocomplete } from '../doodle/AddressAutocomplete';
 import { useState, useEffect } from 'react';
-import { User } from 'lucide-react';
+import { UserIcon as User } from '../doodle/DoodleIcons';
 import { useI18n } from '../hooks/useI18n';
+import { countries } from '../constants/countries';
 
 interface PilgrimFormData {
   firstName: string;
@@ -13,6 +14,9 @@ interface PilgrimFormData {
   phone: string;
   nationality: string;
   country: string;
+  documentType: 'dni' | 'nie' | 'passport' | '';
+  documentNumber: string;
+  gender: 'male' | 'female' | 'other' | '';
   addressLine1: string;
   addressLine2: string;
   postalCode: string;
@@ -24,7 +28,10 @@ interface PilgrimFormData {
 }
 
 interface PilgrimFormStepProps {
-  onNext: (formData: PilgrimFormData) => void;
+  /** Returns true on a successful server submit (advance to the next step)
+   * or false on failure (stay on this step, error already surfaced by the
+   * parent -- see BookingFlow.tsx's handleFormNext). */
+  onNext: (formData: PilgrimFormData) => Promise<boolean>;
   onBack: () => void;
   prefillData?: {
     firstName: string;
@@ -35,6 +42,24 @@ interface PilgrimFormStepProps {
     nationality: string;
   };
 }
+
+// Bounds mirror src/actions/index.ts's booking.setContact Zod schema exactly
+// -- keep these in sync if that schema changes.
+const FIELD_LIMITS = {
+  firstName: { min: 1, max: 80 },
+  lastName: { min: 1, max: 80 },
+  secondLastName: { min: 0, max: 80 },
+  phone: { min: 6, max: 32 },
+  nationality: { min: 0, max: 64 },
+  country: { min: 2, max: 64 },
+  documentNumber: { min: 3, max: 32 },
+  addressLine1: { min: 1, max: 120 },
+  addressLine2: { min: 0, max: 80 },
+  postalCode: { min: 3, max: 16 },
+  city: { min: 1, max: 80 },
+  email: { min: 0, max: 254 },
+  emergencyContact: { min: 0, max: 120 },
+} as const;
 
 /** Single copy-object lookup instead of ~25 scattered `isEs ? a : b`
  * ternaries -- SonarCloud counts each inline ternary as its own
@@ -52,25 +77,37 @@ const FORM_COPY = {
     dateOfBirth: 'Fecha de Nacimiento',
     nationality: 'Nacionalidad',
     nationalityPlaceholder: 'p.ej., España',
+    documentType: 'Tipo de Documento',
+    documentTypeDni: 'DNI',
+    documentTypeNie: 'NIE',
+    documentTypePassport: 'Pasaporte',
+    documentNumber: 'Número de Documento',
+    gender: 'Género',
+    genderMale: 'Hombre',
+    genderFemale: 'Mujer',
+    genderOther: 'Otro',
+    genderSelect: 'Selecciona...',
     contactInfo: 'Información de Contacto',
     phone: 'Teléfono',
     email: 'Correo Electrónico',
     address: 'Dirección',
     country: 'País',
-    countryPlaceholder: 'España',
     addressLine1: 'Dirección Línea 1',
     addressLine1Placeholder: 'Empieza a escribir tu dirección...',
     addressLine2: 'Dirección Línea 2 (Opcional)',
     addressLine2Placeholder: 'Piso, puerta, etc.',
     postalCode: 'Código Postal',
-    autocompletingCity: 'Autocompletando ciudad...',
     city: 'Ciudad',
     emergencyContact: 'Contacto de Emergencia',
     emergencyContactName: 'Nombre de Contacto',
     emergencyPhone: 'Teléfono de Emergencia',
     back: 'Volver a Documento',
     continue: 'Continuar a Selección de Cama',
+    submitting: 'Guardando...',
     required: 'Este campo es obligatorio',
+    tooShort: 'Demasiado corto',
+    tooLong: 'Demasiado largo',
+    submitError: 'No se pudieron guardar tus datos. Inténtalo de nuevo.',
   },
   en: {
     title: 'Pilgrim Information',
@@ -82,25 +119,37 @@ const FORM_COPY = {
     dateOfBirth: 'Date of Birth',
     nationality: 'Nationality',
     nationalityPlaceholder: 'e.g., Spain',
+    documentType: 'Document Type',
+    documentTypeDni: 'DNI',
+    documentTypeNie: 'NIE',
+    documentTypePassport: 'Passport',
+    documentNumber: 'Document Number',
+    gender: 'Gender',
+    genderMale: 'Male',
+    genderFemale: 'Female',
+    genderOther: 'Other',
+    genderSelect: 'Select...',
     contactInfo: 'Contact Information',
     phone: 'Phone Number',
     email: 'Email Address',
     address: 'Home Address',
     country: 'Country',
-    countryPlaceholder: 'Spain',
     addressLine1: 'Address Line 1',
     addressLine1Placeholder: 'Start typing your street address...',
     addressLine2: 'Address Line 2 (Optional)',
     addressLine2Placeholder: 'Apartment, suite, etc.',
     postalCode: 'Postal / ZIP Code',
-    autocompletingCity: 'Autocompleting city...',
     city: 'City',
     emergencyContact: 'Emergency Contact',
     emergencyContactName: 'Contact Name',
     emergencyPhone: 'Emergency Phone',
     back: 'Back to ID Upload',
     continue: 'Continue to Bed Selection',
+    submitting: 'Saving...',
     required: 'This field is required',
+    tooShort: 'Too short',
+    tooLong: 'Too long',
+    submitError: "Couldn't save your details. Please try again.",
   },
 } as const;
 
@@ -115,7 +164,10 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
     secondLastName: '',
     phone: '',
     nationality: '',
-    country: '',
+    country: 'Spain',
+    documentType: '',
+    documentNumber: '',
+    gender: '',
     addressLine1: '',
     addressLine2: '',
     postalCode: '',
@@ -127,6 +179,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (prefillData) {
@@ -158,56 +211,58 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
     setFormData((prev) => ({
       ...prev,
       addressLine1: place.address,
-      city: place.city,
-      postalCode: place.postalCode,
+      city: place.city || prev.city,
+      postalCode: place.postalCode || prev.postalCode,
+      country: place.country || prev.country,
     }));
   };
 
-  const handlePostalCodeChange = (value: string) => {
-    handleChange('postalCode', value);
-
-    if (value.length >= 5) {
-      setTimeout(() => {
-        const mockCities: Record<string, string> = {
-          '28001': 'Madrid',
-          '08001': 'Barcelona',
-          '41001': 'Sevilla',
-          '46001': 'Valencia',
-          '06800': 'Mérida',
-          '10003': 'Cáceres',
-        };
-        const city = mockCities[value] || '';
-        if (city) {
-          handleChange('city', city);
-        }
-      }, 500);
-    }
-  };
-
   const validateForm = () => {
-    const requiredFields: (keyof PilgrimFormData)[] = [
-      'firstName',
-      'lastName',
-      'phone',
-      'nationality',
-      'country',
-      'addressLine1',
-      'postalCode',
-      'city',
-      'dateOfBirth',
-    ];
     const newErrors: Record<string, string> = {};
-    for (const field of requiredFields) {
-      if (!formData[field]) newErrors[field] = t.required;
-    }
+
+    const checkLength = (
+      field: keyof typeof FIELD_LIMITS,
+      value: string,
+      requiredOverride?: boolean
+    ) => {
+      const limits = FIELD_LIMITS[field];
+      const required = requiredOverride ?? limits.min > 0;
+      if (!value) {
+        if (required) newErrors[field] = t.required;
+        return;
+      }
+      if (value.length < limits.min) newErrors[field] = t.tooShort;
+      else if (value.length > limits.max) newErrors[field] = t.tooLong;
+    };
+
+    checkLength('firstName', formData.firstName);
+    checkLength('lastName', formData.lastName);
+    checkLength('secondLastName', formData.secondLastName);
+    checkLength('phone', formData.phone);
+    checkLength('country', formData.country);
+    checkLength('documentNumber', formData.documentNumber);
+    checkLength('addressLine1', formData.addressLine1);
+    checkLength('addressLine2', formData.addressLine2);
+    checkLength('postalCode', formData.postalCode);
+    checkLength('city', formData.city);
+    checkLength('email', formData.email, false);
+
+    if (!formData.documentType) newErrors.documentType = t.required;
+    if (!formData.gender) newErrors.gender = t.required;
+    if (!formData.dateOfBirth) newErrors.dateOfBirth = t.required;
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      onNext(formData);
+  const handleSubmit = async () => {
+    if (!validateForm() || submitting) return;
+
+    setSubmitting(true);
+    const ok = await onNext(formData);
+    setSubmitting(false);
+    if (!ok) {
+      setErrors((prev) => ({ ...prev, _form: t.submitError }));
     }
   };
 
@@ -230,7 +285,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
             transition={{ type: 'spring', stiffness: 150, delay: 0.2 }}
             className="inline-block mb-4"
           >
-            <User className="w-20 h-20 text-[#00AB39] mx-auto" strokeWidth={2} />
+            <User className="w-20 h-20 text-[#00AB39] mx-auto" />
           </motion.div>
           <h1 className="text-4xl md:text-5xl sketch-title text-[#5D4E37] mb-3">{t.title}</h1>
           <p className="text-lg text-gray-600 hand-drawn">{t.subtitle}</p>
@@ -294,6 +349,9 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                     onChange={(e) => handleChange('firstName', e.target.value)}
                     className={inputClass('firstName')}
                     style={{ fontFamily: 'Patrick Hand, cursive' }}
+                    autoComplete="given-name"
+                    minLength={FIELD_LIMITS.firstName.min}
+                    maxLength={FIELD_LIMITS.firstName.max}
                     required
                   />
                   {errors.firstName && (
@@ -315,6 +373,9 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                     onChange={(e) => handleChange('lastName', e.target.value)}
                     className={inputClass('lastName')}
                     style={{ fontFamily: 'Patrick Hand, cursive' }}
+                    autoComplete="family-name"
+                    minLength={FIELD_LIMITS.lastName.min}
+                    maxLength={FIELD_LIMITS.lastName.max}
                     required
                   />
                   {errors.lastName && (
@@ -336,6 +397,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                     onChange={(e) => handleChange('secondLastName', e.target.value)}
                     className="w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
                     style={{ fontFamily: 'Patrick Hand, cursive' }}
+                    maxLength={FIELD_LIMITS.secondLastName.max}
                   />
                 </motion.div>
               </div>
@@ -355,6 +417,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                     onChange={(e) => handleChange('dateOfBirth', e.target.value)}
                     className={inputClass('dateOfBirth')}
                     style={{ fontFamily: 'Patrick Hand, cursive' }}
+                    autoComplete="bday"
                     required
                   />
                   {errors.dateOfBirth && (
@@ -368,7 +431,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                   transition={{ delay: 0.3 }}
                 >
                   <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                    {t.nationality} <span className="text-[#ED1C24]">*</span>
+                    {t.nationality}
                   </label>
                   <input
                     type="text"
@@ -377,8 +440,88 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                     placeholder={t.nationalityPlaceholder}
                     className="w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
                     style={{ fontFamily: 'Patrick Hand, cursive' }}
+                    maxLength={FIELD_LIMITS.nationality.max}
+                  />
+                </motion.div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.32 }}
+                >
+                  <label className="block text-sm font-medium text-[#5D4E37] mb-2">
+                    {t.documentType} <span className="text-[#ED1C24]">*</span>
+                  </label>
+                  <select
+                    value={formData.documentType}
+                    onChange={(e) => handleChange('documentType', e.target.value)}
+                    className={inputClass('documentType')}
+                    style={{ fontFamily: 'Patrick Hand, cursive' }}
+                    required
+                  >
+                    <option value="">{t.genderSelect}</option>
+                    <option value="dni">{t.documentTypeDni}</option>
+                    <option value="nie">{t.documentTypeNie}</option>
+                    <option value="passport">{t.documentTypePassport}</option>
+                  </select>
+                  {errors.documentType && (
+                    <p className="mt-1 text-xs text-[#ED1C24] hand-drawn">{errors.documentType}</p>
+                  )}
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.34 }}
+                >
+                  <label className="block text-sm font-medium text-[#5D4E37] mb-2">
+                    {t.documentNumber} <span className="text-[#ED1C24]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.documentNumber}
+                    onChange={(e) => handleChange('documentNumber', e.target.value)}
+                    className={inputClass('documentNumber')}
+                    style={{ fontFamily: 'Patrick Hand, cursive' }}
+                    minLength={FIELD_LIMITS.documentNumber.min}
+                    maxLength={FIELD_LIMITS.documentNumber.max}
                     required
                   />
+                  {errors.documentNumber && (
+                    <p className="mt-1 text-xs text-[#ED1C24] hand-drawn">
+                      {errors.documentNumber}
+                    </p>
+                  )}
+                </motion.div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.36 }}
+                >
+                  <label className="block text-sm font-medium text-[#5D4E37] mb-2">
+                    {t.gender} <span className="text-[#ED1C24]">*</span>
+                  </label>
+                  <select
+                    value={formData.gender}
+                    onChange={(e) => handleChange('gender', e.target.value)}
+                    className={inputClass('gender')}
+                    style={{ fontFamily: 'Patrick Hand, cursive' }}
+                    autoComplete="sex"
+                    required
+                  >
+                    <option value="">{t.genderSelect}</option>
+                    <option value="male">{t.genderMale}</option>
+                    <option value="female">{t.genderFemale}</option>
+                    <option value="other">{t.genderOther}</option>
+                  </select>
+                  {errors.gender && (
+                    <p className="mt-1 text-xs text-[#ED1C24] hand-drawn">{errors.gender}</p>
+                  )}
                 </motion.div>
               </div>
             </div>
@@ -391,7 +534,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.35 }}
+                  transition={{ delay: 0.4 }}
                 >
                   <PhoneInput
                     value={formData.phone}
@@ -408,11 +551,9 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
+                  transition={{ delay: 0.42 }}
                 >
-                  <label className="block text-sm font-medium text-[#5D4E37] mb-2">
-                    {t.email} <span className="text-[#ED1C24]">*</span>
-                  </label>
+                  <label className="block text-sm font-medium text-[#5D4E37] mb-2">{t.email}</label>
                   <input
                     type="email"
                     value={formData.email}
@@ -420,7 +561,8 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                     placeholder="your@email.com"
                     className={inputClass('email')}
                     style={{ fontFamily: 'Patrick Hand, cursive' }}
-                    required
+                    autoComplete="email"
+                    maxLength={FIELD_LIMITS.email.max}
                   />
                   {errors.email && (
                     <p className="mt-1 text-xs text-[#ED1C24] hand-drawn">{errors.email}</p>
@@ -442,18 +584,23 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                   <label className="block text-sm font-medium text-[#5D4E37] mb-2">
                     {t.country} <span className="text-[#ED1C24]">*</span>
                   </label>
-                  <input
-                    type="text"
+                  <select
                     value={formData.country}
                     onChange={(e) => handleChange('country', e.target.value)}
-                    placeholder={t.countryPlaceholder}
                     className={inputClass('country').replace(
                       'focus:ring-[#00AB39]',
                       'focus:ring-[#0071BC]'
                     )}
                     style={{ fontFamily: 'Patrick Hand, cursive' }}
+                    autoComplete="country-name"
                     required
-                  />
+                  >
+                    {countries.map((c) => (
+                      <option key={c.code} value={c.name}>
+                        {c.flag} {c.name}
+                      </option>
+                    ))}
+                  </select>
                   {errors.country && (
                     <p className="mt-1 text-xs text-[#ED1C24] hand-drawn">{errors.country}</p>
                   )}
@@ -492,6 +639,8 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                     placeholder={t.addressLine2Placeholder}
                     className="w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 focus:ring-[#0071BC]"
                     style={{ fontFamily: 'Patrick Hand, cursive' }}
+                    autoComplete="address-line2"
+                    maxLength={FIELD_LIMITS.addressLine2.max}
                   />
                 </motion.div>
 
@@ -507,26 +656,26 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                     <input
                       type="text"
                       value={formData.postalCode}
-                      onChange={(e) => handlePostalCodeChange(e.target.value)}
+                      onChange={(e) => handleChange('postalCode', e.target.value)}
                       placeholder="28001"
+                      pattern="[A-Za-z0-9 \-]+"
+                      title={
+                        isEs
+                          ? 'Solo letras, números, espacios y guiones'
+                          : 'Letters, numbers, spaces and hyphens only'
+                      }
                       className={inputClass('postalCode').replace(
                         'focus:ring-[#00AB39]',
                         'focus:ring-[#0071BC]'
                       )}
                       style={{ fontFamily: 'Patrick Hand, cursive' }}
+                      autoComplete="postal-code"
+                      minLength={FIELD_LIMITS.postalCode.min}
+                      maxLength={FIELD_LIMITS.postalCode.max}
                       required
                     />
                     {errors.postalCode && (
                       <p className="mt-1 text-xs text-[#ED1C24] hand-drawn">{errors.postalCode}</p>
-                    )}
-                    {formData.postalCode && formData.postalCode.length >= 5 && (
-                      <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="mt-1 text-xs text-[#00AB39] hand-drawn flex items-center gap-1"
-                      >
-                        <span>✓</span> {t.autocompletingCity}
-                      </motion.p>
                     )}
                   </motion.div>
 
@@ -548,6 +697,9 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                         'focus:ring-[#0071BC]'
                       )}
                       style={{ fontFamily: 'Patrick Hand, cursive' }}
+                      autoComplete="address-level2"
+                      minLength={FIELD_LIMITS.city.min}
+                      maxLength={FIELD_LIMITS.city.max}
                       required
                     />
                     {errors.city && (
@@ -558,6 +710,10 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
               </div>
             </div>
 
+            {/* Not yet persisted server-side -- booking.setContact's schema has
+                no emergency-contact fields and neither does the pilgrims
+                table. Kept as an optional local convenience until that gap
+                is closed with a schema change. */}
             <div className="pt-6 border-t-2 border-dashed border-gray-300">
               <h3 className="text-2xl sketch-title text-[#5D4E37] mb-6 flex items-center gap-2">
                 <span>🚨</span> {t.emergencyContact}
@@ -578,6 +734,7 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                     placeholder="John Doe"
                     className="w-full px-4 py-3 doodle-border bg-[#FFF9F0] focus:outline-none focus:ring-2 focus:ring-[#00AB39]"
                     style={{ fontFamily: 'Patrick Hand, cursive' }}
+                    maxLength={FIELD_LIMITS.emergencyContact.max}
                   />
                 </motion.div>
 
@@ -596,6 +753,12 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
                 </motion.div>
               </div>
             </div>
+
+            {errors._form && (
+              <p role="alert" className="text-sm text-[#ED1C24] hand-drawn text-center">
+                {errors._form}
+              </p>
+            )}
           </div>
         </div>
 
@@ -605,15 +768,17 @@ export function PilgrimFormStep({ onNext, onBack, prefillData }: PilgrimFormStep
           transition={{ delay: 0.8 }}
           className="mt-10 flex gap-4 justify-between"
         >
-          <WiredButton variant="outline" size="lg" onClick={onBack}>
+          <WiredButton variant="outline" size="lg" onClick={onBack} disabled={submitting}>
             ← {t.back}
           </WiredButton>
 
-          <WiredButton variant="primary" size="lg" onClick={handleSubmit}>
-            {t.continue} →
+          <WiredButton variant="primary" size="lg" onClick={handleSubmit} disabled={submitting}>
+            {submitting ? t.submitting : `${t.continue} →`}
           </WiredButton>
         </motion.div>
       </motion.div>
     </div>
   );
 }
+
+export type { PilgrimFormData };

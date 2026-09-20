@@ -105,6 +105,13 @@ export const CERTIFICATIONS = [
   },
 ];
 
+// pathES/pathEN are identical for every internal link today (no
+// localized-URL feature actually exists) -- this helper avoids repeating
+// the same path twice per entry rather than writing each one out longhand.
+function internalLink(id: string, path: string, labelES: string, labelEN: string) {
+  return { id, pathES: path, pathEN: path, labelES, labelEN };
+}
+
 export const QUICK_LINKS = {
   internal: [
     {
@@ -128,6 +135,10 @@ export const QUICK_LINKS = {
       labelES: 'Mi Reserva',
       labelEN: 'My Booking',
     },
+    internalLink('hostel-info', '/hostel/info', 'El Albergue', 'The Hotel'),
+    internalLink('area-visit', '/area/visit', 'La Zona', 'The Area'),
+    internalLink('camino', '/camino', 'El Camino', 'El Camino'),
+    internalLink('contact', '/contact', 'Contacto', 'Contact'),
   ],
   legal: [
     {

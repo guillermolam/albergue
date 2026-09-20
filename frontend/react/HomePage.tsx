@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { motion } from 'motion/react';
-import { Bed, MapPin, Heart, Compass } from 'lucide-react';
+import {
+  BedIcon as Bed,
+  MapPinIcon as MapPin,
+  HeartIcon as Heart,
+  CompassIcon as Compass,
+} from './doodle/DoodleIcons';
 import { VisualAreaShowcase } from './VisualAreaShowcase';
 import { useI18n } from './hooks/useI18n';
 
@@ -126,7 +131,23 @@ function Squiggle({ delay = 0 }: { delay?: number }) {
   );
 }
 
-export function HomePage() {
+export interface HomePageStats {
+  bedroomCount: number;
+  totalBeds: number;
+  availableBeds: number;
+  minPricePerNight: string | null;
+}
+
+interface HomePageProps {
+  stats?: HomePageStats | null;
+}
+
+// Fallback values when the backend is unreachable -- keeps the hero from
+// ever showing blank/zeroed stats.
+const FALLBACK_PRICE = '10';
+const FALLBACK_BEDS_AVAILABLE = '24';
+
+export function HomePage({ stats }: Readonly<HomePageProps> = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { locale } = useI18n();
   const isEs = locale !== 'en';
@@ -250,12 +271,12 @@ export function HomePage() {
               {[
                 {
                   label: isEs ? 'Precio' : 'Price',
-                  value: '€10',
+                  value: `€${stats?.minPricePerNight ? Math.trunc(Number(stats.minPricePerNight)) : FALLBACK_PRICE}`,
                   sublabel: isEs ? '/noche' : '/night',
                 },
                 {
                   label: isEs ? 'Camas' : 'Beds',
-                  value: '24',
+                  value: String(stats?.availableBeds ?? FALLBACK_BEDS_AVAILABLE),
                   sublabel: isEs ? 'disponibles' : 'available',
                 },
               ].map((item, i) => (
@@ -380,9 +401,14 @@ export function HomePage() {
               {[
                 {
                   icon: Bed,
-                  text: isEs
-                    ? '2 dormitorios con 12 camas cada uno'
-                    : '2 dormitories with 12 beds each',
+                  text:
+                    stats && stats.bedroomCount > 0
+                      ? isEs
+                        ? `${stats.bedroomCount} dormitorios con ${Math.round(stats.totalBeds / stats.bedroomCount)} camas cada uno`
+                        : `${stats.bedroomCount} dormitories with ${Math.round(stats.totalBeds / stats.bedroomCount)} beds each`
+                      : isEs
+                        ? '2 dormitorios con 12 camas cada uno'
+                        : '2 dormitories with 12 beds each',
                 },
                 {
                   icon: MapPin,
