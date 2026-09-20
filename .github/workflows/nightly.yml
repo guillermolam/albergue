@@ -146,6 +146,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node.js and pnpm
+        # trunk-ignore(actionlint/action): $/ is GitHub's self-repository syntax (2026-07); Trunk's bundled actionlint predates it.
         uses: $/.github/actions/setup-node-pnpm
         with:
           node-version: "24"
@@ -175,6 +176,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node.js and pnpm
+        # trunk-ignore(actionlint/action): $/ is GitHub's self-repository syntax (2026-07); Trunk's bundled actionlint predates it.
         uses: $/.github/actions/setup-node-pnpm
         with:
           node-version: "24"
@@ -203,6 +205,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node.js and pnpm
+        # trunk-ignore(actionlint/action): $/ is GitHub's self-repository syntax (2026-07); Trunk's bundled actionlint predates it.
         uses: $/.github/actions/setup-node-pnpm
         with:
           node-version: "24"

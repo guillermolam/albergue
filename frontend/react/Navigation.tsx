@@ -18,6 +18,7 @@ import {
 } from './doodle/DoodleIcons';
 import { WiredButton } from './doodle/WiredButton';
 import { useI18n } from './hooks/useI18n';
+import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -96,13 +97,14 @@ function ActiveUnderline() {
  * scopes the match to this specific link's own ancestor only. */
 function DesktopNavLink({ link, isActive }: { link: NavLinkData; isActive: boolean }) {
   const Icon = link.icon;
+  const animateIcon = !usePrefersReducedMotion();
   return (
     <a href={link.path} className="relative px-4 py-2 group/navlink">
       <motion.span
         whileHover={{ y: -2, scale: 1.05 }}
         className={`inline-flex items-center gap-1.5 transition-colors ${isActive ? 'text-[#00AB39] font-semibold' : 'text-gray-700 group-hover/navlink:text-[#00AB39]'}`}
       >
-        <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+        <Icon className="h-4 w-4 shrink-0" animate={animateIcon} aria-hidden="true" />
         {link.label}
       </motion.span>
       {isActive && <ActiveUnderline />}
@@ -115,9 +117,10 @@ function DesktopNavLink({ link, isActive }: { link: NavLinkData; isActive: boole
  * should do -- not just another nav entry. */
 function DesktopNavCta({ link }: { link: NavLinkData }) {
   const Icon = link.icon;
+  const animateIcon = !usePrefersReducedMotion();
   return (
     <WiredButton href={link.path} variant="primary" size="sm" className="flex items-center gap-1.5">
-      <Icon className="h-4 w-4 shrink-0 text-white" aria-hidden="true" />
+      <Icon className="h-4 w-4 shrink-0 text-white" animate={animateIcon} aria-hidden="true" />
       {link.label}
     </WiredButton>
   );
@@ -133,10 +136,11 @@ function DesktopNavDropdown({
   currentPath: string;
 }>) {
   const TriggerIcon = group.icon;
+  const animateIcon = !usePrefersReducedMotion();
   return (
     <NavigationMenuItem className="relative">
       <NavigationMenuTrigger>
-        <TriggerIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
+        <TriggerIcon className="h-4 w-4 shrink-0" animate={animateIcon} aria-hidden="true" />
         {group.trigger}
       </NavigationMenuTrigger>
       {isGroupActive && <ActiveUnderline />}
@@ -152,7 +156,11 @@ function DesktopNavDropdown({
                   className="flex-row items-center gap-2"
                 >
                   <a href={item.path}>
-                    <ItemIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    <ItemIcon
+                      className="h-4 w-4 shrink-0"
+                      animate={animateIcon}
+                      aria-hidden="true"
+                    />
                     {item.label}
                   </a>
                 </NavigationMenuLink>
@@ -233,6 +241,7 @@ function MobileNavLink({
 }) {
   const Icon = link.icon;
   const isCtaHighlighted = link.isCta && !isActive;
+  const animateIcon = !usePrefersReducedMotion();
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -249,7 +258,7 @@ function MobileNavLink({
             : 'bg-white text-gray-700 hover:bg-[#F5E6D3]'
         }`}
       >
-        <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+        <Icon className="h-4 w-4 shrink-0" animate={animateIcon} aria-hidden="true" />
         {link.label}
       </a>
     </motion.div>
@@ -270,6 +279,7 @@ function MobileNavSection({
   const groupActive = currentPath === group.prefix || currentPath.startsWith(`${group.prefix}/`);
   const [expanded, setExpanded] = useState(groupActive);
   const TriggerIcon = group.icon;
+  const animateIcon = !usePrefersReducedMotion();
 
   return (
     <motion.div
@@ -285,7 +295,7 @@ function MobileNavSection({
         className={`flex w-full items-center justify-between px-4 py-3 doodle-border transition-all ${groupActive ? 'bg-[#00AB39]/10 text-[#00AB39]' : 'bg-white text-gray-700 hover:bg-[#F5E6D3]'}`}
       >
         <span className="flex items-center gap-2">
-          <TriggerIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
+          <TriggerIcon className="h-4 w-4 shrink-0" animate={animateIcon} aria-hidden="true" />
           {group.trigger}
         </span>
         <ChevronDown className={`h-4 w-4 transition-transform ${expanded ? 'rotate-180' : ''}`} />
