@@ -7,9 +7,10 @@ export interface SmplrspaceClientConfig {
   /**
    * Corresponds to Smplrspace's own project concept (see
    * `QueryClient.createSpace`'s documented `addToProjectId` option) --
-   * not invented here. Optional because, like every other id in this
-   * config, no real Smplrspace project exists yet; a boundary that
-   * required one before then would force a caller to fabricate a value.
+   * not invented here. Optional because no real Smplrspace project
+   * exists yet; requiring it here would force a caller to fabricate a
+   * value just to construct this config, unlike `organizationId` and
+   * `spaceId`, which this boundary can't meaningfully do without.
    */
   readonly projectId?: string;
   readonly organizationId: string;
