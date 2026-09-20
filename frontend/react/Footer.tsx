@@ -292,7 +292,7 @@ export function Footer({ hostelInfo }: Readonly<FooterProps> = {}) {
               </motion.div>
 
               <motion.a
-                href={`tel:${contact.phone}`}
+                href={`tel:${contact.phone.replace(/\s/g, '')}`}
                 className="flex items-center gap-3 text-[#E8F5E9] hover:text-white transition-colors hand-drawn"
                 whileHover={{ x: 5 }}
               >

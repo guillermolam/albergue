@@ -24,6 +24,11 @@ const COPY = {
       description:
         '24 camas en dormitorios mixtos con taquillas individuales. Ropa de cama incluida.',
     },
+    rooms: {
+      title: 'Habitaciones',
+      description:
+        'Terrazas privadas, aire acondicionado y TV de pantalla plana en todas las habitaciones.',
+    },
     kitchen: {
       title: 'Cocina',
       description:
@@ -52,6 +57,10 @@ const COPY = {
     accommodation: {
       title: 'Accommodation',
       description: '24 beds in mixed dormitories with individual lockers. Bed linen included.',
+    },
+    rooms: {
+      title: 'Rooms',
+      description: 'Private terraces, air conditioning, and flat-screen TV in every room.',
     },
     kitchen: {
       title: 'Kitchen',
@@ -86,6 +95,7 @@ export function HostelFacilitiesPage() {
 
   const facilities: { title: string; description: string; icon?: ReactNode }[] = [
     { ...t.accommodation, icon: <BedIcon className="h-8 w-8" /> },
+    { ...t.rooms, icon: <img src="/png/objects/tv.png" alt="" className="h-8 w-8" /> },
     { ...t.kitchen, icon: <UtensilsIcon className="h-8 w-8" /> },
     { ...t.bathrooms },
     { ...t.laundry },

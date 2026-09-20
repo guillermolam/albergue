@@ -10,11 +10,11 @@ export const CONTACT_INFO = {
     region: 'Extremadura',
     country: 'España',
   },
-  phone: '+34 924 XXX XXX',
+  phone: '+34 695 90 43 44',
   email: 'info@alberguecarrascalejo.com',
   coordinates: {
-    lat: 39.1234,
-    lng: -5.6789,
+    lat: 39.0223673,
+    lng: -6.3371905,
   },
 };
 
