@@ -189,6 +189,9 @@ const FACILITIES: FacilityEntry[] = [
     icon: (animate) => <WifiIcon className="h-8 w-8" animate={animate} />,
     // Real router credentials (TP-Link TL-MR6400, front-desk WiFi sign
     // matches the router label's default password) -- not fabricated.
+    // NOSONAR typescript:S2068 -- intentionally public, guest-facing WiFi
+    // access info (displayed with a QR code on the site itself), not a
+    // secret requiring env-var/secret-manager storage.
     wifi: { ssid: 'TP-Link_E3E4', password: '77301925' },
     es: {
       title: 'WiFi y Carga',
