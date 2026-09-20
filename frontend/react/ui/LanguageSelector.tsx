@@ -1,14 +1,18 @@
 import { motion, AnimatePresence } from 'motion/react';
-import { Globe } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Globe, Search } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import { useI18n } from '../hooks/useI18n';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
-import { LANGUAGES } from '../../src/stores/i18nStore';
+import { LANGUAGES, type Language } from '../../src/stores/i18nStore';
+
+const ALL_LANGUAGES = Object.values(LANGUAGES);
 
 export function LanguageSelector() {
   const { locale, setLocale } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState('');
   const animateDecorations = !usePrefersReducedMotion();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // The backdrop below is a click-to-dismiss overlay, not a focusable
   // control (aria-hidden, no keyboard handler on it) -- keyboard users
@@ -22,19 +26,35 @@ export function LanguageSelector() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
-  const languages = [
-    { code: 'en' as const, label: 'English', flag: '🇬🇧' },
-    { code: 'es' as const, label: 'Español', flag: '🇪🇸' },
-  ];
+  // Autofocus the search input on open; clear the query on close so the
+  // next open starts from the full list again.
+  useEffect(() => {
+    if (isOpen) {
+      inputRef.current?.focus();
+    } else {
+      setQuery('');
+    }
+  }, [isOpen]);
 
-  // i18nStore supports (and persists) many more locales than this compact
-  // dropdown offers as choices -- fall back to the full LANGUAGES registry
-  // so a visitor already on e.g. French sees their real language name
-  // instead of a blank label, even though only en/es are selectable here.
-  const matchedLanguage = languages.find((lang) => lang.code === locale);
-  const currentLanguage = matchedLanguage
-    ? { label: matchedLanguage.label, flag: matchedLanguage.flag }
-    : { label: LANGUAGES[locale].name, flag: LANGUAGES[locale].flag };
+  const filteredLanguages = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) return ALL_LANGUAGES;
+    return ALL_LANGUAGES.filter((lang) => lang.name.toLowerCase().includes(normalized));
+  }, [query]);
+
+  const currentLanguage: Language = LANGUAGES[locale];
+
+  function selectLanguage(code: Language['code']) {
+    setLocale(code);
+    setIsOpen(false);
+  }
+
+  function handleSearchKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Enter' && filteredLanguages.length > 0) {
+      event.preventDefault();
+      selectLanguage(filteredLanguages[0].code);
+    }
+  }
 
   return (
     <div className="relative">
@@ -83,7 +103,7 @@ export function LanguageSelector() {
           className="relative text-lg text-[#1A1A1D] group-hover:text-[#006b24] transition-colors"
           style={{ fontFamily: 'Patrick Hand, cursive' }}
         >
-          {currentLanguage.label}
+          {currentLanguage.name}
         </span>
 
         {/* Arrow indicator */}
@@ -126,7 +146,7 @@ export function LanguageSelector() {
 
             {/* Menu */}
             <motion.div
-              className="absolute top-full right-0 mt-2 z-50 min-w-[160px]"
+              className="absolute top-full right-0 mt-2 z-50 w-64"
               initial={{ opacity: 0, y: -10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -160,81 +180,112 @@ export function LanguageSelector() {
                 />
               </svg>
 
-              {/* Menu items */}
               <div className="relative p-2">
-                {languages.map((lang, index) => (
-                  <motion.button
-                    key={lang.code}
-                    onClick={() => {
-                      setLocale(lang.code);
-                      setIsOpen(false);
-                    }}
-                    className="relative w-full flex items-center gap-3 px-4 py-3 cursor-pointer group"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    whileHover={{ x: 3 }}
-                  >
-                    {/* Hover background */}
-                    <motion.div
-                      className="absolute inset-1 rounded-xl"
-                      initial={{ opacity: 0 }}
-                      whileHover={{ opacity: 1 }}
-                      style={{
-                        background:
-                          'linear-gradient(135deg, rgba(0, 171, 57, 0.1) 0%, rgba(0, 171, 57, 0.05) 100%)',
-                      }}
-                    />
+                {/* Search / autocomplete input */}
+                <div className="relative mb-1.5 flex items-center gap-2 rounded-lg border-2 border-[#5D4E37]/20 bg-white px-3 py-1.5">
+                  <Search className="h-4 w-4 shrink-0 text-[#5D4E37]/50" aria-hidden="true" />
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    role="combobox"
+                    aria-expanded={isOpen}
+                    aria-controls="language-selector-list"
+                    aria-autocomplete="list"
+                    autoComplete="off"
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    onKeyDown={handleSearchKeyDown}
+                    placeholder="Search language..."
+                    className="w-full bg-transparent text-sm text-[#1A1A1D] outline-none placeholder:text-[#5D4E37]/40"
+                    style={{ fontFamily: 'Patrick Hand, cursive' }}
+                  />
+                </div>
 
-                    {/* Active indicator */}
-                    {locale === lang.code && (
+                {/* Menu items */}
+                <div
+                  id="language-selector-list"
+                  role="listbox"
+                  className="max-h-56 overflow-y-auto"
+                >
+                  {filteredLanguages.length === 0 && (
+                    <p className="px-3 py-4 text-center text-sm text-[#5D4E37]/50">
+                      No matching language
+                    </p>
+                  )}
+                  {filteredLanguages.map((lang, index) => (
+                    <motion.button
+                      key={lang.code}
+                      type="button"
+                      role="option"
+                      aria-selected={locale === lang.code}
+                      onClick={() => selectLanguage(lang.code)}
+                      className="relative w-full flex items-center gap-3 px-3 py-2.5 cursor-pointer group"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: Math.min(index, 8) * 0.03 }}
+                      whileHover={{ x: 3 }}
+                    >
+                      {/* Hover background */}
                       <motion.div
-                        className="absolute left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#00AB39] rounded-full"
-                        layoutId="activeLanguage"
-                        transition={{
-                          type: 'spring',
-                          stiffness: 300,
-                          damping: 30,
+                        className="absolute inset-1 rounded-xl"
+                        initial={{ opacity: 0 }}
+                        whileHover={{ opacity: 1 }}
+                        style={{
+                          background:
+                            'linear-gradient(135deg, rgba(0, 171, 57, 0.1) 0%, rgba(0, 171, 57, 0.05) 100%)',
                         }}
                       />
-                    )}
 
-                    {/* Flag emoji */}
-                    <span className="relative text-2xl">{lang.flag}</span>
+                      {/* Active indicator */}
+                      {locale === lang.code && (
+                        <motion.div
+                          className="absolute left-1 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#00AB39] rounded-full"
+                          layoutId="activeLanguage"
+                          transition={{
+                            type: 'spring',
+                            stiffness: 300,
+                            damping: 30,
+                          }}
+                        />
+                      )}
 
-                    {/* Language label */}
-                    <span
-                      className={`relative text-lg transition-colors ${
-                        locale === lang.code
-                          ? 'text-[#00AB39]'
-                          : 'text-[#1A1A1D] group-hover:text-[#00AB39]'
-                      }`}
-                      style={{ fontFamily: 'Patrick Hand, cursive' }}
-                    >
-                      {lang.label}
-                    </span>
+                      {/* Flag emoji */}
+                      <span className="relative text-xl">{lang.flag}</span>
 
-                    {/* Check mark for active language */}
-                    {locale === lang.code && (
-                      <motion.svg
-                        className="relative ml-auto w-5 h-5 text-[#00AB39]"
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        transition={{
-                          type: 'spring',
-                          stiffness: 300,
-                          damping: 20,
-                        }}
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
+                      {/* Language name */}
+                      <span
+                        className={`relative text-base transition-colors ${
+                          locale === lang.code
+                            ? 'text-[#00AB39]'
+                            : 'text-[#1A1A1D] group-hover:text-[#00AB39]'
+                        }`}
+                        style={{ fontFamily: 'Patrick Hand, cursive' }}
                       >
-                        <polyline points="20 6 9 17 4 12" />
-                      </motion.svg>
-                    )}
-                  </motion.button>
-                ))}
+                        {lang.name}
+                      </span>
+
+                      {/* Check mark for active language */}
+                      {locale === lang.code && (
+                        <motion.svg
+                          className="relative ml-auto w-4 h-4 text-[#00AB39]"
+                          initial={{ scale: 0, rotate: -180 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          transition={{
+                            type: 'spring',
+                            stiffness: 300,
+                            damping: 20,
+                          }}
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                        >
+                          <polyline points="20 6 9 17 4 12" />
+                        </motion.svg>
+                      )}
+                    </motion.button>
+                  ))}
+                </div>
               </div>
 
               {/* Decorative corner stars */}
