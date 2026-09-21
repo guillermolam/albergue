@@ -53,47 +53,52 @@ interface FacilityEntry {
   en: LocaleCopy;
 }
 
-const CDN = 'https://le-de.cdn-website.com/4e684d9f728943a6941686bc89abe581/dms3rep/multi/opt';
+/** Local hostel photos under `frontend/public/albergue/`. */
+const PHOTO = {
+  dorm: '/albergue/dorm01_medio.webp',
+  dormHero: '/albergue/636cd43c350fa5b658be904d-file-1703101640529732__msi___jpeg-631w.webp',
+  kitchen: '/albergue/kitchen.webp',
+  bath1: '/albergue/bathroom_1.webp',
+  bath2: '/albergue/bath02.jpg',
+  patio1: '/albergue/patio_interior.webp',
+  patio2: '/albergue/patio_interior2.webp',
+  ac: '/albergue/ac.webp',
+} as const;
 
 const FACILITIES: FacilityEntry[] = [
   {
     id: 'accommodation',
     icon: (animate) => <BedIcon className="h-8 w-8" animate={animate} />,
-    images: [
-      `${CDN}/636cd43c350fa5b658be904d-file-1703101640529732__msi___jpeg-1920w.jpeg`,
-      `${CDN}/97255325_l13__msi___jpg-862h.jpg`,
-    ],
+    images: [PHOTO.dorm, PHOTO.dormHero, PHOTO.patio1, PHOTO.patio2],
     es: {
       title: 'Alojamiento',
       description:
-        '24 camas en dormitorios mixtos con taquillas individuales. Ropa de cama incluida.',
+        '24 camas en 2 dormitorios mixtos (6 literas cada uno) con taquillas. Ropa de cama incluida.',
       detail:
-        'Dormitorios mixtos ventilados con literas de madera, cada una con enchufe individual y luz de lectura. Las taquillas admiten mochilas grandes y tienen candado incluido; se recomienda llegar antes de las 20:00 para elegir cama.',
+        'Dos dormitorios mixtos ventilados con 6 literas cada uno (12 camas por sala). Cada cama tiene enchufe y luz de lectura; taquillas junto a las ventanas para mochilas grandes. Patio interior acristalado con plantas.',
       meta: [
         { label: 'Camas', value: '24' },
-        { label: 'Taquillas', value: '24' },
+        { label: 'Dormitorios', value: '2' },
+        { label: 'Taquillas', value: 'Sí' },
       ],
     },
     en: {
       title: 'Accommodation',
-      description: '24 beds in mixed dormitories with individual lockers. Bed linen included.',
+      description: '24 beds in 2 mixed dorms (6 bunks each) with lockers. Bed linen included.',
       detail:
-        'Ventilated mixed dormitories with wooden bunks, each with its own outlet and reading light. Lockers fit large backpacks and come with a lock; arrive before 8pm to pick your bed.',
+        'Two ventilated mixed dormitories with 6 bunks each (12 beds per room). Every bed has an outlet and reading light; lockers by the windows fit large backpacks. Glass-enclosed interior patio with plants.',
       meta: [
         { label: 'Beds', value: '24' },
-        { label: 'Lockers', value: '24' },
+        { label: 'Dorms', value: '2' },
+        { label: 'Lockers', value: 'Yes' },
       ],
     },
   },
   {
     id: 'rooms',
     icon: () => <img src="/png/objects/tv.png" alt="" className="h-8 w-8" />,
-    images: [
-      `${CDN}/636cd43c350fa5b658be904d-file-2742254582611335__msi___jpeg-1920w.webp`,
-      `${CDN}/81318354_m_normal_none__msi___jpg-1920w.webp`,
-      `${CDN}/120366765_m_173__msi___jpg-1920w.webp`,
-      `${CDN}/636cd43c350fa5b658be904d-file-590501970153012__msi___jpeg-1920w.webp`,
-    ],
+    // No dedicated room photos yet — omit carousel rather than showing patio/AC assets.
+    images: [],
     es: {
       title: 'Habitaciones',
       description:
@@ -113,13 +118,13 @@ const FACILITIES: FacilityEntry[] = [
   {
     id: 'kitchen',
     icon: (animate) => <UtensilsIcon className="h-8 w-8" animate={animate} />,
-    images: [`${CDN}/636cd43c350fa5b658be904d-file-526309953533133__msi___jpeg-1920w.webp`],
+    images: [PHOTO.kitchen, PHOTO.patio1],
     es: {
       title: 'Cocina',
       description:
         'Cocina equipada con nevera, microondas, utensilios y especias básicas. Zona de comedor.',
       detail:
-        'Cocina compartida abierta de 7:00 a 22:00, con dos fogones, nevera grande, microondas y menaje completo. La zona de comedor tiene mesas largas pensadas para compartir la cena entre peregrinos.',
+        'Cocina compartida abierta de 7:00 a 22:00, con dos fogones, nevera grande, microondas, lavadora/secadora en la misma línea (~4,5 m) y menaje completo. La zona de comedor tiene mesas largas pensadas para compartir la cena entre peregrinos.',
       meta: [{ label: 'Horario', value: '7–22h' }],
     },
     en: {
@@ -127,47 +132,48 @@ const FACILITIES: FacilityEntry[] = [
       description:
         'Equipped kitchen with fridge, microwave, utensils and basic spices. Dining area.',
       detail:
-        'Shared kitchen open from 7am to 10pm, with two stovetops, a large fridge, microwave and full cookware. The dining area has long tables made for sharing dinner with other pilgrims.',
+        'Shared kitchen open from 7am to 10pm, with two stovetops, a large fridge, microwave, washer/dryer on the same ~4.5 m run, and full cookware. The dining area has long tables made for sharing dinner with other pilgrims.',
       meta: [{ label: 'Hours', value: '7am–10pm' }],
     },
   },
   {
     id: 'bathrooms',
     icon: (animate) => <ShowerIcon className="h-8 w-8" animate={animate} />,
-    images: [
-      `${CDN}/636cd43c350fa5b658be904d-file-847572484228159__msi___jpeg-1920w.jpeg`,
-      `${CDN}/636cd43c350fa5b658be904d-file-8678956062191851__msi___jpeg-1920w.webp`,
-    ],
+    images: [PHOTO.bath1, PHOTO.bath2],
     es: {
       title: 'Baños',
-      description: 'Duchas calientes 24h, secadores de pelo, jabón y champú ecológicos.',
+      description: '2 baños: 2 duchas, 3 WC y 2 lavabos en cada uno. Agua caliente 24h.',
       detail:
-        'Baños separados por género con duchas individuales de agua caliente disponible las 24 horas. Jabón y champú ecológico incluidos, además de secadores de pelo en cada zona.',
+        'Dos baños completos (separados), cada uno con 2 duchas individuales, 3 aseos y 2 lavabos. Agua caliente las 24 horas; jabón y champú ecológicos incluidos.',
       meta: [
-        { label: 'Duchas', value: '6' },
-        { label: 'Agua caliente', value: '24h' },
+        { label: 'Baños', value: '2' },
+        { label: 'Duchas', value: '4' },
+        { label: 'WC', value: '6' },
+        { label: 'Lavabos', value: '4' },
       ],
     },
     en: {
       title: 'Bathrooms',
-      description: '24h hot showers, hair dryers, eco-friendly soap and shampoo.',
+      description: '2 bathrooms: 2 showers, 3 WCs and 2 sinks each. Hot water 24h.',
       detail:
-        'Gender-separated bathrooms with individual showers and hot water available around the clock. Eco-friendly soap and shampoo included, plus hair dryers in every section.',
+        'Two full bathrooms, each with 2 individual showers, 3 toilets and 2 sinks. Hot water around the clock; eco-friendly soap and shampoo included.',
       meta: [
-        { label: 'Showers', value: '6' },
-        { label: 'Hot water', value: '24h' },
+        { label: 'Bathrooms', value: '2' },
+        { label: 'Showers', value: '4' },
+        { label: 'WCs', value: '6' },
+        { label: 'Sinks', value: '4' },
       ],
     },
   },
   {
     id: 'laundry',
     icon: (animate) => <WashingMachineIcon className="h-8 w-8" animate={animate} />,
-    images: [`${CDN}/636cd43c350fa5b658be904d-file-526309953533133__msi___jpeg-1920w.webp`],
+    images: [PHOTO.kitchen],
     es: {
       title: 'Lavandería',
       description: 'Lavadora y secadora (€3 ciclo), tendedero exterior. Detergente incluido.',
       detail:
-        'Lavadora y secadora de uso público junto al patio, con detergente incluido en el precio. También hay un tendedero exterior cubierto para quien prefiera secar al aire libre.',
+        'Lavadora y secadora de uso público en la cocina, con detergente incluido en el precio. También hay un tendedero exterior cubierto para quien prefiera secar al aire libre.',
       meta: [
         { label: 'Precio', value: '€3/ciclo' },
         { label: 'Detergente', value: 'Incluido' },
@@ -177,7 +183,7 @@ const FACILITIES: FacilityEntry[] = [
       title: 'Laundry',
       description: 'Washer and dryer (€3/cycle), outdoor clothesline. Detergent included.',
       detail:
-        'Public washer and dryer next to the courtyard, with detergent included in the price. There is also a covered outdoor clothesline for anyone who prefers air-drying.',
+        'Public washer and dryer in the kitchen area, with detergent included in the price. There is also a covered outdoor clothesline for anyone who prefers air-drying.',
       meta: [
         { label: 'Price', value: '€3/cycle' },
         { label: 'Detergent', value: 'Included' },
@@ -192,6 +198,7 @@ const FACILITIES: FacilityEntry[] = [
     // Intentionally public, guest-facing WiFi access info (displayed with
     // a QR code on the site itself), not a secret requiring env-var storage.
     wifi: { ssid: 'TP-Link_E3E4', password: '77301925' }, // NOSONAR typescript:S2068
+    images: [PHOTO.ac],
     es: {
       title: 'WiFi y Carga',
       description: 'WiFi gratuito en todas las instalaciones. Puntos de carga USB y enchufes.',
@@ -210,7 +217,6 @@ const FACILITIES: FacilityEntry[] = [
   {
     id: 'bikes',
     icon: (animate) => <BicycleIcon className="h-8 w-8" animate={animate} />,
-    images: [`${CDN}/126045617_l__msi___jpg-1920w.png`],
     es: {
       title: 'Bicicletas',
       description: 'Alquiler de bicicletas €10/día. Incluye casco y candado. Reserva anticipada.',

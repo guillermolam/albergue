@@ -200,8 +200,8 @@
                       "centerSplit": false,
                       "panelsOpened": 1,
                       "railingStyle": "horizontal",
-                      "nbOfPanelsVertically": 1,
-                      "railingHeight": 110
+                      "railingHeight": 110,
+                      "nbOfPanelsVertically": 1
                     },
                     "position": {
                       "from": "end",
@@ -313,7 +313,95 @@
                   "t": 8.198,
                   "id": "47a0fdc2-5f3c-4e48-92f5-2bf416ced155"
                 },
-                "openings": []
+                "openings": [
+                  {
+                    "id": "5322a075-d449-4778-a6ca-60b00e091f6c",
+                    "name": "Dorm Window A",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 3
+                    },
+                    "dimensions": {
+                      "width": 110,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  },
+                  {
+                    "id": "c1594871-f772-4b13-a4ec-5a00aa23beb8",
+                    "name": "Dorm Window B",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 8
+                    },
+                    "dimensions": {
+                      "width": 110,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  },
+                  {
+                    "id": "f7d84ab9-fa8d-44e4-bc7b-2b64e64f34d0",
+                    "name": "Dorm Window C",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 13
+                    },
+                    "dimensions": {
+                      "width": 110,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  }
+                ]
               },
               {
                 "id": "3b0f0094-970f-4cde-8e9d-a21b879ec5f3",
@@ -690,7 +778,66 @@
                   "t": 12.331,
                   "id": "37a85afe-8282-4dcf-8adf-3df987b30b8b"
                 },
-                "openings": []
+                "openings": [
+                  {
+                    "id": "1b45155b-a0b0-4105-97bc-f9e0e51cc4c7",
+                    "name": "Kitchen Window 1",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 3.5
+                    },
+                    "dimensions": {
+                      "width": 110,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  },
+                  {
+                    "id": "53e563bc-ed02-4ae1-b132-d1179f67d936",
+                    "name": "Kitchen Window 2",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 8.5
+                    },
+                    "dimensions": {
+                      "width": 110,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  }
+                ]
               },
               {
                 "id": "607fe0f8-7d85-4079-9e3d-1999dd45b93b",
@@ -763,7 +910,36 @@
                   "t": 21.07,
                   "id": "2d824b3c-4bc0-4fdc-8000-0414a7414212"
                 },
-                "openings": []
+                "openings": [
+                  {
+                    "id": "3e7985b5-53a5-46a9-8723-4445eeee7f12",
+                    "name": "Patio Door W",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": true,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": true,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 2.5
+                    },
+                    "dimensions": {
+                      "width": 120,
+                      "height": 220
+                    }
+                  }
+                ]
               },
               {
                 "id": "9597ad54-f7af-472d-b35c-515a067ae7a2",
@@ -777,7 +953,37 @@
                   "t": 14.326,
                   "id": "492a0c50-2bde-4260-87b4-9ef2eb9fe6ff"
                 },
-                "openings": []
+                "openings": [
+                  {
+                    "id": "6b87e7c0-cebe-4621-a05a-9d189ebe8c7e",
+                    "name": "Patio Window S",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 2.5
+                    },
+                    "dimensions": {
+                      "width": 140,
+                      "height": 200,
+                      "baseHeight": 10
+                    }
+                  }
+                ]
               },
               {
                 "id": "7108e6bb-62fa-49ba-9cb2-0f40b86f880a",
@@ -791,7 +997,36 @@
                   "t": 14.326,
                   "id": "ebf283df-5dd0-4bc5-8f92-b95e0ae03b19"
                 },
-                "openings": []
+                "openings": [
+                  {
+                    "id": "eb0b68ba-d440-45e7-8dac-aaef6ab32787",
+                    "name": "Patio Door E",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": true,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": true,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 2.5
+                    },
+                    "dimensions": {
+                      "width": 120,
+                      "height": 220
+                    }
+                  }
+                ]
               },
               {
                 "id": "c4730ad7-53e3-4413-90e6-be698c2ac94e",
@@ -805,7 +1040,37 @@
                   "t": 21.07,
                   "id": "405bc221-00fc-4f32-9723-86e9866b0efb"
                 },
-                "openings": []
+                "openings": [
+                  {
+                    "id": "6202f2e5-68b5-4bf0-97d7-2ed9105f0db8",
+                    "name": "Patio Window N",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 2.5
+                    },
+                    "dimensions": {
+                      "width": 140,
+                      "height": 200,
+                      "baseHeight": 10
+                    }
+                  }
+                ]
               }
             ]
           },
@@ -834,7 +1099,36 @@
                   "t": 23.19,
                   "id": "63eba754-b630-405a-b186-d126262bf362"
                 },
-                "openings": []
+                "openings": [
+                  {
+                    "id": "5fb27566-d97f-488e-8131-c1bec3e456a8",
+                    "name": "Door Dorm 2",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 4
+                    },
+                    "dimensions": {
+                      "width": 80,
+                      "height": 210
+                    }
+                  }
+                ]
               },
               {
                 "id": "c3ad0188-6f42-4deb-ac25-ef722c87c459",
@@ -1108,7 +1402,66 @@
                   "t": 8.198,
                   "id": "2a7860b9-db7d-4802-b5bc-0bd36b548be0"
                 },
-                "openings": []
+                "openings": [
+                  {
+                    "id": "d43119fe-6542-448c-b1cf-953d29acff1e",
+                    "name": "Window Staff 1",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 2.5
+                    },
+                    "dimensions": {
+                      "width": 110,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  },
+                  {
+                    "id": "07339849-ba95-417e-8dcf-a075fa98dcfa",
+                    "name": "Window Staff 2",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 6.5
+                    },
+                    "dimensions": {
+                      "width": 110,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  }
+                ]
               },
               {
                 "id": "bb51e9db-c817-40eb-a918-03eb08857766",
@@ -1178,7 +1531,64 @@
                   "t": 12.331,
                   "id": "47612989-01cf-4e4f-87a6-50040610a74f"
                 },
-                "openings": []
+                "openings": [
+                  {
+                    "id": "7744eae4-b050-4d46-8d67-7d465eccf7e4",
+                    "name": "Door Staff Dorm",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 2
+                    },
+                    "dimensions": {
+                      "width": 80,
+                      "height": 210
+                    }
+                  },
+                  {
+                    "id": "bb6ff8c1-fa10-4dee-b94c-595f7de4ea4b",
+                    "name": "Door Toilets",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 6.5
+                    },
+                    "dimensions": {
+                      "width": 80,
+                      "height": 210
+                    }
+                  }
+                ]
               }
             ]
           },
@@ -1219,9 +1629,9 @@
             "options": {
               "cap": "flat",
               "type": "normal",
+              "thickness": 15,
               "autoFacade": true,
-              "partOfFacade": false,
-              "thickness": 15
+              "partOfFacade": false
             },
             "segments": [
               {
@@ -1265,7 +1675,36 @@
                   "t": 12.331,
                   "id": "ed1c740e-16dc-45c3-bfc5-c5da88c83070"
                 },
-                "openings": []
+                "openings": [
+                  {
+                    "id": "fb4c114d-1c89-4614-aa71-d04a44c0e8a5",
+                    "name": "Door Bath 1",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 1.2
+                    },
+                    "dimensions": {
+                      "width": 80,
+                      "height": 210
+                    }
+                  }
+                ]
               },
               {
                 "id": "4e24e66e-3a60-4957-831d-08c2a86ca3ce",
@@ -1336,7 +1775,37 @@
                   "t": 35.346,
                   "id": "c8f93c02-5cf9-4655-8dd8-44128c1bfa2d"
                 },
-                "openings": []
+                "openings": [
+                  {
+                    "id": "defabf17-23d3-45f3-8b00-6bb5969b5f7b",
+                    "name": "Bar Window W",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 2.5
+                    },
+                    "dimensions": {
+                      "width": 120,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  }
+                ]
               },
               {
                 "id": "b725aafa-e260-44f5-85c5-9241280d3d7d",
@@ -1350,7 +1819,95 @@
                   "t": 43.279,
                   "id": "c2991967-a78d-47c4-aefa-763df6624d84"
                 },
-                "openings": []
+                "openings": [
+                  {
+                    "id": "bf4aa620-59e3-4598-b535-bbf37c53e7f4",
+                    "name": "Bar Window N1",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 3.5
+                    },
+                    "dimensions": {
+                      "width": 140,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  },
+                  {
+                    "id": "fb01d274-2e19-4afb-ae56-e2ee661e1452",
+                    "name": "Bar Window N2",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 9.5
+                    },
+                    "dimensions": {
+                      "width": 140,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  },
+                  {
+                    "id": "ee3a2b14-e7fc-406a-824c-19e6feb9890e",
+                    "name": "Bar Window N3",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 15.5
+                    },
+                    "dimensions": {
+                      "width": 140,
+                      "height": 140,
+                      "baseHeight": 60
+                    }
+                  }
+                ]
               },
               {
                 "id": "3fd1d262-efe7-4692-afa6-5c5010917481",
@@ -1364,7 +1921,37 @@
                   "t": 43.279,
                   "id": "d72208e8-871f-48a9-9198-9fdfe3e0371c"
                 },
-                "openings": []
+                "openings": [
+                  {
+                    "id": "e90e5940-ddb5-4005-ae7d-94c052e11b2d",
+                    "name": "Bar Window E",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 2.5
+                    },
+                    "dimensions": {
+                      "width": 150,
+                      "height": 160,
+                      "baseHeight": 40
+                    }
+                  }
+                ]
               },
               {
                 "id": "5c8f2f75-25f9-4a2f-8265-24ca6b50e840",
@@ -1608,7 +2195,65 @@
                   "t": 47.744,
                   "id": "813a667d-4667-5522-a5a9-0b9205014a55"
                 },
-                "openings": []
+                "openings": [
+                  {
+                    "id": "ce01977a-9b2b-44de-a534-0ae3b878ada2",
+                    "name": "Warehouse Door E",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 4
+                    },
+                    "dimensions": {
+                      "width": 90,
+                      "height": 210
+                    }
+                  },
+                  {
+                    "id": "131c08c7-e241-4945-b2a8-927e4c11d43c",
+                    "name": "Warehouse Window E",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 9
+                    },
+                    "dimensions": {
+                      "width": 100,
+                      "height": 80,
+                      "baseHeight": 160
+                    }
+                  }
+                ]
               },
               {
                 "id": "d18932eb-e7fd-4848-8909-21d46082c388",
@@ -1622,7 +2267,36 @@
                   "t": 61.829,
                   "id": "f9401acd-9e05-5a25-806c-74197b6168ea"
                 },
-                "openings": []
+                "openings": [
+                  {
+                    "id": "bf0c8c31-f054-4231-84bd-8708ce19a05c",
+                    "name": "Warehouse Door S",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "roller-shutter",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 8
+                    },
+                    "dimensions": {
+                      "width": 300,
+                      "height": 300
+                    }
+                  }
+                ]
               },
               {
                 "id": "10c2a495-badc-42c8-952b-2bd9b8eb0447",
@@ -1636,7 +2310,65 @@
                   "t": 61.829,
                   "id": "dcd8e51d-914b-5751-a1d0-213dfb238c52"
                 },
-                "openings": []
+                "openings": [
+                  {
+                    "id": "8a8590c7-c2b4-4bf5-9a8d-c07da9cc4347",
+                    "name": "Warehouse Door W",
+                    "type": "door",
+                    "layers": [],
+                    "options": {
+                      "glass": false,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 4
+                    },
+                    "dimensions": {
+                      "width": 90,
+                      "height": 210
+                    }
+                  },
+                  {
+                    "id": "1c358236-1ce2-468e-87f5-bef92a71e7f8",
+                    "name": "Warehouse Window W",
+                    "type": "window",
+                    "layers": [],
+                    "options": {
+                      "glass": true,
+                      "style": "normal",
+                      "openFrom": "right",
+                      "swapKnob": false,
+                      "swapInOut": false,
+                      "twoPanels": false,
+                      "nbOfPanels": 2,
+                      "swapPanels": false,
+                      "centerSplit": false,
+                      "panelsOpened": 1,
+                      "railingStyle": "horizontal",
+                      "nbOfPanelsVertically": 1
+                    },
+                    "position": {
+                      "from": "start",
+                      "distance": 9
+                    },
+                    "dimensions": {
+                      "width": 100,
+                      "height": 80,
+                      "baseHeight": 160
+                    }
+                  }
+                ]
               }
             ]
           },
@@ -2007,132 +2739,108 @@
                 "end": {
                   "r": 27.955,
                   "t": 66.535,
-                  "id": "a5838ad0-de2d-4de4-9f20-02b86a450a3a"
+                  "id": "fff169b2-e930-4793-ae0c-ac8098a5497a"
                 },
                 "start": {
-                  "r": 28.079,
-                  "t": 60.682,
-                  "id": "a9d6a3b1-6b0e-4068-a03d-fea8dab9f528"
+                  "r": 27.964,
+                  "t": 66.135,
+                  "id": "15e23929-345f-4775-9020-1f7b5abf8fb3"
                 }
               },
               {
                 "end": {
                   "r": 63.251,
                   "t": 66.535,
-                  "id": "5e307d6c-3589-4d65-a7ef-1f2c9553b47c"
+                  "id": "6bd47640-093e-46e1-a478-129f007e2d4e"
                 },
                 "start": {
                   "r": 27.955,
                   "t": 66.535,
-                  "id": "a5838ad0-de2d-4de4-9f20-02b86a450a3a"
+                  "id": "fff169b2-e930-4793-ae0c-ac8098a5497a"
                 }
               },
               {
                 "end": {
                   "r": 63.251,
                   "t": 4.739,
-                  "id": "317cbb5f-a425-4590-b46b-eaf3348ab893"
+                  "id": "b221d6b5-aa5e-40c2-b750-fef31536764a"
                 },
                 "start": {
                   "r": 63.251,
                   "t": 66.535,
-                  "id": "5e307d6c-3589-4d65-a7ef-1f2c9553b47c"
+                  "id": "6bd47640-093e-46e1-a478-129f007e2d4e"
                 }
               },
               {
                 "end": {
-                  "r": 59.942,
+                  "r": 59.11,
                   "t": 4.739,
-                  "id": "d3a5eb58-9266-4785-97f1-adbab48f4cc5"
+                  "id": "72c9c397-940b-45e1-8398-ad29f599d635"
                 },
                 "start": {
                   "r": 63.251,
                   "t": 4.739,
-                  "id": "317cbb5f-a425-4590-b46b-eaf3348ab893"
+                  "id": "b221d6b5-aa5e-40c2-b750-fef31536764a"
                 }
               },
               {
                 "end": {
                   "r": 59.11,
                   "t": 5.446,
-                  "id": "7873c225-f7a0-4f88-9b6c-9c80dcf75119"
+                  "id": "a71ee6d9-3007-478e-9537-dc7570d52239"
                 },
                 "start": {
-                  "r": 59.942,
+                  "r": 59.11,
                   "t": 4.739,
-                  "id": "d3a5eb58-9266-4785-97f1-adbab48f4cc5"
+                  "id": "72c9c397-940b-45e1-8398-ad29f599d635"
                 }
               },
               {
                 "end": {
-                  "r": 59.11,
+                  "r": 37.633,
                   "t": 4.739,
-                  "id": "c5ab7d5d-6359-4b3f-b28f-421a568ed8ee"
+                  "id": "adbfb518-229c-4e0c-98f8-c9054763f323"
                 },
                 "start": {
                   "r": 59.11,
                   "t": 5.446,
-                  "id": "7873c225-f7a0-4f88-9b6c-9c80dcf75119"
-                }
-              },
-              {
-                "end": {
-                  "r": 58.287,
-                  "t": 5.421,
-                  "id": "446eb4f9-5aef-45ed-8589-1c6d70bc9fd5"
-                },
-                "start": {
-                  "r": 59.11,
-                  "t": 4.739,
-                  "id": "c5ab7d5d-6359-4b3f-b28f-421a568ed8ee"
-                }
-              },
-              {
-                "end": {
-                  "r": 37.633,
-                  "t": 4.739,
-                  "id": "7f342880-47ad-4492-87fd-9baee506a49b"
-                },
-                "start": {
-                  "r": 58.287,
-                  "t": 5.421,
-                  "id": "446eb4f9-5aef-45ed-8589-1c6d70bc9fd5"
+                  "id": "a71ee6d9-3007-478e-9537-dc7570d52239"
                 }
               },
               {
                 "end": {
                   "r": 37.633,
                   "t": 6.328,
-                  "id": "d9d0ae38-bebb-4414-9c64-54f97d071586"
+                  "id": "fe148779-551e-4160-bdc6-5831068fcf9e"
                 },
                 "start": {
                   "r": 37.633,
                   "t": 4.739,
-                  "id": "7f342880-47ad-4492-87fd-9baee506a49b"
+                  "id": "adbfb518-229c-4e0c-98f8-c9054763f323"
                 }
               },
               {
                 "end": {
                   "r": 29.277,
                   "t": 6.328,
-                  "id": "89ad5d80-e327-4999-9691-7faa2c6aa1af"
+                  "id": "8a9fdf8e-c4cc-4335-8257-ffafb6b144b1"
                 },
                 "start": {
                   "r": 37.633,
                   "t": 6.328,
-                  "id": "d9d0ae38-bebb-4414-9c64-54f97d071586"
+                  "id": "fe148779-551e-4160-bdc6-5831068fcf9e"
                 }
               },
               {
                 "end": {
-                  "r": 28.079,
-                  "t": 60.682,
-                  "id": "a9d6a3b1-6b0e-4068-a03d-fea8dab9f528"
+                  "r": 27.964,
+                  "t": 66.135,
+                  "id": "15e23929-345f-4775-9020-1f7b5abf8fb3"
                 },
                 "start": {
                   "r": 29.277,
                   "t": 6.328,
-                  "id": "89ad5d80-e327-4999-9691-7faa2c6aa1af"
+                  "id": "8a9fdf8e-c4cc-4335-8257-ffafb6b144b1"
                 }
               }
             ]
@@ -2809,12 +3517,12 @@
             "layers": [],
             "external": false,
             "position": {
-              "x": 49.317,
-              "z": -35.73,
+              "x": 49.94,
+              "z": -23.346,
               "elevation": 0.01
             },
             "rotation": {
-              "yaw": 179.5,
+              "yaw": 89.5,
               "roll": 0,
               "pitch": 0
             },
@@ -2897,98 +3605,6 @@
             "configuration": {
               "shape": "round"
             }
-          },
-          {
-            "id": "d232712c-da1b-4876-808d-8e97341f01d7",
-            "name": "Sink",
-            "layers": [],
-            "external": false,
-            "position": {
-              "x": 28.596,
-              "z": 73.461,
-              "elevation": 0.01
-            },
-            "rotation": {
-              "yaw": 0,
-              "roll": 0,
-              "pitch": 0
-            },
-            "catalogId": "104ec791-1716-4f0a-a9c1-afbea47a7ab0",
-            "dimensions": {
-              "width": 65.5,
-              "height": 90.7,
-              "length": 50
-            },
-            "levelIndex": 0
-          },
-          {
-            "id": "0b047038-cb14-4064-8f51-89b6df0cf719",
-            "name": "Sink",
-            "layers": [],
-            "external": false,
-            "position": {
-              "x": 44.112,
-              "z": 75.964,
-              "elevation": 0.01
-            },
-            "rotation": {
-              "yaw": 0,
-              "roll": 0,
-              "pitch": 0
-            },
-            "catalogId": "104ec791-1716-4f0a-a9c1-afbea47a7ab0",
-            "dimensions": {
-              "width": 65.5,
-              "height": 90.7,
-              "length": 50
-            },
-            "levelIndex": 0
-          },
-          {
-            "id": "b13a7042-0d10-4598-8571-af4ed1f65731",
-            "name": "Toilet",
-            "layers": [],
-            "external": false,
-            "position": {
-              "x": 39.655,
-              "z": 82.449,
-              "elevation": 0.01
-            },
-            "rotation": {
-              "yaw": -90.4,
-              "roll": 0,
-              "pitch": 0
-            },
-            "catalogId": "7528e431-6cbb-4f89-81b1-79d0729f00f6",
-            "dimensions": {
-              "width": 45.3,
-              "height": 91.9,
-              "length": 70.9
-            },
-            "levelIndex": 0
-          },
-          {
-            "id": "718998e2-dd6b-4b19-a484-23c2e751590c",
-            "name": "Toilet",
-            "layers": [],
-            "external": false,
-            "position": {
-              "x": 25.786,
-              "z": 82.424,
-              "elevation": 0.01
-            },
-            "rotation": {
-              "yaw": -90.4,
-              "roll": 0,
-              "pitch": 0
-            },
-            "catalogId": "7528e431-6cbb-4f89-81b1-79d0729f00f6",
-            "dimensions": {
-              "width": 45.3,
-              "height": 85.2,
-              "length": 70.9
-            },
-            "levelIndex": 0
           },
           {
             "id": "93eb8766-018b-448a-8cf1-5d7fba6ec4f4",
@@ -3419,84 +4035,6 @@
             }
           },
           {
-            "id": "46707f8f-1236-48fa-aac0-29d50f7ffed9",
-            "name": "Triangular desk",
-            "layers": [],
-            "external": false,
-            "position": {
-              "x": 38.499,
-              "z": -16.265,
-              "elevation": 0.01
-            },
-            "rotation": {
-              "yaw": 30,
-              "roll": 0,
-              "pitch": 0
-            },
-            "catalogId": "b4976395-1e6a-445a-ab30-b371012de060",
-            "dimensions": {
-              "width": 60,
-              "height": 70,
-              "length": 130
-            },
-            "levelIndex": 0,
-            "configuration": {
-              "seat": "office-chair"
-            }
-          },
-          {
-            "id": "50bfb8c8-0afc-43b7-9f23-0321be43f956",
-            "name": "Triangular desk",
-            "layers": [],
-            "external": false,
-            "position": {
-              "x": 38.466,
-              "z": -16.223,
-              "elevation": 0.01
-            },
-            "rotation": {
-              "yaw": 150,
-              "roll": 0,
-              "pitch": 0
-            },
-            "catalogId": "b4976395-1e6a-445a-ab30-b371012de060",
-            "dimensions": {
-              "width": 60,
-              "height": 70,
-              "length": 130
-            },
-            "levelIndex": 0,
-            "configuration": {
-              "seat": "office-chair"
-            }
-          },
-          {
-            "id": "21692264-258f-4933-bf44-0babdf922c7b",
-            "name": "Triangular desk",
-            "layers": [],
-            "external": false,
-            "position": {
-              "x": 38.524,
-              "z": -16.231,
-              "elevation": 0.01
-            },
-            "rotation": {
-              "yaw": -90,
-              "roll": 0,
-              "pitch": 0
-            },
-            "catalogId": "b4976395-1e6a-445a-ab30-b371012de060",
-            "dimensions": {
-              "width": 60,
-              "height": 70,
-              "length": 130
-            },
-            "levelIndex": 0,
-            "configuration": {
-              "seat": "office-chair"
-            }
-          },
-          {
             "id": "0943a8aa-3df6-4ef8-bdfa-2f54f3d0216a",
             "name": "Shelves",
             "layers": [],
@@ -3640,6 +4178,1565 @@
               "length": 60
             },
             "levelIndex": 0
+          },
+          {
+            "id": "43fe0a9b-bf51-45c6-ba25-3864cabf9cec",
+            "name": "Table & chairs",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 37.42,
+              "z": -37.615,
+              "elevation": 0.022
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "c6e8a3ce-500c-4976-9435-ee958e048076",
+            "dimensions": {
+              "width": 100,
+              "height": 75,
+              "length": 180
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "chair",
+              "shape": "rectangle",
+              "noEndSeat": false
+            }
+          },
+          {
+            "id": "ad003bdd-fca7-4e49-8650-5ddba4e84edf",
+            "name": "Table & chairs",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 40.012,
+              "z": -37.453,
+              "elevation": 0.772
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "c6e8a3ce-500c-4976-9435-ee958e048076",
+            "dimensions": {
+              "width": 100,
+              "height": 75,
+              "length": 180
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "chair",
+              "shape": "rectangle",
+              "noEndSeat": false
+            }
+          },
+          {
+            "id": "d72d5074-410e-4efc-b3ae-9997d629b06c",
+            "name": "Table & chairs",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 45.891,
+              "z": -38.077,
+              "elevation": 0.022
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "c6e8a3ce-500c-4976-9435-ee958e048076",
+            "dimensions": {
+              "width": 100,
+              "height": 43.8,
+              "length": 180
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "chair",
+              "shape": "rectangle",
+              "noEndSeat": true
+            }
+          },
+          {
+            "id": "7f3f60b0-0be4-4033-9d52-381416bb09f1",
+            "name": "Cube",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 48.893,
+              "z": -37.943,
+              "elevation": 0.022
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "d04914df-0d0c-4836-aa11-218eeb1786c2",
+            "dimensions": {
+              "width": 100,
+              "height": 106.6,
+              "length": 100
+            },
+            "levelIndex": 0,
+            "configuration": {}
+          },
+          {
+            "id": "42c16f03-780d-4a39-a4d4-9f7cfaee6d26",
+            "name": "Cube",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 49.908,
+              "z": -37.933,
+              "elevation": 0.022
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "d04914df-0d0c-4836-aa11-218eeb1786c2",
+            "dimensions": {
+              "width": 100,
+              "height": 101.7,
+              "length": 100
+            },
+            "levelIndex": 0,
+            "configuration": {}
+          },
+          {
+            "id": "36b8c928-b5fa-4b60-adb9-3e40b8df702a",
+            "name": "Cube",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 50.918,
+              "z": -37.954,
+              "elevation": 0.022
+            },
+            "rotation": {
+              "yaw": -180,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "d04914df-0d0c-4836-aa11-218eeb1786c2",
+            "dimensions": {
+              "width": 100.6,
+              "height": 100.6,
+              "length": 100.6
+            },
+            "levelIndex": 0,
+            "configuration": {}
+          },
+          {
+            "id": "c3f31cc5-432b-4ba5-9e1f-080598de8bf4",
+            "name": "Cube",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 48.67,
+              "z": -40.767,
+              "elevation": 0.022
+            },
+            "rotation": {
+              "yaw": -90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "d04914df-0d0c-4836-aa11-218eeb1786c2",
+            "dimensions": {
+              "width": 57.1,
+              "height": 123.8,
+              "length": 476.1
+            },
+            "levelIndex": 0,
+            "configuration": {}
+          },
+          {
+            "id": "538a7dc8-fcbb-4133-b873-cf0d1d1828a3",
+            "name": "Table & chairs",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 45.338,
+              "z": -33.517,
+              "elevation": 0.022
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "c6e8a3ce-500c-4976-9435-ee958e048076",
+            "dimensions": {
+              "width": 100,
+              "height": 75,
+              "length": 180
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "stool",
+              "shape": "rectangle",
+              "noEndSeat": false
+            }
+          },
+          {
+            "id": "197e0594-e027-4fa4-838d-0001123fd2ea",
+            "name": "Table & chairs",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 41.677,
+              "z": -33.531,
+              "elevation": 0.022
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "c6e8a3ce-500c-4976-9435-ee958e048076",
+            "dimensions": {
+              "width": 100,
+              "height": 75,
+              "length": 180
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "stool",
+              "shape": "rectangle",
+              "noEndSeat": false
+            }
+          },
+          {
+            "id": "88461956-009a-4353-bf5c-d39820570fd2",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 45.98,
+              "z": -23.784,
+              "elevation": 0.022
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "0a5b3e8c-7a92-4ebc-a632-039f8a2a8076",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 42.665,
+              "z": -23.872,
+              "elevation": 0.316
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "49985f10-a8c7-4953-8f29-ad93720f0776",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 41.666,
+              "z": -23.987,
+              "elevation": 1.77
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "7679dcab-8ecf-4f97-be66-78ee85fd0030",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 45.227,
+              "z": -23.866,
+              "elevation": 1.454
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "18e0ecdc-2faa-4013-8af0-1e0bbf2720a1",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 42.888,
+              "z": -26.712,
+              "elevation": 0.022
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "bc600882-a98e-49aa-a8f0-fa6498afa55e",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 45.734,
+              "z": -26.58,
+              "elevation": 0.022
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "7e204025-a05a-4eec-b788-e99b0df1e573",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 41.854,
+              "z": -26.653,
+              "elevation": 1.29
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "03a847b1-3dd6-4c13-9410-f261f294e849",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 45.709,
+              "z": -26.556,
+              "elevation": 1.198
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "f0a7def6-0144-4d47-8d0d-e4ce5f6fc025",
+            "name": "Shelves",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 40.547,
+              "z": -23.895,
+              "elevation": 0.022
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "6bb82005-5787-43bd-9935-5b36645fa82f",
+            "dimensions": {
+              "width": 54,
+              "height": 211.9,
+              "length": 117.9
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "doors": "no-doors",
+              "backPanel": false,
+              "glassDoor": false
+            }
+          },
+          {
+            "id": "a1bae8b3-90f7-4c98-a754-76f387587b13",
+            "name": "Desk",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 45.846,
+              "z": -25.317,
+              "elevation": 0.022
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "72d7bfd0-380b-4de5-91f9-0c2bc3780052",
+            "dimensions": {
+              "width": 91.1,
+              "height": 59.8,
+              "length": 144.5
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "office-chair",
+              "leftSide": "drawers",
+              "drawerBar": false,
+              "rightSide": "feet"
+            }
+          },
+          {
+            "id": "a20561b0-db15-4172-88a6-54746e1ef1fd",
+            "name": "Table & chairs",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 51.608,
+              "z": -22.607,
+              "elevation": 0.022
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "c6e8a3ce-500c-4976-9435-ee958e048076",
+            "dimensions": {
+              "width": 92.4,
+              "height": 69.5,
+              "length": 382.4
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "seat": "chair",
+              "shape": "rectangle",
+              "noEndSeat": false,
+              "numberOfSeats": 8
+            }
+          },
+          {
+            "id": "930df63a-ac05-4f50-bfb4-2c71b3309d8a",
+            "name": "Fridge",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 49.88,
+              "z": -18.738,
+              "elevation": 0.022
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "359671ef-de52-435f-8161-f23c403d6679",
+            "dimensions": {
+              "width": 59.3,
+              "height": 168.1,
+              "length": 60
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "33ad8fe0-858a-4000-bfdd-65662c870fb7",
+            "name": "Cube",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 51.713,
+              "z": -18.75,
+              "elevation": 0.022
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "d04914df-0d0c-4836-aa11-218eeb1786c2",
+            "dimensions": {
+              "width": 60.8,
+              "height": 100,
+              "length": 292.7
+            },
+            "levelIndex": 0,
+            "configuration": {}
+          },
+          {
+            "id": "8f98b1b6-903a-4cd0-bfef-def4660d6af7",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 42.765375,
+              "z": -29.451249999999998,
+              "elevation": 0.02
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "b6f7473d-17ad-481a-a3ee-6423c5dd2b60",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 42.765375,
+              "z": -29.451249999999998,
+              "elevation": 1.35
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "72580576-df77-41cd-80c9-e8dcf4d22f27",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 46.065375,
+              "z": -29.451249999999998,
+              "elevation": 0.02
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "16c7994b-2708-426c-89c4-aa0be0627cad",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 46.065375,
+              "z": -29.451249999999998,
+              "elevation": 1.35
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "c89e4fbf-0378-49a8-9346-c83ae90d5402",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 33.965375,
+              "z": -25.25125,
+              "elevation": 0.02
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "25ef3045-0cda-4093-8e1e-8c2b13102bb0",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 33.965375,
+              "z": -25.25125,
+              "elevation": 1.35
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "f51c1afd-29a8-4708-8217-003cca98ad66",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 36.965375,
+              "z": -25.25125,
+              "elevation": 0.02
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "728480c9-04ab-4e40-a093-f3f57319c146",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 36.965375,
+              "z": -25.25125,
+              "elevation": 1.35
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "f8aff10c-6a1c-4f09-a546-1df7991ea33e",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 33.965375,
+              "z": -28.05125,
+              "elevation": 0.02
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "0a0dbcb3-1bb1-49f6-a811-6fa5fa784f4e",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 33.965375,
+              "z": -28.05125,
+              "elevation": 1.35
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "29bdd006-7cfe-4f8a-8626-85231b801801",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 36.965375,
+              "z": -28.05125,
+              "elevation": 0.02
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "ccee8e51-85b6-4255-ac5d-44d3720eee45",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 36.965375,
+              "z": -28.05125,
+              "elevation": 1.35
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "634b3248-2234-45b0-9658-7bcf152af0b6",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 33.965375,
+              "z": -30.85125,
+              "elevation": 0.02
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "ae70a377-02db-457e-a78f-811bd0c2e378",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 33.965375,
+              "z": -30.85125,
+              "elevation": 1.35
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "114cc450-5c44-49a8-be42-a10d25fe4cdc",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 36.965375,
+              "z": -30.85125,
+              "elevation": 0.02
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "0b1f3fd9-5b2d-4941-94d3-353d54bbb788",
+            "name": "Single bed",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 36.965375,
+              "z": -30.85125,
+              "elevation": 1.35
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "77a6e4b4-73bd-4170-84c2-f5c597303caa",
+            "dimensions": {
+              "width": 90,
+              "height": 45,
+              "length": 200
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "92b234b7-5b20-47a6-b46d-221701f3289f",
+            "name": "Locker",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 42.765375,
+              "z": -22.451249999999998,
+              "elevation": 0.02
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "6bb82005-5787-43bd-9935-5b36645fa82f",
+            "dimensions": {
+              "width": 50,
+              "height": 180,
+              "length": 75
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "rows": 2,
+              "doors": "doors",
+              "columns": 2,
+              "backPanel": true,
+              "glassDoor": false
+            }
+          },
+          {
+            "id": "c5f7fc53-5198-42ab-be99-8ef5b4bddc2d",
+            "name": "Locker",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 45.165375000000004,
+              "z": -22.451249999999998,
+              "elevation": 0.02
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "6bb82005-5787-43bd-9935-5b36645fa82f",
+            "dimensions": {
+              "width": 50,
+              "height": 180,
+              "length": 75
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "rows": 2,
+              "doors": "doors",
+              "columns": 2,
+              "backPanel": true,
+              "glassDoor": false
+            }
+          },
+          {
+            "id": "6e064dc7-5130-4a26-8967-02b2ed839484",
+            "name": "Locker",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 34.265375,
+              "z": -22.451249999999998,
+              "elevation": 0.02
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "6bb82005-5787-43bd-9935-5b36645fa82f",
+            "dimensions": {
+              "width": 50,
+              "height": 180,
+              "length": 75
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "rows": 2,
+              "doors": "doors",
+              "columns": 2,
+              "backPanel": true,
+              "glassDoor": false
+            }
+          },
+          {
+            "id": "12a2933b-09ec-42ab-88b8-e48129d395ca",
+            "name": "Locker",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 36.665375000000004,
+              "z": -22.451249999999998,
+              "elevation": 0.02
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "6bb82005-5787-43bd-9935-5b36645fa82f",
+            "dimensions": {
+              "width": 50,
+              "height": 180,
+              "length": 75
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "rows": 2,
+              "doors": "doors",
+              "columns": 2,
+              "backPanel": true,
+              "glassDoor": false
+            }
+          },
+          {
+            "id": "bcea9e1a-70cf-4541-be34-434dbeac96ac",
+            "name": "Locker",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 40.765375,
+              "z": -26.75125,
+              "elevation": 0.02
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "6bb82005-5787-43bd-9935-5b36645fa82f",
+            "dimensions": {
+              "width": 50,
+              "height": 180,
+              "length": 150
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "rows": 2,
+              "doors": "doors",
+              "columns": 4,
+              "backPanel": true,
+              "glassDoor": false
+            }
+          },
+          {
+            "id": "ace5957c-082d-4301-b5d4-e988922db5b8",
+            "name": "Locker",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 47.165375000000004,
+              "z": -26.75125,
+              "elevation": 0.02
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "6bb82005-5787-43bd-9935-5b36645fa82f",
+            "dimensions": {
+              "width": 50,
+              "height": 180,
+              "length": 150
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "rows": 2,
+              "doors": "doors",
+              "columns": 4,
+              "backPanel": true,
+              "glassDoor": false
+            }
+          },
+          {
+            "id": "9fd63cfa-e9f4-4ce6-aecc-db72aa0b13f9",
+            "name": "Locker",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 32.265375,
+              "z": -26.75125,
+              "elevation": 0.02
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "6bb82005-5787-43bd-9935-5b36645fa82f",
+            "dimensions": {
+              "width": 50,
+              "height": 180,
+              "length": 150
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "rows": 2,
+              "doors": "doors",
+              "columns": 4,
+              "backPanel": true,
+              "glassDoor": false
+            }
+          },
+          {
+            "id": "c9afe53f-621f-49b1-be65-46dfd2fbd856",
+            "name": "Locker",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 38.665375000000004,
+              "z": -26.75125,
+              "elevation": 0.02
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "6bb82005-5787-43bd-9935-5b36645fa82f",
+            "dimensions": {
+              "width": 50,
+              "height": 180,
+              "length": 150
+            },
+            "levelIndex": 0,
+            "configuration": {
+              "rows": 2,
+              "doors": "doors",
+              "columns": 4,
+              "backPanel": true,
+              "glassDoor": false
+            }
+          },
+          {
+            "id": "08952097-e650-4474-98ff-2ccb2eb5845d",
+            "name": "Toilet",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 32.53725,
+              "z": 78.5745,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "7528e431-6cbb-4f89-81b1-79d0729f00f6",
+            "dimensions": {
+              "width": 45.3,
+              "height": 91.9,
+              "length": 70.9
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "83e1bcb9-c6be-44f5-8fc3-b7f9d4d40d0e",
+            "name": "Toilet",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 33.53725,
+              "z": 78.5745,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "7528e431-6cbb-4f89-81b1-79d0729f00f6",
+            "dimensions": {
+              "width": 45.3,
+              "height": 91.9,
+              "length": 70.9
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "44adba28-0a42-4466-876d-6f2bce3c40a6",
+            "name": "Toilet",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 34.53725,
+              "z": 78.5745,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "7528e431-6cbb-4f89-81b1-79d0729f00f6",
+            "dimensions": {
+              "width": 45.3,
+              "height": 91.9,
+              "length": 70.9
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "e40d9093-0a09-43e2-86ed-e72893bf0e6f",
+            "name": "Sink",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 33.03725,
+              "z": 80.7745,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "104ec791-1716-4f0a-a9c1-afbea47a7ab0",
+            "dimensions": {
+              "width": 55,
+              "height": 85,
+              "length": 45
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "2db3336d-77f0-48e3-b360-5645f79ca3db",
+            "name": "Sink",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 34.43725,
+              "z": 80.7745,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "104ec791-1716-4f0a-a9c1-afbea47a7ab0",
+            "dimensions": {
+              "width": 55,
+              "height": 85,
+              "length": 45
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "311fbb04-9669-497b-a1fb-19c2e8b8971b",
+            "name": "Shower",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 36.03725,
+              "z": 78.7745,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "d04914df-0d0c-4836-aa11-218eeb1786c2",
+            "dimensions": {
+              "width": 90,
+              "height": 210,
+              "length": 90
+            },
+            "levelIndex": 0,
+            "configuration": {}
+          },
+          {
+            "id": "bfc3ff39-6c85-4cf3-b4f4-6d960f1cef1f",
+            "name": "Shower",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 37.13725,
+              "z": 78.7745,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "d04914df-0d0c-4836-aa11-218eeb1786c2",
+            "dimensions": {
+              "width": 90,
+              "height": 210,
+              "length": 90
+            },
+            "levelIndex": 0,
+            "configuration": {}
+          },
+          {
+            "id": "0eee997e-19b7-49aa-a8ed-853a530a8bdd",
+            "name": "Toilet",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 32.53725,
+              "z": 85.0745,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "7528e431-6cbb-4f89-81b1-79d0729f00f6",
+            "dimensions": {
+              "width": 45.3,
+              "height": 91.9,
+              "length": 70.9
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "fb0b2b83-978c-4f7d-9e54-a93cd5ba5fc4",
+            "name": "Toilet",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 33.53725,
+              "z": 85.0745,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "7528e431-6cbb-4f89-81b1-79d0729f00f6",
+            "dimensions": {
+              "width": 45.3,
+              "height": 91.9,
+              "length": 70.9
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "7b756c85-cd86-4fea-99d4-22d578681c65",
+            "name": "Toilet",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 34.53725,
+              "z": 85.0745,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "7528e431-6cbb-4f89-81b1-79d0729f00f6",
+            "dimensions": {
+              "width": 45.3,
+              "height": 91.9,
+              "length": 70.9
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "7da49d4c-fbdb-48c4-aa84-575cfa81091c",
+            "name": "Sink",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 33.03725,
+              "z": 87.2745,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "104ec791-1716-4f0a-a9c1-afbea47a7ab0",
+            "dimensions": {
+              "width": 55,
+              "height": 85,
+              "length": 45
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "4b12dd07-2d97-4c91-a0e3-1ac6166d7de0",
+            "name": "Sink",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 34.43725,
+              "z": 87.2745,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "104ec791-1716-4f0a-a9c1-afbea47a7ab0",
+            "dimensions": {
+              "width": 55,
+              "height": 85,
+              "length": 45
+            },
+            "levelIndex": 0
+          },
+          {
+            "id": "6d006b3f-6d42-445e-8b3f-68f66196532f",
+            "name": "Shower",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 36.03725,
+              "z": 85.2745,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "d04914df-0d0c-4836-aa11-218eeb1786c2",
+            "dimensions": {
+              "width": 90,
+              "height": 210,
+              "length": 90
+            },
+            "levelIndex": 0,
+            "configuration": {}
+          },
+          {
+            "id": "d1191069-2e2e-4728-80c9-4a780ea95898",
+            "name": "Shower",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 37.13725,
+              "z": 85.2745,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": 0,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "d04914df-0d0c-4836-aa11-218eeb1786c2",
+            "dimensions": {
+              "width": 90,
+              "height": 210,
+              "length": 90
+            },
+            "levelIndex": 0,
+            "configuration": {}
+          },
+          {
+            "id": "9d204961-c296-4e68-b1b5-beeffd6d790a",
+            "name": "Kitchen counter",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 52.532,
+              "z": 82.774,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "d04914df-0d0c-4836-aa11-218eeb1786c2",
+            "dimensions": {
+              "width": 60,
+              "height": 90,
+              "length": 450
+            },
+            "levelIndex": 0,
+            "configuration": {}
+          },
+          {
+            "id": "912e64ca-3513-43d8-ab53-764220cd0c07",
+            "name": "Washing machine",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 54.132,
+              "z": 82.774,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "d04914df-0d0c-4836-aa11-218eeb1786c2",
+            "dimensions": {
+              "width": 60,
+              "height": 85,
+              "length": 60
+            },
+            "levelIndex": 0,
+            "configuration": {}
+          },
+          {
+            "id": "6d2d77be-5305-46ca-8837-55db2ca27021",
+            "name": "Dryer",
+            "layers": [],
+            "external": false,
+            "position": {
+              "x": 51.332,
+              "z": 82.774,
+              "elevation": 0.01
+            },
+            "rotation": {
+              "yaw": -90,
+              "roll": 0,
+              "pitch": 0
+            },
+            "catalogId": "d04914df-0d0c-4836-aa11-218eeb1786c2",
+            "dimensions": {
+              "width": 60,
+              "height": 85,
+              "length": 60
+            },
+            "levelIndex": 0,
+            "configuration": {}
           }
         ],
         "initials": "",
@@ -3648,74 +5745,6 @@
           "t": 1.715315,
           "url": "https://firebasestorage.googleapis.com/v0/b/smplrspace.appspot.com/o/floorplan%2Fac94efd1-e6d0-48c7-ada0-c6096c18b0a3-2DPlanfloor.png?alt=media&token=2275899f-71b3-4054-91cc-16276df7f83f",
           "scale": 11.642436,
-          "flipped": false
-        },
-        "annotations": [],
-        "autoInitials": true
-      },
-      {
-        "name": "",
-        "roofs": [
-          {
-            "id": "c8e459c3-2027-4528-ab39-34d440e0d900",
-            "name": "Roof 1",
-            "type": "roof",
-            "options": {},
-            "segments": []
-          }
-        ],
-        "walls": [
-          {
-            "id": "28835196-11fe-4b93-837b-63104e88a154",
-            "name": "Wall 1",
-            "type": "wall",
-            "layers": [],
-            "options": {
-              "cap": "flat",
-              "type": "normal",
-              "autoFacade": true,
-              "partOfFacade": false,
-              "thickness": 15
-            },
-            "segments": []
-          }
-        ],
-        "stairs": [],
-        "grounds": [
-          {
-            "id": "autoground-345ee885-7dd3-446d-9b88-446f1d64e4ec",
-            "name": "Automatic ground",
-            "type": "ground",
-            "holes": [],
-            "layers": [],
-            "options": {
-              "type": "normal",
-              "style": "indoor",
-              "external": false,
-              "thickness": 0.2
-            },
-            "segments": []
-          },
-          {
-            "id": "85369d0a-ae76-4855-9d88-2fff4a66f93e",
-            "name": "Ground 1",
-            "type": "ground",
-            "holes": [],
-            "layers": [],
-            "options": {
-              "type": "normal",
-              "style": "indoor",
-              "external": false
-            },
-            "segments": []
-          }
-        ],
-        "objects": [],
-        "initials": "",
-        "floorplan": {
-          "r": 0,
-          "t": 0,
-          "scale": 8.314856,
           "flipped": false
         },
         "annotations": [],
