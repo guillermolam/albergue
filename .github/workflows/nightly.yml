@@ -145,14 +145,6 @@ jobs:
           BACKEND_API_URL: ${{ secrets.BACKEND_API_URL }}
         run: ../.github/scripts/sync-backend-api-url.sh
 
-      - name: Smoke test live pages
-        # Catches the class of bug this class of change keeps hitting: a
-        # broken Worker-to-Worker backend call that doesn't error, it hangs
-        # for ~30s until Cloudflare's own platform timeout kills the
-        # request. A human noticing that live was what caught it last time
-        # -- this should have been automatic.
-        run: ./.github/scripts/smoke-test-live-pages.sh https://albergue.alberguecarrascalejo.workers.dev
-
   migrate-database:
     name: Apply database migrations
     runs-on: ubuntu-latest
@@ -239,3 +231,30 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         run: ../.github/scripts/deploy-netlify.sh
+
+  smoke-test:
+    name: Smoke test live pages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    # Needs both: this only means anything checked against the final
+    # deployed state of the frontend AND backend Workers together -- run
+    # from inside deploy-cloudflare (as it originally was), deploy-backend
+    # is a separate, parallel job with no guarantee of having finished
+    # (or even started) yet, so the check could pass against a
+    # not-yet-updated backend and miss exactly the regression it exists
+    # to catch.
+    needs: [deploy-cloudflare, deploy-backend]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Smoke test live pages
+        # Catches the class of bug this class of change keeps hitting: a
+        # broken Worker-to-Worker backend call that doesn't error, it hangs
+        # for ~30s until Cloudflare's own platform timeout kills the
+        # request. A human noticing that live was what caught it last time
+        # -- this should have been automatic.
+        run: ./.github/scripts/smoke-test-live-pages.sh https://albergue.alberguecarrascalejo.workers.dev

@@ -11,6 +11,9 @@ set -euo pipefail
 base_url=${1:?"Usage: $0 <base-url> (e.g. https://albergue.alberguecarrascalejo.workers.dev)"}
 max_time_seconds=15
 
+response_file=$(mktemp)
+trap 'rm -f "$response_file"' EXIT
+
 # path | substring that indicates a backend failure on that page
 checks=(
 	"area/visit/|Could not load places"
@@ -26,7 +29,7 @@ for check in "${checks[@]}"; do
 	needle="${check#*|}"
 	url="${base_url%/}/${path}?_=$(date +%s%N)"
 
-	response=$(curl -s -o /tmp/smoke-response.html -w '%{http_code} %{time_total}' \
+	response=$(curl -s -o "$response_file" -w '%{http_code} %{time_total}' \
 		--max-time "$max_time_seconds" "$url" || echo "CURL_FAILED 0")
 	status="${response%% *}"
 	time_total="${response##* }"
@@ -43,7 +46,7 @@ for check in "${checks[@]}"; do
 		continue
 	fi
 
-	if grep -qF "$needle" /tmp/smoke-response.html; then
+	if grep -qF "$needle" "$response_file"; then
 		echo "FAIL  $path -- page rendered its \"$needle\" backend-failure message (${time_total}s)"
 		failures=$((failures + 1))
 		continue
@@ -51,8 +54,6 @@ for check in "${checks[@]}"; do
 
 	echo "OK    $path (${time_total}s)"
 done
-
-rm -f /tmp/smoke-response.html
 
 if [[ $failures -gt 0 ]]; then
 	echo ""
