@@ -4,18 +4,41 @@
  */
 
 import { db } from "../lib/db.js";
-import { places } from "@albergue/domain-model";
+import { places, placeAddresses, placePhones } from "@albergue/domain-model";
 import { eq } from "drizzle-orm";
-import type { InsertPlace, Place } from "../types/index.js";
+import type { InsertPlace, Place, InsertPlaceAddress, InsertPlacePhone } from "../types/index.js";
 
-export async function createPlace(input: InsertPlace): Promise<Place> {
-  const [result] = await db
-    .insert(places)
-    .values({ ...input, createdAt: new Date(), updatedAt: new Date() })
-    .returning();
+export interface CreatePlaceInput extends InsertPlace {
+  addresses?: Omit<InsertPlaceAddress, "placeId">[];
+  phones?: Omit<InsertPlacePhone, "placeId">[];
+}
 
-  if (!result) throw new Error("Failed to create place");
-  return result;
+/**
+ * Creates a place, plus any given addresses/phones, in one transaction --
+ * there was previously no write path for place_addresses/place_phones at
+ * all (only reads joined them in), so every place created via the admin
+ * API ended up with no contact details attached.
+ */
+export async function createPlace(input: CreatePlaceInput): Promise<Place> {
+  const { addresses, phones, ...placeInput } = input;
+
+  return db.transaction(async (tx) => {
+    const [result] = await tx
+      .insert(places)
+      .values({ ...placeInput, createdAt: new Date(), updatedAt: new Date() })
+      .returning();
+
+    if (!result) throw new Error("Failed to create place");
+
+    if (addresses?.length) {
+      await tx.insert(placeAddresses).values(addresses.map((a) => ({ ...a, placeId: result.id })));
+    }
+    if (phones?.length) {
+      await tx.insert(placePhones).values(phones.map((p) => ({ ...p, placeId: result.id })));
+    }
+
+    return result;
+  });
 }
 
 export async function updatePlace(

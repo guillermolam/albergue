@@ -9,7 +9,7 @@ import { HTTPException } from "hono/http-exception";
 import type { Context } from "hono";
 import { authMiddleware } from "../lib/middleware.js";
 import { getAllPlaces, getPlaceBySlug } from "../queries/places.js";
-import { createPlace, updatePlace, deletePlace } from "../commands/places.js";
+import { createPlace, updatePlace, deletePlace, type CreatePlaceInput } from "../commands/places.js";
 import type { ApiResponse, Place, PlaceWithDetails, InsertPlace } from "../types/index.js";
 
 const places = new Hono();
@@ -63,7 +63,7 @@ places.get("/:slug", async (c: Context) => {
  */
 places.post("/", authMiddleware({ roles: ["admin"] }), async (c: Context) => {
   try {
-    const body = await c.req.json<InsertPlace>();
+    const body = await c.req.json<CreatePlaceInput>();
     const result = await createPlace(body);
     return c.json<ApiResponse<Place>>(
       {
