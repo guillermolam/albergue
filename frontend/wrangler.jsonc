@@ -10,11 +10,7 @@
   // now bundled into this same Worker -- see src/lib/backend-api.ts.
   "compatibility_flags": ["nodejs_compat"],
 
-  // Phase 4 prerequisite (ASTRO-002): Astro sessions use the Cloudflare KV
-  // driver with the default `SESSION` binding. Provision with:
-  //   wrangler kv namespace create SESSION
-  // then uncomment and fill in the emitted id (and preview_id for dev).
-  // "kv_namespaces": [
-  //   { "binding": "SESSION", "id": "<namespace-id>", "preview_id": "<preview-id>" }
-  // ],
+  // Astro sessions + camino's anonymous km-log storage use the Cloudflare KV
+  // driver with the `SESSION` binding (see src/pages/api/camino/[...path].ts).
+  "kv_namespaces": [{ "binding": "SESSION", "id": "bed54f740ffb43c58ab2ef2c36434408" }],
 }
