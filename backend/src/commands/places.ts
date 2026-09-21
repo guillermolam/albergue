@@ -4,7 +4,16 @@
  */
 
 import { db } from "../lib/db.js";
-import { places, placeAddresses, placePhones } from "@albergue/domain-model";
+import {
+  places,
+  placeAddresses,
+  placePhones,
+  placeImages,
+  placeLabels,
+  placePrices,
+  insertPlaceAddressSchema,
+  insertPlacePhoneSchema,
+} from "@albergue/domain-model";
 import { eq } from "drizzle-orm";
 import type { InsertPlace, Place, InsertPlaceAddress, InsertPlacePhone } from "../types/index.js";
 
@@ -31,10 +40,18 @@ export async function createPlace(input: CreatePlaceInput): Promise<Place> {
     if (!result) throw new Error("Failed to create place");
 
     if (addresses?.length) {
-      await tx.insert(placeAddresses).values(addresses.map((a) => ({ ...a, placeId: result.id })));
+      // Parsed (not just cast) so a caller-supplied `id` -- or any other
+      // field outside the insert schema -- can't ride along in `...a`
+      // into the insert; `c.req.json<CreatePlaceInput>()` at the route
+      // layer only asserts a type, it doesn't strip anything at runtime.
+      await tx.insert(placeAddresses).values(
+        addresses.map((a) => ({ ...insertPlaceAddressSchema.parse(a), placeId: result.id }))
+      );
     }
     if (phones?.length) {
-      await tx.insert(placePhones).values(phones.map((p) => ({ ...p, placeId: result.id })));
+      await tx.insert(placePhones).values(
+        phones.map((p) => ({ ...insertPlacePhoneSchema.parse(p), placeId: result.id }))
+      );
     }
 
     return result;
@@ -54,7 +71,24 @@ export async function updatePlace(
   return result ?? null;
 }
 
+/**
+ * Deletes a place and its child rows (addresses, phones, images, labels,
+ * prices). All five child tables' FKs are ON DELETE no action, so deleting
+ * a place with any attached child row previously failed outright --
+ * createPlace() had no write path for these until now, so it went
+ * unnoticed, but any place with real contact details would have been
+ * permanently undeletable through this route.
+ */
 export async function deletePlace(id: number): Promise<boolean> {
-  const [result] = await db.delete(places).where(eq(places.id, id)).returning();
-  return !!result;
+  return db.transaction(async (tx) => {
+    await Promise.all([
+      tx.delete(placeAddresses).where(eq(placeAddresses.placeId, id)),
+      tx.delete(placePhones).where(eq(placePhones.placeId, id)),
+      tx.delete(placeImages).where(eq(placeImages.placeId, id)),
+      tx.delete(placeLabels).where(eq(placeLabels.placeId, id)),
+      tx.delete(placePrices).where(eq(placePrices.placeId, id)),
+    ]);
+    const [result] = await tx.delete(places).where(eq(places.id, id)).returning();
+    return !!result;
+  });
 }
