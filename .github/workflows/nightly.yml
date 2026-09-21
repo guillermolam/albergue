@@ -170,7 +170,11 @@ jobs:
     # Must run every time this workflow runs -- `nightly-release` only
     # succeeds when there are pending Dependabot PRs, so depending on it
     # here was silently skipping every deploy whenever there were none.
-    needs: check-dependabot
+    # Also waits on migrate-database, same reasoning as deploy-cloudflare:
+    # this build now bundles the backend too (frontend and backend merged
+    # -- see frontend/src/lib/backend-api.ts), so it should never run
+    # against a database schema it hasn't been migrated to yet.
+    needs: [check-dependabot, migrate-database]
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

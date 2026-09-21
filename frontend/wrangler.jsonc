@@ -13,4 +13,13 @@
   // Astro sessions + camino's anonymous km-log storage use the Cloudflare KV
   // driver with the `SESSION` binding (see src/pages/api/camino/[...path].ts).
   "kv_namespaces": [{ "binding": "SESSION", "id": "bed54f740ffb43c58ab2ef2c36434408" }],
+
+  // The merged backend code (src/lib/backend-api.ts -> albergue-backend/app)
+  // reads this to decide whether to enable TLS/cert validation on the
+  // Postgres pool (backend/src/lib/db.ts) -- carried over from the
+  // standalone backend Worker's own wrangler.jsonc, which set this the
+  // same way. Without it, DB traffic runs without TLS.
+  "vars": {
+    "NODE_ENV": "production",
+  },
 }
