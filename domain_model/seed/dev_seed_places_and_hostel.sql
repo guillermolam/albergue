@@ -121,7 +121,7 @@ SELECT 2, n, n - 1 FROM generate_series(1, 6) AS n;
 
 -- 2 beds (bottom/top) per bunk = 24 beds total
 INSERT INTO hostel_beds (bunk_id, position, label)
-SELECT bunk_id, position, NULL
+SELECT bunk_id, position::hostel_bed_position, NULL
 FROM generate_series(1, 12) AS bunk_id
 CROSS JOIN (VALUES ('bottom'), ('top')) AS p(position);
 
