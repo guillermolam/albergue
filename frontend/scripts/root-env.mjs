@@ -20,6 +20,29 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT_ENV = fileURLToPath(new URL('../../.env', import.meta.url));
 
+/**
+ * Last-resort committed defaults for the B01 Smplrspace floor plan --
+ * real values, not secrets. All three are `access: 'public'` in
+ * astro.config.shared.mjs and get inlined verbatim into the client-side JS
+ * bundle by design, so keeping them out of git bought no actual security:
+ * it only meant any build path that didn't happen to have the same GitHub
+ * Actions secrets independently wired (a direct `wrangler deploy` from a
+ * machine without them exported, a fresh clone, a different CI runner)
+ * silently shipped the "coming soon" placeholder instead of the real floor
+ * plan -- confirmed happening repeatedly in production (2026-09-21), a
+ * competing deploy path undoing this fix within seconds of every correct
+ * one. Baking the real values in here means every build path resolves the
+ * identical, correct config deterministically, with no dependency on which
+ * environment happened to run it. Sourced from Smplrspace's own dashboard
+ * (prj_l3kaqeh); rotate here (and in the GitHub Actions secrets, which
+ * still take priority when set) if the client token or space ever change.
+ */
+const SMPLR_B01_DEFAULTS = {
+  PUBLIC_SMPLR_ORGANIZATION_ID: 'c279e1c7-a40f-4c8a-9cb2-7e610690bd33',
+  PUBLIC_SMPLR_CLIENT_TOKEN: 'pub_ba75a06067b745b9a90561d9f878d5b0',
+  PUBLIC_SMPLR_SPACE_B01_ID: 'spc_ira3ue5m',
+};
+
 /** Minimal KEY=VALUE reader: skips blanks and `#` comments, tolerates an
  * `export ` prefix, and strips one layer of matching quotes. */
 export function parseEnvFile(text) {
@@ -54,6 +77,48 @@ export function spaceIdFromShareUrl(url) {
   return shortCode.startsWith('spc_') ? shortCode : `spc_${shortCode}`;
 }
 
+/**
+ * Throws if a resolved B01 value doesn't look like a real Smplrspace
+ * identifier. The committed defaults above make "missing" structurally
+ * impossible now, so the only way to reach this is a malformed override
+ * (a typo'd env var, a broken root .env value) -- catch it at build time
+ * with a clear message instead of silently shipping a broken or
+ * "not configured" floor plan.
+ */
+function validateSmplrB01Config(resolved) {
+  const {
+    PUBLIC_SMPLR_ORGANIZATION_ID: orgId,
+    PUBLIC_SMPLR_CLIENT_TOKEN: clientToken,
+    PUBLIC_SMPLR_SPACE_B01_ID: spaceId,
+  } = resolved;
+
+  const problems = [];
+  if (!orgId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(orgId)) {
+    problems.push(
+      `PUBLIC_SMPLR_ORGANIZATION_ID (${orgId ? `"${orgId}"` : 'unset'}) doesn't look like a real Smplrspace organization UUID.`
+    );
+  }
+  if (!clientToken || !clientToken.startsWith('pub_')) {
+    problems.push(
+      `PUBLIC_SMPLR_CLIENT_TOKEN doesn't look like a real Smplrspace public token (expected a "pub_" prefix).`
+    );
+  }
+  if (!spaceId || !spaceId.startsWith('spc_')) {
+    problems.push(
+      `PUBLIC_SMPLR_SPACE_B01_ID (${spaceId ? `"${spaceId}"` : 'unset'}) doesn't look like a real Smplrspace space id (expected an "spc_" prefix).`
+    );
+  }
+
+  if (problems.length > 0) {
+    throw new Error(
+      `Smplrspace B01 configuration is invalid:\n  - ${problems.join('\n  - ')}\n` +
+        'This should be structurally impossible -- frontend/scripts/root-env.mjs ships real committed ' +
+        'defaults for all three values. Check for a malformed override (an env var or root .env value ' +
+        'that shadows the default with something broken) before touching the defaults themselves.'
+    );
+  }
+}
+
 export function loadRootEnv(envPath = ROOT_ENV) {
   const root = existsSync(envPath) ? parseEnvFile(readFileSync(envPath, 'utf8')) : {};
 
@@ -66,9 +131,21 @@ export function loadRootEnv(envPath = ROOT_ENV) {
     PUBLIC_SMPLR_SPACE_B03_ID: root.SMPLRSPACE_SPACE_B03_ID,
   };
 
-  for (const [key, value] of Object.entries(derived)) {
-    if (value && !process.env[key]) process.env[key] = value;
+  // Priority per key: real environment (CI secret, shell export) > value
+  // derived from the gitignored root .env > committed B01 default. B02/B03
+  // have no committed default -- no real Smplrspace project exists for
+  // either yet, so "unset" is their correct, intentional state.
+  const resolved = {};
+  const allKeys = new Set([...Object.keys(derived), ...Object.keys(SMPLR_B01_DEFAULTS)]);
+  for (const key of allKeys) {
+    const value = process.env[key] || derived[key] || SMPLR_B01_DEFAULTS[key];
+    if (value) {
+      process.env[key] = value;
+      resolved[key] = value;
+    }
   }
 
-  return derived;
+  validateSmplrB01Config(resolved);
+
+  return resolved;
 }
