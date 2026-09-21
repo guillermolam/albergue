@@ -4,6 +4,13 @@
   "description": "Backend API for Albergue Municipal Carrascalejo",
   "type": "module",
   "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./app": {
+      "types": "./dist/app.d.ts",
+      "default": "./dist/app.js"
+    }
+  },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "dev:worker": "wrangler dev",

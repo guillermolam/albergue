@@ -2,52 +2,26 @@
  * Server-only Hono client. Used by Actions and on-demand pages.
  * Never imported from client islands.
  */
-import { BACKEND_API_URL } from 'astro:env/server';
+import backendApp from 'albergue-backend/app';
 import type { ApiResponse } from '@albergue/api-contract';
-
-export class BackendUnavailableError extends Error {
-  constructor(message = 'Backend API is not configured (BACKEND_API_URL).') {
-    super(message);
-    this.name = 'BackendUnavailableError';
-  }
-}
-
-export function requireBackendUrl(): string {
-  if (!BACKEND_API_URL) {
-    throw new BackendUnavailableError();
-  }
-  return BACKEND_API_URL.replace(/\/$/, '');
-}
 
 /**
  * Low-level Worker→backend request.
  *
- * INTERIM STATE: a Service Binding (the Cloudflare-documented, reliable
- * mechanism for same-account Worker-to-Worker calls) was tried here and is
- * still configured in wrangler.jsonc, but every way of reaching it from
- * this SSR code hit a real problem:
- *   - `import { env } from 'cloudflare:workers'` at module scope: this file
- *     is imported by prerendered pages, and Astro prerenders in plain Node,
- *     whose ESM loader throws ERR_UNSUPPORTED_ESM_URL_SCHEME on the
- *     `cloudflare:` protocol -- crashes the whole build.
- *   - Moving that same static import into middleware.ts (SSR-only,
- *     assumed safe from prerendering): still crashes the same way --
- *     Astro's middleware chain runs during prerendering too, not just for
- *     live requests.
- *   - `await import('cloudflare:workers')` (dynamic, inside backendFetch):
- *     avoided the build crash, but the resulting `binding.fetch()` call
- *     hung indefinitely in production -- confirmed live via `wrangler
- *     tail` on the backend Worker, which never showed the request
- *     arriving at all. Suspected workerd limitation around dynamically
- *     importing its own builtin modules; not yet root-caused.
- *
- * Falls back to a normal cache-bypassed fetch of BACKEND_API_URL for now
- * (same as before the Service Binding attempt) -- known to fail fast with
- * a clear "Worker not found" from Cloudflare's public routing layer for a
- * same-account *.workers.dev -> *.workers.dev subrequest issued from
- * inside a Worker, rather than hang. Worse error, but bounded and fast
- * instead of a ~30s platform timeout. Revisit with the binding once a
- * working access pattern is confirmed.
+ * Calls the backend's Hono app in-process via `.request()` instead of an
+ * HTTP fetch to any URL -- there is no separate backend Worker anymore
+ * (frontend and backend are deployed together; see wrangler.jsonc). This
+ * replaced three earlier Worker-to-Worker approaches, all of which failed
+ * for reasons specific to that architecture: a raw fetch() to the sibling
+ * Worker's *.workers.dev URL got a bare "Worker not found" from
+ * Cloudflare's public routing layer; a Service Binding accessed via a
+ * dynamic `cloudflare:workers` import hung indefinitely at runtime; the
+ * same binding via a static import crashed Node-based prerendering and
+ * every non-Cloudflare build target. In-process invocation has none of
+ * those failure modes -- it's a plain function call, not a network hop,
+ * and `backend/src/app.ts` reads every secret it needs via `process.env`
+ * (never Hono's `c.env`/Cloudflare bindings), so no env-threading is
+ * needed here either.
  */
 export async function backendFetch(path: string, init: RequestInit = {}): Promise<Response> {
   const requestInit: RequestInit = {
@@ -59,11 +33,7 @@ export async function backendFetch(path: string, init: RequestInit = {}): Promis
     },
   };
 
-  const base = requireBackendUrl();
-  return fetch(`${base}${path}`, {
-    ...requestInit,
-    cf: { cacheTtl: 0, cacheEverything: false },
-  });
+  return backendApp.request(path, requestInit);
 }
 
 export async function backendJson<T>(
@@ -74,12 +44,11 @@ export async function backendJson<T>(
   try {
     response = await backendFetch(path, init);
   } catch (error) {
-    // A network-level failure (connection refused, DNS, timeout, ...)
-    // throws rather than resolving a Response -- without this, it was
-    // an uncaught exception that crashed the entire page render instead
-    // of degrading the same way a missing/misconfigured URL does.
-    // Also covers BackendUnavailableError when BACKEND_API_URL is unset.
-    console.error(`backendJson failure: network error: ${(error as Error).message}`);
+    // A thrown error out of the in-process call (a bug in a route handler,
+    // not a network condition anymore) must still degrade the same way a
+    // missing/misconfigured backend used to, rather than crash the page
+    // render.
+    console.error(`backendJson failure: ${(error as Error).message}`);
     return { ok: false, status: 503, message: (error as Error).message };
   }
 
@@ -104,7 +73,7 @@ export async function backendJson<T>(
     // omits `path` and any response body content: some callers (e.g. the
     // booking reference lookup) put an access credential *in* the path, and
     // an upstream/proxy error page could echo request data -- only the
-    // resolved host, status, content-type, and body *length* are logged.
+    // status, content-type, and body *length* are logged.
     console.error(
       `backendJson failure: status=${response.status} contentType=${response.headers.get('content-type')} bodyLength=${bodyLength ?? '(unreadable)'} message=${envelope?.message ?? envelope?.error ?? '(no message)'}`
     );
