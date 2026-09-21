@@ -9,6 +9,7 @@
  * reliably fire) re-syncs Lenis's own state immediately after Swup's reset.
  */
 import Lenis from 'lenis';
+import { waitForSwup } from './wait-for-swup';
 
 declare global {
   interface Window {
@@ -32,33 +33,6 @@ function resetLenisForNewPage(): void {
   if (!lenis) return;
   lenis.resize();
   lenis.scrollTo(0, { immediate: true });
-}
-
-function waitForSwup(timeoutMs = 5000): Promise<NonNullable<Window['swup']> | null> {
-  return new Promise((resolve) => {
-    if (window.swup) {
-      resolve(window.swup);
-      return;
-    }
-    const started = Date.now();
-    // setTimeout, not requestAnimationFrame: rAF callbacks are paused
-    // entirely by the browser for a hidden/backgrounded tab (e.g. a link
-    // opened in a background tab), which would leave this polling loop --
-    // and the hook attachment it gates -- stuck until the tab is
-    // foregrounded. setTimeout still fires (throttled, but not halted).
-    const tick = () => {
-      if (window.swup) {
-        resolve(window.swup);
-        return;
-      }
-      if (Date.now() - started >= timeoutMs) {
-        resolve(null);
-        return;
-      }
-      setTimeout(tick, 50);
-    };
-    tick();
-  });
 }
 
 /** No-op (native scroll stays) when the visitor prefers reduced motion, or
