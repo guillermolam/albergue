@@ -35,14 +35,13 @@ export async function backendJson<T>(
   try {
     response = await fetch(`${base}${path}`, {
       ...init,
-      // Diagnostic: rule out a stale cached response for this
-      // same-account *.workers.dev -> *.workers.dev fetch (a browser/curl
-      // request to the identical URL succeeds; this Worker's own outbound
-      // fetch to it doesn't). Standard `cache: 'no-store'` may not govern
-      // Workers subrequests the way it does browser fetches, so this also
-      // sets the Workers-specific `cf` cache directives as a belt-and-
-      // suspenders bypass.
-      cache: 'no-store',
+      // Workers-specific cache bypass for this same-account
+      // *.workers.dev -> *.workers.dev subrequest. Cloudflare Workers
+      // rejects combining this with the standard `cache: 'no-store'`
+      // RequestInit option ("CacheTtl: 0, is not compatible with cache:
+      // no-store header"), which was itself the cause of every request
+      // failing -- so `cf` alone is both the fix and the correct
+      // Workers-native mechanism.
       cf: { cacheTtl: 0, cacheEverything: false },
       headers: {
         accept: 'application/json',
