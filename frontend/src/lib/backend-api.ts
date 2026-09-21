@@ -19,28 +19,35 @@ export function requireBackendUrl(): string {
   return BACKEND_API_URL.replace(/\/$/, '');
 }
 
-// Deliberately dynamic (not `import { env } from 'cloudflare:workers'` at
-// module scope): this file is imported by prerendered pages too, and Astro
-// prerenders in plain Node, whose ESM loader throws
-// ERR_UNSUPPORTED_ESM_URL_SCHEME on the `cloudflare:` protocol -- a static
-// top-level import crashes the entire build. A dynamic import is only
-// resolved when actually awaited (i.e. inside a live Workers request), so
-// wrapping it in try/catch degrades cleanly everywhere else (Node
-// prerendering, local `astro dev` without `wrangler dev`, tests).
-async function getBackendBinding(): Promise<CloudflareServiceBinding | undefined> {
-  try {
-    const cf = await import('cloudflare:workers');
-    return cf.env.BACKEND;
-  } catch {
-    return undefined;
-  }
-}
-
 /**
- * Low-level Worker→backend request. Prefers the BACKEND Service Binding
- * (production) and falls back to a cache-bypassed fetch of BACKEND_API_URL
- * (local `astro dev`, tests). The binding path does not require
- * BACKEND_API_URL — Cloudflare routes by binding name, not URL host.
+ * Low-level Worker→backend request.
+ *
+ * INTERIM STATE: a Service Binding (the Cloudflare-documented, reliable
+ * mechanism for same-account Worker-to-Worker calls) was tried here and is
+ * still configured in wrangler.jsonc, but every way of reaching it from
+ * this SSR code hit a real problem:
+ *   - `import { env } from 'cloudflare:workers'` at module scope: this file
+ *     is imported by prerendered pages, and Astro prerenders in plain Node,
+ *     whose ESM loader throws ERR_UNSUPPORTED_ESM_URL_SCHEME on the
+ *     `cloudflare:` protocol -- crashes the whole build.
+ *   - Moving that same static import into middleware.ts (SSR-only,
+ *     assumed safe from prerendering): still crashes the same way --
+ *     Astro's middleware chain runs during prerendering too, not just for
+ *     live requests.
+ *   - `await import('cloudflare:workers')` (dynamic, inside backendFetch):
+ *     avoided the build crash, but the resulting `binding.fetch()` call
+ *     hung indefinitely in production -- confirmed live via `wrangler
+ *     tail` on the backend Worker, which never showed the request
+ *     arriving at all. Suspected workerd limitation around dynamically
+ *     importing its own builtin modules; not yet root-caused.
+ *
+ * Falls back to a normal cache-bypassed fetch of BACKEND_API_URL for now
+ * (same as before the Service Binding attempt) -- known to fail fast with
+ * a clear "Worker not found" from Cloudflare's public routing layer for a
+ * same-account *.workers.dev -> *.workers.dev subrequest issued from
+ * inside a Worker, rather than hang. Worse error, but bounded and fast
+ * instead of a ~30s platform timeout. Revisit with the binding once a
+ * working access pattern is confirmed.
  */
 export async function backendFetch(path: string, init: RequestInit = {}): Promise<Response> {
   const requestInit: RequestInit = {
@@ -51,23 +58,6 @@ export async function backendFetch(path: string, init: RequestInit = {}): Promis
       ...init.headers,
     },
   };
-
-  // Same-account Worker-to-Worker calls (this Worker -> "albergue-backend")
-  // must go through the Service Binding, not a raw fetch() to the
-  // sibling's *.workers.dev URL: Cloudflare's public routing layer
-  // returns a bare "Worker not found" for that kind of subrequest when
-  // issued from inside a Worker, even though the exact same URL resolves
-  // fine from outside (confirmed live in production). The binding calls
-  // the sibling Worker directly, bypassing DNS/TLS/edge routing (and its
-  // cache) entirely. Falls back to a normal cache-bypassed fetch when the
-  // binding isn't provisioned (e.g. local `astro dev` without
-  // `wrangler dev`).
-  const backend = await getBackendBinding();
-  if (backend) {
-    // Host is ignored by the binding; only the path/query/headers/body matter.
-    const url = new URL(path, 'https://backend.internal');
-    return backend.fetch(new Request(url, requestInit));
-  }
 
   const base = requireBackendUrl();
   return fetch(`${base}${path}`, {
@@ -88,7 +78,7 @@ export async function backendJson<T>(
     // throws rather than resolving a Response -- without this, it was
     // an uncaught exception that crashed the entire page render instead
     // of degrading the same way a missing/misconfigured URL does.
-    // Also covers BackendUnavailableError when neither binding nor URL exist.
+    // Also covers BackendUnavailableError when BACKEND_API_URL is unset.
     console.error(`backendJson failure: network error: ${(error as Error).message}`);
     return { ok: false, status: 503, message: (error as Error).message };
   }
