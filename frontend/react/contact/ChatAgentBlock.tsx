@@ -4,6 +4,7 @@ import { useI18n } from '../hooks/useI18n';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { RobotIcon, ArrowRightIcon } from '../doodle/DoodleIcons';
 import { LocalKeywordEngine, listSuggestedQuestions } from './answerEngine';
+import { NEO_INPUT, NEO_INTERACTIVE } from './neo';
 import type { HostelAggregate } from '../../src/lib/hostelTypes';
 
 interface ChatMessage {
@@ -18,14 +19,14 @@ const COPY = {
     subtitle: 'Pregunta lo que necesites',
     greeting:
       '¡Hola! Soy el asistente del albergue. Pregúntame sobre horarios, precios o servicios.',
-    placeholder: 'Escribe tu pregunta...',
+    placeholder: 'Escribe tu pregunta…',
     send: 'Enviar',
   },
   en: {
     title: 'Agent',
     subtitle: 'Ask us anything',
     greeting: "Hi! I'm the hostel assistant. Ask me about hours, prices, or services.",
-    placeholder: 'Type your question...',
+    placeholder: 'Type your question…',
     send: 'Send',
   },
 };
@@ -75,24 +76,24 @@ export function ChatAgentBlock({ hostelInfo = null }: Readonly<ChatAgentBlockPro
   return (
     <div className="flex h-full flex-col">
       <div className="mb-2 flex items-center gap-2">
-        <RobotIcon className="h-8 w-8 shrink-0" animate={animate} />
+        <RobotIcon className="h-7 w-7 shrink-0" animate={animate} />
         <div>
-          <h3 className="text-base font-bold text-[#5D4E37] font-sketch">{t.title}</h3>
-          <p className="text-xs text-[#5D4E37]/60">{t.subtitle}</p>
+          <h3 className="text-base font-black text-[#1A1A1A] font-sketch">{t.title}</h3>
+          <p className="text-[11px] font-semibold text-[#1A1A1A]/55">{t.subtitle}</p>
         </div>
       </div>
 
       <div
         ref={listRef}
-        className="mb-2 flex-1 space-y-2 overflow-y-auto rounded-lg bg-[#E8F5E9]/40 p-2"
+        className="mb-2 flex-1 space-y-2 overflow-y-auto rounded-lg border-2 border-[#1A1A1A] bg-[#F5F0E8] p-2"
       >
         {messages.map((message) => (
           <motion.div
             key={message.id}
-            initial={{ opacity: 0, y: 6 }}
+            initial={animate ? { opacity: 0, y: 6 } : false}
             animate={{ opacity: 1, y: 0 }}
-            className={`max-w-[85%] rounded-xl px-3 py-1.5 text-xs ${
-              message.from === 'bot' ? 'bg-white text-[#5D4E37]' : 'ml-auto bg-[#00AB39] text-white'
+            className={`max-w-[90%] rounded-md border-2 border-[#1A1A1A] px-2.5 py-1.5 text-xs font-semibold shadow-[2px_2px_0_0_#1A1A1A] ${
+              message.from === 'bot' ? 'bg-white text-[#1A1A1A]' : 'ml-auto bg-[#00AB39] text-white'
             }`}
           >
             {message.text}
@@ -108,7 +109,7 @@ export function ChatAgentBlock({ hostelInfo = null }: Readonly<ChatAgentBlockPro
               key={question}
               type="button"
               onClick={() => sendMessage(question)}
-              className="rounded-full border border-[#00AB39]/40 bg-white px-2 py-1 text-[10px] text-[#00AB39] hover:bg-[#E8F5E9]"
+              className={`${NEO_INTERACTIVE} rounded-md bg-[#E8F5E9] px-2 py-1 text-[10px] font-black text-[#1A1A1A]`}
             >
               {question}
             </button>
@@ -129,12 +130,12 @@ export function ChatAgentBlock({ hostelInfo = null }: Readonly<ChatAgentBlockPro
           onChange={(event) => setInput(event.target.value)}
           placeholder={t.placeholder}
           aria-label={t.placeholder}
-          className="w-full rounded-full border border-[#5D4E37]/25 bg-white px-3 py-1.5 text-xs text-[#5D4E37] focus:border-[#00AB39] focus:outline-none"
+          className={`${NEO_INPUT} !rounded-md !py-1.5 !text-xs !shadow-[2px_2px_0_0_#1A1A1A]`}
         />
         <button
           type="submit"
           aria-label={t.send}
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#00AB39] text-white hover:bg-[#006B26]"
+          className={`${NEO_INTERACTIVE} flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#00AB39] text-white`}
         >
           <ArrowRightIcon className="h-4 w-4" animate={false} />
         </button>

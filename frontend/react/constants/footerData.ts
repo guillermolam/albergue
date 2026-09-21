@@ -4,10 +4,11 @@
 export const CONTACT_INFO = {
   name: 'Albergue Municipal de Carrascalejo',
   address: {
-    street: 'Calle Principal, 123',
-    postalCode: '10680',
-    city: 'Carrascalejo',
-    region: 'Extremadura',
+    // Matched to open Catastre (OVC) RCCOOR for the hostel pin.
+    street: 'Calle Extremadura, 21',
+    postalCode: '06894',
+    city: 'El Carrascalejo',
+    region: 'Badajoz, Extremadura',
     country: 'España',
   },
   phone: '+34 695 90 43 44',
@@ -19,9 +20,11 @@ export const CONTACT_INFO = {
 };
 
 export const LEGAL_INFO = {
+  owner: 'Ayuntamiento de El Carrascalejo',
+  ineMunicipalityCode: '06032',
   // Tourism Registration (required in Extremadura)
   touristicRegistry: 'H-CC-00123',
-  cif: 'B-12345678', // Tax ID
+  cif: 'B-12345678', // Tax ID — replace with real municipal CIF when confirmed
 
   // Rural Tourism License Extremadura
   ruralTourismLicense: 'ATR-EX-2024-001',
@@ -43,6 +46,31 @@ export const LEGAL_INFO = {
   // Insurance
   liabilityInsurance: 'Póliza RC-123456789',
   insuranceCompany: 'Seguros Turísticos SA',
+
+  // Land registry — folio/finca number is not in the open Catastre payload.
+  propertyRegistryNote: 'Consultar Registro de la Propiedad de Mérida',
+
+  /**
+   * Open Catastre (OVC) public record for the hostel coordinates.
+   * Full RC = pc1+pc2+car+cc1+cc2. Titular and valor catastral are protected.
+   */
+  cadastre: {
+    referenceShort: '0728006QD3202N',
+    reference: '0728006QD3202N0001JK',
+    address: 'CL Extremadura 21, 06894 El Carrascalejo (Badajoz)',
+    useEs: 'Residencial',
+    useEn: 'Residential',
+    builtAreaM2: 411,
+    yearBuilt: 1940,
+    participation: '100%',
+    units: [
+      { useEs: 'Vivienda', useEn: 'Dwelling', areaM2: 131 },
+      { useEs: 'Almacén', useEn: 'Storage', areaM2: 149 },
+      { useEs: 'Almacén', useEn: 'Storage', areaM2: 131 },
+    ],
+    ovcUrl:
+      'https://www1.sedecatastro.gob.es/CYCBienInmueble/OVCConCiud.aspx?del=6&mun=32&refcat=0728006QD3202N0001JK',
+  },
 };
 
 export const SOCIAL_MEDIA = [
