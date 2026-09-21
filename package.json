@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "postinstall": "pnpm --filter @albergue/domain-model --filter @albergue/api-contract build",
+    "postinstall": "pnpm --filter @albergue/domain-model --filter @albergue/api-contract --filter albergue-backend build",
     "dev": "pnpm --filter albergue-carrascalejo-frontend dev",
     "dev:backend": "pnpm --filter albergue-backend dev",
     "dev:all": "pnpm --parallel dev",
