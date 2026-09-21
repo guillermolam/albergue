@@ -19,6 +19,23 @@ export function requireBackendUrl(): string {
   return BACKEND_API_URL.replace(/\/$/, '');
 }
 
+// Deliberately dynamic (not `import { env } from 'cloudflare:workers'` at
+// module scope): this file is imported by prerendered pages too, and Astro
+// prerenders in plain Node, whose ESM loader throws
+// ERR_UNSUPPORTED_ESM_URL_SCHEME on the `cloudflare:` protocol -- a static
+// top-level import crashes the entire build. A dynamic import is only
+// resolved when actually awaited (i.e. inside a live Workers request), so
+// wrapping it in try/catch degrades cleanly everywhere else (Node
+// prerendering, local `astro dev` without `wrangler dev`, tests).
+async function getBackendBinding(): Promise<CloudflareServiceBinding | undefined> {
+  try {
+    const cf = await import('cloudflare:workers');
+    return cf.env.BACKEND;
+  } catch {
+    return undefined;
+  }
+}
+
 export async function backendJson<T>(
   path: string,
   init: RequestInit = {}
@@ -31,24 +48,32 @@ export async function backendJson<T>(
     return { ok: false, status: 503, message: (error as Error).message };
   }
 
+  const url = `${base}${path}`;
+  const requestInit: RequestInit = {
+    ...init,
+    headers: {
+      accept: 'application/json',
+      ...(init.body ? { 'content-type': 'application/json' } : {}),
+      ...init.headers,
+    },
+  };
+
   let response: Response;
   try {
-    response = await fetch(`${base}${path}`, {
-      ...init,
-      // Workers-specific cache bypass for this same-account
-      // *.workers.dev -> *.workers.dev subrequest. Cloudflare Workers
-      // rejects combining this with the standard `cache: 'no-store'`
-      // RequestInit option ("CacheTtl: 0, is not compatible with cache:
-      // no-store header"), which was itself the cause of every request
-      // failing -- so `cf` alone is both the fix and the correct
-      // Workers-native mechanism.
-      cf: { cacheTtl: 0, cacheEverything: false },
-      headers: {
-        accept: 'application/json',
-        ...(init.body ? { 'content-type': 'application/json' } : {}),
-        ...init.headers,
-      },
-    });
+    // Same-account Worker-to-Worker calls (this Worker -> "albergue-backend")
+    // must go through the Service Binding, not a raw fetch() to the
+    // sibling's *.workers.dev URL: Cloudflare's public routing layer
+    // returns a bare "Worker not found" for that kind of subrequest when
+    // issued from inside a Worker, even though the exact same URL resolves
+    // fine from outside (confirmed live in production). The binding calls
+    // the sibling Worker directly, bypassing DNS/TLS/edge routing (and its
+    // cache) entirely. Falls back to a normal cache-bypassed fetch when the
+    // binding isn't provisioned (e.g. local `astro dev` without
+    // `wrangler dev`).
+    const backend = await getBackendBinding();
+    response = backend
+      ? await backend.fetch(new Request(url, requestInit))
+      : await fetch(url, { ...requestInit, cf: { cacheTtl: 0, cacheEverything: false } });
   } catch (error) {
     // A network-level failure (connection refused, DNS, timeout, ...)
     // throws rather than resolving a Response -- without this, it was

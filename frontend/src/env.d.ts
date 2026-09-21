@@ -33,6 +33,8 @@ interface CloudflareServiceBinding {
  */
 interface Env {
   OCR_SERVICE?: CloudflareServiceBinding;
+  /** Service binding to the "albergue-backend" Worker — see wrangler.jsonc. */
+  BACKEND?: CloudflareServiceBinding;
 }
 
 declare module 'cloudflare:workers' {
