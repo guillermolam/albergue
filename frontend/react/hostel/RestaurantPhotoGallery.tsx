@@ -1,34 +1,58 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react';
 import { motion } from 'motion/react';
 import { useI18n } from '../hooks/useI18n';
 import { ChevronLeftIcon, ChevronRightIcon, ExpandIcon, XIcon } from '../doodle/DoodleIcons';
 
 interface GalleryImage {
   src: string;
-  alt: string;
-  caption?: string;
+  alt: { es: string; en: string };
+  caption: { es: string; en: string };
 }
 
 const RESTAURANT_IMAGES: GalleryImage[] = [
   {
     src: '/albergue/bar_rest_01.jpg',
-    alt: 'Interior del restaurante Alqantara Plaza',
-    caption: 'Interior acogedor con terraza',
+    alt: {
+      es: 'Interior del restaurante Alqantara Plaza',
+      en: 'Interior of Alqantara Plaza restaurant',
+    },
+    caption: {
+      es: 'Interior acogedor con terraza',
+      en: 'Cozy interior with terrace',
+    },
   },
   {
     src: '/albergue/bar_rest_02.jpg',
-    alt: 'Zona de mesas y barra',
-    caption: 'Zona de mesas y barra',
+    alt: {
+      es: 'Zona de mesas y barra',
+      en: 'Dining tables and bar area',
+    },
+    caption: {
+      es: 'Zona de mesas y barra',
+      en: 'Tables and bar',
+    },
   },
   {
     src: '/albergue/patio_interior.webp',
-    alt: 'Patio interior del albergue',
-    caption: 'Patio interior para eventos',
+    alt: {
+      es: 'Patio interior del albergue',
+      en: 'Hostel interior patio',
+    },
+    caption: {
+      es: 'Patio interior para eventos',
+      en: 'Interior patio for events',
+    },
   },
   {
     src: '/albergue/patio_interior2.webp',
-    alt: 'Vista del patio desde otra ángulo',
-    caption: 'Terraza exterior con vistas',
+    alt: {
+      es: 'Vista del patio desde otro ángulo',
+      en: 'Patio view from another angle',
+    },
+    caption: {
+      es: 'Terraza exterior con vistas',
+      en: 'Outdoor terrace with views',
+    },
   },
 ];
 
@@ -51,12 +75,27 @@ const COPY = {
   },
 } as const;
 
+function localize(image: GalleryImage, isEs: boolean) {
+  return {
+    src: image.src,
+    alt: isEs ? image.alt.es : image.alt.en,
+    caption: isEs ? image.caption.es : image.caption.en,
+  };
+}
+
 function NavButton({
   onClick,
   label,
   icon,
   disabled,
-}: Readonly<{ onClick: () => void; label: string; icon: ReactNode; disabled?: boolean }>) {
+  className = '',
+}: Readonly<{
+  onClick: (e: MouseEvent<HTMLButtonElement>) => void;
+  label: string;
+  icon: ReactNode;
+  disabled?: boolean;
+  className?: string;
+}>) {
   return (
     <button
       type="button"
@@ -65,7 +104,7 @@ function NavButton({
       aria-label={label}
       className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[#5D4E37]/30 bg-white/90 text-[#5D4E37] hover:bg-[#f5f0e8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#5D4E37] transition-all ${
         disabled ? 'opacity-30 cursor-not-allowed' : ''
-      }`}
+      } ${className}`}
     >
       {icon}
     </button>
@@ -76,7 +115,11 @@ function GalleryThumbnail({
   image,
   isActive,
   onClick,
-}: Readonly<{ image: GalleryImage; isActive: boolean; onClick: () => void }>) {
+}: Readonly<{
+  image: { src: string; alt: string; caption: string };
+  isActive: boolean;
+  onClick: () => void;
+}>) {
   return (
     <motion.button
       type="button"
@@ -112,20 +155,72 @@ function FullscreenModal({
   images,
   initialIndex,
   onClose,
-}: Readonly<{ images: GalleryImage[]; initialIndex: number; onClose: () => void }>) {
+  isEs,
+}: Readonly<{
+  images: ReturnType<typeof localize>[];
+  initialIndex: number;
+  onClose: () => void;
+  isEs: boolean;
+}>) {
   const [index, setIndex] = useState(initialIndex);
-  const { locale } = useI18n();
-  const isEs = locale !== 'en';
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
   const t = isEs ? COPY.es : COPY.en;
 
   const goTo = (next: number) => {
     setIndex((next + images.length) % images.length);
   };
 
+  useEffect(() => {
+    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    closeRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        goTo(index - 1);
+        return;
+      }
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        goTo(index + 1);
+        return;
+      }
+      if (event.key !== 'Tab' || !dialogRef.current) return;
+
+      const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      previouslyFocused.current?.focus();
+    };
+  }, [onClose, index, images.length]);
+
   const image = images[index];
 
   return (
     <motion.div
+      ref={dialogRef}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -136,8 +231,12 @@ function FullscreenModal({
       aria-label={t.expand}
     >
       <button
+        ref={closeRef}
         type="button"
-        onClick={onClose}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
         aria-label={t.close}
         className="absolute top-4 right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
       >
@@ -146,8 +245,10 @@ function FullscreenModal({
 
       <button
         type="button"
-        onClick={() => goTo(index - 1)}
-        disabled={false}
+        onClick={(e) => {
+          e.stopPropagation();
+          goTo(index - 1);
+        }}
         aria-label={t.prev}
         className="absolute left-4 z-10 flex h-full items-center px-4 text-white hover:text-[#00AB39] transition-colors"
       >
@@ -176,8 +277,10 @@ function FullscreenModal({
 
       <button
         type="button"
-        onClick={() => goTo(index + 1)}
-        disabled={false}
+        onClick={(e) => {
+          e.stopPropagation();
+          goTo(index + 1);
+        }}
         aria-label={t.next}
         className="absolute right-4 z-10 flex h-full items-center px-4 text-white hover:text-[#00AB39] transition-colors"
       >
@@ -191,6 +294,7 @@ export function RestaurantPhotoGallery() {
   const { locale } = useI18n();
   const isEs = locale !== 'en';
   const t = isEs ? COPY.es : COPY.en;
+  const images = RESTAURANT_IMAGES.map((img) => localize(img, isEs));
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -213,56 +317,36 @@ export function RestaurantPhotoGallery() {
             className="relative aspect-[4/3] max-w-3xl mx-auto rounded-xl overflow-hidden border-2 border-[#5D4E37]/20 bg-[#f5f0e8] doodle-shadow"
           >
             <img
-              src={RESTAURANT_IMAGES[currentIndex].src}
-              alt={RESTAURANT_IMAGES[currentIndex].alt}
+              src={images[currentIndex].src}
+              alt={images[currentIndex].alt}
               className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               loading={currentIndex === 0 ? 'eager' : 'lazy'}
             />
-            {RESTAURANT_IMAGES[currentIndex].caption && (
+            {images[currentIndex].caption && (
               <div className="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/60 to-transparent text-white text-center">
-                <p className="text-sm font-handwritten">
-                  {RESTAURANT_IMAGES[currentIndex].caption}
-                </p>
+                <p className="text-sm font-handwritten">{images[currentIndex].caption}</p>
               </div>
             )}
           </motion.div>
 
-          <button
-            type="button"
-            onClick={() =>
-              setCurrentIndex((i) => (i - 1 + RESTAURANT_IMAGES.length) % RESTAURANT_IMAGES.length)
-            }
-            aria-label={t.prev}
+          <NavButton
+            onClick={() => setCurrentIndex((i) => (i - 1 + images.length) % images.length)}
+            label={t.prev}
+            icon={<ChevronLeftIcon className="h-5 w-5" />}
             className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 sm:-translate-x-14 z-10"
-          >
-            <NavButton
-              onClick={() =>
-                setCurrentIndex(
-                  (i) => (i - 1 + RESTAURANT_IMAGES.length) % RESTAURANT_IMAGES.length
-                )
-              }
-              label={t.prev}
-              icon={<ChevronLeftIcon className="h-5 w-5" />}
-            />
-          </button>
+          />
 
-          <button
-            type="button"
-            onClick={() => setCurrentIndex((i) => (i + 1) % RESTAURANT_IMAGES.length)}
-            aria-label={t.next}
+          <NavButton
+            onClick={() => setCurrentIndex((i) => (i + 1) % images.length)}
+            label={t.next}
+            icon={<ChevronRightIcon className="h-5 w-5" />}
             className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 sm:translate-x-14 z-10"
-          >
-            <NavButton
-              onClick={() => setCurrentIndex((i) => (i + 1) % RESTAURANT_IMAGES.length)}
-              label={t.next}
-              icon={<ChevronRightIcon className="h-5 w-5" />}
-            />
-          </button>
+          />
 
           <div className="mt-6 flex justify-center gap-2">
-            {RESTAURANT_IMAGES.map((image, i) => (
+            {images.map((image, i) => (
               <GalleryThumbnail
-                key={i}
+                key={image.src}
                 image={image}
                 isActive={i === currentIndex}
                 onClick={() => setCurrentIndex(i)}
@@ -283,9 +367,10 @@ export function RestaurantPhotoGallery() {
 
       {showModal && (
         <FullscreenModal
-          images={RESTAURANT_IMAGES}
+          images={images}
           initialIndex={currentIndex}
           onClose={() => setShowModal(false)}
+          isEs={isEs}
         />
       )}
     </section>

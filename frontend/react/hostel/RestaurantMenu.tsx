@@ -1,10 +1,9 @@
-import { useState, useRef, useEffect, type ReactNode } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { useState, useRef, type ReactNode } from 'react';
+import { motion } from 'motion/react';
 import { useI18n } from '../hooks/useI18n';
 import { SectionDecor } from '../shared/SectionDecor';
 import {
   ChevronDownIcon,
-  ChevronRightIcon,
   UtensilsIcon,
   WineIcon,
   BreadIcon,
@@ -57,7 +56,7 @@ const MENU_CATEGORIES: MenuCategory[] = [
     id: 'fritos',
     es: 'Fritos y Crujientes',
     en: 'Fried & Crispy',
-    icon: <SparklesIcon className="h-5 w-5" />,
+    icon: <SparklesIcon className="h-5 w-5" animate={false} />,
     items: [
       [
         'Bandidos crujientes de pollo con patatas caseras',
@@ -130,7 +129,7 @@ const MENU_CATEGORIES: MenuCategory[] = [
     id: 'ensaladas',
     es: 'Ensaladas',
     en: 'Salads',
-    icon: <SparklesIcon className="h-5 w-5" />,
+    icon: <SparklesIcon className="h-5 w-5" animate={false} />,
     items: [
       [
         'De rulo de cabra con frutos secos y mermelada de arándanos',
@@ -154,7 +153,7 @@ const MENU_CATEGORIES: MenuCategory[] = [
     id: 'postres',
     es: 'Postres',
     en: 'Desserts',
-    icon: <SparklesIcon className="h-5 w-5" />,
+    icon: <SparklesIcon className="h-5 w-5" animate={false} />,
     items: [
       ['Tarta de aguacate y pistacho', 'Avocado and pistachio tart', '5.00'],
       ['Tarta de queso', 'Cheesecake', '5.00'],
@@ -211,6 +210,7 @@ function CategoryTab({ category, isActive, onClick, isEs }: CategoryTabProps) {
   return (
     <motion.button
       type="button"
+      data-category={category.id}
       onClick={onClick}
       className={`relative flex h-12 shrink-0 items-center gap-2 rounded-full px-4 py-1.5 text-sm font-bold font-sketch transition-all ${
         isActive
@@ -313,8 +313,6 @@ export function RestaurantMenu() {
     });
   };
 
-  const activeCategory = MENU_CATEGORIES.find((c) => c.id === activeCategoryId)!;
-
   return (
     <section className="relative isolate py-12" aria-labelledby="menu-heading">
       <SectionDecor preset="journey" delayOffset={0.5} />
@@ -329,7 +327,6 @@ export function RestaurantMenu() {
         <nav
           ref={tabsRef}
           className="mb-6 flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4"
-          role="tablist"
           aria-label={isEs ? 'Categorías del menú' : 'Menu categories'}
         >
           {MENU_CATEGORIES.map((category, i) => (

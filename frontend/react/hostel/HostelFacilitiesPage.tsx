@@ -97,7 +97,8 @@ const FACILITIES: FacilityEntry[] = [
   {
     id: 'rooms',
     icon: () => <img src="/png/objects/tv.png" alt="" className="h-8 w-8" />,
-    images: [PHOTO.patio2, PHOTO.ac, PHOTO.patio1],
+    // No dedicated room photos yet — omit carousel rather than showing patio/AC assets.
+    images: [],
     es: {
       title: 'Habitaciones',
       description:

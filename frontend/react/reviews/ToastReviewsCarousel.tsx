@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useI18n } from '../hooks/useI18n';
-import { ChatIcon, StarIcon, ExternalLinkIcon } from '../doodle/DoodleIcons';
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
+import { ChatIcon, StarIcon } from '../doodle/DoodleIcons';
 import { REVIEWS, type Review } from './reviewsData';
 
 const AUTO_ADVANCE_MS = 4500;
@@ -49,15 +50,14 @@ function NavButton({
 function ReviewToast({
   review,
   t,
-  index,
-}: Readonly<{ review: Review; t: (typeof COPY)['es']; index: number }>) {
+  reduceMotion,
+}: Readonly<{ review: Review; t: (typeof COPY)['es']; reduceMotion: boolean }>) {
   return (
     <motion.div
-      key={review.id}
-      initial={{ opacity: 0, y: 20, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -20, scale: 0.95 }}
-      transition={{ duration: FADE_DURATION, ease: 'easeInOut' }}
+      initial={reduceMotion ? false : { opacity: 0, y: 20, scale: 0.95 }}
+      animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
+      exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -20, scale: 0.95 }}
+      transition={{ duration: reduceMotion ? 0 : FADE_DURATION, ease: 'easeInOut' }}
       className="flex max-w-sm flex-col items-center rounded-xl border-2 border-[#5D4E37]/20 bg-[#FFFFFF] p-4 text-center doodle-shadow paper-texture sm:p-5"
       style={{ boxShadow: '0 8px 32px rgba(93,78,55,0.12)' }}
     >
@@ -97,30 +97,25 @@ export function ToastReviewsCarousel() {
   const { locale } = useI18n();
   const isEs = locale !== 'en';
   const t = isEs ? COPY.es : COPY.en;
+  const reduceMotion = usePrefersReducedMotion();
 
   const [index, setIndex] = useState(0);
-  const [direction, setDirection] = useState(1);
   const [paused, setPaused] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const goTo = useCallback(
-    (next: number) => {
-      setDirection(next > index ? 1 : -1);
-      setIndex((next + REVIEWS.length) % REVIEWS.length);
-    },
-    [index]
-  );
+  const goTo = useCallback((next: number) => {
+    setIndex((next + REVIEWS.length) % REVIEWS.length);
+  }, []);
 
   useEffect(() => {
-    if (paused) return;
+    if (paused || reduceMotion) return;
     timerRef.current = setInterval(() => {
-      setDirection(1);
       setIndex((i) => (i + 1) % REVIEWS.length);
     }, AUTO_ADVANCE_MS);
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [paused]);
+  }, [paused, reduceMotion]);
 
   const review = REVIEWS[index];
 
@@ -129,6 +124,12 @@ export function ToastReviewsCarousel() {
       className="relative py-8"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+          setPaused(false);
+        }
+      }}
       aria-label={isEs ? 'Reseñas de clientes' : 'Customer reviews'}
     >
       <div className="container mx-auto max-w-md px-4">
@@ -152,12 +153,11 @@ export function ToastReviewsCarousel() {
                 <path d="M15 18l-6-6 6-6" />
               </svg>
             }
-            disabled={false}
           />
 
           <div className="w-full min-h-[160px]">
-            <AnimatePresence mode="wait" custom={direction}>
-              <ReviewToast review={review} t={t} index={index} />
+            <AnimatePresence mode="wait">
+              <ReviewToast key={review.id} review={review} t={t} reduceMotion={reduceMotion} />
             </AnimatePresence>
           </div>
 
@@ -175,7 +175,6 @@ export function ToastReviewsCarousel() {
                 <path d="M9 18l6-6-6-6" />
               </svg>
             }
-            disabled={false}
           />
         </div>
 
