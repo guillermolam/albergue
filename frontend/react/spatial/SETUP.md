@@ -6,11 +6,16 @@ can be done from code — Smplrspace's tracing/digitizing step is a GUI
 workflow performed by a human against real floor-plan input (photos,
 hand-drawn sketches, aerial/street imagery, and measurements).
 
-**Nothing described here has been done yet.** No Smplrspace organization
-or Spaces exist for this project. Do not paste Smplrspace's own demo
-`spaceId` / `organizationId` / `clientToken` into this app at any point —
-the app is designed to run without them (see `config.ts`) until real ones
-exist.
+**B01 is done; B02 and B03 are not.** The organization and B01's Space
+(project `prj_l3kaqeh`) are real, and `frontend/scripts/root-env.mjs`
+ships their organization id, client token, and B01 space id as committed
+defaults — this is intentional, not an oversight (see that file's
+comment for why: all three are `access: 'public'`, already inlined
+verbatim into the client bundle regardless of whether they're committed).
+B02 and B03 still need Steps 1–4 below (a B02/B03 Space in the _same_
+organization, then wiring their ids into `root-env.mjs` and/or the
+monorepo-root `.env`). Do not paste Smplrspace's own demo `spaceId` /
+`organizationId` / `clientToken` into this app at any point.
 
 ## 0. Prerequisites
 
@@ -76,23 +81,30 @@ business truth — see `domain/types.ts`).
 
 ## 5. Wire the real IDs into the app
 
-Once Spaces exist, set these as real environment variables/secrets
-(never commit them):
+Once a building's Space exists, add its id (and the shared org id /
+client token, if not already present) to `frontend/scripts/root-env.mjs`:
 
-```
-PUBLIC_SMPLR_ORGANIZATION_ID=<org id from step 1>
-PUBLIC_SMPLR_CLIENT_TOKEN=<client token from step 1>
-PUBLIC_SMPLR_SPACE_B01_ID=<B01 space id from step 2>
-PUBLIC_SMPLR_SPACE_B02_ID=<B02 space id from step 2>
-PUBLIC_SMPLR_SPACE_B03_ID=<B03 space id from step 2>
-```
+- The org id and client token are shared across all three buildings —
+  add them once, in `SMPLR_B01_DEFAULTS` (rename if a second building
+  besides B01 gets a committed default) or in the monorepo-root `.env`
+  as `SMPLRSPACE_ORG_ID` / `SMPLRSPACE_API_TOKEN`.
+- Each building's space id is per-building: add
+  `SMPLRSPACE_SPACE_B02_ID`/`_B03_ID` to the monorepo-root `.env` (or a
+  committed default in `root-env.mjs`, matching B01's, once that
+  building's Space is real and stable).
 
-These are declared as optional client env vars in
-`astro.config.shared.mjs`. As soon as all of them are set for a given
-building, `getSmplrConfig()` in `config.ts` starts returning a non-null
-config and `SpaceViewer` switches from the "coming soon" placeholder to
-actually mounting the Smplrspace viewer for that building — no code
-change required.
+These all resolve into `PUBLIC_SMPLR_ORGANIZATION_ID` /
+`PUBLIC_SMPLR_CLIENT_TOKEN` / `PUBLIC_SMPLR_SPACE_B0{1,2,3}_ID`, declared
+as client env vars in `astro.config.shared.mjs` (`access: 'public'` --
+they're inlined verbatim into the client bundle regardless of whether
+they're committed, so a GitHub Actions secret buys no more privacy than a
+committed default; it only adds a dependency on that secret being set
+correctly in whatever environment builds the app, which is exactly the
+class of bug `root-env.mjs`'s committed B01 default exists to prevent).
+As soon as a building's three values are all resolved, `getSmplrConfig()`
+in `config.ts` starts returning a non-null config and `SpaceViewer`
+switches from the "coming soon" placeholder to actually mounting the
+Smplrspace viewer for that building — no other code change required.
 
 ## 6. After real Spaces exist: geometry-dependent work (not yet started)
 
