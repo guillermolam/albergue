@@ -63,13 +63,26 @@ app.use("*", requestContextMiddleware());
 app.use("*", correlationIdMiddleware());
 app.use("*", loggingMiddleware());
 
-// Apply rate limiting (100 requests per minute per IP)
+// Apply rate limiting.
+//
+// keyGenerator prefers Cloudflare's own client-IP header so this degrades
+// to real per-client limiting on any deployment that fronts requests
+// through Cloudflare's edge (c.env.remoteAddress is not a real Hono/Workers
+// field and was always empty). It still falls back to "global" -- when
+// this app is invoked in-process from the merged frontend Worker
+// (frontend/src/lib/backend-api.ts), the synthetic Request built by
+// Hono's `.request()` carries no such header, so every unauthenticated
+// SSR call in an isolate shares one bucket. maxRequests is sized well
+// above normal multi-visitor browsing load (Layout's per-page /api/hostel
+// call plus a few page-specific calls) to absorb that coupling; properly
+// fixing it requires threading a per-request client IP through all
+// backendFetch/backendJson call sites, which is a separate follow-up.
 app.use(
   "*",
   rateLimiterMiddleware({
-    maxRequests: 100,
+    maxRequests: 600,
     windowMs: 60000,
-    keyGenerator: (c) => c.env?.remoteAddress || "global",
+    keyGenerator: (c) => c.req.header("cf-connecting-ip") || c.env?.remoteAddress || "global",
   }),
 );
 

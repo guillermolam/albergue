@@ -98,20 +98,15 @@ export const server = {
         }
         let response: Response;
         try {
-          // Goes through the Service Binding when available (bypasses the
-          // "Worker not found" that a raw fetch() to the sibling
-          // *.workers.dev URL hits from inside a Worker), so this doesn't
-          // depend on BACKEND_API_URL except on its local-dev fallback path.
           response = await backendFetch('/api/auth/login', {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify(input),
           });
         } catch {
-          // A missing/misconfigured backend, or a network-level failure
-          // (connection refused, DNS, timeout, ...) throws rather than
-          // resolving a Response -- surface it as a clean ActionError
-          // instead of an unhandled exception.
+          // A thrown error out of the in-process backend call throws
+          // rather than resolving a Response -- surface it as a clean
+          // ActionError instead of an unhandled exception.
           throw new ActionError({
             code: 'SERVICE_UNAVAILABLE',
             message: 'Backend API is unreachable.',
@@ -246,7 +241,7 @@ export const server = {
 
     /** Public read of real bed availability for the current draft's dates
      * -- lets client components (BedSelectionStep.tsx) fetch this without
-     * needing BACKEND_API_URL, which is server-only. */
+     * needing direct access to backendFetch, which is server-only. */
     getAvailableBeds: defineAction({
       input: z.object({
         checkInDate: isoDate,

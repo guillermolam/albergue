@@ -69,11 +69,6 @@ export const sharedConfig = {
         access: 'public',
         optional: true,
       }),
-      BACKEND_API_URL: envField.string({
-        context: 'server',
-        access: 'secret',
-        optional: true,
-      }),
       // Matches backend/src/lib/middleware.ts's resolveIdentity(): the only
       // credential its admin-gated routes accept until session/OIDC
       // verification lands. Never sent to the client — only used server-side

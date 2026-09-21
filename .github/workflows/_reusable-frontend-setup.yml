@@ -51,7 +51,7 @@ jobs:
         run: ./.github/scripts/install-playwright.sh
 
       - name: Build workspace packages
-        run: pnpm --filter @albergue/api-contract --filter @albergue/domain-model build
+        run: pnpm --filter @albergue/api-contract --filter @albergue/domain-model --filter albergue-backend build
 
       - name: Run requested script
         env:

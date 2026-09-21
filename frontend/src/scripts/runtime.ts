@@ -15,6 +15,7 @@ function bootstrap() {
   void initializeSwupPlugins();
   void initLenis();
   onIdle(() => {
+    window.__appReady = true;
     document.dispatchEvent(new CustomEvent('app:ready'));
   });
 }

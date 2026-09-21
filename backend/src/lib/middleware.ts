@@ -218,7 +218,12 @@ export function rateLimiterMiddleware(
   const {
     windowMs = 60000, // 1 minute
     maxRequests = 100,
-    keyGenerator = (c: Context) => c.env?.remoteAddress || "global",
+    keyGenerator = (c: Context) =>
+      c.req.header("cf-connecting-ip") ||
+      c.req.header("x-forwarded-for") ||
+      c.req.header("x-real-ip") ||
+      c.env?.remoteAddress ||
+      "global",
     onRateLimited,
   } = options;
 
