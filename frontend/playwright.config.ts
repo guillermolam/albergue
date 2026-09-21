@@ -57,7 +57,7 @@ export default defineConfig({
           // consistently as possible, rather than falling through to
           // db.ts's own ambiguous "postgresql://localhost:5432/albergue"
           // default.
-          DATABASE_URL: 'postgresql://invalid:invalid@127.0.0.1:1/invalid',
+          DATABASE_URL: 'postgresql://invalid:invalid@127.0.0.1:1/invalid', // NOSONAR: not a real credential, deliberately-unroutable placeholder
         },
       },
 });

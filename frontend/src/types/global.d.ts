@@ -39,6 +39,12 @@ declare global {
     __INITIAL_STATE__?: Record<string, any>;
     __ENVIRONMENT__?: 'development' | 'production' | 'test';
 
+    // Set alongside the 'app:ready' CustomEvent (src/scripts/runtime.ts) so
+    // a late listener (e.g. an e2e test) can check "did this already fire"
+    // instead of only being able to listen for it -- a plain event alone
+    // is missed if it fires before the listener attaches.
+    __appReady?: boolean;
+
     // Service worker
     serviceWorker?: {
       register: (

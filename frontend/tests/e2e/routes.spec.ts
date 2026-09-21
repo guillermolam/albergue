@@ -55,10 +55,15 @@ test.describe('Route rendering tests', () => {
         waitUntil: 'load',
       });
 
-      // Give client-side hydration a moment to run and surface any
-      // synchronous console errors, without waiting on unrelated
-      // background network activity the way 'networkidle' did.
-      await page.waitForTimeout(500);
+      // Wait on the app's own readiness signal (src/scripts/runtime.ts,
+      // set after its bootstrap -- stores bridge, Swup, Lenis -- finishes)
+      // rather than an arbitrary fixed sleep, so client-side hydration has
+      // actually run and had a chance to surface synchronous console
+      // errors before checking for them. Falls back to a short wait if a
+      // route never fires it (e.g. /info, which just redirects).
+      await page
+        .waitForFunction(() => window.__appReady === true, { timeout: 5000 })
+        .catch(() => {});
 
       // Check for specific error patterns
       const criticalErrors = errors.filter(
