@@ -1,6 +1,7 @@
 /**
  * Same-origin /api/camino/* for browser islands.
- * Proxies to the Hono backend and stamps an anonymous session cookie.
+ * Proxies to the Hono backend via Cloudflare Service Binding when available,
+ * otherwise BACKEND_API_URL (local Node). Anonymous session cookie stamped here.
  */
 import type { APIRoute } from 'astro';
 import { backendFetch } from '../../../lib/backend-api';
@@ -8,7 +9,7 @@ import { backendFetch } from '../../../lib/backend-api';
 export const prerender = false;
 
 const COOKIE = 'camino_sid';
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 400; // ~13 months
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 400;
 
 function newSessionId(): string {
   return crypto.randomUUID().replace(/-/g, '');
@@ -32,6 +33,20 @@ function sessionCookie(id: string, secure: boolean): string {
   return flags.join('; ');
 }
 
+/** Worker→Worker via Service Binding; public *.workers.dev fetch returns CF 1042. */
+async function callBackend(path: string, init: RequestInit): Promise<Response> {
+  try {
+    const { env } = await import('cloudflare:workers');
+    if (env.BACKEND) {
+      const request = new Request(new URL(path, 'https://albergue-backend.internal'), init);
+      return env.BACKEND.fetch(request);
+    }
+  } catch {
+    // Plain Node / astro dev — no cloudflare:workers module.
+  }
+  return backendFetch(path, init);
+}
+
 async function proxyCamino(
   request: Request,
   backendPath: string,
@@ -42,12 +57,13 @@ async function proxyCamino(
   if (!sessionId) sessionId = newSessionId();
 
   try {
-    const upstream = await backendFetch(backendPath, {
+    const upstream = await callBackend(backendPath, {
       ...init,
       headers: {
         ...(init.headers ?? {}),
         'X-Camino-Session': sessionId,
         'X-Requested-With': 'XMLHttpRequest',
+        accept: 'application/json',
       },
     });
     const body = await upstream.text();
