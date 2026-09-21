@@ -28,12 +28,30 @@ const nightlifePlaces = placesResult.ok
   ? placesResult.data.filter((p) => NIGHTLIFE_CATEGORIES.has(p.category))
   : [];
 const localNotices = localResult.ok ? localResult.data : [];
+
+// Unlike the other area/* pages, this one combines three independent
+// backend calls -- any of them failing silently left the page looking
+// empty with no explanation, since each section just renders its own
+// empty state with no indication that's a failure rather than "there's
+// nothing on right now".
+const failedResult = !eventsResult.ok
+  ? eventsResult
+  : !placesResult.ok
+    ? placesResult
+    : !localResult.ok
+      ? localResult
+      : null;
 ---
 
 <Layout
   title="Qué Hacer - Albergue Municipal Carrascalejo"
   description="Información turística, agenda cultural, vida local y ocio nocturno en Carrascalejo y la zona"
 >
+  {failedResult && (
+    <div class="container mx-auto mt-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+      Could not load some content: {failedResult.message}
+    </div>
+  )}
   <CarrascalejoLocalSection client:load notices={localNotices} />
   <CulturalEventsSection client:load events={events} />
   <AreaDoPage client:load />

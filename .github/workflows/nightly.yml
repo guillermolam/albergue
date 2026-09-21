@@ -145,6 +145,14 @@ jobs:
           BACKEND_API_URL: ${{ secrets.BACKEND_API_URL }}
         run: ../.github/scripts/sync-backend-api-url.sh
 
+      - name: Smoke test live pages
+        # Catches the class of bug this class of change keeps hitting: a
+        # broken Worker-to-Worker backend call that doesn't error, it hangs
+        # for ~30s until Cloudflare's own platform timeout kills the
+        # request. A human noticing that live was what caught it last time
+        # -- this should have been automatic.
+        run: ./.github/scripts/smoke-test-live-pages.sh https://albergue.alberguecarrascalejo.workers.dev
+
   migrate-database:
     name: Apply database migrations
     runs-on: ubuntu-latest
