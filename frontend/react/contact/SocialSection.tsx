@@ -1,9 +1,11 @@
 import type { ComponentType } from 'react';
-import { DoodleFrame } from '../doodle/DoodleFrame';
-import { StarIcon, SparkleIcon } from '../doodle/DoodleIcons';
+import { motion } from 'motion/react';
+import { StarIcon } from '../doodle/DoodleIcons';
 import { FacebookIcon, InstagramIcon, TwitterIcon, YoutubeIcon } from '../doodle/SocialIcons';
 import { useI18n } from '../hooks/useI18n';
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { SOCIAL_MEDIA } from '../constants/footerData';
+import { NEO_INTERACTIVE } from './neo';
 
 const ICON_MAP: Record<string, ComponentType<{ className?: string }>> = {
   facebook: FacebookIcon,
@@ -13,42 +15,49 @@ const ICON_MAP: Record<string, ComponentType<{ className?: string }>> = {
   tripadvisor: StarIcon,
 };
 
+const COLORS = [
+  'bg-[#1877F2]',
+  'bg-[#E4405F]',
+  'bg-[#1A1A1A]',
+  'bg-[#FF0000]',
+  'bg-[#00AA6C]',
+] as const;
+
 const COPY = {
-  es: { title: 'Síguenos', subtitle: 'Todo lo que compartimos, en un solo sitio' },
-  en: { title: 'Follow Us', subtitle: 'Everything we share, in one place' },
+  es: { title: 'Síguenos', subtitle: 'Redes del albergue' },
+  en: { title: 'Follow us', subtitle: 'Hostel socials' },
 };
 
 export function SocialSection() {
   const { locale } = useI18n();
   const isEs = locale !== 'en';
   const t = isEs ? COPY.es : COPY.en;
+  const reduceMotion = usePrefersReducedMotion();
 
   return (
-    <section className="container mx-auto max-w-5xl px-4 py-12">
-      <h2 className="mb-1 flex items-center gap-2 text-2xl font-bold text-[#5D4E37] font-sketch">
-        <SparkleIcon className="h-7 w-7" />
-        {t.title}
-      </h2>
-      <p className="mb-6 text-sm text-[#5D4E37]/70 font-handwritten">{t.subtitle}</p>
+    <section className="container mx-auto max-w-5xl px-4 py-10">
+      <h2 className="mb-1 text-2xl font-black text-[#1A1A1A] font-sketch">{t.title}</h2>
+      <p className="mb-5 text-sm font-semibold text-[#1A1A1A]/60">{t.subtitle}</p>
 
-      <div className="flex flex-wrap gap-4">
-        {SOCIAL_MEDIA.map((social) => {
+      <div className="flex flex-wrap gap-3">
+        {SOCIAL_MEDIA.map((social, i) => {
           const Icon = ICON_MAP[social.id] ?? StarIcon;
           return (
-            <a
+            <motion.a
               key={social.id}
               href={social.url}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={social.name}
-              className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00AB39]"
+              className={`${NEO_INTERACTIVE} ${COLORS[i % COLORS.length]} flex h-14 items-center gap-2 rounded-xl px-4 text-white`}
+              initial={reduceMotion ? false : { opacity: 0, scale: 0.85 }}
+              whileInView={reduceMotion ? undefined : { opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.04, type: 'spring', stiffness: 260, damping: 18 }}
             >
-              <DoodleFrame edge={7} radius={999}>
-                <div className="flex h-14 w-14 items-center justify-center text-[#00AB39]">
-                  <Icon className="h-6 w-6" />
-                </div>
-              </DoodleFrame>
-            </a>
+              <Icon className="h-5 w-5" />
+              <span className="text-sm font-black">{social.name}</span>
+            </motion.a>
           );
         })}
       </div>

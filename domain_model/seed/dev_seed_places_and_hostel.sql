@@ -37,8 +37,8 @@ INSERT INTO hostels (
   -- exists for "Calle Principal" in this village, so the village centroid
   -- is the most precise real anchor available; a precise street-level pin
   -- needs manual correction once the real street address is known.
-  'Calle Principal, 123', '10680', 'El Carrascalejo', 'Extremadura', 'España',
-  39.0223673, -6.3371905, '+34 924 XXX XXX', 'info@alberguecarrascalejo.com',
+  'Calle Extremadura, 21', '06894', 'El Carrascalejo', 'Badajoz, Extremadura', 'España',
+  39.0223673, -6.3371905, '+34 695 90 43 44', 'info@alberguecarrascalejo.com',
   '15:00', '22:00', '11:00',
   'H-CC-00123', 'B-12345678', 'ATR-EX-2024-001', 'dpo@alberguecarrascalejo.com', 'AEPD-R-2024-12345',
   'Junta Arbitral de Consumo de Extremadura', 'https://consumo.juntaex.es', 'https://ec.europa.eu/consumers/odr',

@@ -4,48 +4,47 @@ import { motion } from 'motion/react';
 import { PageHero } from './shared/PageHero';
 import { WiredButton } from './doodle/WiredButton';
 import { useI18n } from './hooks/useI18n';
+import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 import { ContactHub } from './contact/ContactHub';
 import { InstitutionsSection } from './contact/InstitutionsSection';
 import { SocialSection } from './contact/SocialSection';
+import { LegalIdentitySection } from './contact/LegalIdentitySection';
+import { NEO, NEO_INPUT } from './contact/neo';
 import type { HostelAggregate } from '../src/lib/hostelTypes';
 
 const COPY = {
   es: {
-    eyebrow: 'Estamos aquí para ayudarte',
+    eyebrow: 'El Carrascalejo · Badajoz',
     title: 'Contacto',
-    subtitle: 'Elige cómo prefieres hablar con nosotros.',
-    formHeading: 'O envíanos un mensaje escrito',
+    subtitle: 'Llámanos, escríbenos o pásate.',
+    formHeading: 'O envíanos un mensaje',
     formName: 'Nombre',
     formEmail: 'Email',
     formSubject: 'Asunto (opcional)',
     formMessage: 'Mensaje',
     formSubmit: 'Enviar Mensaje',
     formSending: 'Enviando...',
-    formSuccess: '¡Gracias! Hemos recibido tu mensaje y te responderemos pronto.',
-    formError: 'No se pudo enviar el mensaje. Inténtalo de nuevo.',
+    formSuccess: '¡Recibido! Te respondemos pronto.',
+    formError: 'No se pudo enviar. Inténtalo de nuevo.',
   },
   en: {
-    eyebrow: "We're here to help",
+    eyebrow: 'El Carrascalejo · Badajoz',
     title: 'Contact',
-    subtitle: "Choose how you'd rather talk to us.",
-    formHeading: 'Or send us a written message',
+    subtitle: 'Call, write, or stop by.',
+    formHeading: 'Or send a message',
     formName: 'Name',
     formEmail: 'Email',
     formSubject: 'Subject (optional)',
     formMessage: 'Message',
-    formSubmit: 'Send Message',
-    formSending: 'Sending...',
-    formSuccess: "Thank you! We've received your message and will reply soon.",
-    formError: 'Could not send the message. Please try again.',
+    formSubmit: 'Send message',
+    formSending: 'Sending…',
+    formSuccess: 'Got it! We’ll reply soon.',
+    formError: 'Could not send. Please try again.',
   },
 } as const;
 
 type FormStatus = 'idle' | 'sending' | 'success' | 'error';
 
-/** FormData.get() returns `FormDataEntryValue | null` (string | File | null),
- * so a bare `String(x || '')` would stringify a File as "[object File]" if
- * one were ever present. This form has no file inputs, but narrow properly
- * rather than relying on that. */
 function getStringField(formData: FormData, key: string): string {
   const value = formData.get(key);
   return typeof value === 'string' ? value : '';
@@ -59,6 +58,7 @@ export function ContactPage({ hostelInfo = null }: Readonly<ContactPageProps>) {
   const { locale } = useI18n();
   const isEs = locale !== 'en';
   const t = isEs ? COPY.es : COPY.en;
+  const reduceMotion = usePrefersReducedMotion();
 
   const [status, setStatus] = useState<FormStatus>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -68,9 +68,6 @@ export function ContactPage({ hostelInfo = null }: Readonly<ContactPageProps>) {
     setStatus('sending');
     setErrorMessage('');
 
-    // React nulls out event.currentTarget once the synthetic event is no
-    // longer being dispatched, i.e. after this await -- capture the form
-    // element up front rather than re-reading it from the event later.
     const form = event.currentTarget;
     const formData = new FormData(form);
     const { data, error } = await actions.contact.submit({
@@ -98,70 +95,33 @@ export function ContactPage({ hostelInfo = null }: Readonly<ContactPageProps>) {
       <InstitutionsSection />
       <SocialSection />
 
-      <section className="container mx-auto max-w-2xl px-4 py-12">
-        <h2 className="mb-4 text-xl font-bold text-[#5D4E37] font-sketch">{t.formHeading}</h2>
+      <section className="container mx-auto max-w-2xl px-4 py-10">
+        <motion.h2
+          className="mb-4 text-2xl font-black text-[#1A1A1A] font-sketch"
+          initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+          whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          {t.formHeading}
+        </motion.h2>
         <motion.form
           method="post"
           data-no-swup
           onSubmit={handleSubmit}
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          className={`${NEO} space-y-4 rounded-xl bg-[#FFF8E7] p-5 md:p-6`}
+          initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+          whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="space-y-4 rounded-xl border-2 border-[#5D4E37]/30 bg-[#FFFFFF] p-6 doodle-shadow paper-texture"
         >
-          <div>
-            <label
-              htmlFor="contact-name"
-              className="mb-1 block text-sm font-semibold text-[#5D4E37]"
-            >
-              {t.formName}
-            </label>
-            <input
-              id="contact-name"
-              name="name"
-              type="text"
-              required
-              maxLength={120}
-              className="w-full rounded-md border-2 border-[#5D4E37]/30 bg-white px-3 py-2 text-[#5D4E37] focus:border-[#00AB39] focus:outline-none"
-            />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field id="contact-name" name="name" label={t.formName} required maxLength={120} />
+            <Field id="contact-email" name="email" label={t.formEmail} type="email" required />
           </div>
-
-          <div>
-            <label
-              htmlFor="contact-email"
-              className="mb-1 block text-sm font-semibold text-[#5D4E37]"
-            >
-              {t.formEmail}
-            </label>
-            <input
-              id="contact-email"
-              name="email"
-              type="email"
-              required
-              className="w-full rounded-md border-2 border-[#5D4E37]/30 bg-white px-3 py-2 text-[#5D4E37] focus:border-[#00AB39] focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="contact-subject"
-              className="mb-1 block text-sm font-semibold text-[#5D4E37]"
-            >
-              {t.formSubject}
-            </label>
-            <input
-              id="contact-subject"
-              name="subject"
-              type="text"
-              maxLength={200}
-              className="w-full rounded-md border-2 border-[#5D4E37]/30 bg-white px-3 py-2 text-[#5D4E37] focus:border-[#00AB39] focus:outline-none"
-            />
-          </div>
-
+          <Field id="contact-subject" name="subject" label={t.formSubject} maxLength={200} />
           <div>
             <label
               htmlFor="contact-message"
-              className="mb-1 block text-sm font-semibold text-[#5D4E37]"
+              className="mb-1 block text-sm font-black text-[#1A1A1A]"
             >
               {t.formMessage}
             </label>
@@ -170,8 +130,8 @@ export function ContactPage({ hostelInfo = null }: Readonly<ContactPageProps>) {
               name="message"
               required
               maxLength={4000}
-              rows={5}
-              className="w-full rounded-md border-2 border-[#5D4E37]/30 bg-white px-3 py-2 text-[#5D4E37] focus:border-[#00AB39] focus:outline-none"
+              rows={4}
+              className={`${NEO_INPUT} resize-y`}
             />
           </div>
 
@@ -180,15 +140,49 @@ export function ContactPage({ hostelInfo = null }: Readonly<ContactPageProps>) {
           </WiredButton>
 
           {status === 'success' && (
-            <output className="block text-sm font-semibold text-[#00AB39]">{t.formSuccess}</output>
+            <output className="block text-sm font-black text-[#00AB39]">{t.formSuccess}</output>
           )}
           {status === 'error' && (
-            <p role="alert" className="text-sm font-semibold text-[#ED1C24]">
+            <p role="alert" className="text-sm font-black text-[#ED1C24]">
               {errorMessage}
             </p>
           )}
         </motion.form>
       </section>
+
+      <LegalIdentitySection hostelInfo={hostelInfo} />
     </>
+  );
+}
+
+function Field({
+  id,
+  name,
+  label,
+  type = 'text',
+  required,
+  maxLength,
+}: Readonly<{
+  id: string;
+  name: string;
+  label: string;
+  type?: string;
+  required?: boolean;
+  maxLength?: number;
+}>) {
+  return (
+    <div>
+      <label htmlFor={id} className="mb-1 block text-sm font-black text-[#1A1A1A]">
+        {label}
+      </label>
+      <input
+        id={id}
+        name={name}
+        type={type}
+        required={required}
+        maxLength={maxLength}
+        className={NEO_INPUT}
+      />
+    </div>
   );
 }

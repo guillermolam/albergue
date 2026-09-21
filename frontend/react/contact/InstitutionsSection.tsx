@@ -1,95 +1,57 @@
-import { useState } from 'react';
-import { DoodleFrame } from '../doodle/DoodleFrame';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
-import { ShieldIcon, CompassIcon, ExternalLinkIcon } from '../doodle/DoodleIcons';
+import { motion } from 'motion/react';
+import { CompassIcon, ExternalLinkIcon } from '../doodle/DoodleIcons';
 import { useI18n } from '../hooks/useI18n';
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { QUICK_LINKS } from '../constants/footerData';
+import { NEO_INTERACTIVE } from './neo';
 
 const COPY = {
   es: {
-    title: 'Instituciones y Organismos Oficiales',
-    subtitle: 'Enlaces oficiales del Camino, turismo y protección al consumidor',
-    visit: 'Visitar sitio web',
-    descriptions: {
-      'camino-info': 'Portal oficial de información sobre el Camino de Santiago.',
-      'extremadura-tourism': 'Organismo oficial de turismo de la Junta de Extremadura.',
-      'consumer-rights':
-        'Junta Arbitral de Consumo de Extremadura, para resolver disputas de consumo.',
-    } as Record<string, string>,
+    title: 'Instituciones',
+    subtitle: 'Camino, turismo y consumo — enlaces oficiales',
   },
   en: {
-    title: 'Institutions & Government',
-    subtitle: 'Official Camino, tourism, and consumer-protection links',
-    visit: 'Visit website',
-    descriptions: {
-      'camino-info': 'Official Camino de Santiago information portal.',
-      'extremadura-tourism': "Extremadura regional government's official tourism board.",
-      'consumer-rights': 'Extremadura Consumer Arbitration Board, for resolving consumer disputes.',
-    } as Record<string, string>,
+    title: 'Institutions',
+    subtitle: 'Camino, tourism, and consumer protection',
   },
 };
+
+const ACCENTS = ['bg-[#E8F5E9]', 'bg-[#E3F2FD]', 'bg-[#FFF8E7]'] as const;
 
 export function InstitutionsSection() {
   const { locale } = useI18n();
   const isEs = locale !== 'en';
   const t = isEs ? COPY.es : COPY.en;
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const active = QUICK_LINKS.external.find((link) => link.id === activeId) ?? null;
+  const reduceMotion = usePrefersReducedMotion();
 
   return (
-    <section className="container mx-auto max-w-5xl px-4 py-12">
-      <h2 className="mb-1 flex items-center gap-2 text-2xl font-bold text-[#5D4E37] font-sketch">
-        <ShieldIcon className="h-7 w-7" />
-        {t.title}
-      </h2>
-      <p className="mb-6 text-sm text-[#5D4E37]/70 font-handwritten">{t.subtitle}</p>
+    <section className="container mx-auto max-w-5xl px-4 py-10">
+      <h2 className="mb-1 text-2xl font-black text-[#1A1A1A] font-sketch">{t.title}</h2>
+      <p className="mb-5 text-sm font-semibold text-[#1A1A1A]/60">{t.subtitle}</p>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {QUICK_LINKS.external.map((link) => (
-          <button
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {QUICK_LINKS.external.map((link, i) => (
+          <motion.a
             key={link.id}
-            type="button"
-            onClick={() => setActiveId(link.id)}
-            className="text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00AB39]"
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${NEO_INTERACTIVE} ${ACCENTS[i % ACCENTS.length]} flex items-center gap-3 rounded-xl p-4`}
+            initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+            whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.05, duration: 0.35 }}
           >
-            <DoodleFrame className="paper-texture">
-              <div className="flex items-start gap-3 p-4">
-                <div className="shrink-0 rounded-full bg-[#E8F5E9] p-2 text-[#00AB39]">
-                  <CompassIcon className="h-6 w-6" />
-                </div>
-                <h3 className="pt-1 text-sm font-bold text-[#5D4E37] font-sketch">
-                  {isEs ? link.labelES : link.labelEN}
-                </h3>
-              </div>
-            </DoodleFrame>
-          </button>
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-[#1A1A1A] bg-white">
+              <CompassIcon className="h-5 w-5" />
+            </span>
+            <span className="flex-1 text-sm font-black text-[#1A1A1A] font-sketch">
+              {isEs ? link.labelES : link.labelEN}
+            </span>
+            <ExternalLinkIcon className="h-4 w-4 shrink-0 text-[#1A1A1A]/50" />
+          </motion.a>
         ))}
       </div>
-
-      <Dialog open={active !== null} onOpenChange={(open) => !open && setActiveId(null)}>
-        <DialogContent className="border-2 border-[#1A1A1A] bg-[#FFFFFF]">
-          {active && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="font-sketch">
-                  {isEs ? active.labelES : active.labelEN}
-                </DialogTitle>
-              </DialogHeader>
-              <p className="text-sm text-[#5D4E37]/80 font-handwritten">
-                {t.descriptions[active.id]}
-              </p>
-              <a
-                href={active.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 flex items-center justify-center gap-2 rounded-lg border-2 border-[#00AB39] py-2 text-sm font-semibold text-[#00AB39] hover:bg-[#E8F5E9]"
-              >
-                {t.visit} <ExternalLinkIcon className="h-4 w-4" />
-              </a>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
     </section>
   );
 }
