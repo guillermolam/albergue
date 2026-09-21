@@ -29,7 +29,10 @@ places.get("/", async (c: Context) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    throw new HTTPException(500, { message: `Failed to get places: ${String(error)}` });
+    const cause = error instanceof Error && error.cause ? `; cause: ${String(error.cause)}` : '';
+    throw new HTTPException(500, {
+      message: `Failed to get places: ${String(error)}${cause}`,
+    });
   }
 });
 
