@@ -119,11 +119,20 @@
      which is exactly how arrow-key navigation moves it here. Showing it on
      mouse focus too costs nothing, because clicking a row closes the menu. */
   .lift-item:hover,
-  .lift-item:focus {
+  .lift-item:focus,
+  .lift-item-raised {
     translate: 0 -3.5px;
     border-color: #1a1a1a;
     box-shadow: 3px 3px 0 0 var(--lift-color, #adf296);
     outline: none;
+  }
+
+  /* Persistent raised CTAs nudge a little further on interaction so the
+     resting offset-block still reads as interactive. */
+  .lift-item-raised:hover,
+  .lift-item-raised:focus {
+    translate: 0 -5px;
+    box-shadow: 4px 4px 0 0 var(--lift-color, #adf296);
   }
 
   /* Keyboard users still need to see where focus is, so the offset block
@@ -134,7 +143,10 @@
     }
 
     .lift-item:hover,
-    .lift-item:focus {
+    .lift-item:focus,
+    .lift-item-raised,
+    .lift-item-raised:hover,
+    .lift-item-raised:focus {
       translate: none;
     }
   }
