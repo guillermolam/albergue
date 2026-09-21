@@ -34,11 +34,16 @@ export const sharedConfig = {
       }),
       // Smplrspace spatial/floor-plan viewer (see frontend/react/spatial/).
       // Not set directly here or in frontend/.env -- scripts/root-env.mjs
-      // derives them from SMPLRSPACE_* in the monorepo-root .env, so the org
-      // id and client token exist in exactly one file. Still optional: with
-      // no root .env (CI, a fresh clone) the viewer detects the missing
-      // config and renders a "not yet configured" placeholder rather than
-      // failing. Never fall back to Smplrspace's own demo IDs here.
+      // resolves them (env var > monorepo-root .env > committed B01
+      // default, in that priority order -- see that file for why B01
+      // specifically has a real committed default, unlike the other
+      // Smplrspace vars) and validates the result, throwing a build error
+      // for a malformed value rather than silently degrading. Still
+      // `optional: true` here at the schema level only because B02/B03
+      // have no committed default yet (no real Smplrspace project exists
+      // for either) and are meant to render their "not yet configured"
+      // placeholder until they do. Never fall back to Smplrspace's own
+      // demo IDs.
       PUBLIC_SMPLR_ORGANIZATION_ID: envField.string({
         context: 'client',
         access: 'public',

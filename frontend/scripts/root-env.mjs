@@ -98,14 +98,14 @@ function validateSmplrB01Config(resolved) {
       `PUBLIC_SMPLR_ORGANIZATION_ID (${orgId ? `"${orgId}"` : 'unset'}) doesn't look like a real Smplrspace organization UUID.`
     );
   }
-  if (!clientToken || !clientToken.startsWith('pub_')) {
+  if (!clientToken || !/^pub_.+/.test(clientToken)) {
     problems.push(
-      `PUBLIC_SMPLR_CLIENT_TOKEN doesn't look like a real Smplrspace public token (expected a "pub_" prefix).`
+      `PUBLIC_SMPLR_CLIENT_TOKEN doesn't look like a real Smplrspace public token (expected a "pub_" prefix followed by real content).`
     );
   }
-  if (!spaceId || !spaceId.startsWith('spc_')) {
+  if (!spaceId || !/^spc_.+/.test(spaceId)) {
     problems.push(
-      `PUBLIC_SMPLR_SPACE_B01_ID (${spaceId ? `"${spaceId}"` : 'unset'}) doesn't look like a real Smplrspace space id (expected an "spc_" prefix).`
+      `PUBLIC_SMPLR_SPACE_B01_ID (${spaceId ? `"${spaceId}"` : 'unset'}) doesn't look like a real Smplrspace space id (expected an "spc_" prefix followed by real content).`
     );
   }
 
