@@ -23,6 +23,11 @@ function waitForSwup(timeoutMs = 5000): Promise<NonNullable<Window['swup']> | nu
     }
 
     const started = Date.now();
+    // setTimeout, not requestAnimationFrame: rAF callbacks are paused
+    // entirely by the browser for a hidden/backgrounded tab (e.g. a link
+    // opened in a background tab), which left this polling loop -- and
+    // every hook attached below -- stuck indefinitely whenever the page
+    // loaded in one. setTimeout still fires (throttled, but not halted).
     const tick = () => {
       if (window.swup) {
         resolve(window.swup);
@@ -32,7 +37,7 @@ function waitForSwup(timeoutMs = 5000): Promise<NonNullable<Window['swup']> | nu
         resolve(null);
         return;
       }
-      requestAnimationFrame(tick);
+      setTimeout(tick, 50);
     };
     tick();
   });

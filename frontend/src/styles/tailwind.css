@@ -21,6 +21,26 @@
 @import 'tailwindcss';
 @import './shadcn-theme.css';
 
+/* lenis.dev's own recommended reset (frontend/src/scripts/lenis-scroll.ts):
+   without it, a native CSS `scroll-behavior: smooth` fights Lenis's own
+   easing on any anchor-link jump, and scroll-linked content can run ahead
+   of the smoothed position during a scroll. */
+@layer base {
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+}
+
 /* daisyUI 5, prefixed `daisy-` so its `.btn`/`.card`/`.badge` etc. classes
    never collide with design-system.css's own unprefixed same-named legacy
    classes (still live on dashboard.astro, camino.astro, AdminLayout.astro). */
