@@ -18,7 +18,7 @@ const COPY = {
     eyebrow: 'Legal identity',
     title: 'Hostel particulars',
     subtitle:
-      'ID, cadastre and registries. Cadastral value and named ownership are protected (Catastre e-office / Cl@ve).',
+      'ID, cadastre and registries. Cadastral value and named ownership are protected (Cadastre e-office / Cl@ve).',
     units: 'Built units',
     source: 'Open OVC source',
   },
@@ -36,7 +36,10 @@ export function LegalIdentitySection({ hostelInfo = null }: Readonly<LegalIdenti
   const cad = LEGAL_INFO.cadastre;
 
   const rows: { label: string; value: string; mono?: boolean }[] = [
-    { label: isEs ? 'Denominación' : 'Name', value: hostelInfo?.nameEs || CONTACT_INFO.name },
+    {
+      label: isEs ? 'Denominación' : 'Name',
+      value: (isEs ? hostelInfo?.nameEs : hostelInfo?.nameEn) || CONTACT_INFO.name,
+    },
     {
       label: isEs ? 'Propietario / titular operativo' : 'Owner / operating titular',
       value: LEGAL_INFO.owner,
@@ -76,7 +79,7 @@ export function LegalIdentitySection({ hostelInfo = null }: Readonly<LegalIdenti
     },
     {
       label: isEs ? 'Valor catastral' : 'Cadastral value',
-      value: isEs ? 'Protegido — Sede Catastro + Cl@ve' : 'Protected — Catastre e-office + Cl@ve',
+      value: isEs ? 'Protegido — Sede Catastro + Cl@ve' : 'Protected — Cadastre e-office + Cl@ve',
     },
     {
       label: isEs ? 'Nº registro de la propiedad' : 'Land registry number',
