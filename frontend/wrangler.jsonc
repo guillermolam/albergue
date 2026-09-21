@@ -8,6 +8,15 @@
   // the Workers runtime only provides under this flag.
   "compatibility_flags": ["nodejs_compat"],
 
+  // Same-account Worker-to-Worker calls (this Worker -> "albergue-backend")
+  // must use a Service Binding, not a raw fetch() to the sibling's
+  // *.workers.dev URL: Cloudflare's public routing layer returns a bare
+  // "Worker not found" for that kind of subrequest when issued from inside
+  // a Worker, even though the exact same URL resolves fine from outside
+  // (confirmed live in production). The binding calls the sibling Worker
+  // directly, bypassing DNS/TLS/edge routing entirely.
+  "services": [{ "binding": "BACKEND", "service": "albergue-backend" }],
+
   // Phase 4 prerequisite (ASTRO-002): Astro sessions use the Cloudflare KV
   // driver with the default `SESSION` binding. Provision with:
   //   wrangler kv namespace create SESSION

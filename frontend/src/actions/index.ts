@@ -6,7 +6,7 @@
  */
 import { defineAction, ActionError } from 'astro:actions';
 import { z } from 'zod';
-import { BACKEND_API_URL, ADMIN_API_TOKEN } from 'astro:env/server';
+import { ADMIN_API_TOKEN } from 'astro:env/server';
 import {
   AUTH_SESSION_KEY,
   BOOKING_STATUSES,
@@ -14,7 +14,7 @@ import {
   type CreatePaymentIntentResponse,
   type LoginResponse,
 } from '@albergue/api-contract';
-import { backendJson } from '../lib/backend-api';
+import { backendFetch, backendJson } from '../lib/backend-api';
 import {
   BOOKING_DRAFT_SESSION_KEY,
   attachBooking,
@@ -96,24 +96,22 @@ export const server = {
             message: 'Sessions are not available on this deployment yet.',
           });
         }
-        if (!BACKEND_API_URL) {
-          throw new ActionError({
-            code: 'SERVICE_UNAVAILABLE',
-            message: 'Backend API is not configured (BACKEND_API_URL).',
-          });
-        }
-
         let response: Response;
         try {
-          response = await fetch(`${BACKEND_API_URL}/api/auth/login`, {
+          // Goes through the Service Binding when available (bypasses the
+          // "Worker not found" that a raw fetch() to the sibling
+          // *.workers.dev URL hits from inside a Worker), so this doesn't
+          // depend on BACKEND_API_URL except on its local-dev fallback path.
+          response = await backendFetch('/api/auth/login', {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify(input),
           });
         } catch {
-          // A network-level failure (connection refused, DNS, timeout,
-          // ...) throws rather than resolving a Response -- surface it
-          // as a clean ActionError instead of an unhandled exception.
+          // A missing/misconfigured backend, or a network-level failure
+          // (connection refused, DNS, timeout, ...) throws rather than
+          // resolving a Response -- surface it as a clean ActionError
+          // instead of an unhandled exception.
           throw new ActionError({
             code: 'SERVICE_UNAVAILABLE',
             message: 'Backend API is unreachable.',
