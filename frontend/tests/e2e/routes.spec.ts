@@ -40,12 +40,25 @@ test.describe('Route rendering tests', () => {
       });
 
       await page.goto(route.path, {
-        waitUntil: 'networkidle',
-        timeout: 30000,
+        // Not 'networkidle': /camino renders a real MapLibre map that
+        // loads external raster tiles from cartocdn.com, and Playwright's
+        // own docs call out 'networkidle' as a poor readiness signal for
+        // exactly this reason -- any page with ongoing/retrying
+        // third-party network activity can leave it waiting well past
+        // when the page is actually usable. Confirmed via a live network
+        // trace: every tile request itself succeeds, but CI's network
+        // conditions for a third-party CDN aren't the same as local, and
+        // this test doesn't care about tile-load completion anyway. 'load'
+        // still waits for every resource referenced in the initial HTML
+        // (unlike 'domcontentloaded'), just not for tiles fetched later,
+        // imperatively, after the map component hydrates.
+        waitUntil: 'load',
       });
 
-      // Wait for page to be fully loaded
-      await page.waitForLoadState('domcontentloaded');
+      // Give client-side hydration a moment to run and surface any
+      // synchronous console errors, without waiting on unrelated
+      // background network activity the way 'networkidle' did.
+      await page.waitForTimeout(500);
 
       // Check for specific error patterns
       const criticalErrors = errors.filter(

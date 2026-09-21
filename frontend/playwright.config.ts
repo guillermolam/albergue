@@ -7,6 +7,12 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? 'line' : 'html',
+  // Small safety margin over the 30s default: backend calls run in-process
+  // now (see frontend/src/lib/backend-api.ts), so a route with several of
+  // them can take a bit longer to settle than the old instant-fail-on-
+  // missing-BACKEND_API_URL behavior did, even with the fast-failing
+  // DATABASE_URL below.
+  timeout: 45000,
   use: {
     baseURL: process.env.FRONTEND_URL || 'http://localhost:4322',
     trace: 'on-first-retry',
@@ -45,6 +51,13 @@ export default defineConfig({
         reuseExistingServer: false,
         env: {
           PUBLIC_API_MODE: 'local',
+          // Deliberately unroutable (not "localhost", which some CI
+          // resolvers add real DNS latency to) so a missing real
+          // DATABASE_URL fails each connection attempt as fast and
+          // consistently as possible, rather than falling through to
+          // db.ts's own ambiguous "postgresql://localhost:5432/albergue"
+          // default.
+          DATABASE_URL: 'postgresql://invalid:invalid@127.0.0.1:1/invalid',
         },
       },
 });
