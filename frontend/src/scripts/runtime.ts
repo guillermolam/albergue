@@ -1,6 +1,7 @@
 import { initStoresBridge } from './runtime_stores_bridge';
 import { initializeSwupPlugins } from './swup-plugins';
 import { cleanupSensitiveBrowserStorage } from './cleanup-sensitive-storage';
+import { initLenis } from './lenis-scroll';
 
 function onIdle(cb: () => void) {
   const w = window as unknown as { requestIdleCallback?: (fn: () => void) => number };
@@ -12,6 +13,7 @@ function bootstrap() {
   cleanupSensitiveBrowserStorage();
   queueMicrotask(() => initStoresBridge());
   void initializeSwupPlugins();
+  void initLenis();
   onIdle(() => {
     document.dispatchEvent(new CustomEvent('app:ready'));
   });

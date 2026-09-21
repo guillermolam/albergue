@@ -2,6 +2,7 @@
  * Swup client hooks.
  * Plugins themselves are registered by `@swup/astro` in astro.config — do not load unpkg CDNs.
  */
+import { waitForSwup } from './wait-for-swup';
 
 declare global {
   interface Window {
@@ -12,30 +13,6 @@ declare global {
     };
     __albergueSwupHooks?: boolean;
   }
-}
-
-function waitForSwup(timeoutMs = 5000): Promise<NonNullable<Window['swup']> | null> {
-  return new Promise((resolve) => {
-    const existing = window.swup;
-    if (existing) {
-      resolve(existing);
-      return;
-    }
-
-    const started = Date.now();
-    const tick = () => {
-      if (window.swup) {
-        resolve(window.swup);
-        return;
-      }
-      if (Date.now() - started >= timeoutMs) {
-        resolve(null);
-        return;
-      }
-      requestAnimationFrame(tick);
-    };
-    tick();
-  });
 }
 
 /**
