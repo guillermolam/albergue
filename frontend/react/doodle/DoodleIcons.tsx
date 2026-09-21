@@ -1926,3 +1926,114 @@ export function CopyIcon({ className = 'w-6 h-6', animate = true }: Readonly<Doo
     </motion.svg>
   );
 }
+
+export function WineIcon({ className = 'w-6 h-6', animate = true }: Readonly<DoodleIconProps>) {
+  return (
+    <motion.svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      whileHover={animate ? { rotate: [0, -4, 4, 0] } : {}}
+    >
+      <path
+        d="M32 18 H68 L58 48 C58 62 42 62 42 48 Z"
+        stroke="currentColor"
+        strokeWidth="6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M50 62 V82 M36 82 H64" stroke="currentColor" strokeWidth="6" strokeLinecap="round" />
+    </motion.svg>
+  );
+}
+
+export function BreadIcon({ className = 'w-6 h-6', animate = true }: Readonly<DoodleIconProps>) {
+  return (
+    <motion.svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      whileHover={animate ? { scale: 1.06 } : {}}
+    >
+      <ellipse cx="50" cy="55" rx="34" ry="22" stroke="currentColor" strokeWidth="6" />
+      <path
+        d="M28 48 Q40 38 50 48 Q60 38 72 48"
+        stroke="currentColor"
+        strokeWidth="5"
+        strokeLinecap="round"
+        fill="none"
+      />
+    </motion.svg>
+  );
+}
+
+export function SparklesIcon({ className = 'w-6 h-6', animate = true }: Readonly<DoodleIconProps>) {
+  return (
+    <motion.svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      animate={animate ? { scale: [1, 1.05, 1] } : {}}
+      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+    >
+      <path
+        d="M50 12 L56 40 L84 46 L56 52 L50 80 L44 52 L16 46 L44 40 Z"
+        stroke="currentColor"
+        strokeWidth="5"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <path
+        d="M78 18 L80 28 L90 30 L80 32 L78 42"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+    </motion.svg>
+  );
+}
+
+export function ExpandIcon({ className = 'w-6 h-6', animate = false }: Readonly<DoodleIconProps>) {
+  return (
+    <motion.svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      whileHover={animate ? { scale: 1.08 } : {}}
+    >
+      <path
+        d="M18 40 V18 H40 M60 18 H82 V40 M82 60 V82 H60 M40 82 H18 V60"
+        stroke="currentColor"
+        strokeWidth="7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </motion.svg>
+  );
+}
+
+export function QuoteIcon({ className = 'w-6 h-6', animate = true }: Readonly<DoodleIconProps>) {
+  return (
+    <motion.svg
+      className={className}
+      viewBox="0 0 100 100"
+      fill="none"
+      whileHover={animate ? { scale: 1.06 } : {}}
+    >
+      <path
+        d="M28 55 C28 40 40 32 48 32 L48 42 C42 42 38 46 38 52 H52 V78 H28 Z"
+        stroke="currentColor"
+        strokeWidth="5"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <path
+        d="M58 55 C58 40 70 32 78 32 L78 42 C72 42 68 46 68 52 H82 V78 H58 Z"
+        stroke="currentColor"
+        strokeWidth="5"
+        strokeLinejoin="round"
+        fill="none"
+      />
+    </motion.svg>
+  );
+}
