@@ -1,9 +1,11 @@
 /**
  * Same-origin /api/camino/* for browser islands.
- * Proxies to the Hono backend via Cloudflare Service Binding when available,
- * otherwise BACKEND_API_URL (local Node). Anonymous session cookie stamped here.
+ * Proxies via Cloudflare Service Binding (static import — dynamic
+ * `import('cloudflare:workers')` hangs intermittently in production).
+ * Local Node falls through when BACKEND is unset.
  */
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { backendFetch } from '../../../lib/backend-api';
 
 export const prerender = false;
@@ -33,16 +35,9 @@ function sessionCookie(id: string, secure: boolean): string {
   return flags.join('; ');
 }
 
-/** Worker→Worker via Service Binding; public *.workers.dev fetch returns CF 1042. */
-async function callBackend(path: string, init: RequestInit): Promise<Response> {
-  try {
-    const { env } = await import('cloudflare:workers');
-    if (env.BACKEND) {
-      const request = new Request(new URL(path, 'https://albergue-backend.internal'), init);
-      return env.BACKEND.fetch(request);
-    }
-  } catch {
-    // Plain Node / astro dev — no cloudflare:workers module.
+function callBackend(path: string, init: RequestInit): Promise<Response> {
+  if (env.BACKEND) {
+    return env.BACKEND.fetch(new Request(new URL(path, 'https://albergue-backend.internal'), init));
   }
   return backendFetch(path, init);
 }
