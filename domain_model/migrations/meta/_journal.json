@@ -36,6 +36,13 @@
       "when": 1789842650473,
       "tag": "0004_places_and_hostel",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789990000000,
+      "tag": "0005_camino_km_logs",
+      "breakpoints": true
     }
   ]
 }

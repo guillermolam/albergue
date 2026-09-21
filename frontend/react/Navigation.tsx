@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react';
+import type { ComponentType, CSSProperties } from 'react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -113,17 +113,26 @@ function DesktopNavLink({ link, isActive }: { link: NavLinkData; isActive: boole
   );
 }
 
-/** The Reservar/Book Now item: a highlighted call-to-action rather than
- * a plain link, so it reads as the primary thing a visiting guest
- * should do -- not just another nav entry. */
+/** Reservar/Book Now: same offset-block language as LanguageSelector rows
+ * (hard border + coloured drop shadow), kept raised at rest so it still
+ * reads as the primary nav action without the WiredButton doodle chrome. */
 function DesktopNavCta({ link }: { link: NavLinkData }) {
   const Icon = link.icon;
   const animateIcon = !usePrefersReducedMotion();
   return (
-    <WiredButton href={link.path} variant="primary" size="sm" className="flex items-center gap-1.5">
-      <Icon className="h-4 w-4 shrink-0 text-white" animate={animateIcon} aria-hidden="true" />
+    <a
+      href={link.path}
+      className="lift-item lift-item-raised relative mx-1 flex items-center gap-1.5 bg-white px-3 py-1.5 text-sm font-semibold text-[#1A1A1D]"
+      style={
+        {
+          '--lift-color': '#00AB39',
+          fontFamily: 'Patrick Hand, cursive',
+        } as CSSProperties
+      }
+    >
+      <Icon className="h-4 w-4 shrink-0 text-[#00AB39]" animate={animateIcon} aria-hidden="true" />
       {link.label}
-    </WiredButton>
+    </a>
   );
 }
 
@@ -237,7 +246,7 @@ function MobileNavLink({
   indent?: boolean;
 }) {
   const Icon = link.icon;
-  const isCtaHighlighted = link.isCta && !isActive;
+  const isCta = Boolean(link.isCta);
   const animateIcon = !usePrefersReducedMotion();
   return (
     <motion.div
@@ -249,13 +258,29 @@ function MobileNavLink({
       <a
         href={link.path}
         onClick={onClick}
-        className={`flex items-center gap-2 px-4 py-3 doodle-border transition-all ${
-          isActive || isCtaHighlighted
-            ? 'bg-[#00AB39] text-white doodle-shadow'
-            : 'bg-white text-gray-700 hover:bg-[#F5E6D3]'
-        }`}
+        className={
+          isCta
+            ? 'lift-item lift-item-raised relative flex items-center gap-2 bg-white px-4 py-3 text-sm font-semibold text-[#1A1A1D]'
+            : `flex items-center gap-2 px-4 py-3 doodle-border transition-all ${
+                isActive
+                  ? 'bg-[#00AB39] text-white doodle-shadow'
+                  : 'bg-white text-gray-700 hover:bg-[#F5E6D3]'
+              }`
+        }
+        style={
+          isCta
+            ? ({
+                '--lift-color': '#00AB39',
+                fontFamily: 'Patrick Hand, cursive',
+              } as CSSProperties)
+            : undefined
+        }
       >
-        <Icon className="h-4 w-4 shrink-0" animate={animateIcon} aria-hidden="true" />
+        <Icon
+          className={`h-4 w-4 shrink-0 ${isCta ? 'text-[#00AB39]' : ''}`}
+          animate={animateIcon}
+          aria-hidden="true"
+        />
         {link.label}
       </a>
     </motion.div>

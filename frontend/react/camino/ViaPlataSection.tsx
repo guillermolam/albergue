@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useI18n } from '../hooks/useI18n';
-import { PageHero } from '../shared/PageHero';
 import { SectionDecor } from '../shared/SectionDecor';
 import { FancyCard } from '../shared/FancyCard';
 import { MapLibreMap, type MapLibreMarkerData } from '../shared/MapLibreMap';
 import { WiredButton } from '../doodle/WiredButton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
+import { NEO, NEO_INTERACTIVE } from '../contact/neo';
 import {
   CompassIcon,
   MapPinIcon,
@@ -220,60 +220,66 @@ export function ViaPlataSection() {
   ];
 
   return (
-    <section className="relative isolate py-8 bg-white">
+    <section className="relative isolate bg-[#F5F0E8] py-10">
       <SectionDecor preset="distance" />
-      <div className="container mx-auto max-w-6xl px-4">
-        <PageHero eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
+      <div className="container relative z-10 mx-auto max-w-5xl px-4">
+        <header className="mb-6 max-w-2xl">
+          <p className="text-xs font-black uppercase tracking-widest text-[#00AB39]">{t.eyebrow}</p>
+          <h2 className="mt-1 text-3xl font-black text-[#1A1A1A] font-sketch">{t.title}</h2>
+          <p className="mt-2 text-sm font-semibold text-[#1A1A1A]/70">{t.subtitle}</p>
+        </header>
 
-        <div className="mb-4 grid grid-cols-3 gap-4 text-center">
-          <div>
-            <div className="text-2xl font-bold text-[#00AB39] font-sketch">
-              {VIA_PLATA_ROUTE_STATS.stages}
+        <div className="mb-6 grid grid-cols-3 gap-3">
+          {[
+            { value: VIA_PLATA_ROUTE_STATS.stages, label: t.statStages },
+            { value: VIA_PLATA_ROUTE_STATS.distanceKm, label: t.statKm },
+            { value: VIA_PLATA_ROUTE_STATS.villages, label: t.statVillages },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              className={`${NEO} rounded-xl bg-[#EAC102] px-3 py-4 text-center text-[#1A1A1A]`}
+            >
+              <div className="text-2xl font-black font-sketch">{stat.value}</div>
+              <div className="text-[10px] font-black uppercase tracking-wide opacity-70">
+                {stat.label}
+              </div>
             </div>
-            <div className="text-xs text-[#5D4E37]/70">{t.statStages}</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-[#00AB39] font-sketch">
-              {VIA_PLATA_ROUTE_STATS.distanceKm}
-            </div>
-            <div className="text-xs text-[#5D4E37]/70">{t.statKm}</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-[#00AB39] font-sketch">
-              {VIA_PLATA_ROUTE_STATS.villages}
-            </div>
-            <div className="text-xs text-[#5D4E37]/70">{t.statVillages}</div>
-          </div>
+          ))}
         </div>
 
-        <h3 className="mb-1 text-base font-bold text-[#5D4E37] font-sketch">{t.mapTitle}</h3>
-        <p className="mb-2 text-xs text-[#5D4E37]/70 font-handwritten">{t.mapHint}</p>
-        <MapLibreMap center={[-6.15, 39.3]} zoom={7} markers={markers} className="mb-6 h-64" />
+        <h3 className="mb-1 text-base font-black font-sketch text-[#1A1A1A]">{t.mapTitle}</h3>
+        <p className="mb-2 text-xs font-semibold text-[#1A1A1A]/60">{t.mapHint}</p>
+        <div className={`${NEO} mb-6 overflow-hidden rounded-xl`}>
+          <MapLibreMap
+            center={[-6.15, 39.3]}
+            zoom={7}
+            markers={markers}
+            className="mb-0 h-64 border-0 shadow-none"
+          />
+        </div>
 
-        <h3 className="mb-2 text-base font-bold text-[#5D4E37] font-sketch">{t.stagesTitle}</h3>
-        <div className="mb-6 grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
+        <h3 className="mb-2 text-base font-black font-sketch text-[#1A1A1A]">{t.stagesTitle}</h3>
+        <div className="mb-6 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {mainStages.map((stage) => (
             <button
               key={stage.slug}
               type="button"
               onClick={() => openStage(stage)}
-              className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00AB39] ${
-                stage.passesCarrascalejo
-                  ? 'border-[#00AB39] bg-[#E8F5E9]'
-                  : 'border-[#5D4E37]/20 bg-[#FFFFFF] hover:border-[#00AB39]/50 hover:bg-[#E8F5E9]/60'
+              className={`${NEO_INTERACTIVE} flex items-center gap-2 rounded-xl px-3 py-2.5 text-left ${
+                stage.passesCarrascalejo ? 'bg-[#00AB39] text-white' : 'bg-white text-[#1A1A1A]'
               }`}
             >
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center text-[#00AB39]">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border-2 border-[#1A1A1A] bg-white text-[#00AB39]">
                 {stage.passesCarrascalejo ? (
                   <StarIcon className="h-4 w-4" />
                 ) : (
-                  <span className="text-xs font-bold">{stage.stage}</span>
+                  <span className="text-[10px] font-black">{stage.stage}</span>
                 )}
               </span>
-              <span className="min-w-0 flex-1 truncate text-sm font-semibold text-[#5D4E37]">
+              <span className="min-w-0 flex-1 truncate text-sm font-bold">
                 {stage.from} → {stage.to}
               </span>
-              <span className="shrink-0 text-xs text-[#5D4E37]/60">
+              <span className="shrink-0 text-xs font-black opacity-70">
                 {stage.km} {t.km}
               </span>
             </button>
@@ -282,7 +288,7 @@ export function ViaPlataSection() {
 
         <AppDownloadCard />
 
-        <h3 className="mt-6 mb-2 text-base font-bold text-[#5D4E37] font-sketch">
+        <h3 className="mt-6 mb-2 text-base font-black font-sketch text-[#1A1A1A]">
           {t.resourcesTitle}
         </h3>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">

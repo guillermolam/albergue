@@ -21,3 +21,4 @@ export { default as meridaEvents } from "./merida_events.js";
 export { default as carrascalejoLocal } from "./carrascalejo_local.js";
 export { default as carrascalejoWeather } from "./carrascalejo_weather.js";
 export { default as carrascalejoAirQuality } from "./carrascalejo_air_quality.js";
+export { default as camino } from "./camino.js";

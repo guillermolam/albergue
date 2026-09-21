@@ -9,6 +9,7 @@ import {
   date,
   jsonb,
   pgEnum,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
@@ -165,6 +166,20 @@ export const contactMessages = pgTable("contact_messages", {
   status: text("status").default("new"),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+/** Anonymous pilgrim daily km logs, keyed by browser session cookie. */
+export const caminoKmLogs = pgTable(
+  "camino_km_logs",
+  {
+    id: serial("id").primaryKey(),
+    sessionId: text("session_id").notNull(),
+    km: decimal("km", { precision: 6, scale: 2 }).notNull(),
+    logDate: date("log_date").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (table) => [uniqueIndex("camino_km_logs_session_date_idx").on(table.sessionId, table.logDate)],
+);
 
 export const auditLog = pgTable("audit_log", {
   id: serial("id").primaryKey(),
@@ -716,6 +731,8 @@ export type AuditLog = typeof auditLog.$inferSelect;
 export type InsertAuditLog = z.infer<typeof insertAuditLogSchema>;
 export type ContactMessage = typeof contactMessages.$inferSelect;
 export type InsertContactMessage = z.infer<typeof insertContactMessageSchema>;
+export type CaminoKmLog = typeof caminoKmLogs.$inferSelect;
+export type InsertCaminoKmLog = typeof caminoKmLogs.$inferInsert;
 
 export type Place = typeof places.$inferSelect;
 export type InsertPlace = z.infer<typeof insertPlaceSchema>;

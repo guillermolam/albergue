@@ -50,6 +50,7 @@ import {
   carrascalejoLocal,
   carrascalejoWeather,
   carrascalejoAirQuality,
+  camino,
 } from "./routes/index.js";
 
 // Create main Hono app
@@ -100,6 +101,7 @@ app.get("/", (c) => {
       carrascalejoLocal: "/api/carrascalejo-local",
       carrascalejoWeather: "/api/carrascalejo-weather",
       carrascalejoAirQuality: "/api/carrascalejo-air-quality",
+      camino: "/api/camino",
       health: "/health",
     },
   });
@@ -207,6 +209,7 @@ api.route("/merida-events", meridaEvents);
 api.route("/carrascalejo-local", carrascalejoLocal);
 api.route("/carrascalejo-weather", carrascalejoWeather);
 api.route("/carrascalejo-air-quality", carrascalejoAirQuality);
+api.route("/camino", camino);
 
 // Mount API routes under /api prefix
 app.route("/api", api);

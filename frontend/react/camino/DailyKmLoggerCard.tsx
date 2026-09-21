@@ -98,12 +98,12 @@ export function DailyKmLoggerCard({
   }
 
   return (
-    <div className="rounded-xl border-2 border-[#00AB39]/40 bg-linear-to-br from-[#E8F5E9] to-[#FFFFFF] p-5 doodle-shadow paper-texture">
-      <div className="flex items-center gap-2 mb-1">
+    <div>
+      <div className="mb-1 flex items-center gap-2">
         <CompassIcon className="h-6 w-6 text-[#00AB39]" />
-        <h3 className="text-base font-bold text-[#5D4E37] font-sketch">{t.title}</h3>
+        <h3 className="text-base font-black font-sketch text-[#1A1A1A]">{t.title}</h3>
       </div>
-      <p className="mb-4 text-xs capitalize text-[#5D4E37]/60 font-handwritten">
+      <p className="mb-4 text-xs capitalize font-semibold text-[#1A1A1A]/60">
         {t.today(new Date())} · {dailyGoalKm} km {t.subtitle}
       </p>
 
