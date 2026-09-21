@@ -6,7 +6,7 @@ import {
   HostelServicesPage,
   type HostelServiceItem,
 } from '../../../react/hostel/HostelServicesPage';
-import { backendJson } from '../../lib/backend-api';
+import { backendJsonViaBinding as backendJson } from '../../lib/backend-api-binding';
 import type { HostelAggregate } from '../../lib/hostelTypes';
 
 const result = await backendJson<HostelAggregate>('/api/hostel');

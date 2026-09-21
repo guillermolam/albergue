@@ -3,7 +3,7 @@ export const prerender = false;
 
 import Layout from '../../layouts/Layout.astro';
 import { AreaEatPage } from '../../../react/area/AreaEatPage';
-import { backendJson } from '../../lib/backend-api';
+import { backendJsonViaBinding as backendJson } from '../../lib/backend-api-binding';
 import type { PlaceWithDetails } from '../../../react/places/types';
 
 const EAT_CATEGORIES = new Set(['restaurant', 'bar', 'night_club']);
